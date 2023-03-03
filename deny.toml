@@ -1,0 +1,16 @@
+[advisories]
+notice = "deny"
+unmaintained = "deny"
+yanked = "deny"
+
+[bans]
+wildcards = "deny"
+
+[licenses]
+allow = [
+    "Apache-2.0",
+    "BSD-3-Clause",
+    "ISC",
+    "MIT",
+]
+confidence-threshold = 1.0

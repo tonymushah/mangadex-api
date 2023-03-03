@@ -1,0 +1,56 @@
+[package]
+name = "mangadex-api"
+version = "2.0.0-rc.1"
+authors = ["gondolyr <gondolyr@tutanota.com>"]
+edition = "2021"
+description = "SDK for the MangaDex API"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+keywords = ["api", "client", "mangadex", "sdk"]
+categories = ["api-bindings"]
+repository = "https://gitlab.com/gondolyr/mangadex-api"
+
+[lib]
+name = "mangadex_api"
+path = "src/lib.rs"
+
+[workspace]
+members = ["mangadex-api-schema", "mangadex-api-types"]
+
+[features]
+multi-thread = ["futures"]
+
+[package.metadata.docs.rs]
+rustdoc-args = ["--document-private-items"]
+
+[dependencies]
+derive_builder = "0.11.2"
+futures = { version = "0.3.21", optional = true }
+reqwest = { version = "0.11.9", features = [
+    "cookies",
+    "json",
+    "multipart",
+    "rustls-tls",
+] }
+serde = { version = "1.0.136", features = ["derive"] }
+serde_qs = "0.9.2"
+thiserror = "1.0.30"
+time = { version = "0.3.7", features = ["serde-human-readable"] }
+url = { version = "2.2.2", features = ["serde"] }
+uuid = { version = "1.0.0", features = ["serde", "v4"] }
+
+[dev-dependencies]
+anyhow = "1.0.55"
+clap = { version = "3.1.2", features = ["derive"] }
+fake = { version = "2.4.3" }
+serde_json = "1.0.79"
+tokio = { version = "1.18.1", features = ["macros", "rt-multi-thread"] }
+wiremock = "0.5.11"
+
+[dependencies.mangadex-api-types]
+path = "mangadex-api-types"
+version = "0.1.0"
+
+[dependencies.mangadex-api-schema]
+path = "mangadex-api-schema"
+version = "0.1.0"
