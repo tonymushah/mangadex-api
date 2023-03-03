@@ -13,8 +13,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
-    - name: changing to api-types
-      run : cd mangadex-api-types
+    - name: changing to api-schema
+      run : cd mangadex-api-schema
     - name: Build
       run: cargo build --verbose
     - name: Publish crate
