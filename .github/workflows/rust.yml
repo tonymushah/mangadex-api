@@ -8,10 +8,35 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-
+  publish-api-types:
     runs-on: ubuntu-latest
-
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: changing to api-types
+      run : cd mangadex-api-types
+    - name: Build
+      run: cargo build --verbose
+    - name: Publish crate
+      run: cargo publish --verbose
+      
+  publish-api-schema:
+    needs: publish-api-types
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: changing to api-types
+      run : cd mangadex-api-types
+    - name: Build
+      run: cargo build --verbose
+    - name: Publish crate
+      run: cargo publish --verbose
+      
+  publish-api:
+    needs: [publish-api-types, publish-api-schema]
+    runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v3
     - name: Build
