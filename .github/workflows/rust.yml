@@ -6,19 +6,15 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-
+  CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 jobs:
   publish-api-schema:
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
-    - name: changing to api-schema
-      run : cd mangadex-api-schema
-    - name: Build
-      run: cargo build --verbose
-    - name: Publish crate
-      run: cargo publish --verbose
+    - name: changing to api-schema and publish
+      run : cd mangadex-api-schema && cargo publish --verbose
       
   publish-api-types:
     needs: [publish-api-schema]
@@ -27,12 +23,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: changing to api-types
-      run : cd mangadex-api-types
-    - name: Build
-      run: cargo build --verbose
-    - name: Publish crate
-      run: cargo publish --verbose
-      
+      run : cd mangadex-api-types && cargo publish --verbose
   
   publish-api:
     needs: [publish-api-types, publish-api-schema]
