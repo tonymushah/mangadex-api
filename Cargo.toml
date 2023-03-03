@@ -45,8 +45,8 @@ optional = true
 package = "mangadex-api-schema-rust"
 version = "0.1.0"
 
-[dependencies.mangadex-api-schema]
-package = "mangadex-api-schema-rust"
+[dependencies.mangadex-api-types]
+package = "mangadex-api-types-rust"
 version = "0.1.0"
 
 [dependencies.reqwest]
