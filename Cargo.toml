@@ -41,10 +41,10 @@ version = "0.11.2"
 version = "0.3.21"
 optional = true
 
-[dependencies.mangadex-api-schema]
+[dependencies.mangadex-api-schema-rust]
 version = "0.1.0"
 
-[dependencies.mangadex-api-types]
+[dependencies.mangadex-api-types-rust]
 version = "0.1.0"
 
 [dependencies.reqwest]

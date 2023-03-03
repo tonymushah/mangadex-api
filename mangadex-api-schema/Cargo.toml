@@ -18,7 +18,7 @@ description = "Response structs and helpers for mangadex-api"
 license = "MIT OR Apache-2.0"
 resolver = "2"
 
-[dependencies.mangadex-api-types]
+[dependencies.mangadex-api-types-rust]
 version = "0.1.0"
 
 [dependencies.reqwest]
