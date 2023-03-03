@@ -19,6 +19,7 @@ license = "MIT OR Apache-2.0"
 resolver = "2"
 
 [dependencies.mangadex-api-types-rust]
+name = "mangadex_api_types"
 version = "0.1.0"
 
 [dependencies.reqwest]
