@@ -42,11 +42,11 @@ version = "0.3.21"
 optional = true
 
 [dependencies.mangadex-api-schema-rust]
-name = "mangadex_api_schema"
+package = "mangadex_api_schema"
 version = "0.1.0"
 
 [dependencies.mangadex-api-types-rust]
-name = "mangadex_api_types"
+package = "mangadex_api_types"
 version = "0.1.0"
 
 [dependencies.reqwest]
