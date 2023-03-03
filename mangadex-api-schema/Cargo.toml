@@ -13,6 +13,7 @@
 edition = "2021"
 name = "mangadex-api-schema"
 version = "0.1.0"
+authors = ["tonymushah <tonymushahdev06@yahoo.com>"]
 description = "Response structs and helpers for mangadex-api"
 license = "MIT OR Apache-2.0"
 resolver = "2"

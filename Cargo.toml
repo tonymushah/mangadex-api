@@ -24,7 +24,7 @@ keywords = [
 ]
 categories = ["api-bindings"]
 license = "MIT OR Apache-2.0"
-repository = "https://gitlab.com/gondolyr/mangadex-api"
+repository = "https://github.com/tonymushah/mangadex-api"
 resolver = "2"
 
 [package.metadata.docs.rs]
