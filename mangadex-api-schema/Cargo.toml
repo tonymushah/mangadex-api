@@ -11,7 +11,7 @@
 
 [package]
 edition = "2021"
-name = "mangadex-api-schema"
+name = "mangadex-api-schema-rust"
 version = "0.1.0"
 authors = ["tonymushah <tonymushahdev06@yahoo.com>"]
 description = "Response structs and helpers for mangadex-api"

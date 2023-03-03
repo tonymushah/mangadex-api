@@ -11,7 +11,7 @@
 
 [package]
 edition = "2021"
-name = "mangadex-api-types"
+name = "mangadex-api-types-rust"
 version = "0.1.0"
 authors = ["tonymushah <tonymushahdev06@yahoo.com>"]
 description = "Types for mangadex-api"
