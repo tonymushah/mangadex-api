@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Flag to include future updates in the results.
-#[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, Hash, PartialEq, Eq)]
 pub enum IncludeFutureUpdates {
     Include = 0,
     Exclude = 1,
