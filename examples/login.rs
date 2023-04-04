@@ -21,7 +21,8 @@ async fn main() {
 }
 
 async fn run() -> anyhow::Result<()> {
-    let client = MangaDexClient::default();
+    // the old login system still work on api.mangadex.dev for now
+    let client = MangaDexClient::api_dev_client();
 
     let _login_res = client
         .auth()

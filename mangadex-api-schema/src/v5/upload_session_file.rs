@@ -1,11 +1,11 @@
 //! Upload session file information from a response body.
 
 use mangadex_api_types::UploadSource;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::v5::error::MangaDexError;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 pub struct UploadSessionFileAttributes {
@@ -17,7 +17,7 @@ pub struct UploadSessionFileAttributes {
     pub version: u32,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UploadSessionFileData<A> {
     pub errors: Vec<MangaDexError>,
     pub data: Vec<A>,

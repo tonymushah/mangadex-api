@@ -1,9 +1,9 @@
 use mangadex_api_types::TagGroup;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::v5::{localizedstring_array_or_map, LocalizedString};
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 pub struct TagAttributes {

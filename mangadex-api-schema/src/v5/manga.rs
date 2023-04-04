@@ -1,7 +1,7 @@
 use mangadex_api_types::{
     ContentRating, Demographic, Language, MangaDexDateTime, MangaState, MangaStatus,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::v5::{
     language_array_or_skip_null, localizedstring_array_or_map, manga_links_array_or_struct,
@@ -9,7 +9,7 @@ use crate::v5::{
 };
 
 /// General manga information.
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 pub struct MangaAttributes {

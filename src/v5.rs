@@ -154,7 +154,8 @@ impl MangaDexClient {
 
     /// Get a builder for handling the account endpoints.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Account>
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Account>
+    #[deprecated]
     pub fn account(&self) -> AccountBuilder {
         AccountBuilder::new(self.http_client.clone())
     }
@@ -167,8 +168,11 @@ impl MangaDexClient {
     }
 
     /// Get a builder for handling the authentication endpoints.
-    ///
-    /// <https://api.mangadex.org/swagger.html#/Auth>
+    /// 
+    /// This builder is deprecated
+    /// 
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication>
+    #[deprecated]
     pub fn auth(&self) -> AuthBuilder {
         AuthBuilder::new(self.http_client.clone())
     }
@@ -292,6 +296,12 @@ impl MangaDexClient {
     /// <https://api.mangadex.org/swagger.html#/User>
     pub fn user(&self) -> UserBuilder {
         UserBuilder::new(self.http_client.clone())
+    }
+
+    /// This is an api client for 
+    /// `api.mangadex.dev`
+    pub fn api_dev_client() -> Self{
+        Self { http_client: create_ref_counted_http_client(HttpClient::api_dev_client()) }
     }
 }
 

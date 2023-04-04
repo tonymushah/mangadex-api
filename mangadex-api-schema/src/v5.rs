@@ -32,7 +32,7 @@ mod user_settings;
 use std::collections::HashMap;
 
 use mangadex_api_types as types;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
@@ -144,7 +144,7 @@ pub type UserSettingsResponse = Result<UserSettingsAttributes>;
 
 // TODO: Find a way to reduce the boilerplate for this.
 // `struct-variant` (https://docs.rs/struct-variant) is a potential candidate for this.
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 #[allow(clippy::large_enum_variant)]
 #[serde(untagged)]
 pub enum RelatedAttributes {
@@ -170,7 +170,7 @@ pub enum RelatedAttributes {
     CustomList(CustomListAttributes),
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct Relationship {
     pub id: Uuid,
     #[serde(rename = "type")]
@@ -187,7 +187,7 @@ pub struct Relationship {
     pub attributes: Option<RelatedAttributes>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct Results<T> {
     pub response: ResponseType,
     pub data: Vec<T>,
@@ -198,14 +198,16 @@ pub struct Results<T> {
 
 pub type LocalizedString = HashMap<Language, String>;
 
-/// Deserializer helper to handle JSON array or object types.
+/// Originally a Deserializer helper to handle JSON array or object types.
 ///
 /// MangaDex currently returns an empty array when the localized string field isn't present.
+/// 
+/// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod localizedstring_array_or_map {
     use std::collections::HashMap;
 
     use serde::de::{Deserialize, Deserializer, MapAccess, SeqAccess, Visitor};
-
+    use serde::ser::{Serialize, Serializer};
     use super::LocalizedString;
 
     pub fn deserialize<'de, D>(deserializer: D) -> Result<LocalizedString, D::Error>
@@ -240,16 +242,25 @@ pub(crate) mod localizedstring_array_or_map {
 
         deserializer.deserialize_any(V)
     }
+    pub fn serialize<S>(to_use : &LocalizedString ,serializer : S) -> Result<S::Ok, S::Error>
+        where 
+            S : Serializer
+    {
+        to_use.serialize(serializer)
+    }
 }
 
-/// Deserializer helper to handle JSON array or object types.
+/// Originally a Deserializer helper to handle JSON array or object types.
 ///
 /// MangaDex sometimes returns an array instead of a JSON object for the volume aggregate field.
+/// 
+/// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod volume_aggregate_array_or_map {
     use std::collections::BTreeMap;
 
+    use serde::Serialize;
     use serde::de::{Deserializer, MapAccess, SeqAccess, Visitor};
-
+    use serde::ser::Serializer;
     use super::manga_aggregate::VolumeAggregate;
 
     type VolumeAggregateCollection = Vec<VolumeAggregate>;
@@ -320,14 +331,23 @@ pub(crate) mod volume_aggregate_array_or_map {
 
         deserializer.deserialize_any(V)
     }
+    pub fn serialize<S>(to_use : &VolumeAggregateCollection, serializer : S) -> Result<S::Ok, S::Error>
+    where
+        S : Serializer
+    {
+        to_use.serialize(serializer)
+    }
 }
 
-/// Deserializer helper to handle JSON array or object types.
+/// Originally a Deserializer helper to handle JSON array or object types.
 ///
 /// MangaDex sometimes returns an array instead of a JSON object for the chapter aggregate field.
+/// 
+/// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod chapter_aggregate_array_or_map {
     use std::collections::BTreeMap;
-
+    use serde::Serialize;
+    use serde::ser::Serializer;
     use serde::de::{Deserializer, MapAccess, SeqAccess, Visitor};
 
     use super::manga_aggregate::ChapterAggregate;
@@ -400,14 +420,24 @@ pub(crate) mod chapter_aggregate_array_or_map {
 
         deserializer.deserialize_any(V)
     }
+
+    pub fn serialize<S>(to_use : &ChapterAggregateCollection, serializer : S) -> Result<S::Ok, S::Error>
+    where
+        S : Serializer
+    {
+        to_use.serialize(serializer)
+    }
 }
 
-/// Deserializer helper to handle JSON array or object types.
+/// Originally a Deserializer helper to handle JSON array or object types.
 ///
 /// MangaDex sometimes returns an array instead of a JSON object for the `links` field for `MangaAttributes`.
+/// 
+/// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod manga_links_array_or_struct {
+    use serde::Serialize;
     use serde::de::{Deserialize, Deserializer, MapAccess, SeqAccess, Visitor};
-
+    use serde::ser::Serializer;
     use crate::v5::MangaLinks;
 
     /// Deserialize a `MangaLinks` from a JSON value or none.
@@ -489,13 +519,29 @@ pub(crate) mod manga_links_array_or_struct {
 
         deserializer.deserialize_option(OptionMangaLinksVisitor)
     }
+    pub fn serialize<S>(to_use : &Option<MangaLinks>, serializer : S) -> Result<S::Ok, S::Error> 
+    where 
+        S : Serializer
+    {
+        match to_use {
+            None => {
+                serializer.serialize_none()
+            },
+            Some(data) => {
+                data.serialize(serializer)
+            }
+        }
+    }
 }
 
-/// Deserializer for an array of languages, discarding elements that are `null`.
+/// Originally a Deserializer for an array of languages, discarding elements that are `null`.
+/// 
+/// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod language_array_or_skip_null {
     use mangadex_api_types::Language;
+    use serde::Serialize;
     use serde::de::{Deserializer, SeqAccess, Visitor};
-
+    use serde::ser::Serializer;
     /// Deserialize a `Vec<Language>` from an array of JSON values.
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Vec<Language>, D::Error>
     where
@@ -530,4 +576,11 @@ pub(crate) mod language_array_or_skip_null {
 
         deserializer.deserialize_seq(V)
     }
+    pub fn serialize<S>(to_use: &Vec<Language>, serializer : S) -> Result<S::Ok, S::Error>
+    where
+        S : Serializer
+    {
+        to_use.serialize(serializer)
+    }
 }
+

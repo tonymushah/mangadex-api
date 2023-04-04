@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use url::Url;
 use uuid::Uuid;
 
@@ -6,7 +6,7 @@ use crate::deserialize_null_default;
 use mangadex_api_types::{Language, MangaDexDateTime};
 
 /// General chapter information.
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 pub struct ChapterAttributes {

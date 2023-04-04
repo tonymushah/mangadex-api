@@ -35,6 +35,7 @@ use crate::HttpClientRef;
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
+#[deprecated]
 pub struct CheckUsernameAvailable<'a> {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

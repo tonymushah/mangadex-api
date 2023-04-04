@@ -31,42 +31,48 @@ impl AccountBuilder {
 
     /// Create a new MangaDex account.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Account/post-account-create>
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-create>
+    #[deprecated]
     pub fn create(&self) -> CreateAccountBuilder {
         CreateAccountBuilder::default().http_client(self.http_client.clone())
     }
 
     /// Activate a MangaDex account after creating one.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Account/get-account-activate-code>
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/get-account-activate-code>
+    #[deprecated]
     pub fn activate(&self) -> ActivateAccountBuilder {
         ActivateAccountBuilder::default().http_client(self.http_client.clone())
     }
 
     /// Resend the account activation code.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Account/post-account-activate-resend>
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-activate-resend>
+    #[deprecated]
     pub fn resend_activation_code(&self) -> ResendActivationCodeBuilder {
         ResendActivationCodeBuilder::default().http_client(self.http_client.clone())
     }
 
     /// Initiate the account recovery process.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Account/post-account-recover>
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-recover>
+    #[deprecated]
     pub fn recover(&self) -> RecoverAccountBuilder {
         RecoverAccountBuilder::default().http_client(self.http_client.clone())
     }
 
     /// Complete the account recovery process.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Account/post-account-recover-code>
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-recover-code>
+    #[deprecated]
     pub fn complete_recovery(&self) -> CompleteAccountRecoveryBuilder {
         CompleteAccountRecoveryBuilder::default().http_client(self.http_client.clone())
     }
 
     /// Check if an account username is available.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Account/get-account-available>
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/get-account-available>
+    #[deprecated]
     pub fn check_username_available(&self) -> CheckUsernameAvailableBuilder {
         CheckUsernameAvailableBuilder::default().http_client(self.http_client.clone())
     }

@@ -82,13 +82,13 @@ impl<T, E> ApiResult<T, E> {
 }
 
 /// API response for a single entity containing an [`ApiObject`] in the `data` field.
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct ApiData<T> {
     pub response: ResponseType,
     pub data: T,
 }
 
-#[derive(Debug, Default, Deserialize, Clone)]
+#[derive(Debug, Default, Deserialize, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ApiObject<A, T = RelationshipType> {
     pub id: Uuid,
@@ -105,7 +105,7 @@ impl<A, T> FromResponse for ApiObject<A, T> {
     }
 }
 
-#[derive(Debug, Default, Deserialize, Clone)]
+#[derive(Debug, Default, Deserialize, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ApiObjectNoRelationships<A, T = RelationshipType> {
     pub id: Uuid,

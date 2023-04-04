@@ -27,21 +27,24 @@ impl AuthBuilder {
 
     /// Log into an account.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Auth/post-auth-login>
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-login>
+    #[deprecated]
     pub fn login(&self) -> LoginBuilder {
         LoginBuilder::default().http_client(self.http_client.clone())
     }
 
     /// Log out of an account.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Auth/post-auth-logout>
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-logout>
+    #[deprecated]
     pub fn logout(&self) -> LogoutBuilder {
         LogoutBuilder::default().http_client(self.http_client.clone())
     }
 
     /// Get a new session token from the refresh token.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Auth/post-auth-refresh>
+    /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-refresh>
+    #[deprecated]
     pub fn refresh_token(&self) -> RefreshTokenBuilder {
         RefreshTokenBuilder::default().http_client(self.http_client.clone())
     }
