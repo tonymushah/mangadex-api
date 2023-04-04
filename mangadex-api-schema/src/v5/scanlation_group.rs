@@ -1,11 +1,11 @@
 use mangadex_api_types::{Language, MangaDexDateTime, MangaDexDuration};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use url::Url;
 
 use crate::v5::LocalizedString;
 
 /// General scanlation group information.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 pub struct ScanlationGroupAttributes {

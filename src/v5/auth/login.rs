@@ -41,6 +41,7 @@ use mangadex_api_types::{Password, Username};
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
+#[deprecated]
 pub struct Login<'a> {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

@@ -3,17 +3,17 @@
 use std::collections::HashMap;
 
 use mangadex_api_types::MangaDexDateTime;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 pub struct RatingsList {
     pub ratings: HashMap<Uuid, Rating>,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Rating {
     /// `[ 1 .. 10 ]`.

@@ -293,6 +293,7 @@ impl MangaDexClient {
     pub fn user(&self) -> UserBuilder {
         UserBuilder::new(self.http_client.clone())
     }
+
 }
 
 /// Create a new reference counted `HttpClient`.

@@ -2,12 +2,12 @@
 
 use std::collections::HashMap;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::FromResponse;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 pub struct MangaStatisticsObject {
@@ -15,7 +15,7 @@ pub struct MangaStatisticsObject {
     pub statistics: HashMap<Uuid, MangaStatistics>,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MangaStatistics {
     pub rating: MangaRating,
     /// Number of users following the Manga.
@@ -24,7 +24,7 @@ pub struct MangaStatistics {
     pub follows: u64,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MangaRating {
     /// Average rating of distributed votes.
     ///
@@ -45,7 +45,7 @@ pub struct MangaRating {
 ///
 /// Because Rust identifies may not begin with a number, the fields are prefixed with an arbitrary
 /// "r" to denote "rating".
-#[derive(Clone, Debug, Deserialize, Default)]
+#[derive(Clone, Debug, Deserialize, Default, Serialize)]
 pub struct RatingsDistribution {
     #[serde(rename = "1")]
     pub r1: u64,

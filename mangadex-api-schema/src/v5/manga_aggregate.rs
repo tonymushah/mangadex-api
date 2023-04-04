@@ -1,10 +1,10 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::v5::{chapter_aggregate_array_or_map, volume_aggregate_array_or_map};
 
 /// Response struct for the manga aggregate endpoint (GET `/manga/:id/aggregate`).
-#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 #[non_exhaustive]
 pub struct MangaAggregate {
     /// Object with (volume_number, volume) key-value pairs.
@@ -12,7 +12,7 @@ pub struct MangaAggregate {
     pub volumes: Vec<VolumeAggregate>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 #[non_exhaustive]
 pub struct VolumeAggregate {
     /// Volume number.
@@ -24,7 +24,7 @@ pub struct VolumeAggregate {
     pub chapters: Vec<ChapterAggregate>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 #[non_exhaustive]
 pub struct ChapterAggregate {
     /// Chapter number.

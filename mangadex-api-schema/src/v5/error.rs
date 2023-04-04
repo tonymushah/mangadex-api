@@ -1,16 +1,16 @@
 use std::collections::HashMap;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, thiserror::Error, Deserialize)]
+#[derive(Debug, thiserror::Error, Deserialize, Serialize)]
 #[error("Bad request")]
 pub struct MangaDexErrorResponse {
     #[serde(default)]
     pub errors: Vec<MangaDexError>,
 }
 
-#[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone)]
+#[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone, Serialize)]
 #[error("API error")]
 pub struct MangaDexError {
     pub id: Uuid,
