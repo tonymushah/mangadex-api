@@ -2,7 +2,7 @@
 
 ## Important 
 
-### This git repo is just a fork from [gondolyr/mangadex-api](https://gitlab.com/gondolyr/mangadex-api) but the project and crate has been yanked so will now maintain this crate for [special-eureka](https://github.com/tonymushah/special-eureka) and [eureka-manager](https://github.com/tonymushah/eureka-mmanager)
+### This git repo is just a fork from [gondolyr/mangadex-api](https://gitlab.com/gondolyr/mangadex-api) but the project and crate has been yanked so I will now maintain this crate for [special-eureka](https://github.com/tonymushah/special-eureka) and [eureka-manager](https://github.com/tonymushah/eureka-mmanager)
 
 The `mangadex-api` crate provides a convenient, high-level wrapper
 [client][library-client] for the [MangaDex API][mangadex-api-url],

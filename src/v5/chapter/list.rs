@@ -1,6 +1,6 @@
 //! Builder for the chapter list endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Chapter/get-chapter>
+//! <https://api.mangadex.org/docs/redoc.html#tag/Chapter>
 //!
 //! # Examples
 //!
@@ -31,7 +31,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::ChapterListResponse;
 use mangadex_api_types::{
     ChapterSortOrder, ContentRating, IncludeFutureUpdates, Language, MangaDexDateTime,
-    ReferenceExpansionResource,
+    ReferenceExpansionResource, IncludeFuturePages, IncludeExternalUrl, IncludeFuturePublishAt,
 };
 
 #[derive(Debug, Serialize, Clone, Builder, Default)]
@@ -91,7 +91,10 @@ pub struct ListChapter<'a> {
     pub updated_at_since: Option<MangaDexDateTime>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     pub publish_at_since: Option<MangaDexDateTime>,
-    //pub includeEmptyPages
+    /// Include empty pages
+    pub include_empty_pages : Option<IncludeFuturePages>,
+    pub include_external_url : Option<IncludeExternalUrl>,
+    pub include_future_publish_at : Option<IncludeFuturePublishAt>,
     pub order: Option<ChapterSortOrder>,
     #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
