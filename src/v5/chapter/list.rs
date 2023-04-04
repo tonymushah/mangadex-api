@@ -91,6 +91,7 @@ pub struct ListChapter<'a> {
     pub updated_at_since: Option<MangaDexDateTime>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     pub publish_at_since: Option<MangaDexDateTime>,
+    //pub includeEmptyPages
     pub order: Option<ChapterSortOrder>,
     #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
