@@ -298,6 +298,11 @@ impl MangaDexClient {
         UserBuilder::new(self.http_client.clone())
     }
 
+    /// This is an api client for 
+    /// `api.mangadex.dev`
+    pub fn api_dev_client() -> Self{
+        Self { http_client: create_ref_counted_http_client(HttpClient::api_dev_client()) }
+    }
 }
 
 /// Create a new reference counted `HttpClient`.

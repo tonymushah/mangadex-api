@@ -170,7 +170,7 @@ impl HttpClient {
         self.captcha = None;
     }
     /// Create a new client of api.mangadex.dev
-    pub fn api_dev_clien() -> Self{
+    pub fn api_dev_client() -> Self{
         Self { 
             client: Client::new(), 
             base_url: Url::parse(API_DEV_URL).expect("error parsing the base url"), 
