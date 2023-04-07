@@ -5,6 +5,7 @@ use crate::v5::{chapter_aggregate_array_or_map, volume_aggregate_array_or_map};
 
 /// Response struct for the manga aggregate endpoint (GET `/manga/:id/aggregate`).
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[non_exhaustive]
 pub struct MangaAggregate {
     /// Object with (volume_number, volume) key-value pairs.
     #[serde(with = "volume_aggregate_array_or_map")]
@@ -12,6 +13,7 @@ pub struct MangaAggregate {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[non_exhaustive]
 pub struct VolumeAggregate {
     /// Volume number.
     pub volume: String,
@@ -23,6 +25,7 @@ pub struct VolumeAggregate {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[non_exhaustive]
 pub struct ChapterAggregate {
     /// Chapter number.
     pub chapter: String,
