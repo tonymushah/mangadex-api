@@ -53,7 +53,7 @@ Add `mangadex-api` to your dependencies:
 ```toml
 [dependencies]
 # ...
-mangadex-api = "2.0.0-rc.1"
+mangadex-api = "2.0.1"
 ```
 
 If you are using [`cargo-edit`](https://github.com/killercup/cargo-edit), run
@@ -95,7 +95,7 @@ All features are not included by default. To enable them, add any of the followi
 For example, to enable the `multi-thread` feature, add the following to your `Cargo.toml` file:
 
 ```toml
-mangadex-api = { version = "2.0.0-rc.1", features = ["multi-thread"] }
+mangadex-api = { version = "2.0.1", features = ["multi-thread"] }
 ```
 
 # HTTP Client
