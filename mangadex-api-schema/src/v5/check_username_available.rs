@@ -1,9 +1,10 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
 use crate::FromResponse;
 
-#[derive(Debug, Deserialize, Clone, Serialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct CheckUsernameAvailableResponse {
     pub available: bool,
 }

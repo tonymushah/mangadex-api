@@ -1,10 +1,11 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
 use crate::v5::AuthTokens;
 use crate::FromResponse;
 
 /// The response when refreshing the session JWT.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 pub struct RefreshTokenResponse {
     pub token: AuthTokens,

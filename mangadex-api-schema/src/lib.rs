@@ -82,14 +82,16 @@ impl<T, E> ApiResult<T, E> {
 }
 
 /// API response for a single entity containing an [`ApiObject`] in the `data` field.
-#[derive(Debug, Deserialize, Clone, Serialize)]
+#[derive(Debug, Deserialize, Clone)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct ApiData<T> {
     pub response: ResponseType,
     pub data: T,
 }
 
-#[derive(Debug, Default, Deserialize, Clone, Serialize)]
+#[derive(Debug, Default, Deserialize, Clone, )]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct ApiObject<A, T = RelationshipType> {
     pub id: Uuid,
     pub type_: T,
@@ -105,8 +107,9 @@ impl<A, T> FromResponse for ApiObject<A, T> {
     }
 }
 
-#[derive(Debug, Default, Deserialize, Clone, Serialize)]
+#[derive(Debug, Default, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct ApiObjectNoRelationships<A, T = RelationshipType> {
     pub id: Uuid,
     pub type_: T,

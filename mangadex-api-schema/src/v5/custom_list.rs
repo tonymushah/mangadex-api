@@ -1,11 +1,12 @@
 //! General CustomList information.
 
 use mangadex_api_types::CustomListVisibility;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct CustomListAttributes {
     pub name: String,
     pub visibility: CustomListVisibility,

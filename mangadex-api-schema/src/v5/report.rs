@@ -1,10 +1,11 @@
 use mangadex_api_types::ReportCategory;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
 use crate::v5::LocalizedString;
 
 /// Report reason response object.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 pub struct ReportReasonAttributes {
     pub reason: LocalizedString,

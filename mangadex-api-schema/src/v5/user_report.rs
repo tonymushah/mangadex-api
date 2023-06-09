@@ -1,10 +1,11 @@
 use mangadex_api_types::{MangaDexDateTime, ReportStatus};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
 /// User submitted report information.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct UserReportAttributes {
     pub details: String,
     pub object_id: String,

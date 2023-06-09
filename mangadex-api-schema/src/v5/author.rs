@@ -1,13 +1,14 @@
 use mangadex_api_types::MangaDexDateTime;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 use url::Url;
 
 use crate::v5::{localizedstring_array_or_map, LocalizedString};
 
 /// General author information.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct AuthorAttributes {
     pub name: String,
     pub image_url: Option<String>,

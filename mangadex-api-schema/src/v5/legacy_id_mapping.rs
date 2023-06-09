@@ -1,9 +1,10 @@
 use mangadex_api_types::LegacyMappingType;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 use uuid::Uuid;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct LegacyMappingIdAttributes {
     #[serde(rename = "type")]
     pub type_: LegacyMappingType,

@@ -1,11 +1,12 @@
 use mangadex_api_types::TagGroup;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
 use crate::v5::{localizedstring_array_or_map, LocalizedString};
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct TagAttributes {
     pub name: LocalizedString,
     #[serde(with = "localizedstring_array_or_map")]

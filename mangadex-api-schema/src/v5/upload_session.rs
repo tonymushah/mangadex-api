@@ -1,14 +1,15 @@
 //! Upload session information from a response body.
 
 use mangadex_api_types::{MangaDexDateTime, RelationshipType};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 use uuid::Uuid;
 
 use crate::FromResponse;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct UploadSessionAttributes {
     pub is_committed: bool,
     pub is_processed: bool,
@@ -20,7 +21,8 @@ pub struct UploadSessionAttributes {
     pub updated_at: MangaDexDateTime,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct UploadSessionResponse {
     pub id: Uuid,
     #[serde(rename = "type")]

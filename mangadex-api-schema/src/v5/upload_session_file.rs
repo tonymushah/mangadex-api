@@ -1,13 +1,14 @@
 //! Upload session file information from a response body.
 
 use mangadex_api_types::UploadSource;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
 use crate::v5::error::MangaDexError;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-#[non_exhaustive]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct UploadSessionFileAttributes {
     pub original_file_name: String,
     pub file_hash: String,
@@ -17,7 +18,8 @@ pub struct UploadSessionFileAttributes {
     pub version: u32,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct UploadSessionFileData<A> {
     pub errors: Vec<MangaDexError>,
     pub data: Vec<A>,

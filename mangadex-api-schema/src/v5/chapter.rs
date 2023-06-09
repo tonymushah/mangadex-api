@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 use url::Url;
 use uuid::Uuid;
 
@@ -6,9 +6,10 @@ use crate::deserialize_null_default;
 use mangadex_api_types::{Language, MangaDexDateTime};
 
 /// General chapter information.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct ChapterAttributes {
     // TODO: Known issue: API doesn't always return an empty string despite the docs saying it's not nullable.
     #[serde(deserialize_with = "deserialize_null_default")]

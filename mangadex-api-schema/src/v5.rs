@@ -32,7 +32,7 @@ pub mod user_settings;
 use std::collections::HashMap;
 
 use mangadex_api_types as types;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 use uuid::Uuid;
 
 use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
@@ -144,9 +144,10 @@ pub type UserSettingsResponse = Result<UserSettingsAttributes>;
 
 // TODO: Find a way to reduce the boilerplate for this.
 // `struct-variant` (https://docs.rs/struct-variant) is a potential candidate for this.
-#[derive(Debug, Deserialize, Clone, Serialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[allow(clippy::large_enum_variant)]
 #[serde(untagged)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub enum RelatedAttributes {
     /// Manga resource.
     Manga(MangaAttributes),
@@ -170,7 +171,8 @@ pub enum RelatedAttributes {
     CustomList(CustomListAttributes),
 }
 
-#[derive(Debug, Deserialize, Clone, Serialize)]
+#[derive(Debug, Deserialize, Clone)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct Relationship {
     pub id: Uuid,
     #[serde(rename = "type")]
@@ -187,7 +189,8 @@ pub struct Relationship {
     pub attributes: Option<RelatedAttributes>,
 }
 
-#[derive(Debug, Deserialize, Clone, Serialize)]
+#[derive(Debug, Deserialize, Clone)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct Results<T> {
     pub response: ResponseType,
     pub data: Vec<T>,
