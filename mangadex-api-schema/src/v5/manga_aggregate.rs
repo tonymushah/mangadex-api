@@ -1,6 +1,10 @@
+#[cfg(feature = "serialize")]
 use std::collections::HashMap;
 
-use serde::{Deserialize, Serialize};
+#[cfg(feature = "serialize")]
+use serde::Serialize;
+
+use serde::{Deserialize};
 use uuid::Uuid;
 
 use crate::v5::{chapter_aggregate_array_or_map, volume_aggregate_array_or_map};

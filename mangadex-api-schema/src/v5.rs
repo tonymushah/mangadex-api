@@ -213,6 +213,7 @@ pub(crate) mod localizedstring_array_or_map {
     use std::collections::HashMap;
 
     use serde::de::{Deserialize, Deserializer, MapAccess, SeqAccess, Visitor};
+    #[cfg(feature = "serialize")]
     use serde::ser::{Serialize, Serializer};
     use super::LocalizedString;
 
@@ -248,6 +249,7 @@ pub(crate) mod localizedstring_array_or_map {
 
         deserializer.deserialize_any(V)
     }
+    #[cfg(feature = "serialize")]
     pub fn serialize<S>(to_use : &LocalizedString ,serializer : S) -> Result<S::Ok, S::Error>
         where 
             S : Serializer
@@ -262,10 +264,13 @@ pub(crate) mod localizedstring_array_or_map {
 /// 
 /// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod volume_aggregate_array_or_map {
-    use std::collections::{BTreeMap, HashMap};
-
+    use std::collections::{BTreeMap};
+    #[cfg(feature = "serialize")]
     use serde::Serialize;
+    #[cfg(feature = "serialize")]
+    use std::collections::HashMap;
     use serde::de::{Deserializer, MapAccess, SeqAccess, Visitor};
+    #[cfg(feature = "serialize")]
     use serde::ser::Serializer;
     use super::manga_aggregate::VolumeAggregate;
 
@@ -360,7 +365,9 @@ pub(crate) mod volume_aggregate_array_or_map {
 /// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod chapter_aggregate_array_or_map {
     use std::collections::BTreeMap;
+    #[cfg(feature = "serialize")]
     use serde::Serialize;
+    #[cfg(feature = "serialize")]
     use serde::ser::Serializer;
     use serde::de::{Deserializer, MapAccess, SeqAccess, Visitor};
 
@@ -455,8 +462,10 @@ pub(crate) mod chapter_aggregate_array_or_map {
 /// 
 /// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod manga_links_array_or_struct {
+    #[cfg(feature = "serialize")]
     use serde::Serialize;
     use serde::de::{Deserialize, Deserializer, MapAccess, SeqAccess, Visitor};
+    #[cfg(feature = "serialize")]
     use serde::ser::Serializer;
     use crate::v5::MangaLinks;
 
@@ -539,6 +548,7 @@ pub(crate) mod manga_links_array_or_struct {
 
         deserializer.deserialize_option(OptionMangaLinksVisitor)
     }
+    #[cfg(feature = "serialize")]
     pub fn serialize<S>(to_use : &Option<MangaLinks>, serializer : S) -> Result<S::Ok, S::Error> 
     where 
         S : Serializer
@@ -559,8 +569,10 @@ pub(crate) mod manga_links_array_or_struct {
 /// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod language_array_or_skip_null {
     use mangadex_api_types::Language;
+    #[cfg(feature = "serialize")]
     use serde::Serialize;
     use serde::de::{Deserializer, SeqAccess, Visitor};
+    #[cfg(feature = "serialize")]
     use serde::ser::Serializer;
     /// Deserialize a `Vec<Language>` from an array of JSON values.
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Vec<Language>, D::Error>
@@ -596,6 +608,7 @@ pub(crate) mod language_array_or_skip_null {
 
         deserializer.deserialize_seq(V)
     }
+    #[cfg(feature = "serialize")]
     pub fn serialize<S>(to_use: &Vec<Language>, serializer : S) -> Result<S::Ok, S::Error>
     where
         S : Serializer

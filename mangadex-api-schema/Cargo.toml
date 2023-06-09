@@ -64,4 +64,4 @@ features = [
 non_exhaustive = []
 specta = ["dep:specta", "mangadex-api-types/specta"]
 serialize = []
-default = ["non_exhaustive", "serialize"]
+default = ["non_exhaustive"]
