@@ -11,6 +11,7 @@ use crate::FromResponse;
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaStatisticsObject {
     /// JSON object of `MangaId-StatisticsObject`.
     pub statistics: HashMap<Uuid, MangaStatistics>,
@@ -18,6 +19,7 @@ pub struct MangaStatisticsObject {
 
 #[derive(Clone, Debug, Deserialize)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaStatistics {
     pub rating: MangaRating,
     /// Number of users following the Manga.
@@ -28,6 +30,7 @@ pub struct MangaStatistics {
 
 #[derive(Clone, Debug, Deserialize)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaRating {
     /// Average rating of distributed votes.
     ///
@@ -50,6 +53,7 @@ pub struct MangaRating {
 /// "r" to denote "rating".
 #[derive(Clone, Debug, Deserialize, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct RatingsDistribution {
     #[serde(rename = "1")]
     pub r1: u64,

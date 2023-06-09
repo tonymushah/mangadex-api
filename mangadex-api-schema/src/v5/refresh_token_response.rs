@@ -7,6 +7,7 @@ use crate::FromResponse;
 #[derive(Clone, Debug, Deserialize)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct RefreshTokenResponse {
     pub token: AuthTokens,
     pub message: Option<String>,

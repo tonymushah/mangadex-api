@@ -13,6 +13,7 @@ use crate::v5::{
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaAttributes {
     pub title: LocalizedString,
     pub alt_titles: Vec<LocalizedString>,

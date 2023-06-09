@@ -10,6 +10,7 @@ use crate::FromResponse;
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct UploadSessionAttributes {
     pub is_committed: bool,
     pub is_processed: bool,
@@ -23,6 +24,7 @@ pub struct UploadSessionAttributes {
 
 #[derive(Clone, Debug, Deserialize)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct UploadSessionResponse {
     pub id: Uuid,
     #[serde(rename = "type")]

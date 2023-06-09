@@ -10,6 +10,7 @@ use uuid::Uuid;
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct RatingsList {
     pub ratings: HashMap<Uuid, Rating>,
 }
@@ -17,6 +18,7 @@ pub struct RatingsList {
 #[derive(Clone, Debug, Deserialize)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct Rating {
     /// `[ 1 .. 10 ]`.
     pub rating: u8,

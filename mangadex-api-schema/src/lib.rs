@@ -62,6 +62,7 @@ pub trait Endpoint {
 
 #[derive(Deserialize)]
 #[serde(tag = "result", remote = "std::result::Result")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 enum ApiResultDef<T, E> {
     #[serde(rename = "ok")]
     Ok(T),
@@ -71,6 +72,7 @@ enum ApiResultDef<T, E> {
 
 #[derive(Deserialize)]
 #[serde(bound = "T: DeserializeOwned, E: DeserializeOwned")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiResult<T, E = MangaDexErrorResponse>(
     #[serde(with = "ApiResultDef")] std::result::Result<T, E>,
 );
@@ -84,6 +86,7 @@ impl<T, E> ApiResult<T, E> {
 /// API response for a single entity containing an [`ApiObject`] in the `data` field.
 #[derive(Debug, Deserialize, Clone)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiData<T> {
     pub response: ResponseType,
     pub data: T,
@@ -92,6 +95,8 @@ pub struct ApiData<T> {
 #[derive(Debug, Default, Deserialize, Clone, )]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiObject<A, T = RelationshipType> {
     pub id: Uuid,
     pub type_: T,
@@ -110,6 +115,7 @@ impl<A, T> FromResponse for ApiObject<A, T> {
 #[derive(Debug, Default, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiObjectNoRelationships<A, T = RelationshipType> {
     pub id: Uuid,
     pub type_: T,

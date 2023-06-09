@@ -148,6 +148,7 @@ pub type UserSettingsResponse = Result<UserSettingsAttributes>;
 #[allow(clippy::large_enum_variant)]
 #[serde(untagged)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum RelatedAttributes {
     /// Manga resource.
     Manga(MangaAttributes),
@@ -173,6 +174,7 @@ pub enum RelatedAttributes {
 
 #[derive(Debug, Deserialize, Clone)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct Relationship {
     pub id: Uuid,
     #[serde(rename = "type")]
@@ -191,6 +193,7 @@ pub struct Relationship {
 
 #[derive(Debug, Deserialize, Clone)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct Results<T> {
     pub response: ResponseType,
     pub data: Vec<T>,

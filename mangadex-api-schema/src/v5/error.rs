@@ -6,6 +6,7 @@ use uuid::Uuid;
 #[derive(Debug, thiserror::Error, Deserialize)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[error("Bad request")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaDexErrorResponse {
     #[serde(default)]
     pub errors: Vec<MangaDexError>,
@@ -13,6 +14,7 @@ pub struct MangaDexErrorResponse {
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 #[error("API error")]
 pub struct MangaDexError {
     pub id: Uuid,

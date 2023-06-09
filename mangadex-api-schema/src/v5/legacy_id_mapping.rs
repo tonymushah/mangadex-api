@@ -5,6 +5,7 @@ use uuid::Uuid;
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct LegacyMappingIdAttributes {
     #[serde(rename = "type")]
     pub type_: LegacyMappingType,

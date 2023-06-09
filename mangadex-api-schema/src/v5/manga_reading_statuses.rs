@@ -8,6 +8,7 @@ use uuid::Uuid;
 #[derive(Debug, Deserialize, Clone)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaReadingStatuses {
     /// Mapping of manga ID to reading status.
     pub statuses: HashMap<Uuid, ReadingStatus>,

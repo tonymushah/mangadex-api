@@ -7,6 +7,7 @@ use crate::v5::{localizedstring_array_or_map, LocalizedString};
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct TagAttributes {
     pub name: LocalizedString,
     #[serde(with = "localizedstring_array_or_map")]

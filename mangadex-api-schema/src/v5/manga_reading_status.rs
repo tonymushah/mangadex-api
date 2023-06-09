@@ -5,6 +5,7 @@ use serde::{Deserialize};
 #[derive(Debug, Deserialize, Clone)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaReadingStatus {
     pub status: ReadingStatus,
 }
