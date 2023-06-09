@@ -3,7 +3,8 @@ use serde::{Deserialize, Serialize};
 /// Report reasons for submitting reports to the MangaDex staff.
 #[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum ReportCategory {
     Author,
     Chapter,

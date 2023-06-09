@@ -5,6 +5,7 @@ use crate::error::Error;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum TagGroup {
     Content,
     Format,
@@ -21,7 +22,8 @@ macro_rules! tags {
     ) => {
         /// Enum for serialization to tag UUID.
         #[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq)]
-        #[non_exhaustive]
+        #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+        #[cfg_attr(feature = "specta", derive(specta::Type))]
         pub enum Tag {
             $(
                 $( #[$meta] )*

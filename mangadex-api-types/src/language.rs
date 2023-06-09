@@ -12,7 +12,8 @@ macro_rules! languages {
     ) => {
         /// Languages supported by MangaDex.
         #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Serialize)]
-        #[non_exhaustive]
+        #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+        #[cfg_attr(feature = "specta", derive(specta::Type))]
         pub enum Language {
             $(
                 $( #[$meta] )*

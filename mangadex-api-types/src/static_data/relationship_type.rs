@@ -8,7 +8,8 @@ use serde::{Deserialize, Serialize};
 /// For use with the `includes[]` query parameter, refer to the [`ReferenceExpansionResource` enum](crate::ReferenceExpansionResource).
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Hash, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum RelationshipType {
     /// Manga resource.
     Manga,

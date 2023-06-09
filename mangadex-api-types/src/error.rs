@@ -3,6 +3,7 @@ use schema::MangaDexErrorResponse;
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 #[derive(Debug, thiserror::Error)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum Error {
     /// Error when parsing a URL.
     ///
@@ -56,6 +57,7 @@ pub mod schema {
 
     #[derive(Debug, thiserror::Error, Deserialize)]
     #[error("Bad request")]
+    #[cfg_attr(feature = "specta", derive(specta::Type))]
     pub struct MangaDexErrorResponse {
         #[serde(default)]
         pub errors: Vec<MangaDexError>,
@@ -63,6 +65,7 @@ pub mod schema {
 
     #[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone)]
     #[error("API error")]
+    #[cfg_attr(feature = "specta", derive(specta::Type))]
     pub struct MangaDexError {
         pub id: Uuid,
         /// HTTP status code.

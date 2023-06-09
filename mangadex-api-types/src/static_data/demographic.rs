@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 /// Target demographic for manga.
 #[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "lowercase")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum Demographic {
     Shounen,
     Shoujo,

@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 /// Determines the behavior of tag interaction when including or excluding tags in the results.
 #[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum TagSearchMode {
     And,
     Or,

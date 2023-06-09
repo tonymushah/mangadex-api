@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 /// Mapping types to get the new UUIDs from the legacy, numerical, IDs.
 #[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub enum LegacyMappingType {
     Chapter,
     Group,

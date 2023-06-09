@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// Flag to include future updates in the results.
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, Hash, PartialEq, Eq)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum IncludeFutureUpdates {
     Include = 0,
     Exclude = 1,

@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 /// <https://api.mangadex.org/docs/static-data/#manga-related-enum>
 #[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum MangaRelation {
     /// The original work this spin-off manga has been adapted from.
     AdaptedFrom,

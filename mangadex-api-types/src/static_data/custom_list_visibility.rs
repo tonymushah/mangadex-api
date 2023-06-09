@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(from = "String")]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum CustomListVisibility {
     Public,
     Private,

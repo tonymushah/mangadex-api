@@ -8,7 +8,8 @@ use serde::{Deserialize, Serialize};
 /// For response types, refer to the [`RelationshipType` enum](crate::RelationshipType).
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Hash, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum ReferenceExpansionResource {
     /// Manga resource.
     Manga,

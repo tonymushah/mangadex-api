@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// "Order by" directions for manga results.
 #[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, Eq, Serialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum OrderDirection {
     #[serde(rename = "asc")]
     Ascending,

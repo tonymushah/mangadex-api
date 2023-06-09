@@ -7,7 +7,8 @@ pub type MangaLinks = HashMap<MangaLink, String>;
 /// Related link types for a manga.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "lowercase")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum MangaLink {
     #[serde(rename = "amz")]
     Amazon,
