@@ -20,7 +20,7 @@ impl Into<MangaAggregatSer> for MangaAggregate {
     fn into(self) -> MangaAggregatSer {
         let mut volumes : HashMap<String, VolumeAggregateSer> = HashMap::new();
         for volume in self.volumes{
-            volumes.insert(volume.volume, Into::into(volume));
+            volumes.insert(volume.volume.clone(), Into::into(volume.clone()));
         }
         MangaAggregatSer { volumes: volumes }
     }
@@ -28,13 +28,13 @@ impl Into<MangaAggregatSer> for MangaAggregate {
 
 #[cfg(feature = "serialize")]
 #[derive(serde::Serialize, Clone)]
-struct MangaAggregatSer{
+pub struct MangaAggregatSer{
     volumes : HashMap<String, VolumeAggregateSer>
 }
 
 #[cfg(feature = "serialize")]
 #[derive(serde::Serialize, Clone)]
-struct VolumeAggregateSer{
+pub struct VolumeAggregateSer{
     /// Volume number.
     pub volume: String,
     /// Number of chapter translations for the volume.
@@ -48,7 +48,8 @@ impl Serialize for MangaAggregate{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: serde::Serializer {
-        let ser : MangaAggregatSer = Into::into(*self);
+        
+        let ser : MangaAggregatSer = Into::into(self.clone());
         ser.serialize(serializer)
     }
 }
@@ -72,7 +73,7 @@ impl Into<VolumeAggregateSer> for VolumeAggregate{
     fn into(self) -> VolumeAggregateSer {
         let mut chapters : HashMap<String, ChapterAggregate> = HashMap::new();
         for chapter in self.chapters {
-            chapters.insert(chapter.chapter, chapter);
+            chapters.insert(chapter.chapter.clone(), chapter);
         }
         VolumeAggregateSer { volume: self.volume, count: self.count, chapters: chapters }
     }

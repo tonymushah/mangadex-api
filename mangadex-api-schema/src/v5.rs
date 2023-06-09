@@ -262,7 +262,7 @@ pub(crate) mod localizedstring_array_or_map {
 /// 
 /// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod volume_aggregate_array_or_map {
-    use std::collections::BTreeMap;
+    use std::collections::{BTreeMap, HashMap};
 
     use serde::Serialize;
     use serde::de::{Deserializer, MapAccess, SeqAccess, Visitor};
@@ -337,11 +337,19 @@ pub(crate) mod volume_aggregate_array_or_map {
 
         deserializer.deserialize_any(V)
     }
+    #[cfg(feature = "serialize")]
+    #[allow(dead_code)]
     pub fn serialize<S>(to_use : &VolumeAggregateCollection, serializer : S) -> Result<S::Ok, S::Error>
     where
         S : Serializer
     {
-        to_use.serialize(serializer)
+        use super::manga_aggregate::VolumeAggregateSer;
+
+        let mut volumes : HashMap<String, VolumeAggregateSer> = HashMap::new();
+        for volume in to_use{
+            volumes.insert(volume.volume.clone(), Into::into(volume.clone()));
+        }
+        volumes.serialize(serializer)
     }
 }
 
@@ -426,12 +434,18 @@ pub(crate) mod chapter_aggregate_array_or_map {
 
         deserializer.deserialize_any(V)
     }
-
+    #[cfg(feature = "serialize")]
     pub fn serialize<S>(to_use : &ChapterAggregateCollection, serializer : S) -> Result<S::Ok, S::Error>
     where
         S : Serializer
     {
-        to_use.serialize(serializer)
+        use std::collections::HashMap;
+
+        let mut chapters : HashMap<String, ChapterAggregate> = HashMap::new();
+        for chapter in to_use {
+            chapters.insert(chapter.chapter.clone(), chapter.clone());
+        }
+        chapters.serialize(serializer)
     }
 }
 
