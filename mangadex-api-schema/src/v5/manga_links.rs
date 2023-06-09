@@ -16,6 +16,7 @@ pub struct MangaLinks {
     ///
     /// - `https://www.amazon.co.jp/gp/product/B074CHFLT2`
     #[serde(rename = "amz")]
+    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub amazon: Option<Url>,
 
     /// AniList ID.
@@ -70,6 +71,7 @@ pub struct MangaLinks {
     /// - `https://ebookjapan.yahoo.co.jp/books/444727/A001841690/`
     /// - `https://www.ebookjapan.jp/ebj/371654/`
     #[serde(rename = "ebj")]
+    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub ebook_japan: Option<Url>,
 
     /// Official English URL.
@@ -135,6 +137,7 @@ pub struct MangaLinks {
     ///
     /// - `https://manga.bilibili.com/m/detail/mc29443?from=manga_index`
     /// - `https://www.sunday-webry.com/detail-yoru.php?title_id=1282c`
+    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub raw: Option<Url>,
 }
 

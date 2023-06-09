@@ -44,6 +44,7 @@ pub struct MangaRating {
     ///
     /// Each element corresponds to the number of users that have given that rating.
     #[serde(default)]
+    #[cfg_attr(feature = "specta", specta(type = HashMap<String, u64>))]
     pub distribution: RatingsDistribution,
 }
 
@@ -53,7 +54,6 @@ pub struct MangaRating {
 /// "r" to denote "rating".
 #[derive(Clone, Debug, Deserialize, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
-#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct RatingsDistribution {
     #[serde(rename = "1")]
     pub r1: u64,

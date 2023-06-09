@@ -15,8 +15,10 @@ pub struct CoverAttributes {
     /// Cover art filename as it's stored on the MangaDex servers.
     pub file_name: String,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
+    #[cfg_attr(feature = "specta", specta(type = String))]
     pub created_at: MangaDexDateTime,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
+    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub updated_at: Option<MangaDexDateTime>,
     pub version: u32,
 }

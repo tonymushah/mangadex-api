@@ -62,7 +62,6 @@ pub trait Endpoint {
 
 #[derive(Deserialize)]
 #[serde(tag = "result", remote = "std::result::Result")]
-#[cfg_attr(feature = "specta", derive(specta::Type))]
 enum ApiResultDef<T, E> {
     #[serde(rename = "ok")]
     Ok(T),
@@ -72,7 +71,6 @@ enum ApiResultDef<T, E> {
 
 #[derive(Deserialize)]
 #[serde(bound = "T: DeserializeOwned, E: DeserializeOwned")]
-#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiResult<T, E = MangaDexErrorResponse>(
     #[serde(with = "ApiResultDef")] std::result::Result<T, E>,
 );
@@ -95,7 +93,6 @@ pub struct ApiData<T> {
 #[derive(Debug, Default, Deserialize, Clone, )]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
-#[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiObject<A, T = RelationshipType> {
     pub id: Uuid,

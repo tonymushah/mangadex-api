@@ -22,10 +22,13 @@ pub struct ScanlationGroupAttributes {
     /// <https://twitter.com>
     ///
     /// Nullable.
+    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub twitter: Option<Url>,
     /// Regex: [^https:/\/www\.mangaupdates\.com\/(?:groups|publishers)\.html\?id=\d+](https://www.mangaupdates.com)
     ///
     /// Nullable.
+    /// 
+    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub manga_updates: Option<Url>,
     /// Languages the scanlation primarily translates or uploads works into.
     pub focused_languages: Option<Vec<Language>>,
@@ -43,10 +46,13 @@ pub struct ScanlationGroupAttributes {
     /// - Two days is `P2D`.
     /// - Two seconds is `PT2S`.
     /// - Six weeks and five minutes is `P6WT5M`.
+    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub publish_delay: Option<MangaDexDuration>,
     pub version: u32,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
+    #[cfg_attr(feature = "specta", specta(type = String))]
     pub created_at: MangaDexDateTime,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
+    #[cfg_attr(feature = "specta", specta(type = String))]
     pub updated_at: MangaDexDateTime,
 }

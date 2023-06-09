@@ -23,5 +23,6 @@ pub struct Rating {
     /// `[ 1 .. 10 ]`.
     pub rating: u8,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
+    #[cfg_attr(feature = "specta", specta(type = String))]
     pub created_at: MangaDexDateTime,
 }

@@ -12,5 +12,6 @@ pub struct UserReportAttributes {
     pub object_id: String,
     pub status: ReportStatus,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
+    #[cfg_attr(feature = "specta", specta(type = String))]
     pub created_at: MangaDexDateTime,
 }
