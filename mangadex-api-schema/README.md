@@ -5,7 +5,7 @@ A collection of structs and schemas for the [mangadex-api](https://github.com/to
 ## Install 
 
 ```toml
-mangadex-api-types-rust = "0.3.2"
+mangadex-api-schema-rust = "0.3.2"
 ```
 
 ## Features 
