@@ -102,10 +102,18 @@ All features are not included by default. To enable them, add any of the followi
 
   Enable the `MangaDexClient` to be thread-safe, at the cost of operations being slightly more expensive.
 
+- `legacy-auth`
+
+  Enable the usage of the `< 5.9.0` login system in the SDK. Please visit the [Mangadex Discord](https://discord.com/invite/mangadex)  for more details
+
+- `legacy-account`
+
+  Enable the usage of the `< 5.9.0` account management system in the SDK. Please visit the [Mangadex Discord](https://discord.com/invite/mangadex)  for more details
+
 For example, to enable the `multi-thread` feature, add the following to your `Cargo.toml` file:
 
 ```toml
-mangadex-api = { version = "2.0.2", features = ["multi-thread"] }
+mangadex-api = { version = "2.1.0", features = ["multi-thread"] }
 ```
 
 # HTTP Client

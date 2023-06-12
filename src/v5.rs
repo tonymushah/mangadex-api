@@ -1,5 +1,7 @@
+#[cfg(feature = "legacy-account")]
 mod account;
 mod at_home;
+#[cfg(feature = "legacy-auth")]
 mod auth;
 mod author;
 mod captcha;
@@ -32,9 +34,14 @@ pub use mangadex_api_schema::v5 as schema;
 pub(crate) use mangadex_api_schema::v5::AuthTokens;
 use reqwest::Client;
 
+#[cfg(feature = "legacy-account")]
 use crate::v5::account::AccountBuilder;
+
 use crate::v5::at_home::AtHomeBuilder;
+
+#[cfg(feature = "legacy-auth")]
 use crate::v5::auth::AuthBuilder;
+
 use crate::v5::author::AuthorBuilder;
 use crate::v5::captcha::CaptchaBuilder;
 use crate::v5::chapter::ChapterBuilder;
@@ -156,6 +163,7 @@ impl MangaDexClient {
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Account>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+    #[cfg(feature = "legacy-account")]
     pub fn account(&self) -> AccountBuilder {
         AccountBuilder::new(self.http_client.clone())
     }
@@ -173,6 +181,7 @@ impl MangaDexClient {
     /// 
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+    #[cfg(feature = "legacy-auth")]
     pub fn auth(&self) -> AuthBuilder {
         AuthBuilder::new(self.http_client.clone())
     }

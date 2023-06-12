@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api"
-version = "2.0.2"
+version = "2.1.0"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
 description = "SDK for the MangaDex API"
 readme = "README.md"
@@ -47,7 +47,7 @@ version = "0.3.2"
 
 [dependencies.mangadex-api-types]
 package = "mangadex-api-types-rust"
-version = "0.3.3"
+version = "0.3.4"
 
 [dependencies.reqwest]
 version = "0.11.9"
@@ -83,6 +83,10 @@ features = [
     "v4",
 ]
 
+[dependencies.bytes]
+version = "1.4.0"
+optional = true
+
 [dev-dependencies.anyhow]
 version = "1.0.55"
 
@@ -103,8 +107,20 @@ features = [
     "rt-multi-thread",
 ]
 
+[dependencies.tokio]
+version = "1.28.2"
+default-features = false
+features = [
+    "time"
+]
+optional = true
+
 [dev-dependencies.wiremock]
 version = "0.5.11"
 
 [features]
 multi-thread = ["futures"]
+legacy-auth = []
+legacy-account = []
+default = ["utils", "multi-thread"]
+utils = ["dep:bytes", "dep:tokio"]

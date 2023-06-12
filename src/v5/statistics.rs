@@ -28,7 +28,6 @@ impl StatisticsBuilder {
     /// This endpoint allows searching multiple Manga.
     /// 
     /// This endpoint is disabled for perfomance reason 
-    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn find_manga(&self) -> FindMangaStatisticsBuilder {
         FindMangaStatisticsBuilder::default().http_client(self.http_client.clone())
     }
