@@ -20,7 +20,7 @@ resolver = "2"
 
 [dependencies.mangadex-api-types]
 package = "mangadex-api-types-rust"
-version = "0.3.2"
+version = "0.3.3"
 features = ["specta"]
 
 [dependencies.reqwest]
