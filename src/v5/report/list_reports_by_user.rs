@@ -5,7 +5,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use mangadex_api::types::{ReportCategory, ReportStatus};
+//! use mangadex_api_types::{ReportCategory, ReportStatus};
 //! use mangadex_api::v5::MangaDexClient;
 //!
 //! # async fn run() -> anyhow::Result<()> {

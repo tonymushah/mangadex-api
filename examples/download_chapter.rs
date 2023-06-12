@@ -53,7 +53,7 @@ use clap::Parser;
 use reqwest::Url;
 use uuid::Uuid;
 
-use mangadex_api::types::RelationshipType;
+use mangadex_api_types::RelationshipType;
 use mangadex_api::v5::MangaDexClient;
 use mangadex_api::HttpClientRef;
 

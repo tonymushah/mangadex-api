@@ -11,9 +11,9 @@
 //! ```rust
 //! use uuid::Uuid;
 //!
-//! use mangadex_api::types::MangaRelation;
+//! use mangadex_api_types::MangaRelation;
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api::types::{Password, Username};
+//! use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
@@ -47,7 +47,8 @@ use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
 
-use crate::{HttpClientRef, Result};
+use mangadex_api_types::error::Result; 
+use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
 
 #[derive(Debug, Builder, Serialize, Clone)]

@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api"
-version = "2.0.1"
+version = "2.0.2"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
 description = "SDK for the MangaDex API"
 readme = "README.md"
@@ -43,11 +43,11 @@ optional = true
 
 [dependencies.mangadex-api-schema]
 package = "mangadex-api-schema-rust"
-version = "0.3.0"
+version = "0.3.2"
 
 [dependencies.mangadex-api-types]
 package = "mangadex-api-types-rust"
-version = "0.3.0"
+version = "0.3.3"
 
 [dependencies.reqwest]
 version = "0.11.9"

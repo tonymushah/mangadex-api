@@ -6,7 +6,7 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api::types::{Language, Password, Username};
+//! use mangadex_api_types::{Language, Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();

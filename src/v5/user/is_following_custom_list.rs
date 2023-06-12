@@ -7,7 +7,7 @@
 //! ```rust
 //! use uuid::Uuid;
 //!
-//! use mangadex_api::types::{Password, Username};
+//! use mangadex_api_types::{Password, Username};
 //! use mangadex_api::MangaDexClient;
 //!
 //! # async fn run() -> anyhow::Result<()> {

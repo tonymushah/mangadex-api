@@ -6,7 +6,7 @@
 //!
 //! ```rust
 //! use mangadex_api::v5::{MangaDexClient};
-//! use mangadex_api::types::{Password, Username};
+//! use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();

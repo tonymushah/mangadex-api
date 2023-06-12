@@ -6,7 +6,7 @@
 //!
 //! ```rust
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api::types::LegacyMappingType;
+//! use mangadex_api_types::LegacyMappingType;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();

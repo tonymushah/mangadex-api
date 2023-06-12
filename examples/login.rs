@@ -8,7 +8,7 @@
 //! login
 //! ```
 
-use mangadex_api::types::{Password, Username};
+use mangadex_api_types::{Password, Username};
 use mangadex_api::v5::MangaDexClient;
 
 #[tokio::main]

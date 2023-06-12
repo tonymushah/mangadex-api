@@ -27,7 +27,7 @@
 use clap::Parser;
 use uuid::Uuid;
 
-use mangadex_api::types::LegacyMappingType;
+use mangadex_api_types::LegacyMappingType;
 use mangadex_api::v5::MangaDexClient;
 
 #[derive(Parser)]

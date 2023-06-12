@@ -15,7 +15,8 @@ use serde::de::DeserializeOwned;
 use url::Url;
 
 use crate::v5::AuthTokens;
-use crate::{Result, API_URL, API_DEV_URL};
+use crate::{API_URL, API_DEV_URL};
+use mangadex_api_types::error::Result;
 
 #[cfg(not(feature = "multi-thread"))]
 pub type HttpClientRef = Rc<RefCell<HttpClient>>;
@@ -314,7 +315,7 @@ macro_rules! endpoint {
     { @send, $typ:ty, $out:ty } => {
         impl $typ {
             /// Send the request.
-            pub async fn send(&self) -> $crate::Result<$out> {
+            pub async fn send(&self) -> mangadex_api_types::error::Result<$out> {
                 #[cfg(not(feature = "multi-thread"))]
                 {
                     self.http_client.borrow().send_request(self).await
@@ -346,7 +347,7 @@ macro_rules! endpoint {
     { @send:discard_result, $typ:ty, $out:ty } => {
         impl $typ {
             /// Send the request.
-            pub async fn send(&self) -> $crate::Result<()> {
+            pub async fn send(&self) -> mangadex_api_types::error::Result<()> {
                 #[cfg(not(feature = "multi-thread"))]
                 self.http_client.borrow().send_request(self).await??;
                 #[cfg(feature = "multi-thread")]
