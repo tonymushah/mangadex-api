@@ -3,7 +3,6 @@ use schema::MangaDexErrorResponse;
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 #[derive(Debug, thiserror::Error)]
-#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum Error {
     /// Error when parsing a URL.
     ///

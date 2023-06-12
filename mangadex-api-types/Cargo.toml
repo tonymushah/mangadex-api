@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api-types-rust"
-version = "0.3.2"
+version = "0.3.3"
 authors = ["tonymushah <tonymushahdev06@yahoo.com>"]
 description = "Types for mangadex-api"
 license = "MIT OR Apache-2.0"
@@ -64,5 +64,5 @@ features = [
 
 [features]
 non_exhaustive = []
-default = ["non_exhaustive"]
+default = ["non_exhaustive", "specta"]
 specta = ["dep:specta"]

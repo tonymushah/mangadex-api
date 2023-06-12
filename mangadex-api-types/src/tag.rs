@@ -27,7 +27,6 @@ macro_rules! tags {
         pub enum Tag {
             $(
                 $( #[$meta] )*
-                #[serde(rename(serialize = $uuid, deserialize = $name))]
                 $tag,
             )*
         }
