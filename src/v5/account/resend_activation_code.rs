@@ -36,7 +36,7 @@ use mangadex_api_types::error::Result;
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-#[deprecated]
+#[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
 pub struct ResendActivationCode<'a> {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

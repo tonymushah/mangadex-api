@@ -1,8 +1,8 @@
 # mangadex-api
 
-## Important 
+## Important
 
-### This git repo is just a fork from [gondolyr/mangadex-api](https://gitlab.com/gondolyr/mangadex-api) but the project and crate has been yanked so I will now maintain this crate for [special-eureka](https://github.com/tonymushah/special-eureka) and [eureka-manager](https://github.com/tonymushah/eureka-mmanager)
+This git repo is just a fork from [gondolyr/mangadex-api](https://gitlab.com/gondolyr/mangadex-api) but the project and crate has been yanked so I will now maintain this crate for [special-eureka](https://github.com/tonymushah/special-eureka) and [eureka-manager](https://github.com/tonymushah/eureka-mmanager)
 
 The `mangadex-api` crate provides a convenient, high-level wrapper
 [client][library-client] for the [MangaDex API][mangadex-api-url],
@@ -22,27 +22,32 @@ Please note that as MangaDex is still in beta, this SDK will be subject to sudde
 
 # Table of Contents
 
-* [Requirements][readme-section-requirements]
-* [How to install][readme-section-install]
-* [Dependency Justification][readme-section-dependency-justification]
-* [Features][readme-section-features]
-* [HTTP Client][readme-section-http-client]
-* [Response Structs](#response-structs)
-* [Getting Started][readme-section-getting-started]
-* [Using a custom reqwest Client][readme-section-custom-client]
-* [Searching manga by title][readme-section-searching-manga]
-* [Downloading chapter pages][readme-section-downloading-chapter-pages]
-* [Downloading a manga's main cover image][readme-section-downloading-manga-main-cover]
-* [Changelog][readme-section-changelog]
-* [License][readme-section-license]
-    * [Contribution terms and conditions][readme-section-contribution]
-* [Contributing][readme-section-contributing]
+- [mangadex-api](#mangadex-api)
+  - [Important](#important)
+  - [Disclaimer](#disclaimer)
+- [Table of Contents](#table-of-contents)
+- [Requirements](#requirements)
+- [How to install](#how-to-install)
+- [Dependency Justification](#dependency-justification)
+- [Features](#features)
+- [HTTP Client](#http-client)
+- [Response Structs](#response-structs)
+- [Getting Started](#getting-started)
+- [Using a custom reqwest Client](#using-a-custom-reqwest-client)
+- [Searching manga by title](#searching-manga-by-title)
+- [Searching manga by title with reference expansion](#searching-manga-by-title-with-reference-expansion)
+- [Downloading chapter pages](#downloading-chapter-pages)
+- [Downloading a manga's main cover image](#downloading-a-mangas-main-cover-image)
+- [Changelog](#changelog)
+- [License](#license)
+  - [Contribution](#contribution)
+- [Contributing](#contributing)
 
 # Requirements
 
 [Back to top][readme-section-toc]
 
-* [Rust 1.56+][rust-homepage]
+- [Rust 1.56+][rust-homepage]
 
 # How to install
 
@@ -53,7 +58,10 @@ Add `mangadex-api` to your dependencies:
 ```toml
 [dependencies]
 # ...
-mangadex-api = "2.0.1"
+# Types and schemas are always required
+mangadex-api-types-rust = "0.3.3"
+mangadex-api-schema-rust = "0.3.2"
+mangadex-api = "2.0.2"
 ```
 
 If you are using [`cargo-edit`](https://github.com/killercup/cargo-edit), run
@@ -67,6 +75,8 @@ cargo add mangadex-api
 | Dependency                                         | Used for                                                                                                                                 | Included   |
 |:---------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|:-----------|
 | [`anyhow`][dependency-anyhow-docs]                 | Capturing unexpected errors.                                                                                                             | always     |
+| [`mangadex-api-types-rust`][dependency-mangadex-api-types]                 | Enums and static data for Mangadex API                                                                                                              | always     |
+| [`mangadex-api-schema-rust`][dependency-mangadex-api-schema]                 | Types used for Mangadex API                                                                                                              | always     |
 | [`clap`][dependency-clap-docs]                     | Examples demonstrating the library's capabilities                                                                                        | dev builds |
 | [`derive_builder`][dependency-derive_builder-docs] | Conveniently generating setters for the API endpoint builders.                                                                           | always     |
 | [`fake`][dependency-fake-docs]                     | Generating random data for unit tests.                                                                                                   | dev builds |
@@ -95,7 +105,7 @@ All features are not included by default. To enable them, add any of the followi
 For example, to enable the `multi-thread` feature, add the following to your `Cargo.toml` file:
 
 ```toml
-mangadex-api = { version = "2.0.1", features = ["multi-thread"] }
+mangadex-api = { version = "2.0.2", features = ["multi-thread"] }
 ```
 
 # HTTP Client
@@ -392,9 +402,9 @@ Changes are added manually to keep the changelog human-readable with summaries o
 
 Licensed under either of
 
-* Apache License, Version 2.0
+- Apache License, Version 2.0
   ([LICENSE-APACHE][license-apache] or <http://www.apache.org/licenses/LICENSE-2.0>)
-* MIT license
+- MIT license
   ([LICENSE-MIT][license-mit] or <http://opensource.org/licenses/MIT>)
 
 at your option.
@@ -415,6 +425,8 @@ We welcome contributions from everyone. There are many ways to contribute and th
 [CONTRIBUTING.md][contributing] document explains how you can contribute and get started.
 
 [dependency-anyhow-docs]: https://docs.rs/anyhow
+[dependency-mangadex-api-types]: https://github.com/tonymushah/mangadex-api/tree/main/mangadex-api-types
+[dependency-mangadex-api-schema]: https://github.com/tonymushah/mangadex-api/tree/main/mangadex-api-schema
 [dependency-clap-docs]: https://docs.rs/clap
 [dependency-fake-docs]: https://docs.rs/fake
 [dependency-derive_builder-docs]: https://docs.rs/derive_builder
@@ -439,26 +451,9 @@ We welcome contributions from everyone. There are many ways to contribute and th
 
 [changelog]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/CHANGELOG.md
 [contributing]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/CONTRIBUTING.md
-[examples-readme]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/examples/README.md
 [library-client]: ./v5/struct.MangaDexClient.html
 [library-schema-module]: ./v5/schema/index.html
 [license-apache]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/LICENSE-APACHE
 [license-mit]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/LICENSE-MIT
 
-[readme-section-changelog]: #changelog
-[readme-section-contributing]: #contributing
-[readme-section-contribution]: #contribution
-[readme-section-custom-client]: #using-a-custom-reqwest-client
-[readme-section-dependency-justification]: #dependency-justification
-[readme-section-downloading-chapter-pages]: #downloading-chapter-pages
-[readme-section-downloading-manga-main-cover]: #downloading-a-mangas-main-cover-image
-[readme-section-features]: #features
-[readme-section-http-client]: #http-client
-[readme-section-getting-started]: #getting-started
-[readme-section-install]: #how-to-install
-[readme-section-license]: #license
-[readme-section-requirements]: #requirements
-[readme-section-running-examples]: #running-examples
-[readme-section-searching-manga]: #searching-manga-by-title
-[readme-requirements]: #requirements
 [readme-section-toc]: #table-of-contents

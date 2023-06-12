@@ -155,7 +155,7 @@ impl MangaDexClient {
     /// Get a builder for handling the account endpoints.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Account>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn account(&self) -> AccountBuilder {
         AccountBuilder::new(self.http_client.clone())
     }
@@ -172,7 +172,7 @@ impl MangaDexClient {
     /// This builder is deprecated
     /// 
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn auth(&self) -> AuthBuilder {
         AuthBuilder::new(self.http_client.clone())
     }

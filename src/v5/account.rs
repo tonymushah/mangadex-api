@@ -32,7 +32,7 @@ impl AccountBuilder {
     /// Create a new MangaDex account.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-create>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn create(&self) -> CreateAccountBuilder {
         CreateAccountBuilder::default().http_client(self.http_client.clone())
     }
@@ -40,7 +40,7 @@ impl AccountBuilder {
     /// Activate a MangaDex account after creating one.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/get-account-activate-code>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn activate(&self) -> ActivateAccountBuilder {
         ActivateAccountBuilder::default().http_client(self.http_client.clone())
     }
@@ -48,7 +48,7 @@ impl AccountBuilder {
     /// Resend the account activation code.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-activate-resend>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn resend_activation_code(&self) -> ResendActivationCodeBuilder {
         ResendActivationCodeBuilder::default().http_client(self.http_client.clone())
     }
@@ -56,7 +56,7 @@ impl AccountBuilder {
     /// Initiate the account recovery process.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-recover>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn recover(&self) -> RecoverAccountBuilder {
         RecoverAccountBuilder::default().http_client(self.http_client.clone())
     }
@@ -64,7 +64,7 @@ impl AccountBuilder {
     /// Complete the account recovery process.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-recover-code>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn complete_recovery(&self) -> CompleteAccountRecoveryBuilder {
         CompleteAccountRecoveryBuilder::default().http_client(self.http_client.clone())
     }
@@ -72,7 +72,7 @@ impl AccountBuilder {
     /// Check if an account username is available.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/get-account-available>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn check_username_available(&self) -> CheckUsernameAvailableBuilder {
         CheckUsernameAvailableBuilder::default().http_client(self.http_client.clone())
     }

@@ -28,7 +28,7 @@ impl AuthBuilder {
     /// Log into an account.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-login>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn login(&self) -> LoginBuilder {
         LoginBuilder::default().http_client(self.http_client.clone())
     }
@@ -36,7 +36,7 @@ impl AuthBuilder {
     /// Log out of an account.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-logout>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn logout(&self) -> LogoutBuilder {
         LogoutBuilder::default().http_client(self.http_client.clone())
     }
@@ -44,7 +44,7 @@ impl AuthBuilder {
     /// Get a new session token from the refresh token.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-refresh>
-    #[deprecated]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn refresh_token(&self) -> RefreshTokenBuilder {
         RefreshTokenBuilder::default().http_client(self.http_client.clone())
     }
