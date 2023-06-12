@@ -37,7 +37,13 @@ Please note that as MangaDex is still in beta, this SDK will be subject to sudde
 - [Searching manga by title](#searching-manga-by-title)
 - [Searching manga by title with reference expansion](#searching-manga-by-title-with-reference-expansion)
 - [Downloading chapter pages](#downloading-chapter-pages)
+  - [Using the old way](#using-the-old-way)
+  - [Using the `utils` feature](#using-the-utils-feature)
 - [Downloading a manga's main cover image](#downloading-a-mangas-main-cover-image)
+  - [Use the legacy way](#use-the-legacy-way)
+  - [Using the `utils` feature](#using-the-utils-feature-1)
+    - [via a cover id](#via-a-cover-id)
+    - [via a manga id](#via-a-manga-id)
 - [Changelog](#changelog)
 - [License](#license)
   - [Contribution](#contribution)
@@ -87,7 +93,7 @@ cargo add mangadex-api
 | [`serde_qs`][dependency-serde_qs-docs]             | Query string serialization for HTTP requests.                                                                                            | always     |
 | [`thiserror`][dependency-thiserror-docs]           | Customized error handling.                                                                                                               | always     |
 | [`time`][dependency-time-docs]                     | Convenience types for handing time fields.                                                                                               | always     |
-| [`tokio`][dependency-tokio-docs]                   | Async runtime to handle futures (not the library) in the examples.                                                                       | dev builds |
+| [`tokio`][dependency-tokio-docs]                   | Async runtime to handle futures in __(only)__ examples and `utils` feature in chapter reporting                                                                      | dev builds + `utils` features |
 | [`url`][dependency-url-docs]                       | Convenient `Url` type for validating and containing URLs.                                                                                | always     |
 | [`uuid`][dependency-uuid-docs]                     | Convenient `Uuid` type for validating and containing UUIDs for requests and responses. Also used to randomly generate UUIDs for testing. | always     |
 | [`wiremock`][dependency-wiremock-docs]             | HTTP mocking to test the [MangaDex API][mangadex-api-url].                                                                               | dev builds |
@@ -109,6 +115,10 @@ All features are not included by default. To enable them, add any of the followi
 - `legacy-account`
 
   Enable the usage of the `< 5.9.0` account management system in the SDK. Please visit the [Mangadex Discord](https://discord.com/invite/mangadex)  for more details
+
+- `utils`
+
+  Enable the usage of the `MangaDexClient::download()`. Allows you to download chapters or covers image without tears and long code.
 
 For example, to enable the `multi-thread` feature, add the following to your `Cargo.toml` file:
 
@@ -263,6 +273,8 @@ for author in authors {
 
 Reference: <https://api.mangadex.org/docs/reading-chapter/>
 
+## Using the old way
+
 ```rust
 // Imports used for downloading the pages to a file.
 // They are not used because we're just printing the raw bytes.
@@ -318,9 +330,60 @@ for filename in page_filenames {
 # }
 ```
 
+## Using the `utils` feature
+
+```rust
+    use crate::{utils::download::chapter::DownloadMode, MangaDexClient};
+    use anyhow::{Ok, Result};
+    /// used for file exporting
+    use std::{
+        fs::{create_dir_all, File},
+        io::Write,
+    };
+
+    /// It's from this manga called [`The Grim Reaper Falls In Love With A Human`](https://mangadex.org/title/be2efc56-1669-4e42-9f27-3bd232bca8ea/the-grim-reaper-falls-in-love-with-a-human)
+    ///
+    /// [Chapter 1 English](https://mangadex.org/chapter/2b4e39a5-fba0-4055-a176-8b7e19faacdb) by [`Kredim`](https://mangadex.org/group/0b870e54-c75f-4d2e-8068-c40f939135fd/kredim)
+    #[tokio::main]
+    async fn main() -> Result<()> {
+        let output_dir = "your-output-dir";
+        let client = MangaDexClient::default();
+        let chapter_id = uuid::Uuid::parse_str("32b229f6-e9bf-41a0-9694-63c11191704c")?;
+        let chapter_files = client
+            /// We use the download builder
+            .download()
+            /// Chapter id (accept uuid::Uuid)
+            .chapter(chapter_id)
+            /// You also use `DownloadMode::Normal` if you want some the original quality
+            /// 
+            /// Default : Normal
+            .mode(DownloadMode::DataSaver)
+            /// Enable the [`The MangaDex@Home report`](https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint) if true 
+            /// 
+            /// Default : false
+            .report(true)
+            /// Something that i don`t really know about 
+            /// 
+            /// More details at : https://api.mangadex.org/docs/retrieving-chapter/#basics
+            .force_port_443(false)
+            .build()?
+            .execute()
+            .await?;
+        create_dir_all(format!("{}{}", output_dir, chapter_id))?;
+        for (filename, bytes) in chapter_files {
+            let mut file: File =
+                File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
+            file.write_all(&bytes)?;
+        }
+        Ok(())
+    }
+```
+
 # Downloading a manga's main cover image
 
 [Back to top][readme-section-toc]
+
+## Use the legacy way
 
 While this example could directly get the cover information by passing in the cover ID,
 it is not often that one would have the ID off-hand, so the most common method would be from a
@@ -395,6 +458,63 @@ println!("Chunk: {:?}", bytes);
 # Ok(())
 # }
 ```
+
+## Using the `utils` feature
+
+### via a cover id
+
+```rust
+    use anyhow::Result;
+    use uuid::Uuid;
+    use crate::MangaDexClient;
+    use std::{io::Write, fs::File};
+
+    /// Download the volume 2 cover of [Lycoris Recoil](https://mangadex.org/title/9c21fbcd-e22e-4e6d-8258-7d580df9fc45/lycoris-recoil)
+    #[tokio::main]
+    async fn main() -> Result<()>{
+        let cover_id : Uuid = Uuid::parse_str("0bc12ff4-3cec-4244-8582-965b8be496ea")?;
+        let client : MangaDexClient = MangaDexClient::default();
+        let (filename, bytes) = client.download().cover().build()?.via_cover_id(cover_id).await?;
+        let mut file = File::create(format!("{}/{}", "your-output-dir", filename))?;
+        file.write_all(&bytes)?;
+        Ok(())
+    }
+```
+
+### via a manga id
+
+```rust
+    use anyhow::Result;
+    use uuid::Uuid;
+    use crate::MangaDexClient;
+    use std::{io::Write, fs::File};
+
+    /// Download the [Kimi tte Watashi no Koto Suki Nandesho?](https://mangadex.org/title/f75c2845-0241-4e69-87c7-b93575b532dd/kimi-tte-watashi-no-koto-suki-nandesho) cover
+    /// 
+    /// For test... of course :3
+    #[tokio::main]
+    async fn main() -> Result<()>{
+        let manga_id : Uuid = Uuid::parse_str("f75c2845-0241-4e69-87c7-b93575b532dd")?;
+        let client : MangaDexClient = MangaDexClient::default();
+        let (filename, bytes) = client
+            .download()
+            .cover()
+            /// you can use
+            /// 
+            /// ```rust
+            /// .quality(CoverQuality::Size512)
+            /// ``` for 512
+            /// or
+            /// ```rust
+            /// .quality(CoverQuality::Size256)
+            /// ``` for 256
+            .build()?.via_manga_id(manga_id).await?;
+        let mut file = File::create(format!("{}/{}", "test-outputs/covers", filename))?;
+        file.write_all(&bytes)?;
+        Ok(())
+    }
+```
+
 
 # Changelog
 

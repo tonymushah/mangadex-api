@@ -62,6 +62,9 @@ use crate::v5::user::UserBuilder;
 use crate::HttpClient;
 use crate::HttpClientRef;
 
+#[cfg(feature = "utils")]
+use crate::utils::download::DownloadBuilder;
+
 /// API client to make requests to the MangaDex v5 API.
 #[derive(Clone, Debug)]
 pub struct MangaDexClient {
@@ -110,11 +113,13 @@ impl MangaDexClient {
     /// # }
     /// ```
     pub fn new(client: Client) -> Self {
-        Self {
-            http_client: create_ref_counted_http_client(HttpClient::new(client)),
-        }
+        Self::new_with_http_client_ref(create_ref_counted_http_client(HttpClient::new(client)))
     }
 
+    /// Create a new `MangaDexClient` with a custom client reference
+    pub fn new_with_http_client_ref(http_client: HttpClientRef) -> Self{
+        Self { http_client: http_client }
+    }
     /// Create a new `MangaDexClient` with a custom [`HttpClient`](crate::HttpClient).
     ///
     /// In most cases, providing a custom [`HttpClient`](crate::HttpClient) isn't necessary.
@@ -145,9 +150,7 @@ impl MangaDexClient {
     /// # }
     /// ```
     pub fn new_with_http_client(http_client: HttpClient) -> Self {
-        Self {
-            http_client: create_ref_counted_http_client(http_client),
-        }
+        Self::new_with_http_client_ref(create_ref_counted_http_client(http_client))
     }
 
     /// Return the Reqwest `Client`.
@@ -310,7 +313,11 @@ impl MangaDexClient {
     /// This is an api client for 
     /// `api.mangadex.dev`
     pub fn api_dev_client() -> Self{
-        Self { http_client: create_ref_counted_http_client(HttpClient::api_dev_client()) }
+        Self::new_with_http_client(HttpClient::api_dev_client())
+    }
+    #[cfg(feature = "utils")]
+    pub fn download(&self) -> DownloadBuilder {
+        DownloadBuilder::new(self.http_client.clone())
     }
 }
 

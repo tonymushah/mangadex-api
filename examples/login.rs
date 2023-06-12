@@ -10,7 +10,9 @@
 //! login
 //! ```
 
+#[cfg(all(feature = "legacy-auth", feature = "legacy-account"))]
 use mangadex_api_types::{Password, Username};
+#[cfg(all(feature = "legacy-auth", feature = "legacy-account"))]
 use mangadex_api::v5::MangaDexClient;
 
 #[tokio::main]

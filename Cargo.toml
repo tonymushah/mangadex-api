@@ -87,6 +87,10 @@ features = [
 version = "1.4.0"
 optional = true
 
+[dependencies.anyhow]
+version = "1.0.71"
+optional = true
+
 [dev-dependencies.anyhow]
 version = "1.0.55"
 
@@ -122,5 +126,5 @@ version = "0.5.11"
 multi-thread = ["futures"]
 legacy-auth = []
 legacy-account = []
-default = ["utils", "multi-thread"]
-utils = ["dep:bytes", "dep:tokio"]
+default = []
+utils = ["dep:bytes", "dep:tokio", "dep:anyhow"]
