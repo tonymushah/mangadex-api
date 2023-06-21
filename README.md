@@ -39,6 +39,10 @@ Please note that as MangaDex is still in beta, this SDK will be subject to sudde
 - [Downloading chapter pages](#downloading-chapter-pages)
   - [Using the old way](#using-the-old-way)
   - [Using the `utils` feature](#using-the-utils-feature)
+    - [Via `(filename, bytes)` vector based :](#via-filename-bytes-vector-based-)
+    - [Via `tokio-stream` :](#via-tokio-stream-)
+      - [Without checker](#without-checker)
+      - [with checker](#with-checker)
 - [Downloading a manga's main cover image](#downloading-a-mangas-main-cover-image)
   - [Use the legacy way](#use-the-legacy-way)
   - [Using the `utils` feature](#using-the-utils-feature-1)
@@ -67,7 +71,7 @@ Add `mangadex-api` to your dependencies:
 # Types and schemas are always required
 mangadex-api-types-rust = "0.3.3"
 mangadex-api-schema-rust = "0.3.2"
-mangadex-api = "2.0.2"
+mangadex-api = "2.2.0"
 ```
 
 If you are using [`cargo-edit`](https://github.com/killercup/cargo-edit), run
@@ -332,51 +336,217 @@ for filename in page_filenames {
 
 ## Using the `utils` feature
 
-```rust
-    use crate::{utils::download::chapter::DownloadMode, MangaDexClient};
-    use anyhow::{Ok, Result};
-    /// used for file exporting
-    use std::{
-        fs::{create_dir_all, File},
-        io::Write,
-    };
+### Via `(filename, bytes)` vector based :
 
-    /// It's from this manga called [`The Grim Reaper Falls In Love With A Human`](https://mangadex.org/title/be2efc56-1669-4e42-9f27-3bd232bca8ea/the-grim-reaper-falls-in-love-with-a-human)
-    ///
-    /// [Chapter 1 English](https://mangadex.org/chapter/2b4e39a5-fba0-4055-a176-8b7e19faacdb) by [`Kredim`](https://mangadex.org/group/0b870e54-c75f-4d2e-8068-c40f939135fd/kredim)
-    #[tokio::main]
-    async fn main() -> Result<()> {
-        let output_dir = "your-output-dir";
-        let client = MangaDexClient::default();
-        let chapter_id = uuid::Uuid::parse_str("32b229f6-e9bf-41a0-9694-63c11191704c")?;
-        let chapter_files = client
-            /// We use the download builder
-            .download()
-            /// Chapter id (accept uuid::Uuid)
-            .chapter(chapter_id)
-            /// You also use `DownloadMode::Normal` if you want some the original quality
-            /// 
-            /// Default : Normal
-            .mode(DownloadMode::DataSaver)
-            /// Enable the [`The MangaDex@Home report`](https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint) if true 
-            /// 
-            /// Default : false
-            .report(true)
-            /// Something that i don`t really know about 
-            /// 
-            /// More details at : https://api.mangadex.org/docs/retrieving-chapter/#basics
-            .force_port_443(false)
-            .build()?
-            .execute()
-            .await?;
-        create_dir_all(format!("{}{}", output_dir, chapter_id))?;
-        for (filename, bytes) in chapter_files {
+Not recommended if you want to handle each response error
+
+```rust
+use crate::{utils::download::chapter::DownloadMode, MangaDexClient};
+use anyhow::{Ok, Result};
+/// used for file exporting
+use std::{
+    fs::{create_dir_all, File},
+    io::Write,
+};
+
+/// It's from this manga called [`The Grim Reaper Falls In Love With A Human`](https://mangadex.org/title/be2efc56-1669-4e42-9f27-3bd232bca8ea/the-grim-reaper-falls-in-love-with-a-human)
+///
+/// [Chapter 1 English](https://mangadex.org/chapter/2b4e39a5-fba0-4055-a176-8b7e19faacdb) by [`Kredim`](https://mangadex.org/group/0b870e54-c75f-4d2e-8068-c40f939135fd/kredim)
+#[tokio::main]
+async fn main() -> Result<()> {
+    let output_dir = "your-output-dir";
+    let client = MangaDexClient::default();
+    let chapter_id = uuid::Uuid::parse_str("32b229f6-e9bf-41a0-9694-63c11191704c")?;
+    let chapter_files = client
+        /// We use the download builder
+        .download()
+        /// Chapter id (accept uuid::Uuid)
+        .chapter(chapter_id)
+        /// You also use `DownloadMode::Normal` if you want some the original quality
+        /// 
+        /// Default : Normal
+        .mode(DownloadMode::DataSaver)
+        /// Enable the [`The MangaDex@Home report`](https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint) if true 
+        /// 
+        /// Default : false
+        .report(true)
+        /// Something that i don`t really know about 
+        /// 
+        /// More details at : https://api.mangadex.org/docs/retrieving-chapter/#basics
+        .force_port_443(false)
+        .build()?
+        .download_element_vec()
+        .await?;
+    create_dir_all(format!("{}{}", output_dir, chapter_id))?;
+    for (filename, bytes) in chapter_files {
+        if let Some(bytes) = bytes_ {
             let mut file: File =
                 File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
-            file.write_all(&bytes)?;
-        }
-        Ok(())
+            file.write_all(&bytes)?
+        };
     }
+    Ok(())
+}
+```
+
+### Via `tokio-stream` :
+
+With [`tokio-stream`](https://docs.rs/tokio-stream/), you can handle each response result
+
+#### Without checker 
+
+```rust
+use crate::{utils::download::chapter::DownloadMode, MangaDexClient};
+use anyhow::{Ok, Result};
+use std::{
+    fs::{create_dir_all, File},
+    io::Write,
+};
+use tokio::pin;
+use tokio_stream::StreamExt;
+
+/// It's from this manga called [`Keiken Zumi na Kimi to, Keiken Zero na Ore ga, Otsukiai Suru Hanashi`](https://mangadex.org/title/1c8f0358-d663-4d60-8590-b5e82890a1e3/keiken-zumi-na-kimi-to-keiken-zero-na-ore-ga-otsukiai-suru-hanashi)
+///
+/// [Chapter 13 English](https://mangadex.org/chapter/250f091f-4166-4831-9f45-89ff54bf433b) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
+#[tokio::main]
+async fn main() -> Result<()> {
+    let output_dir = "./test-outputs/";
+    let client = MangaDexClient::default();
+    let chapter_id = uuid::Uuid::parse_str("250f091f-4166-4831-9f45-89ff54bf433b")?;
+    create_dir_all(format!("{}{}", output_dir, chapter_id))?;
+    let download = client
+        /// We use the download builder
+        .download()
+        /// Chapter id (accept uuid::Uuid)
+        .chapter(chapter_id)
+        /// You also use `DownloadMode::Normal` if you want some the original quality
+        /// 
+        /// Default : Normal
+        .mode(DownloadMode::DataSaver)
+        /// Enable the [`The MangaDex@Home report`](https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint) if true 
+        /// 
+        /// Default : false
+        .report(true)
+        /// Something that i don`t really know about 
+        /// 
+        /// More details at : https://api.mangadex.org/docs/retrieving-chapter/#basics
+        .force_port_443(false)
+        .build()?;
+    let chapter_files = download.download_stream().await?;
+    /// `pin!` Required for iteration
+    pin!(chapter_files); 
+    while let Some((data, _, _)) = chapter_files.next().await {
+        let (filename, bytes_) = data?;
+        if let Some(bytes) = bytes_ {
+            let mut file: File =
+                File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
+            file.write_all(&bytes)?
+        };
+    }
+    Ok(())
+}
+
+```
+
+#### with checker
+
+The checker is a function called after the response fetching but before retreiving the byte content.
+Example :
+
+```rust
+    /// Some code here
+    let download = client
+        .download()
+        .chapter(chapter_id)
+        .mode(DownloadMode::DataSaver)
+        .report(true)
+        .build()?;
+    let chapter_files = download
+        .download_stream_with_checker(move |filename, response| {
+            /// if this function return `true`, the current response will be skipped
+            true
+        })
+        .await?;
+    /// Some code here too
+```
+
+Real example :
+
+The checker will check return `true` if a file with the response content length has been created
+
+```rust
+use crate::{utils::download::chapter::DownloadMode, MangaDexClient};
+use anyhow::{Ok, Result};
+use std::{
+    fs::{create_dir_all, File},
+    io::Write,
+};
+use tokio::pin;
+use tokio_stream::StreamExt;
+
+/// It's from this manga called [`Keiken Zumi na Kimi to, Keiken Zero na Ore ga, Otsukiai Suru Hanashi`](https://mangadex.org/title/1c8f0358-d663-4d60-8590-b5e82890a1e3/keiken-zumi-na-kimi-to-keiken-zero-na-ore-ga-otsukiai-suru-hanashi)
+///
+/// [Chapter 13 English](https://mangadex.org/chapter/250f091f-4166-4831-9f45-89ff54bf433b) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
+#[tokio::main]
+async fn main() -> Result<()> {
+    let output_dir = "./test-outputs/";
+    let client = MangaDexClient::default();
+    let chapter_id = uuid::Uuid::parse_str("250f091f-4166-4831-9f45-89ff54bf433b")?;
+    create_dir_all(format!("{}{}", output_dir, chapter_id))?;
+    let download = client
+        .download()
+        .chapter(chapter_id)
+        .mode(DownloadMode::DataSaver)
+        .report(true)
+        .build()?;
+    let chapter_files = download
+        .download_stream_with_checker(move |filename, response| {
+            let is_skip: bool = {
+                /// Get the response content length
+                let content_length = match response.content_length() {
+                    None => return false,
+                    Some(d) => d,
+                };
+                /// open the chapter image file
+                if let core::result::Result::Ok(pre_file) = File::open(format!(
+                    "{}{}/{}",
+                    output_dir,
+                    chapter_id,
+                    filename.filename.clone()
+                )) {
+                    if let core::result::Result::Ok(metadata) = pre_file.metadata() {
+                        /// compare the content length and the file length
+                        metadata.len() == content_length
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                }
+            };
+            is_skip
+        })
+        .await?;
+    pin!(chapter_files);
+    while let Some((data, index, len)) = chapter_files.next().await {
+        print!("{index} - {len} : ");
+        if let core::result::Result::Ok(resp) = data {
+            let (filename, bytes_) = resp ;
+            // save the bytes if the `Option` hase Some value
+            if let Some(bytes) = bytes_ {
+                let mut file: File =
+                    File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
+                file.write_all(&bytes)?;
+                println!("Downloaded {filename}");
+            }else{
+                println!("Skipped {filename}");
+            }
+        } else if let core::result::Result::Err(resp) = data {
+            println!("{:#?}", resp);
+        }
+    }
+    Ok(())
+}
 ```
 
 # Downloading a manga's main cover image
