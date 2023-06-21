@@ -118,7 +118,7 @@ impl MangaDexClient {
 
     /// Create a new `MangaDexClient` with a custom client reference
     pub fn new_with_http_client_ref(http_client: HttpClientRef) -> Self{
-        Self { http_client: http_client }
+        Self { http_client }
     }
     /// Create a new `MangaDexClient` with a custom [`HttpClient`](crate::HttpClient).
     ///

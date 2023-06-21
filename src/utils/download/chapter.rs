@@ -1,3 +1,6 @@
+use std::sync::Arc;
+
+use async_stream::stream;
 use bytes::Bytes;
 use derive_builder::Builder;
 use mangadex_api_schema::v5::AtHomeServer;
@@ -5,6 +8,7 @@ use mangadex_api_types::error::{Error, Result};
 use reqwest::{Client, Response};
 use serde::Serialize;
 use tokio::time::Instant;
+use tokio_stream::Stream;
 use url::Url;
 use uuid::Uuid;
 
@@ -52,14 +56,20 @@ pub struct AtHomeReport {
 
 impl AtHomeReport {
     pub async fn send(&self, client: &Client) -> Result<Response> {
-        match client
-            .post("https://api.mangadex.network/report")
-            .json(self)
-            .send()
-            .await
-        {
-            Ok(d) => Result::Ok(d),
-            Err(e) => Result::Err(Error::RequestError(e)),
+        if !self.url.as_str().contains("mangadex.org") {
+            match client
+                .post("https://api.mangadex.network/report")
+                .json(self)
+                .send()
+                .await
+            {
+                Ok(d) => Result::Ok(d),
+                Err(e) => Result::Err(Error::RequestError(e)),
+            }
+        } else {
+            Result::Err(Error::UnexpectedError(anyhow::Error::msg(
+                "the mangadex.org pattern found!",
+            )))
         }
     }
 }
@@ -68,7 +78,7 @@ pub async fn download_chapter_image(
     http_client: &Client,
     filename: String,
     quality: DownloadMode,
-    at_home: &AtHomeServer,
+    at_home: Arc<AtHomeServer>,
     report: bool,
 ) -> Result<DownloadElement> {
     let page_url = match at_home.base_url.join(&format!(
@@ -97,8 +107,8 @@ pub async fn download_chapter_image(
                 .send(http_client)
                 .await;
             }
-            return Err(Error::RequestError(e))
-        },
+            return Err(Error::RequestError(e));
+        }
     };
 
     let is_cache: bool = match res.headers().get("X-Cache") {
@@ -145,6 +155,7 @@ pub async fn download_chapter_image(
             return Err(Error::RequestError(e));
         }
     };
+
     Ok((filename, bytes))
 }
 
@@ -154,15 +165,23 @@ pub async fn download_chapter(
     chapter_id: Uuid,
     quality: DownloadMode,
     report: bool,
-    force_443_port : bool
+    force_443_port: bool,
 ) -> Result<Vec<DownloadElement>> {
     let client = MangaDexClient::new_with_http_client_ref(client);
-    let at_home: AtHomeServer = match client.at_home().server().force_port_443(force_443_port).chapter_id(&chapter_id).build() {
-        Ok(d) => d,
-        Err(d) => return Result::Err(Error::RequestBuilderError(d.to_string())),
-    }
-    .send()
-    .await?;
+    let at_home: Arc<AtHomeServer> = Arc::new(
+        match client
+            .at_home()
+            .server()
+            .force_port_443(force_443_port)
+            .chapter_id(&chapter_id)
+            .build()
+        {
+            Ok(d) => d,
+            Err(d) => return Result::Err(Error::RequestBuilderError(d.to_string())),
+        }
+        .send()
+        .await?,
+    );
     let http_client = get_reqwest_client(&client).await;
     let page_filenames = match quality {
         DownloadMode::Normal => &at_home.chapter.data,
@@ -175,13 +194,54 @@ pub async fn download_chapter(
                 &http_client,
                 filename.to_string(),
                 quality.clone(),
-                &at_home,
+                at_home.clone(),
                 report,
             )
             .await?,
         );
     }
     Ok(datas)
+}
+
+pub async fn download_chapter_stream(
+    client: HttpClientRef,
+    chapter_id: Uuid,
+    quality: DownloadMode,
+    report: bool,
+    force_443_port: bool,
+) -> Result<impl Stream<Item = Result<DownloadElement>>> {
+    let client = MangaDexClient::new_with_http_client_ref(client);
+    let at_home: Arc<AtHomeServer> = Arc::new(
+        match client
+            .at_home()
+            .server()
+            .force_port_443(force_443_port)
+            .chapter_id(&chapter_id)
+            .build()
+        {
+            Ok(d) => d,
+            Err(d) => return Result::Err(Error::RequestBuilderError(d.to_string())),
+        }
+        .send()
+        .await?,
+    );
+    let http_client = get_reqwest_client(&client).await;
+    let page_filenames = match quality {
+        DownloadMode::Normal => Arc::clone(&at_home).chapter.data.clone(),
+        DownloadMode::DataSaver => Arc::clone(&at_home).chapter.data_saver.clone(),
+    };
+    Ok(stream! {
+        for filename in page_filenames {
+            yield download_chapter_image(
+                &http_client,
+                filename.to_string(),
+                quality.clone(),
+                at_home.clone(),
+                report,
+            )
+            .await;
+        }
+    })
 }
 
 #[derive(Clone, Builder)]
@@ -209,7 +269,7 @@ pub struct ChapterDownload {
 }
 
 impl ChapterDownload {
-    pub async fn execute(&self) -> Result<Vec<DownloadElement>> {
+    pub async fn get_download_element_vec(&self) -> Result<Vec<DownloadElement>> {
         download_chapter(
             self.http_client.clone(),
             self.id,
@@ -223,10 +283,31 @@ impl ChapterDownload {
             } else {
                 false
             },
-            self.force_port_443
+            self.force_port_443,
         )
         .await
     }
+    pub async fn execute(&self) -> Result<Vec<DownloadElement>> {
+        self.get_download_element_vec().await
+    }
+    pub async fn execute_stream(&self) -> Result<impl Stream<Item = Result<DownloadElement>>> {
+        download_chapter_stream(
+            self.http_client.clone(),
+            self.id,
+            if let Some(quality) = self.mode.clone() {
+                quality
+            } else {
+                Default::default()
+            },
+            if let Some(report) = self.report {
+                report
+            } else {
+                false
+            },
+            self.force_port_443,
+        )
+        .await
+    } 
 }
 
 #[cfg(test)]
