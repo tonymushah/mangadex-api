@@ -11,11 +11,11 @@ use url::Url;
 /// More details at : https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint
 #[derive(Serialize, Clone)]
 pub struct AtHomeReport {
-    url: Url,
-    success: bool,
-    cached: bool,
-    bytes: usize,
-    duration: u128,
+    pub url: Url,
+    pub success: bool,
+    pub cached: bool,
+    pub bytes: usize,
+    pub duration: u128,
 }
 
 impl AtHomeReport {

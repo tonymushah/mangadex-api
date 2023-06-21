@@ -1,17 +1,17 @@
 mod mode;
-mod report;
 mod pre_download;
+mod report;
 use std::sync::Arc;
 
 use async_stream::stream;
 use derive_builder::Builder;
 use mangadex_api_schema::v5::AtHomeServer;
 use mangadex_api_types::error::{Error, Result};
+use reqwest::Response;
 use tokio::pin;
 use tokio_stream::Stream;
 use tokio_stream::StreamExt;
 use uuid::Uuid;
-use reqwest::Response;
 
 use crate::utils::get_reqwest_client;
 use crate::{HttpClientRef, MangaDexClient};
@@ -19,8 +19,8 @@ use crate::{HttpClientRef, MangaDexClient};
 use super::DownloadElement;
 
 pub use mode::DownloadMode;
-pub use report::AtHomeReport;
 pub use pre_download::AtHomePreDownloadImageData;
+pub use report::AtHomeReport;
 
 #[derive(Clone, Builder)]
 #[builder(setter(into, strip_option), pattern = "owned")]
@@ -44,7 +44,6 @@ pub struct ChapterDownload {
     force_port_443: bool,
     /// Chapter Id
     id: Uuid,
-    retries: u16,
 }
 
 impl ChapterDownload {
@@ -85,10 +84,7 @@ impl ChapterDownload {
                         Some(d) => d,
                     },
                     at_home: Arc::clone(&at_home),
-                    report: match self.report {
-                        None => false,
-                        Some(d) => d,
-                    },
+                    report: self.report.unwrap_or(false),
                 };
             }
         })
@@ -112,25 +108,34 @@ impl ChapterDownload {
     }
     pub async fn download_stream(
         &self,
-    ) -> Result<impl Stream<Item = Result<DownloadElement>> + '_> {
+    ) -> Result<impl Stream<Item = (Result<DownloadElement>, usize, usize)> + '_> {
         let file_names = self.build_at_home_urls().await?;
+        let mut index: usize = 0;
+        let len = file_names.len();
         Ok(stream! {
             for filename in file_names {
-                yield filename.download().await;
+                let data = filename.download().await;
+                index += 1;
+                yield (data, index, len);
             }
         })
     }
+    /// Download chapter with stream output 
     pub async fn download_stream_with_checker<C>(
-        &self, 
-        should_check_ : C
-    )-> Result<impl Stream<Item = Result<Option<DownloadElement>>>>
-        where 
-            C: FnMut(&AtHomePreDownloadImageData, &Response) -> bool + std::marker::Copy
+        &self,
+        should_check_: C,
+    ) -> Result<impl Stream<Item = (Result<DownloadElement>, usize, usize)>>
+    where
+        C: FnMut(&AtHomePreDownloadImageData, &Response) -> bool + std::marker::Copy,
     {
         let file_names = self.build_at_home_urls().await?;
+        let mut index: usize = 0;
+        let len = file_names.len();
         Ok(stream! {
             for filename in file_names {
-                yield filename.download_with_checker(should_check_).await;
+                let data = filename.download_with_checker(should_check_).await;
+                index += 1;
+                yield (data, index, len);
             }
         })
     }
@@ -164,10 +169,12 @@ mod tests {
             .download_element_vec()
             .await?;
         create_dir_all(format!("{}{}", output_dir, chapter_id))?;
-        for (filename, bytes) in chapter_files {
-            let mut file: File =
-                File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
-            file.write_all(&bytes)?;
+        for (filename, bytes_) in chapter_files {
+            if let Some(bytes) = bytes_ {
+                let mut file: File =
+                    File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
+                file.write_all(&bytes)?
+            };
         }
         Ok(())
     }
@@ -189,11 +196,13 @@ mod tests {
             .build()?;
         let chapter_files = download.download_stream().await?;
         pin!(chapter_files);
-        while let Some(data) = chapter_files.next().await {
-            let (filename, bytes) = data?;
-            let mut file: File =
-                File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
-            file.write_all(&bytes)?;
+        while let Some((data, _, _)) = chapter_files.next().await {
+            let (filename, bytes_) = data?;
+            if let Some(bytes) = bytes_ {
+                let mut file: File =
+                    File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
+                file.write_all(&bytes)?
+            };
         }
         Ok(())
     }
@@ -202,7 +211,7 @@ mod tests {
     ///
     /// [Chapter 13 English](https://mangadex.org/chapter/250f091f-4166-4831-9f45-89ff54bf433b) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
     #[tokio::test]
-    async fn download_chapter_with_streams_checker() -> Result<()> {
+    async fn download_chapter_with_streams_and_checker() -> Result<()> {
         let output_dir = "./test-outputs/";
         let client = MangaDexClient::default();
         let chapter_id = uuid::Uuid::parse_str("250f091f-4166-4831-9f45-89ff54bf433b")?;
@@ -213,27 +222,46 @@ mod tests {
             .mode(DownloadMode::DataSaver)
             .report(true)
             .build()?;
-        let chapter_files = download.download_stream_with_checker(move |filename, response| {
-            let content_length = match response.content_length(){
-                None => return false,
-                Some(d) => d
-            };
-            if let core::result::Result::Ok(pre_file) = File::open(format!("{}{}/{}", output_dir, chapter_id, filename.filename)) {
-                if let core::result::Result::Ok(metadata) = pre_file.metadata() {
-                    return metadata.len() == content_length;
-                }else{
-                    return false;
-                }
-            }else{
-                return false;
-            }
-        }).await?;
+        let chapter_files = download
+            .download_stream_with_checker(move |filename, response| {
+                let is_skip: bool = {
+                    let content_length = match response.content_length() {
+                        None => return false,
+                        Some(d) => d,
+                    };
+                    if let core::result::Result::Ok(pre_file) = File::open(format!(
+                        "{}{}/{}",
+                        output_dir,
+                        chapter_id,
+                        filename.filename.clone()
+                    )) {
+                        if let core::result::Result::Ok(metadata) = pre_file.metadata() {
+                            metadata.len() == content_length
+                        } else {
+                            false
+                        }
+                    } else {
+                        false
+                    }
+                };
+                is_skip
+            })
+            .await?;
         pin!(chapter_files);
-        while let Some(data) = chapter_files.next().await {
-            if let Some((filename, bytes)) = data? {
-                let mut file: File =
-                    File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
-                file.write_all(&bytes)?;
+        while let Some((data, index, len)) = chapter_files.next().await {
+            print!("{index} - {len} : ");
+            if let core::result::Result::Ok(resp) = data {
+                let (filename, bytes_) = resp ;
+                if let Some(bytes) = bytes_ {
+                    let mut file: File =
+                        File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
+                    file.write_all(&bytes)?;
+                    println!("Downloaded {filename}");
+                }else{
+                    println!("Skipped {filename}");
+                }
+            } else if let core::result::Result::Err(resp) = data {
+                println!("{:#?}", resp);
             }
         }
         Ok(())

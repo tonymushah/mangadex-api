@@ -1,0 +1,286 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'mangadex_api'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "mangadex_api",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'download_chapter'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=download_chapter",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "download_chapter",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'download_chapter'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=download_chapter",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "download_chapter",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'latest_updates'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=latest_updates",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "latest_updates",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'latest_updates'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=latest_updates",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "latest_updates",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'login'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=login",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "login",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'login'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=login",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "login",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'manga_covers'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=manga_covers",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "manga_covers",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'manga_covers'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=manga_covers",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "manga_covers",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'map_legacy_ids'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=map_legacy_ids",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "map_legacy_ids",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'map_legacy_ids'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=map_legacy_ids",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "map_legacy_ids",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'v5_demo'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=v5_demo",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "v5_demo",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'v5_demo'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=v5_demo",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "v5_demo",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'download_chapter_stream'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=download_chapter_stream",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "download_chapter_stream",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'download_chapter_stream'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=download_chapter_stream",
+                    "--package=mangadex-api"
+                ],
+                "filter": {
+                    "name": "download_chapter_stream",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

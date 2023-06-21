@@ -67,7 +67,7 @@ pub async fn download_cover(
         Err(e) => return Err(Error::RequestError(e)),
         Ok(d) => d,
     };
-    Ok((file_name, bytes))
+    Ok((file_name, Some(bytes)))
 }
 
 pub async fn download_via_cover_api_object(
@@ -242,7 +242,7 @@ mod tests{
         let client : MangaDexClient = MangaDexClient::default();
         let (filename, bytes) = client.download().cover().build()?.via_cover_id(cover_id).await?;
         let mut file = File::create(format!("{}/{}", "test-outputs/covers", filename))?;
-        file.write_all(&bytes)?;
+        file.write_all(&bytes.unwrap())?;
         Ok(())
     }
 
@@ -255,7 +255,7 @@ mod tests{
         let client : MangaDexClient = MangaDexClient::default();
         let (filename, bytes) = client.download().cover().build()?.via_manga_id(manga_id).await?;
         let mut file = File::create(format!("{}/{}", "test-outputs/covers", filename))?;
-        file.write_all(&bytes)?;
+        file.write_all(&bytes.unwrap())?;
         Ok(())
     }
 }

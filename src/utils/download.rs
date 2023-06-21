@@ -8,7 +8,7 @@ use crate::HttpClientRef;
 
 use self::{chapter::ChapterDownloadBuilder, cover::{CoverDownloadBuilder, CoverQuality}};
 
-pub type DownloadElement = (String, Bytes);
+pub type DownloadElement = (String, Option<Bytes>);
 
 #[derive(Debug)]
 pub struct DownloadBuilder {
@@ -25,7 +25,6 @@ impl DownloadBuilder {
             .http_client(self.http_client.clone())
             .id(id)
             .force_port_443(false)
-            .retries(0 as u16)
             .report(false)
     }
 
