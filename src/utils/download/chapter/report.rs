@@ -1,0 +1,39 @@
+use std::sync::Arc;
+
+use mangadex_api_types::error::{Error, Result};
+use reqwest::{Client, Response};
+use serde::Serialize;
+use url::Url;
+
+
+/// Send a report to `https://api.mangadex.network/report`.
+///
+/// More details at : https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint
+#[derive(Serialize, Clone)]
+pub struct AtHomeReport {
+    url: Url,
+    success: bool,
+    cached: bool,
+    bytes: usize,
+    duration: u128,
+}
+
+impl AtHomeReport {
+    pub async fn send(&self, client: Arc<Client>) -> Result<Response> {
+        if !self.url.as_str().contains("mangadex.org") {
+            match client
+                .post("https://api.mangadex.network/report")
+                .json(self)
+                .send()
+                .await
+            {
+                Ok(d) => Result::Ok(d),
+                Err(e) => Result::Err(Error::RequestError(e)),
+            }
+        } else {
+            Result::Err(Error::UnexpectedError(anyhow::Error::msg(
+                "the mangadex.org pattern found!",
+            )))
+        }
+    }
+}

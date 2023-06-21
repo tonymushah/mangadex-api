@@ -25,6 +25,7 @@ impl DownloadBuilder {
             .http_client(self.http_client.clone())
             .id(id)
             .force_port_443(false)
+            .retries(0 as u16)
             .report(false)
     }
 
