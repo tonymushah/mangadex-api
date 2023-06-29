@@ -8,6 +8,7 @@ use crate::HttpClientRef;
 
 use self::{chapter::ChapterDownloadBuilder, cover::{CoverDownloadBuilder, CoverQuality}};
 
+
 pub type DownloadElement = (String, Option<Bytes>);
 
 #[derive(Debug)]

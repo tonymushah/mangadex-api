@@ -271,7 +271,7 @@ async fn download_file(
         .await?;
 
     let mut file_buffer = File::create(output.join(file_name))?;
-    let _ = file_buffer.write_all(&image_bytes)?;
+    file_buffer.write_all(&image_bytes)?;
 
     Ok(())
 }

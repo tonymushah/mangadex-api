@@ -7,11 +7,11 @@ pub enum DownloadMode {
     DataSaver,
 }
 
-impl Into<String> for DownloadMode {
-    fn into(self) -> String {
-        match self {
-            Self::Normal => "data",
-            Self::DataSaver => "data-saver",
+impl From<DownloadMode> for String {
+    fn from(val: DownloadMode) -> Self {
+        match val {
+            DownloadMode::Normal => "data",
+            DownloadMode::DataSaver => "data-saver",
         }
         .to_string()
     }

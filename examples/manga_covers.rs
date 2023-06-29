@@ -68,7 +68,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     let client = MangaDexClient::default();
 
     if args.output.is_some() && !args.output.as_ref().unwrap().is_dir() {
-        let _ = create_dir(&args.output.as_ref().unwrap());
+        let _ = create_dir(args.output.as_ref().unwrap());
     }
 
     let manga_covers = client
@@ -166,7 +166,7 @@ async fn download_file(
         .await?;
 
     let mut file_buffer = File::create(output.join(file_name))?;
-    let _ = file_buffer.write_all(&image_bytes)?;
+    file_buffer.write_all(&image_bytes)?;
 
     Ok(())
 }

@@ -108,7 +108,7 @@ impl ChapterDownload {
     }
     pub async fn download_stream(
         &self,
-    ) -> Result<impl Stream<Item = (Result<DownloadElement>, usize, usize)> + '_> {
+    ) -> Result<impl Stream<Item = (Result<DownloadElement>, usize, usize, String)> + '_> {
         let file_names = self.build_at_home_urls().await?;
         let mut index: usize = 0;
         let len = file_names.len();
@@ -116,7 +116,7 @@ impl ChapterDownload {
             for filename in file_names {
                 let data = filename.download().await;
                 index += 1;
-                yield (data, index, len);
+                yield (data, index, len, filename.filename.clone());
             }
         })
     }
@@ -124,7 +124,7 @@ impl ChapterDownload {
     pub async fn download_stream_with_checker<C>(
         &self,
         should_check_: C,
-    ) -> Result<impl Stream<Item = (Result<DownloadElement>, usize, usize)>>
+    ) -> Result<impl Stream<Item = (Result<DownloadElement>, usize, usize, String)>>
     where
         C: FnMut(&AtHomePreDownloadImageData, &Response) -> bool + std::marker::Copy,
     {
@@ -135,7 +135,7 @@ impl ChapterDownload {
             for filename in file_names {
                 let data = filename.download_with_checker(should_check_).await;
                 index += 1;
-                yield (data, index, len);
+                yield (data, index, len, filename.filename.clone());
             }
         })
     }
@@ -196,7 +196,7 @@ mod tests {
             .build()?;
         let chapter_files = download.download_stream().await?;
         pin!(chapter_files);
-        while let Some((data, _, _)) = chapter_files.next().await {
+        while let Some((data, _, _, _)) = chapter_files.next().await {
             let (filename, bytes_) = data?;
             if let Some(bytes) = bytes_ {
                 let mut file: File =
@@ -248,7 +248,7 @@ mod tests {
             })
             .await?;
         pin!(chapter_files);
-        while let Some((data, index, len)) = chapter_files.next().await {
+        while let Some((data, index, len, _)) = chapter_files.next().await {
             print!("{index} - {len} : ");
             if let core::result::Result::Ok(resp) = data {
                 let (filename, bytes_) = resp ;
