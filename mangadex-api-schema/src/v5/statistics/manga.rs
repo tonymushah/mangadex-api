@@ -2,10 +2,13 @@
 
 use std::collections::HashMap;
 
-use serde::{Deserialize};
+use mangadex_api_types::ResultType;
+use serde::Deserialize;
 use uuid::Uuid;
 
 use crate::FromResponse;
+
+use super::Comments;
 
 #[derive(Clone, Debug, Deserialize)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -13,6 +16,7 @@ use crate::FromResponse;
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaStatisticsObject {
+    pub result : ResultType,
     /// JSON object of `MangaId-StatisticsObject`.
     pub statistics: HashMap<Uuid, MangaStatistics>,
 }
@@ -26,6 +30,7 @@ pub struct MangaStatistics {
     // The API documentation has placed this within the `rating` object as of MangaDex API 5.4.9 but
     // the actual response has this field at this level.
     pub follows: u64,
+    pub comments : Option<Comments>
 }
 
 #[derive(Clone, Debug, Deserialize)]

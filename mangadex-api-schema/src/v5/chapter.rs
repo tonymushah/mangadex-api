@@ -1,6 +1,5 @@
-use serde::{Deserialize};
+use serde::Deserialize;
 use url::Url;
-use uuid::Uuid;
 
 use crate::deserialize_null_default;
 use mangadex_api_types::{Language, MangaDexDateTime};
@@ -23,8 +22,6 @@ pub struct ChapterAttributes {
     pub pages: u32,
     /// Language the text is in.
     pub translated_language: Language,
-    /// User ID (UUID) who uploaded the chapter.
-    pub uploader: Option<Uuid>,
     /// Denotes a chapter that links to an external source.
     #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub external_url: Option<Url>,

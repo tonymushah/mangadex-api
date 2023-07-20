@@ -4,7 +4,7 @@ use std::collections::HashMap;
 #[cfg(feature = "serialize")]
 use serde::Serialize;
 
-use serde::{Deserialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
 use crate::v5::{chapter_aggregate_array_or_map, volume_aggregate_array_or_map};
@@ -26,7 +26,7 @@ impl Into<MangaAggregatSer> for MangaAggregate {
         for volume in self.volumes{
             volumes.insert(volume.volume.clone(), Into::into(volume.clone()));
         }
-        MangaAggregatSer { volumes: volumes }
+        MangaAggregatSer { volumes }
     }
 }
 
@@ -79,7 +79,7 @@ impl Into<VolumeAggregateSer> for VolumeAggregate{
         for chapter in self.chapters {
             chapters.insert(chapter.chapter.clone(), chapter);
         }
-        VolumeAggregateSer { volume: self.volume, count: self.count, chapters: chapters }
+        VolumeAggregateSer { volume: self.volume, count: self.count, chapters }
     }
 }
 

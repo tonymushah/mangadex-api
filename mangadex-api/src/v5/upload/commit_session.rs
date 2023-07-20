@@ -325,7 +325,6 @@ mod tests {
         assert_eq!(res.attributes.chapter, Some("2.5".to_string()));
         assert_eq!(res.attributes.pages, 4);
         assert_eq!(res.attributes.translated_language, Language::English);
-        assert_eq!(res.attributes.uploader, Some(uploader_id));
         assert_eq!(res.attributes.external_url, None);
         assert_eq!(res.attributes.version, 1);
         assert_eq!(res.attributes.created_at.to_string(), datetime.to_string());

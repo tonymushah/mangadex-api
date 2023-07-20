@@ -28,119 +28,18 @@ pub mod upload_session_file;
 pub mod user;
 pub mod user_report;
 pub mod user_settings;
+mod core;
 
+pub use self::core::*;
 use std::collections::HashMap;
 
 use mangadex_api_types as types;
-use serde::{Deserialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
-use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
-pub use at_home_server::AtHomeServer;
-pub use auth_tokens::AuthTokens;
-pub use author::AuthorAttributes;
-pub use chapter::ChapterAttributes;
-pub use check_token_response::CheckTokenResponse;
-pub use check_username_available::CheckUsernameAvailableResponse;
-pub use cover::CoverAttributes;
-pub use custom_list::CustomListAttributes;
-pub use is_following_response::IsFollowingResponse;
-pub use legacy_id_mapping::LegacyMappingIdAttributes;
-pub use login_response::LoginResponse;
-pub use manga::MangaAttributes;
-pub use manga_aggregate::MangaAggregate;
-pub use manga_links::MangaLinks;
-pub use manga_read_markers::{MangaReadMarkers, UngroupedMangaReadMarkers};
-pub use manga_reading_status::MangaReadingStatus;
-pub use manga_reading_statuses::MangaReadingStatuses;
-pub use manga_relation::MangaRelationAttributes;
-pub use ratings::RatingsList;
-pub use refresh_token_response::RefreshTokenResponse;
-pub use report::ReportReasonAttributes;
-pub use scanlation_group::ScanlationGroupAttributes;
-pub use statistics::manga::MangaStatisticsObject;
-pub use tag::TagAttributes;
-pub use types::error::schema::MangaDexErrorResponse;
-use types::error::Result;
-use types::{Language, MangaRelation, RelationshipType, ResponseType};
-pub use upload_session::UploadSessionResponse;
-pub use upload_session_file::{UploadSessionFileAttributes, UploadSessionFileData};
-pub use user::UserAttributes;
-pub use user_report::UserReportAttributes;
-pub use user_settings::UserSettingsAttributes;
+use types::{Language, MangaRelation, RelationshipType, ResponseType, ResultType};
 
-pub type AtHomeServerResponse = Result<AtHomeServer>;
-
-pub type AuthorObject = ApiObject<AuthorAttributes>;
-pub type AuthorData = ApiData<AuthorObject>;
-pub type AuthorResponse = Result<AuthorData>;
-pub type AuthorListResponse = Result<Results<AuthorObject>>;
-
-pub type ChapterObject = ApiObject<ChapterAttributes>;
-pub type ChapterData = ApiData<ChapterObject>;
-pub type ChapterResponse = Result<ChapterData>;
-pub type ChapterListResponse = Result<Results<ChapterObject>>;
-
-pub type CoverObject = ApiObject<CoverAttributes>;
-pub type CoverData = ApiData<CoverObject>;
-pub type CoverResponse = Result<CoverData>;
-pub type CoverListResponse = Result<Results<CoverObject>>;
-
-pub type CustomListObject = ApiObject<CustomListAttributes>;
-pub type CustomListData = ApiData<CustomListObject>;
-pub type CustomListResponse = Result<CustomListData>;
-pub type CustomListListResponse = Result<Results<CustomListObject>>;
-
-pub type GroupObject = ApiObject<ScanlationGroupAttributes>;
-pub type GroupData = ApiData<GroupObject>;
-pub type GroupResponse = Result<GroupData>;
-pub type GroupListResponse = Result<Results<GroupObject>>;
-
-pub type IdMappingObject = ApiObject<LegacyMappingIdAttributes>;
-pub type IdMappingData = ApiData<IdMappingObject>;
-pub type IdMappingListResponse = Result<Results<IdMappingObject>>;
-
-pub type MangaObject = ApiObject<MangaAttributes>;
-pub type MangaData = ApiData<MangaObject>;
-pub type MangaResponse = Result<MangaData>;
-pub type MangaListResponse = Result<Results<MangaObject>>;
-
-pub type MangaAggregateResponse = Result<MangaAggregate>;
-
-pub type UngroupedMangaReadMarkersResponse = Result<UngroupedMangaReadMarkers>;
-pub type MangaReadMarkersResponse = Result<MangaReadMarkers>;
-
-pub type MangaReadingStatusResponse = Result<MangaReadingStatus>;
-pub type MangaReadingStatusesResponse = Result<MangaReadingStatuses>;
-
-pub type MangaRelationObject = ApiObject<MangaRelationAttributes>;
-pub type MangaRelationListResponse = Result<Results<MangaRelationObject>>;
-
-pub type MangaStatisticsResponse = Result<MangaStatisticsObject>;
-
-pub type RatingsResponse = Result<RatingsList>;
-
-pub type ReportReasonObject = ApiObjectNoRelationships<ReportReasonAttributes>;
-pub type ReportReasonListResponse = Result<Results<ReportReasonObject>>;
-
-pub type TagObject = ApiObject<TagAttributes>;
-pub type TagData = ApiData<TagObject>;
-pub type TagResponse = Result<TagData>;
-pub type TagListResponse = Result<Results<TagObject>>;
-
-pub type UploadSessionFileObject = ApiObject<UploadSessionFileAttributes>;
-pub type UploadSessionFileResponse = Result<UploadSessionFileData<UploadSessionFileObject>>;
-
-pub type UserObject = ApiObject<UserAttributes>;
-pub type UserData = ApiData<UserObject>;
-pub type UserResponse = Result<UserData>;
-pub type UserListResponse = Result<Results<UserObject>>;
-
-pub type UserReportsObject = ApiObject<UserReportAttributes>;
-pub type UserReportsData = ApiData<UserReportsObject>;
-pub type UserReportsListResponse = Result<Results<UserReportsObject>>;
-
-pub type UserSettingsResponse = Result<UserSettingsAttributes>;
+pub(crate) use crate::ApiObject;
 
 // TODO: Find a way to reduce the boilerplate for this.
 // `struct-variant` (https://docs.rs/struct-variant) is a potential candidate for this.
@@ -184,10 +83,12 @@ pub struct Relationship {
     /// <https://api.mangadex.org/docs/static-data/#manga-related-enum>
     ///
     /// This is only present for a Manga entity and a Manga relationship.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub related: Option<MangaRelation>,
     /// Contains object attributes for the type.
     ///
     /// Present if [Reference Expansion](https://api.mangadex.org/docs/reference-expansion/) is applied.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub attributes: Option<RelatedAttributes>,
 }
 
@@ -195,6 +96,7 @@ pub struct Relationship {
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct Results<T> {
+    pub result: ResultType,
     pub response: ResponseType,
     pub data: Vec<T>,
     pub limit: u32,
@@ -264,7 +166,7 @@ pub(crate) mod localizedstring_array_or_map {
 /// 
 /// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod volume_aggregate_array_or_map {
-    use std::collections::{BTreeMap};
+    use std::collections::BTreeMap;
     #[cfg(feature = "serialize")]
     use serde::Serialize;
     #[cfg(feature = "serialize")]

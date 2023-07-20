@@ -186,7 +186,6 @@ mod tests {
         assert_eq!(chapter.attributes.chapter, Some("1.5".to_string()));
         assert_eq!(chapter.attributes.pages, 4);
         assert_eq!(chapter.attributes.translated_language, Language::English);
-        assert_eq!(chapter.attributes.uploader, Some(uploader_id));
         assert_eq!(chapter.attributes.version, 1);
         assert_eq!(
             chapter.attributes.created_at.to_string(),

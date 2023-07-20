@@ -16,6 +16,7 @@ pub struct MangaLinks {
     /// - `https://www.amazon.co.jp/gp/product/B074CHFLT2`
     #[serde(rename = "amz")]
     #[cfg_attr(feature = "specta", specta(type = Option<String>))]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub amazon: Option<Url>,
 
     /// AniList ID.
@@ -26,6 +27,7 @@ pub struct MangaLinks {
     ///
     /// - `112847`
     #[serde(rename = "al")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub anilist: Option<String>,
 
     /// Anime-Planet slug.
@@ -37,6 +39,7 @@ pub struct MangaLinks {
     /// - `age`
     /// - `under-grand-hotel`
     #[serde(rename = "ap")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub anime_planet: Option<String>,
 
     /// BookWalker URI.
@@ -49,6 +52,7 @@ pub struct MangaLinks {
     ///
     /// - `series/289459`
     #[serde(rename = "bw")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub book_walker: Option<BookWalker>,
     /// CDJapan URL.
     ///
@@ -59,6 +63,7 @@ pub struct MangaLinks {
     /// - `http://www.cdjapan.co.jp/product/NEOBK-1963980`
     /// - `http://www.cdjapan.co.jp/searches?term.cat_id=UD-14-06-03&page=&agg_use=cat_ids_hierarchal_treeish_foldable&term.media_format=&f=major&q=%E7%B5%B6%E5%AF%BE%E3%81%AB%E3%81%A8%E3%81%8D%E3%82%81%E3%81%84%E3%81%A6%E3%81%AF%E3%81%84%E3%81%91%E3%81%AA%E3%81%84%EF%BC%81&f=major&q=&f=major&q=&order=scoreboost_cdj&range.rel=&range.sale_price=&term.caption=&term.audio_language=`
     #[serde(rename = "cdj")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cd_japan: Option<String>,
 
     /// EbookJapan URL.
@@ -70,6 +75,7 @@ pub struct MangaLinks {
     /// - `https://ebookjapan.yahoo.co.jp/books/444727/A001841690/`
     /// - `https://www.ebookjapan.jp/ebj/371654/`
     #[serde(rename = "ebj")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub ebook_japan: Option<Url>,
 
@@ -81,6 +87,7 @@ pub struct MangaLinks {
     ///
     /// - `https://kodanshacomics.com/series/we-must-never-fall-in-love/`
     #[serde(rename = "engtl")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub english_translation: Option<String>,
 
     /// Kitsu ID.
@@ -96,6 +103,7 @@ pub struct MangaLinks {
     ///
     /// - `23040`
     #[serde(rename = "kt")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub kitsu: Option<String>,
 
     /// MangaUpdates ID.
@@ -106,6 +114,7 @@ pub struct MangaLinks {
     ///
     /// - `157722`
     #[serde(rename = "mu")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub manga_updates: Option<MangaUpdates>,
 
     /// MyAnimeList ID.
@@ -116,6 +125,7 @@ pub struct MangaLinks {
     ///
     /// - `12648`
     #[serde(rename = "mal")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub my_anime_list: Option<MyAnimeList>,
 
     /// NovelUpdates slug.
@@ -126,6 +136,7 @@ pub struct MangaLinks {
     ///
     /// - `an-active-hunter-in-hokkaido-has-been-thrown-into-a-different-world`
     #[serde(rename = "nu")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub novel_updates: Option<NovelUpdates>,
 
     /// Raw URL.
@@ -137,6 +148,7 @@ pub struct MangaLinks {
     /// - `https://manga.bilibili.com/m/detail/mc29443?from=manga_index`
     /// - `https://www.sunday-webry.com/detail-yoru.php?title_id=1282c`
     #[cfg_attr(feature = "specta", specta(type = Option<String>))]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub raw: Option<Url>,
 }
 

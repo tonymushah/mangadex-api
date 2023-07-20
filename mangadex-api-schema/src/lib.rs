@@ -1,12 +1,12 @@
 //! MangaDex API response object types.
 
 pub mod v5;
-
+mod bind;
 use std::borrow::Cow;
 
 use mangadex_api_types::error::schema::MangaDexErrorResponse;
 use mangadex_api_types::error::Error;
-use mangadex_api_types::{RelationshipType, ResponseType};
+use mangadex_api_types::{RelationshipType, ResponseType, ResultType};
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Deserializer, Serialize};
 use uuid::Uuid;
@@ -86,6 +86,7 @@ impl<T, E> ApiResult<T, E> {
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiData<T> {
+    pub result : ResultType,
     pub response: ResponseType,
     pub data: T,
 }
