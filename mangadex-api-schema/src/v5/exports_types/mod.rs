@@ -37,37 +37,23 @@ use super::statistics::chapter::ChapterStatisticsObject;
 use super::statistics::groups::GroupStatisticsObject;
 use crate::v5::Results;
 
-pub type AtHomeServerResponse = Result<AtHomeServer>;
+mod at_home;
+pub use at_home::*;
 
-pub type AuthorObject = ApiObject<AuthorAttributes>;
-pub type AuthorData = ApiData<AuthorObject>;
-pub type AuthorResponse = Result<AuthorData>;
-pub type AuthorCollection = Results<AuthorObject>;
-pub type AuthorListResponse = Result<AuthorCollection>;
+mod author;
+pub use author::*;
 
-pub type ChapterObject = ApiObject<ChapterAttributes>;
-pub type ChapterData = ApiData<ChapterObject>;
-pub type ChapterResponse = Result<ChapterData>;
-pub type ChapterCollection = Results<ChapterObject>;
-pub type ChapterListResponse = Result<ChapterCollection>;
+mod chapter;
+pub use chapter::*;
 
-pub type CoverObject = ApiObject<CoverAttributes>;
-pub type CoverData = ApiData<CoverObject>;
-pub type CoverResponse = Result<CoverData>;
-pub type CoverCollection = Results<CoverObject>;
-pub type CoverListResponse = Result<CoverCollection>;
+mod cover;
+pub use cover::*;
 
-pub type CustomListObject = ApiObject<CustomListAttributes>;
-pub type CustomListData = ApiData<CustomListObject>;
-pub type CustomListResponse = Result<CustomListData>;
-pub type CustomListCollection = Results<CustomListObject>;
-pub type CustomListListResponse = Result<CustomListCollection>;
+mod custom_list;
+pub use custom_list::*;
 
-pub type GroupObject = ApiObject<ScanlationGroupAttributes>;
-pub type GroupData = ApiData<GroupObject>;
-pub type GroupResponse = Result<GroupData>;
-pub type GroupCollection = Results<GroupObject>;
-pub type GroupListResponse = Result<GroupCollection>;
+mod group;
+pub use group::*;
 
 pub type IdMappingObject = ApiObject<LegacyMappingIdAttributes>;
 pub type IdMappingData = ApiData<IdMappingObject>;
@@ -93,10 +79,6 @@ pub type MangaRelationCollection = Results<MangaRelationObject>;
 pub type MangaRelationListResponse = Result<MangaRelationCollection>;
 
 pub type MangaStatisticsResponse = Result<MangaStatisticsObject>;
-
-pub type ChapterStatisticsResponse = Result<ChapterStatisticsObject>;
-
-pub type GroupStatisticsResponse = Result<GroupStatisticsObject>;
 
 pub type RatingsResponse = Result<RatingsList>;
 

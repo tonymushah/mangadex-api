@@ -28,9 +28,9 @@ pub mod upload_session_file;
 pub mod user;
 pub mod user_report;
 pub mod user_settings;
-mod core;
+mod exports_types;
 
-pub use self::core::*;
+pub use self::exports_types::*;
 use std::collections::HashMap;
 
 use mangadex_api_types as types;
