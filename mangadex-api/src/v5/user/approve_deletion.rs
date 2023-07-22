@@ -37,23 +37,30 @@ use mangadex_api_types::error::Result;
 /// Approve the deletion of a user.
 ///
 /// Makes a request to `POST /user/delete/{code}`.
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-pub struct ApproveUserDeletion<'a> {
+#[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+#[cfg(feature = "legacy-account")]
+pub struct ApproveUserDeletion {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub code: &'a Uuid,
+    pub code: Uuid,
 }
 
 endpoint! {
     POST ("/user/delete/{}", code),
-    #[no_data] ApproveUserDeletion<'_>,
+    #[no_data] ApproveUserDeletion,
     #[discard_result] Result<NoData>
 }
 
@@ -90,7 +97,7 @@ mod tests {
         mangadex_client
             .user()
             .approve_deletion()
-            .code(&code)
+            .code(code)
             .build()?
             .send()
             .await?;

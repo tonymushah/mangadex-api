@@ -55,19 +55,24 @@ use mangadex_api_types::{ContentRating, Demographic, Language, MangaLinks, Manga
 ///
 /// All fields that are not changing should still have the field populated with the old information
 /// so that it is not set as `null` on the server.
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[non_exhaustive]
-pub struct UpdateManga<'a> {
+pub struct UpdateManga {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub manga_id: &'a Uuid,
+    pub manga_id: Uuid,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
@@ -92,10 +97,10 @@ pub struct UpdateManga<'a> {
     pub original_language: Option<Language>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub last_volume: Option<Option<&'a str>>,
+    pub last_volume: Option<Option<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub last_chapter: Option<Option<&'a str>>,
+    pub last_chapter: Option<Option<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub publication_demographic: Option<Option<Demographic>>,
@@ -116,14 +121,14 @@ pub struct UpdateManga<'a> {
     pub tags: Option<Vec<Tag>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub primary_cover: Option<Option<&'a Uuid>>,
+    pub primary_cover: Option<Option<Uuid>>,
     /// >= 1
     pub version: u32,
 }
 
 endpoint! {
     PUT ("/manga/{}", manga_id),
-    #[body auth] UpdateManga<'_>,
+    #[body auth] UpdateManga,
     #[flatten_result] MangaResponse
 }
 
@@ -228,7 +233,7 @@ mod tests {
         let _ = mangadex_client
             .manga()
             .update()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .title(title)
             .version(2_u32)
             .build()?
@@ -326,7 +331,7 @@ mod tests {
         let res = mangadex_client
             .manga()
             .update()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .original_language(Language::Japanese)
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
@@ -430,7 +435,7 @@ mod tests {
         let res = mangadex_client
             .manga()
             .update()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .original_language(Language::Japanese)
             .last_volume(None)
             .status(MangaStatus::Ongoing)
@@ -535,9 +540,9 @@ mod tests {
         let res = mangadex_client
             .manga()
             .update()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .original_language(Language::Japanese)
-            .last_volume("1")
+            .last_volume(Some("1".to_string()))
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
             .tags(vec![Tag::Action])

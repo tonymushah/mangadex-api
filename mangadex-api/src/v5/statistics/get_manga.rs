@@ -37,24 +37,29 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::MangaStatisticsResponse;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct GetMangaStatistics<'a> {
+pub struct GetMangaStatistics {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    pub manga_id: &'a Uuid,
+    pub manga_id: Uuid,
 }
 
 endpoint! {
     GET ("/statistics/manga/{}", manga_id),
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is
     // available to guests.
-    #[no_data] GetMangaStatistics<'_>,
+    #[no_data] GetMangaStatistics,
     #[flatten_result] MangaStatisticsResponse
 }
 
@@ -112,7 +117,7 @@ mod tests {
         let res = mangadex_client
             .statistics()
             .get_manga()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;

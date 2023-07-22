@@ -44,14 +44,19 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::UserListResponse;
 use mangadex_api_types::UserSortOrder;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), default, pattern = "owned")]
 #[non_exhaustive]
-pub struct ListUser<'a> {
+pub struct ListUser {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -62,14 +67,14 @@ pub struct ListUser<'a> {
     #[serde(rename = "ids")]
     pub user_ids: Vec<Uuid>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub username: Option<&'a str>,
+    pub username: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<UserSortOrder>,
 }
 
 endpoint! {
     GET "/user",
-    #[query auth] ListUser<'_>,
+    #[query auth] ListUser,
     #[flatten_result] UserListResponse
 }
 

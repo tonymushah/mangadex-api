@@ -48,25 +48,30 @@ use crate::HttpClientRef;
 /// This requires authentication.
 ///
 /// Makes a request to `POST /upload/begin/{id}`.
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-pub struct StartEditChapterSession<'a> {
+pub struct StartEditChapterSession {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub chapter_id: &'a Uuid,
+    pub chapter_id: Uuid,
 
     pub version: u32,
 }
 
 endpoint! {
     POST ("/upload/begin/{}", chapter_id),
-    #[body auth] StartEditChapterSession<'_>,
+    #[body auth] StartEditChapterSession,
     UploadSessionResponse
 }
 
@@ -129,7 +134,7 @@ mod tests {
         let res = mangadex_client
             .upload()
             .start_edit_chapter_session()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .version(2_u32)
             .build()?
             .send()

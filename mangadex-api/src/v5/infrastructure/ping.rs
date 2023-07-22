@@ -32,7 +32,11 @@ use mangadex_api_types::error::{Error, Result};
 ///
 /// Makes a request to `GET /ping`.
 // It doesn't make much sense to make this a builder pattern but for consistency, it is.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct Ping {
@@ -40,6 +44,7 @@ pub struct Ping {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 }
 

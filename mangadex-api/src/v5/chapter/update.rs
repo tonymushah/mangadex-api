@@ -46,32 +46,37 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::ChapterResponse;
 use mangadex_api_types::Language;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct UpdateChapter<'a> {
+pub struct UpdateChapter {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub chapter_id: &'a Uuid,
+    pub chapter_id: Uuid,
 
     /// <= 255 characters in length.
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub title: Option<Option<&'a str>>,
+    pub title: Option<String>,
     /// Volume number.
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub volume: Option<Option<&'a str>>,
+    pub volume: Option<String>,
     /// Chapter number.
     ///
     /// <= 8 characters in length.
@@ -79,7 +84,7 @@ pub struct UpdateChapter<'a> {
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub chapter: Option<Option<&'a str>>,
+    pub chapter: Option<Option<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub translated_language: Option<Language>,
@@ -92,7 +97,7 @@ pub struct UpdateChapter<'a> {
 
 endpoint! {
     PUT ("/chapter/{}", chapter_id),
-    #[body auth] UpdateChapter<'_>,
+    #[body auth] UpdateChapter,
     #[flatten_result] ChapterResponse
 }
 
@@ -168,7 +173,7 @@ mod tests {
         let _ = mangadex_client
             .chapter()
             .update()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .version(2_u32)
             .build()?
             .send()
@@ -234,7 +239,7 @@ mod tests {
         let _ = mangadex_client
             .chapter()
             .update()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .version(2_u32)
             .build()?
             .send()
@@ -300,8 +305,7 @@ mod tests {
         let _ = mangadex_client
             .chapter()
             .update()
-            .chapter_id(&chapter_id)
-            .title(None)
+            .chapter_id(chapter_id)
             .version(2_u32)
             .build()?
             .send()
@@ -368,7 +372,7 @@ mod tests {
         let _ = mangadex_client
             .chapter()
             .update()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .title(chapter_title.as_str())
             .version(2_u32)
             .build()?

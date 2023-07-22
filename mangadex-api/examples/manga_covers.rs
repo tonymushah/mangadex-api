@@ -95,7 +95,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let manga = client
             .manga()
             .get()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;

@@ -45,23 +45,28 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::{AuthorResponse, LocalizedString};
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct UpdateAuthor<'a> {
+pub struct UpdateAuthor {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub author_id: &'a Uuid,
+    pub author_id: Uuid,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub name: Option<&'a str>,
+    pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub biography: Option<LocalizedString>,
@@ -149,7 +154,7 @@ pub struct UpdateAuthor<'a> {
 
 endpoint! {
     PUT ("/author/{}", author_id),
-    #[body auth] UpdateAuthor<'_>,
+    #[body auth] UpdateAuthor,
     #[flatten_result] AuthorResponse
 }
 
@@ -238,7 +243,7 @@ mod tests {
         let res = mangadex_client
             .author()
             .update()
-            .author_id(&author_id)
+            .author_id(author_id)
             .website(Some(Url::parse("https://example.org").unwrap()))
             .version(2u32)
             .build()?

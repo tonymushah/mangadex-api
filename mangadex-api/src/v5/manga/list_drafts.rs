@@ -44,14 +44,19 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::MangaListResponse;
 use mangadex_api_types::{MangaDraftsSortOrder, MangaState, ReferenceExpansionResource};
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), default, pattern = "owned")]
 #[non_exhaustive]
-pub struct ListMangaDrafts<'a> {
+pub struct ListMangaDrafts {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     /// Minimum: 1
@@ -63,16 +68,16 @@ pub struct ListMangaDrafts<'a> {
     /// >= 0
     pub offset: Option<u32>,
     #[deprecated(since = "1.2.1", note = "MangaDex removed this in 5.4.9 of their API")]
-    pub user: Option<&'a Uuid>,
-    pub state: Option<&'a MangaState>,
-    pub order: Option<&'a MangaDraftsSortOrder>,
+    pub user: Option<Uuid>,
+    pub state: Option<MangaState>,
+    pub order: Option<MangaDraftsSortOrder>,
     #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 
 endpoint! {
     GET "/manga/draft",
-    #[query auth] ListMangaDrafts<'_>,
+    #[query auth] ListMangaDrafts,
     #[flatten_result] MangaListResponse
 }
 

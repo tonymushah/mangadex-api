@@ -37,6 +37,10 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::MangaStatisticsResponse;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), default, pattern = "owned")]
@@ -45,6 +49,7 @@ pub struct FindMangaStatistics {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[builder(setter(each = "manga_id"))]

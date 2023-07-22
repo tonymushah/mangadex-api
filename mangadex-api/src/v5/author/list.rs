@@ -31,23 +31,28 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::AuthorListResponse;
 use mangadex_api_types::{AuthorSortOrder, ReferenceExpansionResource};
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), default, pattern = "owned")]
 #[non_exhaustive]
-pub struct ListAuthor<'a> {
+pub struct ListAuthor {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     pub limit: Option<u32>,
     pub offset: Option<u32>,
     #[serde(rename = "ids")]
     #[builder(setter(each = "add_author"))]
-    pub author_ids: Vec<&'a Uuid>,
-    pub name: Option<&'a str>,
+    pub author_ids: Vec<Uuid>,
+    pub name: Option<String>,
     pub order: Option<AuthorSortOrder>,
     #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
@@ -55,7 +60,7 @@ pub struct ListAuthor<'a> {
 
 endpoint! {
     GET "/author",
-    #[query] ListAuthor<'_>,
+    #[query] ListAuthor,
     #[flatten_result] AuthorListResponse
 }
 

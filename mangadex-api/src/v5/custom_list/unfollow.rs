@@ -40,10 +40,14 @@ use mangadex_api_schema::NoData;
 use serde::Serialize;
 use uuid::Uuid;
 
-use mangadex_api_types::error::Result; 
 use crate::HttpClientRef;
+use mangadex_api_types::error::Result;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
@@ -52,6 +56,7 @@ pub struct UnfollowCustomList {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     /// CustomList ID.

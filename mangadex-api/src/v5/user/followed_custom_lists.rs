@@ -41,6 +41,10 @@ use serde::Serialize;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::CustomListListResponse;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned", default)]
@@ -49,6 +53,7 @@ pub struct GetFollowedCustomLists {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     /// Maximum number of custom lists to return.

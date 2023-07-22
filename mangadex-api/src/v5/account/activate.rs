@@ -33,24 +33,29 @@ use mangadex_api_types::error::Result;
 /// Activate an account.
 ///
 /// Makes a request to `POST /account/activate/{code}`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-pub struct ActivateAccount<'a> {
+pub struct ActivateAccount {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub code: &'a str,
+    pub code: String,
 }
 
 endpoint! {
     POST ("/account/activate/{}", code),
-    #[no_data] ActivateAccount<'_>,
+    #[no_data] ActivateAccount,
     #[discard_result] Result<NoData>
 }
 
@@ -84,7 +89,7 @@ mod tests {
         let _ = mangadex_client
             .account()
             .activate()
-            .code(code.to_string().as_str())
+            .code(code.to_string())
             .build()?
             .send()
             .await?;

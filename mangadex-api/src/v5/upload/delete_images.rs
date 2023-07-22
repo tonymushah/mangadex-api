@@ -48,24 +48,26 @@ use uuid::Uuid;
 use mangadex_api_types::error::Result; 
 use crate::HttpClientRef;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct DeleteImages<'a> {
+pub struct DeleteImages{
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
-    pub(crate) http_client: HttpClientRef,
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
+pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub session_id: &'a Uuid,
+    pub session_id: Uuid,
     #[builder(setter(each = "add_session_file_id"))]
     pub session_file_ids: Vec<Uuid>,
 }
 
 // MangaDex takes an array for the request body rather than a traditional JSON body for this endpoint.
-impl Endpoint for DeleteImages<'_> {
+impl Endpoint for DeleteImages {
     type Query = ();
     type Body = Vec<Uuid>;
     type Response = Result<NoData>;
@@ -87,7 +89,7 @@ impl Endpoint for DeleteImages<'_> {
     }
 }
 
-impl DeleteImages<'_> {
+impl DeleteImages {
     pub async fn send(&self) -> Result<NoData> {
         #[cfg(not(feature = "multi-thread"))]
         {
@@ -142,7 +144,7 @@ mod tests {
         let _ = mangadex_client
             .upload()
             .delete_images()
-            .session_id(&session_id)
+            .session_id(session_id)
             .add_session_file_id(session_file_id)
             .build()?
             .send()

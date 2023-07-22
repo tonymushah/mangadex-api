@@ -40,28 +40,33 @@ use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
 
-use mangadex_api_types::error::Result; 
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
+use mangadex_api_types::error::Result;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct DeleteCover<'a> {
+pub struct DeleteCover {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     /// Manga **or** Cover ID.
     #[serde(skip_serializing)]
-    pub cover_id: &'a Uuid,
+    pub cover_id: Uuid,
 }
 
 endpoint! {
     DELETE ("/cover/{}", cover_id),
-    #[no_data auth] DeleteCover<'_>,
+    #[no_data auth] DeleteCover,
     #[discard_result] Result<NoData>
 }
 
@@ -104,7 +109,7 @@ mod tests {
         mangadex_client
             .cover()
             .delete()
-            .cover_id(&cover_id)
+            .cover_id(cover_id)
             .build()?
             .send()
             .await?;

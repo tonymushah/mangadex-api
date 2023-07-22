@@ -49,23 +49,25 @@ use mangadex_api_types::error::Result;
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct DeleteMangaRating<'a> {
+pub struct DeleteMangaRating {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
-    pub(crate) http_client: HttpClientRef,
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
+pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub manga_id: &'a Uuid,
+    pub manga_id: Uuid,
 }
 
 endpoint! {
     DELETE ("/rating/{}", manga_id),
-    #[no_data auth] DeleteMangaRating<'_>,
+    #[no_data auth] DeleteMangaRating,
     #[discard_result] Result<NoData>
 }
 
@@ -109,7 +111,7 @@ mod tests {
         mangadex_client
             .rating()
             .delete_for_manga()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -148,7 +150,7 @@ mod tests {
         let res = mangadex_client
             .rating()
             .delete_for_manga()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await

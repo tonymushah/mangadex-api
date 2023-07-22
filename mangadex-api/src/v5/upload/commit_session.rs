@@ -50,66 +50,78 @@ use crate::HttpClientRef;
 use mangadex_api_types::error::{Error, Result};
 use mangadex_api_types::{Language, MangaDexDateTime};
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct CommitUploadSession<'a> {
+pub struct CommitUploadSession {
     /// This should never be set manually as this is only for internal use.
     #[serde(skip)]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub session_id: &'a Uuid,
+    pub session_id: Uuid,
 
-    chapter_draft: ChapterDraft<'a>,
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
+    chapter_draft: ChapterDraft,
     /// Ordered list of Upload Session File IDs.
     ///
     /// Any uploaded files that are not included in this list will be deleted.
     pub page_order: Vec<Uuid>,
 }
 
+#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize))]
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct ChapterDraft<'a> {
+pub struct ChapterDraft {
     /// Nullable
-    pub volume: Option<&'a str>,
+    pub volume: Option<String>,
     /// Nullable
-    pub chapter: Option<&'a str>,
+    pub chapter: Option<String>,
     /// Nullable
-    pub title: Option<&'a str>,
+    pub title: Option<String>,
     pub translated_language: Language,
     /// Must be a URL with "http(s)://".
     ///
     /// Nullable
-    pub external_url: Option<&'a Url>,
+    pub external_url: Option<Url>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub publish_at: Option<MangaDexDateTime>,
 }
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 /// Custom request builder to handle nested struct.
 #[derive(Debug, Serialize, Clone, Default)]
-pub struct CommitUploadSessionBuilder<'a> {
+pub struct CommitUploadSessionBuilder {
     #[serde(skip)]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    pub session_id: Option<&'a Uuid>,
+    pub session_id: Option<Uuid>,
     /// Ordered list of Upload Session File IDs.
     pub page_order: Vec<Uuid>,
 
     /// Nullable
-    pub volume: Option<&'a str>,
+    pub volume: Option<String>,
     /// Nullable
-    pub chapter: Option<&'a str>,
+    pub chapter: Option<String>,
     /// Nullable
-    pub title: Option<&'a str>,
+    pub title: Option<String>,
     pub translated_language: Option<Language>,
     /// Must be a URL with "http(s)://".
     ///
     /// Nullable
-    pub external_url: Option<&'a Url>,
+    pub external_url: Option<Url>,
     pub publish_at: Option<MangaDexDateTime>,
 }
 
-impl<'a> CommitUploadSessionBuilder<'a> {
+impl CommitUploadSessionBuilder {
     pub fn new(http_client: HttpClientRef) -> Self {
         Self {
             http_client,
@@ -118,7 +130,7 @@ impl<'a> CommitUploadSessionBuilder<'a> {
     }
 
     /// Specify the upload session ID to commit.
-    pub fn session_id(mut self, session_id: &'a Uuid) -> Self {
+    pub fn session_id(mut self, session_id: Uuid) -> Self {
         self.session_id = Some(session_id);
         self
     }
@@ -138,7 +150,7 @@ impl<'a> CommitUploadSessionBuilder<'a> {
     /// Specify the volume the chapter belongs to.
     ///
     /// Nullable
-    pub fn volume(mut self, volume: Option<&'a str>) -> Self {
+    pub fn volume(mut self, volume: Option<String>) -> Self {
         self.volume = volume;
         self
     }
@@ -146,7 +158,7 @@ impl<'a> CommitUploadSessionBuilder<'a> {
     /// Specify the chapter number the session is for.
     ///
     /// Nullable
-    pub fn chapter(mut self, chapter: Option<&'a str>) -> Self {
+    pub fn chapter(mut self, chapter: Option<String>) -> Self {
         self.chapter = chapter;
         self
     }
@@ -154,7 +166,7 @@ impl<'a> CommitUploadSessionBuilder<'a> {
     /// Specify the title for the chapter.
     ///
     /// Nullable
-    pub fn title(mut self, title: Option<&'a str>) -> Self {
+    pub fn title(mut self, title: Option<String>) -> Self {
         self.title = title;
         self
     }
@@ -172,7 +184,7 @@ impl<'a> CommitUploadSessionBuilder<'a> {
     /// Nullable
     ///
     /// This should not be used if chapter has images uploaded to MangaDex.
-    pub fn external_url(mut self, external_url: Option<&'a Url>) -> Self {
+    pub fn external_url(mut self, external_url: Option<Url>) -> Self {
         self.external_url = external_url;
         self
     }
@@ -197,7 +209,7 @@ impl<'a> CommitUploadSessionBuilder<'a> {
     }
 
     /// Finalize the changes to the request struct and return the new struct.
-    pub fn build(self) -> Result<CommitUploadSession<'a>> {
+    pub fn build(self) -> Result<CommitUploadSession> {
         if let Err(error) = self.validate() {
             return Err(Error::RequestBuilderError(error));
         }
@@ -224,7 +236,7 @@ impl<'a> CommitUploadSessionBuilder<'a> {
 
 endpoint! {
     PUT ("/upload/{}/commit", session_id),
-    #[body auth] CommitUploadSession<'_>,
+    #[body auth] CommitUploadSession,
     ChapterObject
 }
 
@@ -308,10 +320,10 @@ mod tests {
         let res = mangadex_client
             .upload()
             .commit_session()
-            .session_id(&session_id)
-            .volume(Some("1"))
-            .chapter(Some("2.5"))
-            .title(Some(&chapter_title))
+            .session_id(session_id)
+            .volume(Some("1".to_string()))
+            .chapter(Some("2.5".to_string()))
+            .title(Some(chapter_title.clone()))
             .translated_language(Language::English)
             .page_order(vec![session_file_id])
             .build()?
@@ -320,7 +332,7 @@ mod tests {
 
         assert_eq!(res.id, chapter_id);
         assert_eq!(res.type_, RelationshipType::Chapter);
-        assert_eq!(res.attributes.title, chapter_title);
+        assert_eq!(res.attributes.title, chapter_title.clone());
         assert_eq!(res.attributes.volume, Some("1".to_string()));
         assert_eq!(res.attributes.chapter, Some("2.5".to_string()));
         assert_eq!(res.attributes.pages, 4);

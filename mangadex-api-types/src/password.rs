@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
 use crate::error::{Error, Result};
 
@@ -6,7 +6,7 @@ const MIN_LEN: usize = 8;
 const MAX_LEN: usize = 1024;
 
 /// Type to ensure passwords sent to the API are valid.
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, Deserialize)]
 pub struct Password(String);
 
 impl Password {

@@ -34,18 +34,20 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::GroupResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct GetGroup<'a> {
+pub struct GetGroup {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
-    pub(crate) http_client: HttpClientRef,
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
+pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub group_id: &'a Uuid,
+    pub group_id: Uuid,
 
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
@@ -53,7 +55,7 @@ pub struct GetGroup<'a> {
 
 endpoint! {
     GET ("/group/{}", group_id),
-    #[query] GetGroup<'_>,
+    #[query] GetGroup,
     #[flatten_result] GroupResponse
 }
 
@@ -125,7 +127,7 @@ mod tests {
         let _ = mangadex_client
             .scanlation_group()
             .get()
-            .group_id(&group_id)
+            .group_id(group_id)
             .build()?
             .send()
             .await?;

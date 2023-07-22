@@ -46,66 +46,71 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::GroupResponse;
 use mangadex_api_types::{Language, MangaDexDuration};
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct UpdateGroup<'a> {
+pub struct UpdateGroup {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub group_id: &'a Uuid,
+    pub group_id: Uuid,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub name: Option<&'a str>,
+    pub name: Option<Option<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub leader: Option<&'a Uuid>,
+    pub leader: Option<Option<Uuid>>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub website: Option<Option<&'a str>>,
+    pub website: Option<Option<String>>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub irc_server: Option<Option<&'a str>>,
+    pub irc_server: Option<Option<String>>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub irc_channel: Option<Option<&'a str>>,
+    pub irc_channel: Option<Option<String>>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub discord: Option<Option<&'a str>>,
+    pub discord: Option<Option<String>>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub contact_email: Option<Option<&'a str>>,
+    pub contact_email: Option<Option<String>>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub description: Option<Option<&'a str>>,
+    pub description: Option<Option<String>>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub twitter: Option<Option<&'a Url>>,
+    pub twitter: Option<Option<Url>>,
     /// Regex: [^https:/\/www\.mangaupdates\.com\/(?:groups|publishers)\.html\?id=\d+](https://www.mangaupdates.com)
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub manga_updates: Option<Option<&'a Url>>,
+    pub manga_updates: Option<Option<Url>>,
     /// Languages the scanlation primarily translates or uploads works into.
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub focused_languages: Option<Option<Vec<Language>>>,
+    pub focused_languages: Option<Vec<Language>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub inactive: Option<bool>,
@@ -121,7 +126,7 @@ pub struct UpdateGroup<'a> {
 
 endpoint! {
     PUT ("/group/{}", group_id),
-    #[body auth] UpdateGroup<'_>,
+    #[body auth] UpdateGroup,
     #[flatten_result] GroupResponse
 }
 
@@ -200,7 +205,7 @@ mod tests {
         let _ = mangadex_client
             .scanlation_group()
             .update()
-            .group_id(&group_id)
+            .group_id(group_id)
             .version(2_u32)
             .build()?
             .send()

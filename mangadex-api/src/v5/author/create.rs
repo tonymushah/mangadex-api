@@ -44,18 +44,23 @@ use url::Url;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::{AuthorResponse, LocalizedString};
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct CreateAuthor<'a> {
+pub struct CreateAuthor {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    pub name: &'a str,
+    pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub biography: Option<LocalizedString>,
@@ -145,7 +150,7 @@ pub struct CreateAuthor<'a> {
 
 endpoint! {
     POST ("/author"),
-    #[body auth] CreateAuthor<'_>,
+    #[body auth] CreateAuthor,
     #[flatten_result] AuthorResponse
 }
 

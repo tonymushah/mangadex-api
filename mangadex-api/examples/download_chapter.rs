@@ -93,7 +93,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     let chapter = client
         .chapter()
         .get()
-        .chapter_id(&args.chapter_id)
+        .chapter_id(args.chapter_id)
         .build()?
         .send()
         .await?;
@@ -106,7 +106,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             let group = client
                 .scanlation_group()
                 .get()
-                .group_id(&r.id)
+                .group_id(r.id)
                 .build()?
                 .send()
                 .await?;
@@ -118,7 +118,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if scanlation_groups.is_empty() {
         for r in &chapter.data.relationships {
             if r.type_ == RelationshipType::User {
-                let user = client.user().get().user_id(&r.id).build()?.send().await?;
+                let user = client.user().get().user_id(r.id).build()?.send().await?;
 
                 users.push(user.data.attributes.username);
             }
@@ -165,7 +165,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     let at_home = client
         .at_home()
         .server()
-        .chapter_id(&args.chapter_id)
+        .chapter_id(args.chapter_id)
         .build()?
         .send()
         .await?;

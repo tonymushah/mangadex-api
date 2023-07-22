@@ -43,7 +43,11 @@ use mangadex_api_types::error::{Error, Result};
 /// Get a new session and refresh token.
 ///
 /// Makes a request to `POST /auth/refresh`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
@@ -52,6 +56,7 @@ pub struct RefreshToken {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     /// Refresh token.
@@ -82,7 +87,9 @@ impl RefreshToken {
         {
             let res = self.http_client.try_borrow()?.send_request(self).await??;
 
-            self.http_client.try_borrow_mut()?.set_auth_tokens(&res.token);
+            self.http_client
+                .try_borrow_mut()?
+                .set_auth_tokens(&res.token);
 
             Ok(res)
         }

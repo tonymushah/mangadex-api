@@ -51,27 +51,32 @@ use mangadex_api_types::error::Result;
 /// Mark multiple manga chapters as read and/or unread for the current user.
 ///
 /// Makes a request to `POST /manga/{id}/read`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-pub struct MarkChapterBatch<'a> {
+pub struct MarkChapterBatch{
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub manga_id: &'a Uuid,
+    pub manga_id: Uuid,
     #[builder(setter(each = "mark_chapter_read"), default)]
-    pub chapter_ids_read: Vec<&'a Uuid>,
+    pub chapter_ids_read: Vec<Uuid>,
     #[builder(setter(each = "mark_chapter_unread"), default)]
-    pub chapter_ids_unread: Vec<&'a Uuid>,
+    pub chapter_ids_unread: Vec<Uuid>,
 }
 
 endpoint! {
     POST ("/manga/{}/read", manga_id),
-    #[body auth] MarkChapterBatch<'_>,
+    #[body auth] MarkChapterBatch,
     #[discard_result] Result<NoData>
 }
 
@@ -120,9 +125,9 @@ mod tests {
         mangadex_client
             .chapter()
             .mark_batch()
-            .manga_id(&manga_id)
-            .mark_chapter_read(&read_chapter_id)
-            .mark_chapter_unread(&unread_chapter_id)
+            .manga_id(manga_id)
+            .mark_chapter_read(read_chapter_id)
+            .mark_chapter_unread(unread_chapter_id)
             .build()?
             .send()
             .await?;

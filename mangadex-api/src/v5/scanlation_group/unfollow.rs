@@ -40,27 +40,32 @@ use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
 
-use mangadex_api_types::error::Result; 
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
+use mangadex_api_types::error::Result;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct UnfollowGroup<'a> {
+pub struct UnfollowGroup {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub group_id: &'a Uuid,
+    pub group_id: Uuid,
 }
 
 endpoint! {
     DELETE ("/group/{}/follow", group_id),
-    #[no_data auth] UnfollowGroup<'_>,
+    #[no_data auth] UnfollowGroup,
     #[discard_result] Result<NoData>
 }
 
@@ -103,7 +108,7 @@ mod tests {
         mangadex_client
             .scanlation_group()
             .unfollow()
-            .group_id(&group_id)
+            .group_id(group_id)
             .build()?
             .send()
             .await?;

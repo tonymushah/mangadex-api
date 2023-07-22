@@ -34,19 +34,24 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::MangaAggregateResponse;
 use mangadex_api_types::Language;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct GetMangaAggregate<'a> {
+pub struct GetMangaAggregate {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub manga_id: &'a Uuid,
+    pub manga_id: Uuid,
 
     #[builder(setter(each = "add_language"), default)]
     pub translated_language: Vec<Language>,
@@ -56,7 +61,7 @@ pub struct GetMangaAggregate<'a> {
 
 endpoint! {
     GET ("/manga/{}/aggregate", manga_id),
-    #[query] GetMangaAggregate<'_>,
+    #[query] GetMangaAggregate,
     #[flatten_result] MangaAggregateResponse
 }
 
@@ -108,7 +113,7 @@ mod tests {
         let res = mangadex_client
             .manga()
             .aggregate()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -152,7 +157,7 @@ mod tests {
         let res = mangadex_client
             .manga()
             .aggregate()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -233,7 +238,7 @@ mod tests {
         let res = mangadex_client
             .manga()
             .aggregate()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;

@@ -54,7 +54,11 @@ use mangadex_api_types::Language;
 /// This requires authentication.
 ///
 /// Makes a request to `POST /cover/{id}`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
@@ -63,11 +67,12 @@ pub struct UploadCover<'a> {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     /// Manga **or** Cover ID.
     #[serde(skip_serializing)]
-    pub manga_id: &'a Uuid,
+    pub manga_id: Uuid,
 
     /// Image bytes.
     pub file: Cow<'static, [u8]>,
@@ -197,7 +202,7 @@ mod tests {
         let _ = mangadex_client
             .upload()
             .cover()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .file(file_bytes)
             .locale(Language::English)
             .build()?

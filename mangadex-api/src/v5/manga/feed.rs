@@ -37,19 +37,24 @@ use mangadex_api_types::{
     ReferenceExpansionResource,
 };
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct GetMangaFeed<'a> {
+pub struct GetMangaFeed {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub manga_id: &'a Uuid,
+    pub manga_id: Uuid,
 
     // `manga_id` cannot use the `Default` trait so these attributes have to be manually set.
     #[builder(default)]
@@ -66,10 +71,10 @@ pub struct GetMangaFeed<'a> {
     pub content_rating: Vec<ContentRating>,
     /// Groups to exclude from the results.
     #[builder(setter(each = "excluded_group"), default)]
-    pub excluded_groups: Vec<&'a Uuid>,
+    pub excluded_groups: Vec<Uuid>,
     /// Uploaders to exclude from the results.
     #[builder(setter(each = "excluded_uploader"), default)]
-    pub excluded_uploaders: Vec<&'a Uuid>,
+    pub excluded_uploaders: Vec<Uuid>,
     /// Flag to include future chapter updates in the results.
     ///
     /// Default: `IncludeFutureUpdates::Include` (1)
@@ -92,7 +97,7 @@ pub struct GetMangaFeed<'a> {
 
 endpoint! {
     GET ("/manga/{}/feed", manga_id),
-    #[query] GetMangaFeed<'_>,
+    #[query] GetMangaFeed,
     ChapterListResponse
 }
 
@@ -167,7 +172,7 @@ mod tests {
         let _ = mangadex_client
             .manga()
             .feed()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .limit(1u32)
             .build()?
             .send()

@@ -43,23 +43,30 @@ use mangadex_api_types::error::Result;
 use mangadex_api_types::Password;
 
 /// Update a user password.
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-pub struct UpdateUserPassword<'a> {
+#[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+#[cfg(feature = "legacy-account")]
+pub struct UpdateUserPassword {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    pub old_password: &'a Password,
-    pub new_password: &'a Password,
+    pub old_password: Password,
+    pub new_password: Password,
 }
 
 endpoint! {
     POST "/user/password",
-    #[body auth] UpdateUserPassword<'_>,
+    #[body auth] UpdateUserPassword,
     #[discard_result] Result<NoData>
 }
 
@@ -112,8 +119,8 @@ mod tests {
         mangadex_client
             .user()
             .update_password()
-            .old_password(&MdPassword::parse(&old_password)?)
-            .new_password(&MdPassword::parse(&new_password)?)
+            .old_password(MdPassword::parse(&old_password)?)
+            .new_password(MdPassword::parse(&new_password)?)
             .build()?
             .send()
             .await?;

@@ -48,20 +48,25 @@ use mangadex_api_types::error::{Error, Result};
 /// Check if the logged-in user follows a user.
 ///
 /// Makes a request to `GET /user/follows/user/{id}`.
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-pub struct IsFollowingUser<'a> {
+pub struct IsFollowingUser {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    pub user_id: &'a Uuid,
+    pub user_id: Uuid,
 }
 
-impl IsFollowingUser<'_> {
+impl IsFollowingUser {
     pub async fn send(&mut self) -> Result<IsFollowingResponse> {
         #[cfg(not(feature = "multi-thread"))]
         let res = self
@@ -97,7 +102,7 @@ impl IsFollowingUser<'_> {
 
 endpoint! {
     GET ("/user/follows/user/{}", user_id),
-    #[no_data auth] IsFollowingUser<'_>,
+    #[no_data auth] IsFollowingUser,
     #[no_send] Result<IsFollowingResponse>
 }
 
@@ -141,7 +146,7 @@ mod tests {
         let res = mangadex_client
             .user()
             .is_following_user()
-            .user_id(&user_id)
+            .user_id(user_id)
             .build()?
             .send()
             .await?;
@@ -179,7 +184,7 @@ mod tests {
         let res = mangadex_client
             .user()
             .is_following_user()
-            .user_id(&user_id)
+            .user_id(user_id)
             .build()?
             .send()
             .await?;
@@ -224,7 +229,7 @@ mod tests {
         let res = mangadex_client
             .user()
             .is_following_user()
-            .user_id(&user_id)
+            .user_id(user_id)
             .build()?
             .send()
             .await

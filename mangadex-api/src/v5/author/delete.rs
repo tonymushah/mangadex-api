@@ -44,23 +44,25 @@ use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct DeleteAuthor<'a> {
+pub struct DeleteAuthor {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
-    pub(crate) http_client: HttpClientRef,
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
+pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub author_id: &'a Uuid,
+    pub author_id: Uuid,
 }
 
 endpoint! {
     DELETE ("/author/{}", author_id),
-    #[no_data auth] DeleteAuthor<'_>,
+    #[no_data auth] DeleteAuthor,
     #[discard_result] Result<NoData>
 }
 
@@ -103,7 +105,7 @@ mod tests {
         mangadex_client
             .author()
             .delete()
-            .author_id(&author_id)
+            .author_id(author_id)
             .build()?
             .send()
             .await?;

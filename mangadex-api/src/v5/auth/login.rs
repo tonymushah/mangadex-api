@@ -38,15 +38,20 @@ use mangadex_api_types::{Password, Username};
 /// Log into an account.
 ///
 /// Makes a request to `POST /auth/login`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-pub struct Login<'a> {
+pub struct Login {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -55,12 +60,12 @@ pub struct Login<'a> {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub email: Option<&'a str>,
+    pub email: Option<String>,
 
     pub password: Password,
 }
 
-impl Login<'_> {
+impl Login {
     pub async fn send(&self) -> Result<LoginResponse> {
         #[cfg(not(feature = "multi-thread"))]
         let res = {
@@ -85,7 +90,7 @@ impl Login<'_> {
 
 endpoint! {
     POST "/auth/login",
-    #[body] Login<'_>,
+    #[body] Login,
     #[no_send] Result<LoginResponse>
 }
 

@@ -48,25 +48,30 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::MangaResponse;
 
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into))]
-pub struct SubmitMangaDraft<'a> {
+pub struct SubmitMangaDraft {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub manga_id: &'a Uuid,
+    pub manga_id: Uuid,
 
     pub version: u32,
 }
 
 endpoint! {
     POST ("/manga/draft/{}/commit/", manga_id),
-    #[body auth] SubmitMangaDraft<'_>,
+    #[body auth] SubmitMangaDraft,
     #[flatten_result] MangaResponse
 }
 
@@ -168,7 +173,7 @@ mod tests {
         let res = mangadex_client
             .manga()
             .submit_draft()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .version(1_u32)
             .build()?
             .send()
@@ -248,7 +253,7 @@ mod tests {
         let res = mangadex_client
             .manga()
             .submit_draft()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .version(1_u32)
             .build()?
             .send()

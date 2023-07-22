@@ -33,23 +33,28 @@ use mangadex_api_types::error::Result;
 /// Recover an account.
 ///
 /// Makes a request to `POST /account/recover`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-pub struct RecoverAccount<'a> {
+pub struct RecoverAccount{
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    pub email: &'a str,
+    pub email: String,
 }
 
 endpoint! {
     POST "/account/recover",
-    #[body] RecoverAccount<'_>,
+    #[body] RecoverAccount,
     #[discard_result] Result<NoData>
 }
 
@@ -86,7 +91,7 @@ mod tests {
         let _ = mangadex_client
             .account()
             .recover()
-            .email(email.as_str())
+            .email(email)
             .build()?
             .send()
             .await?;

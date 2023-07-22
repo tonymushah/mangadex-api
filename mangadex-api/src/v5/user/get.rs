@@ -43,23 +43,28 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::UserResponse;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct GetUser<'a> {
+pub struct GetUser {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub user_id: &'a Uuid,
+    pub user_id: Uuid,
 }
 
 endpoint! {
     GET ("/user/{}", user_id),
-    #[query] GetUser<'_>,
+    #[query] GetUser,
     #[flatten_result] UserResponse
 }
 
@@ -116,7 +121,7 @@ mod tests {
         let _ = mangadex_client
             .user()
             .get()
-            .user_id(&user_id)
+            .user_id(user_id)
             .build()?
             .send()
             .await?;

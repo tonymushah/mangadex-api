@@ -6,6 +6,7 @@ pub(crate) const MANGADEX_DATETIME_FORMAT: &str =
 
 /// Newtype struct for handling datetime fields in MangaDex.
 #[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaDexDateTime(OffsetDateTime);
 
 impl MangaDexDateTime {

@@ -34,19 +34,24 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::CoverResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct GetCover<'a> {
+pub struct GetCover {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     /// Manga **or** Cover ID.
     #[serde(skip_serializing)]
-    pub cover_id: &'a Uuid,
+    pub cover_id: Uuid,
 
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
@@ -54,7 +59,7 @@ pub struct GetCover<'a> {
 
 endpoint! {
     GET ("/cover/{}", cover_id),
-    #[query] GetCover<'_>,
+    #[query] GetCover,
     #[flatten_result] CoverResponse
 }
 
@@ -116,7 +121,7 @@ mod tests {
         let res = mangadex_client
             .cover()
             .get()
-            .cover_id(&cover_id)
+            .cover_id(cover_id)
             .build()?
             .send()
             .await?;
@@ -170,7 +175,7 @@ mod tests {
         let res = mangadex_client
             .cover()
             .get()
-            .cover_id(&cover_id)
+            .cover_id(cover_id)
             .build()?
             .send()
             .await

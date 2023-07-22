@@ -86,6 +86,9 @@ impl serde::Serialize for Error{
     }
 }
 
+#[cfg(feature = "specta")]
+impl specta::Type for Error{}
+
 pub mod schema {
     use std::collections::HashMap;
 

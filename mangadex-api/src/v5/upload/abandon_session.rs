@@ -41,26 +41,31 @@ use mangadex_api_schema::NoData;
 use serde::Serialize;
 use uuid::Uuid;
 
-use mangadex_api_types::error::Result; 
 use crate::HttpClientRef;
+use mangadex_api_types::error::Result;
 
-#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct AbandonUploadSession<'a> {
+pub struct AbandonUploadSession {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    pub session_id: &'a Uuid,
+    pub session_id: Uuid,
 }
 
 endpoint! {
     DELETE ("/upload/{}", session_id),
-    #[no_data auth] AbandonUploadSession<'_>,
+    #[no_data auth] AbandonUploadSession,
     #[discard_result] Result<NoData>
 }
 
@@ -103,7 +108,7 @@ mod tests {
         mangadex_client
             .upload()
             .abandon_session()
-            .session_id(&session_id)
+            .session_id(session_id)
             .build()?
             .send()
             .await?;
