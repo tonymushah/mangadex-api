@@ -42,14 +42,14 @@ mod tests {
 
     #[test]
     fn password_fewer_than_8_char_parses_error() {
-        let short_password = Password::parse(&"a".repeat(MIN_LEN - 1));
+        let short_password = Password::parse("a".repeat(MIN_LEN - 1));
 
         assert!(short_password.is_err());
     }
 
     #[test]
     fn password_more_than_1024_char_parses_error() {
-        let long_password = Password::parse(&"a".repeat(MAX_LEN + 1));
+        let long_password = Password::parse("a".repeat(MAX_LEN + 1));
 
         assert!(long_password.is_err());
     }

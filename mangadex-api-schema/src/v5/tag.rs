@@ -1,5 +1,5 @@
 use mangadex_api_types::TagGroup;
-use serde::{Deserialize};
+use serde::Deserialize;
 
 use crate::v5::{localizedstring_array_or_map, LocalizedString};
 

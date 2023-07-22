@@ -181,7 +181,7 @@ pub struct BookWalker(pub String);
 
 impl std::fmt::Display for BookWalker {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        fmt.write_str(&*format!("https://bookwalker.jp/{}", self.0))
+        fmt.write_str(&format!("https://bookwalker.jp/{}", self.0))
     }
 }
 
@@ -194,7 +194,7 @@ pub struct MangaUpdates(pub String);
 
 impl std::fmt::Display for MangaUpdates {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        fmt.write_str(&*format!(
+        fmt.write_str(&format!(
             "https://www.mangaupdates.com/series.html?id={}",
             self.0
         ))
@@ -210,7 +210,7 @@ pub struct MyAnimeList(pub String);
 
 impl std::fmt::Display for MyAnimeList {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        fmt.write_str(&*format!("https://myanimelist.net/manga/{}", self.0))
+        fmt.write_str(&format!("https://myanimelist.net/manga/{}", self.0))
     }
 }
 
@@ -223,6 +223,6 @@ pub struct NovelUpdates(pub String);
 
 impl std::fmt::Display for NovelUpdates {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        fmt.write_str(&*format!("https://www.novelupdates.com/series/{}/", self.0))
+        fmt.write_str(&format!("https://www.novelupdates.com/series/{}/", self.0))
     }
 }

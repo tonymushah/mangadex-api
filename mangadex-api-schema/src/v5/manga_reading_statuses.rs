@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use mangadex_api_types::ReadingStatus;
-use serde::{Deserialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
 /// Reading statuses for followed manga.

@@ -1,4 +1,4 @@
-use serde::{Deserialize};
+use serde::Deserialize;
 
 /// JWT that must be included with requests that require Bearer authentication.
 #[derive(Debug, Deserialize, Clone, PartialEq)]

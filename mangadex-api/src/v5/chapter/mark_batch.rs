@@ -117,7 +117,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .chapter()
             .mark_batch()
             .manga_id(&manga_id)

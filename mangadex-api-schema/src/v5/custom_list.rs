@@ -1,7 +1,7 @@
 //! General CustomList information.
 
 use mangadex_api_types::CustomListVisibility;
-use serde::{Deserialize};
+use serde::Deserialize;
 
 #[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]

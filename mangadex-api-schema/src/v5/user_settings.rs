@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use mangadex_api_types::MangaDexDateTime;
-use serde::{Deserialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
 /// User Settings response.

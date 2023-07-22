@@ -55,30 +55,11 @@ pub use custom_list::*;
 mod group;
 pub use group::*;
 
-pub type IdMappingObject = ApiObject<LegacyMappingIdAttributes>;
-pub type IdMappingData = ApiData<IdMappingObject>;
-pub type IdMappindCollection = Results<IdMappingObject>;
-pub type IdMappingListResponse = Result<IdMappindCollection>;
+mod id_mapping;
+pub use id_mapping::*;
 
-pub type MangaObject = ApiObject<MangaAttributes>;
-pub type MangaData = ApiData<MangaObject>;
-pub type MangaResponse = Result<MangaData>;
-pub type MangaCollection = Results<MangaObject>;
-pub type MangaListResponse = Result<MangaCollection>;
-
-pub type MangaAggregateResponse = Result<MangaAggregate>;
-
-pub type UngroupedMangaReadMarkersResponse = Result<UngroupedMangaReadMarkers>;
-pub type MangaReadMarkersResponse = Result<MangaReadMarkers>;
-
-pub type MangaReadingStatusResponse = Result<MangaReadingStatus>;
-pub type MangaReadingStatusesResponse = Result<MangaReadingStatuses>;
-
-pub type MangaRelationObject = ApiObject<MangaRelationAttributes>;
-pub type MangaRelationCollection = Results<MangaRelationObject>;
-pub type MangaRelationListResponse = Result<MangaRelationCollection>;
-
-pub type MangaStatisticsResponse = Result<MangaStatisticsObject>;
+mod manga;
+pub use manga::*;
 
 pub type RatingsResponse = Result<RatingsList>;
 

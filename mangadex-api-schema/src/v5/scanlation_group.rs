@@ -1,5 +1,5 @@
 use mangadex_api_types::{Language, MangaDexDateTime, MangaDexDuration};
-use serde::{Deserialize};
+use serde::Deserialize;
 use url::Url;
 
 use crate::v5::LocalizedString;

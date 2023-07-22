@@ -42,14 +42,14 @@ mod tests {
 
     #[test]
     fn username_fewer_than_1_char_parses_error() {
-        let short_username = Username::parse(&"a".repeat(MIN_LEN - 1));
+        let short_username = Username::parse("a".repeat(MIN_LEN - 1));
 
         assert!(short_username.is_err());
     }
 
     #[test]
     fn password_more_than_64_char_parses_error() {
-        let long_username = Username::parse(&"a".repeat(MAX_LEN + 1));
+        let long_username = Username::parse("a".repeat(MAX_LEN + 1));
 
         assert!(long_username.is_err());
     }
