@@ -61,30 +61,23 @@ pub use id_mapping::*;
 mod manga;
 pub use manga::*;
 
-pub type RatingsResponse = Result<RatingsList>;
+mod rating;
+pub use rating::*;
 
-pub type ReportReasonObject = ApiObjectNoRelationships<ReportReasonAttributes>;
-pub type ReportReasonCollection = Results<ReportReasonObject>;
-pub type ReportReasonListResponse = Result<ReportReasonCollection>;
+mod report;
+pub use report::*;
 
-pub type TagObject = ApiObject<TagAttributes>;
-pub type TagData = ApiData<TagObject>;
-pub type TagResponse = Result<TagData>;
-pub type TagCollection = Results<TagObject>;
-pub type TagListResponse = Result<TagCollection>;
+mod tag;
+pub use tag::*;
 
-pub type UploadSessionFileObject = ApiObject<UploadSessionFileAttributes>;
-pub type UploadSessionFileResponse = Result<UploadSessionFileData<UploadSessionFileObject>>;
+mod upload;
+pub use upload::*;
 
-pub type UserObject = ApiObject<UserAttributes>;
-pub type UserData = ApiData<UserObject>;
-pub type UserResponse = Result<UserData>;
-pub type UserCollection = Results<UserObject>;
-pub type UserListResponse = Result<UserCollection>;
+mod user;
+pub use user::*;
 
-pub type UserReportsObject = ApiObject<UserReportAttributes>;
-pub type UserReportsData = ApiData<UserReportsObject>;
-pub type UserReportCollection = Results<UserReportsObject>;
-pub type UserReportsListResponse = Result<UserReportCollection>;
+mod user_reports;
+pub use user_reports::*;
 
-pub type UserSettingsResponse = Result<UserSettingsAttributes>;
+mod user_settings;
+pub use user_settings::*;
