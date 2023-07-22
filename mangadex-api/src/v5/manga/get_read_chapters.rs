@@ -34,7 +34,7 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::MangaReadMarkersResponse;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct GetReadChapters<'a> {

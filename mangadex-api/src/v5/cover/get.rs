@@ -34,7 +34,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::CoverResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct GetCover<'a> {
@@ -45,7 +45,7 @@ pub struct GetCover<'a> {
     pub(crate) http_client: HttpClientRef,
 
     /// Manga **or** Cover ID.
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub cover_id: &'a Uuid,
 
     #[builder(setter(each = "include"), default)]

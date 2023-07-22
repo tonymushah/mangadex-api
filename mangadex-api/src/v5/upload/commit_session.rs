@@ -57,7 +57,7 @@ pub struct CommitUploadSession<'a> {
     #[serde(skip)]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub session_id: &'a Uuid,
 
     chapter_draft: ChapterDraft<'a>,

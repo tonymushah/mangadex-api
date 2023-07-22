@@ -60,7 +60,7 @@ pub struct CreateMangaRelation<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub manga_id: &'a Uuid,
     pub target_manga: &'a Uuid,
     pub relation: &'a MangaRelation,

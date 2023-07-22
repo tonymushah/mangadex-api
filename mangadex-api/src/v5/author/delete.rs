@@ -44,7 +44,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct DeleteAuthor<'a> {
@@ -54,7 +54,7 @@ pub struct DeleteAuthor<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub author_id: &'a Uuid,
 }
 

@@ -66,7 +66,7 @@ pub struct UploadCover<'a> {
     pub(crate) http_client: HttpClientRef,
 
     /// Manga **or** Cover ID.
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub manga_id: &'a Uuid,
 
     /// Image bytes.

@@ -66,7 +66,7 @@ pub struct UploadImages<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub session_id: &'a Uuid,
 
     /// Image bytes.

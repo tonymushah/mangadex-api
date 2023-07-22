@@ -43,7 +43,7 @@ use mangadex_api_types::error::Result;
 use mangadex_api_types::Password;
 
 /// Update a user password.
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 pub struct UpdateUserPassword<'a> {

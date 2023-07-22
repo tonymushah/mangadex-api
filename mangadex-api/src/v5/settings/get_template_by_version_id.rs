@@ -59,7 +59,7 @@ pub struct GetSettingsTemplateByVersionId<'a> {
     #[allow(unused)]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub version: &'a Uuid,
 }
 

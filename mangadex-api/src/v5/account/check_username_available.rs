@@ -43,7 +43,7 @@ pub struct CheckUsernameAvailable<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub username: &'a str,
 }
 

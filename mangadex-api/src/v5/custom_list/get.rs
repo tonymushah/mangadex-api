@@ -33,7 +33,7 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::CustomListResponse;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct GetCustomList<'a> {
@@ -43,7 +43,7 @@ pub struct GetCustomList<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub list_id: &'a Uuid,
 }
 

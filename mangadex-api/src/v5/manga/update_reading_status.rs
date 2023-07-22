@@ -37,7 +37,7 @@ use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 use mangadex_api_types::ReadingStatus;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into), pattern = "owned")]
 pub struct UpdateMangaReadingStatus<'a> {
@@ -47,7 +47,7 @@ pub struct UpdateMangaReadingStatus<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub manga_id: &'a Uuid,
 
     /// Using a `None` (`null`) value will remove the reading status.

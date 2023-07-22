@@ -41,7 +41,7 @@ use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 
 /// Update a user's email.
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 pub struct UpdateUserEmail<'a> {

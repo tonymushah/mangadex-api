@@ -34,7 +34,7 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::CustomListListResponse;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct UserCustomLists<'a> {
@@ -44,7 +44,7 @@ pub struct UserCustomLists<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub user_id: &'a Uuid,
 
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -48,7 +48,7 @@ use mangadex_api_types::error::Result;
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct CreateUpdateMangaRating<'a> {
@@ -58,7 +58,7 @@ pub struct CreateUpdateMangaRating<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub manga_id: &'a Uuid,
 
     /// `[ 1 .. 10 ]`.

@@ -34,7 +34,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::ChapterResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct GetChapter<'a> {
@@ -44,7 +44,7 @@ pub struct GetChapter<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub chapter_id: &'a Uuid,
 
     #[builder(setter(each = "include"), default)]

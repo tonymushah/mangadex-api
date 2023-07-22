@@ -29,7 +29,7 @@ use serde::Serialize;
 
 use crate::HttpClientRef;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct GetRandomManga {

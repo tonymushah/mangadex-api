@@ -20,6 +20,7 @@ pub struct MangaAggregate {
 }
 
 #[cfg(feature = "serialize")]
+#[allow(clippy::from_over_into)]
 impl Into<MangaAggregatSer> for MangaAggregate {
     fn into(self) -> MangaAggregatSer {
         let mut volumes : HashMap<String, VolumeAggregateSer> = HashMap::new();
@@ -73,6 +74,7 @@ pub struct VolumeAggregate {
 }
 
 #[cfg(feature = "serialize")]
+#[allow(clippy::from_over_into)]
 impl Into<VolumeAggregateSer> for VolumeAggregate{
     fn into(self) -> VolumeAggregateSer {
         let mut chapters : HashMap<String, ChapterAggregate> = HashMap::new();

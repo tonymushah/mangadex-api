@@ -55,7 +55,7 @@ use mangadex_api_types::{ContentRating, Demographic, Language, MangaLinks, Manga
 ///
 /// All fields that are not changing should still have the field populated with the old information
 /// so that it is not set as `null` on the server.
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[non_exhaustive]
@@ -66,7 +66,7 @@ pub struct UpdateManga<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub manga_id: &'a Uuid,
 
     #[serde(skip_serializing_if = "Option::is_none")]

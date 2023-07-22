@@ -58,7 +58,7 @@ pub struct StartEditChapterSession<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub chapter_id: &'a Uuid,
 
     pub version: u32,

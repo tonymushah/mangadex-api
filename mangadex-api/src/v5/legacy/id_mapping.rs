@@ -32,7 +32,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::IdMappingListResponse;
 use mangadex_api_types::LegacyMappingType;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct LegacyIdMapping {

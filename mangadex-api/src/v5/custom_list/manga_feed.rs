@@ -38,7 +38,7 @@ use mangadex_api_types::{
     ReferenceExpansionResource,
 };
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
@@ -49,7 +49,7 @@ pub struct CustomListMangaFeed<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub list_id: &'a Uuid,
 
     #[builder(default)]

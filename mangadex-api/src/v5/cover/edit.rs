@@ -46,7 +46,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::CoverResponse;
 use mangadex_api_types::Language;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
@@ -58,7 +58,7 @@ pub struct EditCover<'a> {
     pub(crate) http_client: HttpClientRef,
 
     /// Manga **or** Cover ID.
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub cover_id: &'a Uuid,
 
     /// 0-8 characters in length.

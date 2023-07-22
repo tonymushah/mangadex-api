@@ -61,9 +61,9 @@ pub struct DeleteMangaRelation<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub manga_id: &'a Uuid,
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub relation_id: &'a Uuid,
 }
 

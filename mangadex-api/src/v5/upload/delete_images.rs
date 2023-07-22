@@ -48,7 +48,7 @@ use uuid::Uuid;
 use mangadex_api_types::error::Result; 
 use crate::HttpClientRef;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct DeleteImages<'a> {
@@ -58,7 +58,7 @@ pub struct DeleteImages<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub session_id: &'a Uuid,
     #[builder(setter(each = "add_session_file_id"))]
     pub session_file_ids: Vec<Uuid>,

@@ -33,7 +33,7 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::UngroupedMangaReadMarkersResponse;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct GetMangaReadChapters<'a> {
@@ -43,7 +43,7 @@ pub struct GetMangaReadChapters<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub manga_id: &'a Uuid,
 }
 

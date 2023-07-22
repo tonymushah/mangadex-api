@@ -34,7 +34,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::MangaAggregateResponse;
 use mangadex_api_types::Language;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
@@ -45,7 +45,7 @@ pub struct GetMangaAggregate<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub manga_id: &'a Uuid,
 
     #[builder(setter(each = "add_language"), default)]

@@ -44,7 +44,7 @@ use url::Url;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::{AuthorResponse, LocalizedString};
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]

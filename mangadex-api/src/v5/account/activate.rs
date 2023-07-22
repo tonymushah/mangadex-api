@@ -44,7 +44,7 @@ pub struct ActivateAccount<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub code: &'a str,
 }
 

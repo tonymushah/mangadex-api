@@ -50,7 +50,7 @@ use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 use mangadex_api_types::ReportCategory;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct CreateReport<'a> {

@@ -34,7 +34,7 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::AtHomeServerResponse;
 
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Deserialize, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 pub struct GetAtHomeServer<'a> {
@@ -44,7 +44,7 @@ pub struct GetAtHomeServer<'a> {
     #[builder(pattern = "immutable")]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
+    #[serde(skip_serializing)]
     pub chapter_id: &'a Uuid,
 
     /// Force selecting from MangaDex@Home servers that use the standard HTTPS port 443.
