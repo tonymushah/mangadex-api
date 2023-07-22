@@ -102,7 +102,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .manga()
             .update_reading_status()
             .manga_id(&manga_id)
@@ -144,7 +144,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .manga()
             .update_reading_status()
             .manga_id(&manga_id)

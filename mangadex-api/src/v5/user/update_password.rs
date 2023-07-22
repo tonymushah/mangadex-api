@@ -109,7 +109,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .user()
             .update_password()
             .old_password(&MdPassword::parse(&old_password)?)

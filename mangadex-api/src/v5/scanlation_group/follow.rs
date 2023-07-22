@@ -100,7 +100,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .scanlation_group()
             .follow()
             .group_id(&group_id)

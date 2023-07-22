@@ -106,7 +106,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _res = mangadex_client
+        mangadex_client
             .rating()
             .delete_for_manga()
             .manga_id(&manga_id)

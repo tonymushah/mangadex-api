@@ -143,9 +143,9 @@ mod tests {
 
         assert_eq!(res.id, session_id);
         assert_eq!(res.type_, RelationshipType::UploadSession);
-        assert_eq!(res.attributes.is_committed, false);
-        assert_eq!(res.attributes.is_processed, false);
-        assert_eq!(res.attributes.is_deleted, false);
+        assert!(!res.attributes.is_committed);
+        assert!(!res.attributes.is_processed);
+        assert!(!res.attributes.is_deleted);
         assert_eq!(res.attributes.version, 1);
         assert_eq!(res.attributes.created_at.to_string(), datetime.to_string());
         assert_eq!(res.attributes.updated_at.to_string(), datetime.to_string());

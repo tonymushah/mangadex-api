@@ -101,7 +101,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .user()
             .update_email()
             .email(email.as_str())

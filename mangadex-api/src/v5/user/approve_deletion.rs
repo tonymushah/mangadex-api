@@ -87,7 +87,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .user()
             .approve_deletion()
             .code(&code)

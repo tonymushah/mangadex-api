@@ -101,7 +101,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .custom_list()
             .follow()
             .list_id(custom_list_id)

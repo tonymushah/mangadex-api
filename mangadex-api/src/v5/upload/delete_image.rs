@@ -105,7 +105,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .upload()
             .delete_image()
             .session_id(&session_id)
