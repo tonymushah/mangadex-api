@@ -1,3 +1,5 @@
+use std::cell::{BorrowError, BorrowMutError};
+
 use schema::MangaDexErrorResponse;
 
 pub type Result<T, E = Error> = std::result::Result<T, E>;
@@ -43,18 +45,54 @@ pub enum Error {
     /// Error while parsing the type.
     #[error("an error occurred while parsing the type: {0}")]
     ParseError(String),
+    
+    #[error("an error occurred when borrowing the http client")]
+    BorrowError(#[from] BorrowError),
+
+    #[error("an error occured when borrowing the http client as mutable")]
+    BorrowMutError(#[from] BorrowMutError),
+
+    #[error("an eccor captured")]
+
+    Io(#[from] std::io::Error),
 
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
+
+    
+}
+
+impl serde::Serialize for Error{
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer {
+        match self {
+            Error::ParseUrlError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::ServerError(port, host) => serializer.serialize_str(format!("there was an error from the MangaDex servers (HTTP {host}): {port}").as_str()),
+            Error::RequestError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::BuilderError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::MissingTokens => serializer.serialize_str("missing auth tokens; please log in to MangaDex"),
+            Error::UsernameError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::PasswordError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::PingError => todo!(),
+            Error::Api(e) => e.serialize(serializer),
+            Error::RequestBuilderError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::ParseError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::BorrowError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::BorrowMutError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::Io(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::UnexpectedError(e) => serializer.serialize_str(e.to_string().as_str()),
+        }
+    }
 }
 
 pub mod schema {
     use std::collections::HashMap;
 
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
     use uuid::Uuid;
 
-    #[derive(Debug, thiserror::Error, Deserialize)]
+    #[derive(Debug, thiserror::Error, Deserialize, Serialize)]
     #[error("Bad request")]
     #[cfg_attr(feature = "specta", derive(specta::Type))]
     pub struct MangaDexErrorResponse {
@@ -62,7 +100,7 @@ pub mod schema {
         pub errors: Vec<MangaDexError>,
     }
 
-    #[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone)]
+    #[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone, Serialize)]
     #[error("API error")]
     #[cfg_attr(feature = "specta", derive(specta::Type))]
     pub struct MangaDexError {

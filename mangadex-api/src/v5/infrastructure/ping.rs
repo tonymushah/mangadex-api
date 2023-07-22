@@ -54,7 +54,7 @@ impl Ping {
         #[cfg(not(feature = "multi-thread"))]
         let res = self
             .http_client
-            .borrow()
+            .try_borrow()?
             .send_request_without_deserializing(self)
             .await?;
         #[cfg(feature = "multi-thread")]

@@ -58,9 +58,9 @@ impl Logout {
     pub async fn send(&self) -> Result<()> {
         #[cfg(not(feature = "multi-thread"))]
         {
-            self.http_client.borrow().send_request(self).await??;
+            self.http_client.try_borrow()?.send_request(self).await??;
 
-            self.http_client.borrow_mut().clear_auth_tokens();
+            self.http_client.try_borrow_mut()?.clear_auth_tokens();
         }
         #[cfg(feature = "multi-thread")]
         {
@@ -166,7 +166,7 @@ mod tests {
         // The auth tokens should still be part of the client because the logout failed.
         #[cfg(not(feature = "multi-thread"))]
         assert_eq!(
-            mangadex_client.http_client.borrow().get_tokens(),
+            mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "refreshtoken".to_string(),

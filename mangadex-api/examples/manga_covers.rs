@@ -147,7 +147,7 @@ async fn download_file(
 ) -> anyhow::Result<()> {
     #[cfg(not(feature = "multi-thread"))]
     let image_bytes = http_client
-        .borrow()
+        .try_borrow()?
         .client
         .get(url)
         .send()

@@ -64,7 +64,7 @@ impl Login<'_> {
     pub async fn send(&self) -> Result<LoginResponse> {
         #[cfg(not(feature = "multi-thread"))]
         let res = {
-            let res = self.http_client.borrow().send_request(self).await??;
+            let res = self.http_client.try_borrow()?.send_request(self).await??;
 
             self.http_client.borrow_mut().set_auth_tokens(&res.token);
 
@@ -142,7 +142,7 @@ mod tests {
 
         #[cfg(not(feature = "multi-thread"))]
         assert_eq!(
-            mangadex_client.http_client.borrow().get_tokens(),
+            mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "refreshtoken".to_string(),
@@ -198,7 +198,7 @@ mod tests {
             .expect_err("expected error");
 
         #[cfg(not(feature = "multi-thread"))]
-        assert_eq!(mangadex_client.http_client.borrow().get_tokens(), None);
+        assert_eq!(mangadex_client.http_client.try_borrow()?.get_tokens(), None);
         #[cfg(feature = "multi-thread")]
         assert_eq!(mangadex_client.http_client.lock().await.get_tokens(), None);
 
@@ -243,7 +243,7 @@ mod tests {
             .expect_err("expected error");
 
         #[cfg(not(feature = "multi-thread"))]
-        assert_eq!(mangadex_client.http_client.borrow().get_tokens(), None);
+        assert_eq!(mangadex_client.http_client.try_borrow()?.get_tokens(), None);
         #[cfg(feature = "multi-thread")]
         assert_eq!(mangadex_client.http_client.lock().await.get_tokens(), None);
 
@@ -289,7 +289,7 @@ mod tests {
             .expect_err("expected error");
 
         #[cfg(not(feature = "multi-thread"))]
-        assert_eq!(mangadex_client.http_client.borrow().get_tokens(), None);
+        assert_eq!(mangadex_client.http_client.try_borrow()?.get_tokens(), None);
         #[cfg(feature = "multi-thread")]
         assert_eq!(mangadex_client.http_client.lock().await.get_tokens(), None);
 

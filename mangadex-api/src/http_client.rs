@@ -318,7 +318,7 @@ macro_rules! endpoint {
             pub async fn send(&self) -> mangadex_api_types::error::Result<$out> {
                 #[cfg(not(feature = "multi-thread"))]
                 {
-                    self.http_client.borrow().send_request(self).await
+                    self.http_client.try_borrow()?.send_request(self).await
                 }
                 #[cfg(feature = "multi-thread")]
                 {
@@ -334,7 +334,7 @@ macro_rules! endpoint {
             pub async fn send(&self) -> $out {
                 #[cfg(not(feature = "multi-thread"))]
                 {
-                    self.http_client.borrow().send_request(self).await?
+                    self.http_client.try_borrow()?.send_request(self).await?
                 }
                 #[cfg(feature = "multi-thread")]
                 {
@@ -349,7 +349,7 @@ macro_rules! endpoint {
             /// Send the request.
             pub async fn send(&self) -> mangadex_api_types::error::Result<()> {
                 #[cfg(not(feature = "multi-thread"))]
-                self.http_client.borrow().send_request(self).await??;
+                self.http_client.try_borrow()?.send_request(self).await??;
                 #[cfg(feature = "multi-thread")]
                 self.http_client.lock().await.send_request(self).await??;
 

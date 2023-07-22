@@ -91,7 +91,7 @@ impl DeleteImages<'_> {
     pub async fn send(&self) -> Result<NoData> {
         #[cfg(not(feature = "multi-thread"))]
         {
-            self.http_client.borrow().send_request(self).await?
+            self.http_client.try_borrow()?.send_request(self).await?
         }
         #[cfg(feature = "multi-thread")]
         {

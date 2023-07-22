@@ -220,7 +220,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             let page_res = client
                 .get_http_client()
                 .clone()
-                .borrow()
+                .try_borrow()?
                 .client
                 .get(page_url.clone())
                 .send()
@@ -252,7 +252,7 @@ async fn download_file(
 ) -> anyhow::Result<()> {
     #[cfg(not(feature = "multi-thread"))]
     let image_bytes = http_client
-        .borrow()
+        .try_borrow()?
         .client
         .get(url.clone())
         .send()

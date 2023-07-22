@@ -107,7 +107,7 @@ impl Endpoint for UploadImages<'_> {
 impl UploadImages<'_> {
     pub async fn send(&self) -> UploadSessionFileResponse {
         #[cfg(not(feature = "multi-thread"))]
-        let res = self.http_client.borrow().send_request(self).await?;
+        let res = self.http_client.try_borrow()?.send_request(self).await?;
         #[cfg(feature = "multi-thread")]
         let res = self.http_client.lock().await.send_request(self).await?;
 
