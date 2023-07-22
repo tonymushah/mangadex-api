@@ -1,14 +1,12 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use time::{format_description, OffsetDateTime};
 
-pub(crate) const MANGADEX_DATETIME_DE_FORMAT: &str =
+pub(crate) const MANGADEX_DATETIME_FORMAT: &str =
     "[year]-[month]-[day]T[hour]:[minute]:[second][offset_hour sign:mandatory]:[offset_minute]";
-
-pub(crate) const MANGADEX_DATETIME_SER_FORMAT: &str =
-    "[year]-[month]-[day]T[hour]:[minute]:[second]";
 
 /// Newtype struct for handling datetime fields in MangaDex.
 #[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaDexDateTime(OffsetDateTime);
 
 impl MangaDexDateTime {
@@ -34,7 +32,7 @@ impl Serialize for MangaDexDateTime {
     where
         S: Serializer,
     {
-        let format = format_description::parse(MANGADEX_DATETIME_SER_FORMAT).unwrap();
+        let format = format_description::parse(MANGADEX_DATETIME_FORMAT).unwrap();
 
         serializer.serialize_str(&self.as_ref().format(&format).unwrap())
     }
@@ -47,7 +45,7 @@ impl<'de> Deserialize<'de> for MangaDexDateTime {
     {
         let s: String = Deserialize::deserialize(deserializer)?;
 
-        let format = format_description::parse(MANGADEX_DATETIME_DE_FORMAT).unwrap();
+        let format = format_description::parse(MANGADEX_DATETIME_FORMAT).unwrap();
 
         let datetime = OffsetDateTime::parse(&s, &format).unwrap();
 
@@ -57,7 +55,7 @@ impl<'de> Deserialize<'de> for MangaDexDateTime {
 
 impl std::fmt::Display for MangaDexDateTime {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let format = format_description::parse(MANGADEX_DATETIME_DE_FORMAT).unwrap();
+        let format = format_description::parse(MANGADEX_DATETIME_FORMAT).unwrap();
 
         fmt.write_str(&self.as_ref().format(&format).unwrap())
     }

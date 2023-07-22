@@ -1,7 +1,7 @@
 //! Upload session file information from a response body.
 
 use mangadex_api_types::UploadSource;
-use serde::{Deserialize};
+use serde::Deserialize;
 
 use crate::v5::error::MangaDexError;
 

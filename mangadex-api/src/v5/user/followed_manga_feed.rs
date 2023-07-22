@@ -44,15 +44,20 @@ use mangadex_api_types::{
     ReferenceExpansionResource,
 };
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned", default)]
 #[non_exhaustive]
-pub struct GetFollowedMangaFeed<'a> {
+pub struct GetFollowedMangaFeed {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -72,10 +77,10 @@ pub struct GetFollowedMangaFeed<'a> {
     pub content_rating: Vec<ContentRating>,
     /// Groups to exclude from the results.
     #[builder(setter(each = "excluded_group"))]
-    pub excluded_groups: Vec<&'a Uuid>,
+    pub excluded_groups: Vec<Uuid>,
     /// Uploaders to exclude from the results.
     #[builder(setter(each = "excluded_uploader"))]
-    pub excluded_uploaders: Vec<&'a Uuid>,
+    pub excluded_uploaders: Vec<Uuid>,
     /// Flag to include future chapter updates in the results.
     ///
     /// Default: `IncludeFutureUpdates::Include` (1)
@@ -97,7 +102,7 @@ pub struct GetFollowedMangaFeed<'a> {
 
 endpoint! {
     GET "/user/follows/manga/feed",
-    #[query auth] GetFollowedMangaFeed<'_>,
+    #[query auth] GetFollowedMangaFeed,
     #[flatten_result] ChapterListResponse
 }
 

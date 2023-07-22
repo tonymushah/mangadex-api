@@ -34,18 +34,23 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::AuthorResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct GetAuthor<'a> {
+pub struct GetAuthor {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub author_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub author_id: Uuid,
 
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
@@ -53,7 +58,7 @@ pub struct GetAuthor<'a> {
 
 endpoint! {
     GET ("/author/{}", author_id),
-    #[query] GetAuthor<'_>,
+    #[query] GetAuthor,
     #[flatten_result] AuthorResponse
 }
 
@@ -126,10 +131,10 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .author()
             .get()
-            .author_id(&author_id)
+            .author_id(author_id)
             .build()?
             .send()
             .await?;

@@ -38,15 +38,20 @@ use mangadex_api_types::{Password, Username};
 /// Log into an account.
 ///
 /// Makes a request to `POST /auth/login`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-pub struct Login<'a> {
+pub struct Login {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -55,16 +60,16 @@ pub struct Login<'a> {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub email: Option<&'a str>,
+    pub email: Option<String>,
 
     pub password: Password,
 }
 
-impl Login<'_> {
+impl Login {
     pub async fn send(&self) -> Result<LoginResponse> {
         #[cfg(not(feature = "multi-thread"))]
         let res = {
-            let res = self.http_client.borrow().send_request(self).await??;
+            let res = self.http_client.try_borrow()?.send_request(self).await??;
 
             self.http_client.borrow_mut().set_auth_tokens(&res.token);
 
@@ -85,7 +90,7 @@ impl Login<'_> {
 
 endpoint! {
     POST "/auth/login",
-    #[body] Login<'_>,
+    #[body] Login,
     #[no_send] Result<LoginResponse>
 }
 
@@ -142,7 +147,7 @@ mod tests {
 
         #[cfg(not(feature = "multi-thread"))]
         assert_eq!(
-            mangadex_client.http_client.borrow().get_tokens(),
+            mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "refreshtoken".to_string(),
@@ -198,7 +203,7 @@ mod tests {
             .expect_err("expected error");
 
         #[cfg(not(feature = "multi-thread"))]
-        assert_eq!(mangadex_client.http_client.borrow().get_tokens(), None);
+        assert_eq!(mangadex_client.http_client.try_borrow()?.get_tokens(), None);
         #[cfg(feature = "multi-thread")]
         assert_eq!(mangadex_client.http_client.lock().await.get_tokens(), None);
 
@@ -243,7 +248,7 @@ mod tests {
             .expect_err("expected error");
 
         #[cfg(not(feature = "multi-thread"))]
-        assert_eq!(mangadex_client.http_client.borrow().get_tokens(), None);
+        assert_eq!(mangadex_client.http_client.try_borrow()?.get_tokens(), None);
         #[cfg(feature = "multi-thread")]
         assert_eq!(mangadex_client.http_client.lock().await.get_tokens(), None);
 
@@ -289,7 +294,7 @@ mod tests {
             .expect_err("expected error");
 
         #[cfg(not(feature = "multi-thread"))]
-        assert_eq!(mangadex_client.http_client.borrow().get_tokens(), None);
+        assert_eq!(mangadex_client.http_client.try_borrow()?.get_tokens(), None);
         #[cfg(feature = "multi-thread")]
         assert_eq!(mangadex_client.http_client.lock().await.get_tokens(), None);
 

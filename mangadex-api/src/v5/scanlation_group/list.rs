@@ -32,14 +32,19 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::GroupListResponse;
 use mangadex_api_types::{GroupSortOrder, Language, ReferenceExpansionResource};
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), default, pattern = "owned")]
 #[non_exhaustive]
-pub struct ListGroup<'a> {
+pub struct ListGroup {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     pub limit: Option<u32>,
@@ -47,7 +52,7 @@ pub struct ListGroup<'a> {
     #[builder(setter(each = "add_group_id"))]
     #[serde(rename = "ids")]
     pub group_ids: Vec<Uuid>,
-    pub name: Option<&'a str>,
+    pub name: Option<String>,
     /// Language the scanlation primarily translates or uploads works into.
     // The corresponding response body field returns an array so this seems likely to change to accept an array of languages.
     pub focused_language: Option<Language>,
@@ -58,7 +63,7 @@ pub struct ListGroup<'a> {
 
 endpoint! {
     GET "/group",
-    #[query] ListGroup<'_>,
+    #[query] ListGroup,
     #[flatten_result] GroupListResponse
 }
 

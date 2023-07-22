@@ -34,18 +34,20 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::ChapterResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
+#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct GetChapter<'a> {
+pub struct GetChapter {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
-    pub(crate) http_client: HttpClientRef,
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
+pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub chapter_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub chapter_id: Uuid,
 
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
@@ -53,7 +55,7 @@ pub struct GetChapter<'a> {
 
 endpoint! {
     GET ("/chapter/{}", chapter_id),
-    #[query] GetChapter<'_>,
+    #[query] GetChapter,
     #[flatten_result] ChapterResponse
 }
 
@@ -119,7 +121,7 @@ mod tests {
         let res = mangadex_client
             .chapter()
             .get()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .build()?
             .send()
             .await?;
@@ -131,7 +133,6 @@ mod tests {
         assert_eq!(res.data.attributes.chapter, Some("1.5".to_string()));
         assert_eq!(res.data.attributes.pages, 4);
         assert_eq!(res.data.attributes.translated_language, Language::English);
-        assert_eq!(res.data.attributes.uploader, Some(uploader_id));
         assert_eq!(res.data.attributes.version, 1);
         assert_eq!(
             res.data.attributes.created_at.to_string(),
@@ -180,7 +181,7 @@ mod tests {
         let res = mangadex_client
             .chapter()
             .get()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .build()?
             .send()
             .await

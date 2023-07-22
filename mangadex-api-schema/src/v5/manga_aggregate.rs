@@ -4,7 +4,7 @@ use std::collections::HashMap;
 #[cfg(feature = "serialize")]
 use serde::Serialize;
 
-use serde::{Deserialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
 use crate::v5::{chapter_aggregate_array_or_map, volume_aggregate_array_or_map};
@@ -20,13 +20,14 @@ pub struct MangaAggregate {
 }
 
 #[cfg(feature = "serialize")]
+#[allow(clippy::from_over_into)]
 impl Into<MangaAggregatSer> for MangaAggregate {
     fn into(self) -> MangaAggregatSer {
         let mut volumes : HashMap<String, VolumeAggregateSer> = HashMap::new();
         for volume in self.volumes{
             volumes.insert(volume.volume.clone(), Into::into(volume.clone()));
         }
-        MangaAggregatSer { volumes: volumes }
+        MangaAggregatSer { volumes }
     }
 }
 
@@ -73,13 +74,14 @@ pub struct VolumeAggregate {
 }
 
 #[cfg(feature = "serialize")]
+#[allow(clippy::from_over_into)]
 impl Into<VolumeAggregateSer> for VolumeAggregate{
     fn into(self) -> VolumeAggregateSer {
         let mut chapters : HashMap<String, ChapterAggregate> = HashMap::new();
         for chapter in self.chapters {
             chapters.insert(chapter.chapter.clone(), chapter);
         }
-        VolumeAggregateSer { volume: self.volume, count: self.count, chapters: chapters }
+        VolumeAggregateSer { volume: self.volume, count: self.count, chapters }
     }
 }
 

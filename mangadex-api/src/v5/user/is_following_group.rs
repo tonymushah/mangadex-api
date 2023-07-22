@@ -48,25 +48,30 @@ use mangadex_api_types::error::{Error, Result};
 /// Check if the logged-in user follows a scanlation group.
 ///
 /// Makes a request to `GET /user/follows/group/{id}`.
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-pub struct IsFollowingGroup<'a> {
+pub struct IsFollowingGroup {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    pub group_id: &'a Uuid,
+    pub group_id: Uuid,
 }
 
-impl IsFollowingGroup<'_> {
+impl IsFollowingGroup {
     pub async fn send(&mut self) -> Result<IsFollowingResponse> {
         #[cfg(not(feature = "multi-thread"))]
         let res = self
             .http_client
-            .borrow()
+            .try_borrow()?
             .send_request_without_deserializing(self)
             .await?;
         #[cfg(feature = "multi-thread")]
@@ -97,7 +102,7 @@ impl IsFollowingGroup<'_> {
 
 endpoint! {
     GET ("/user/follows/group/{}", group_id),
-    #[no_data auth] IsFollowingGroup<'_>,
+    #[no_data auth] IsFollowingGroup,
     #[no_send] Result<IsFollowingResponse>
 }
 
@@ -141,7 +146,7 @@ mod tests {
         let res = mangadex_client
             .user()
             .is_following_group()
-            .group_id(&scanlation_group_id)
+            .group_id(scanlation_group_id)
             .build()?
             .send()
             .await?;
@@ -179,7 +184,7 @@ mod tests {
         let res = mangadex_client
             .user()
             .is_following_group()
-            .group_id(&scanlation_group_id)
+            .group_id(scanlation_group_id)
             .build()?
             .send()
             .await?;
@@ -224,7 +229,7 @@ mod tests {
         let res = mangadex_client
             .user()
             .is_following_group()
-            .group_id(&scanlation_group_id)
+            .group_id(scanlation_group_id)
             .build()?
             .send()
             .await

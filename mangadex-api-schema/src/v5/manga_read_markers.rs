@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use serde::{Deserialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
 #[derive(Debug, Deserialize, Clone)]

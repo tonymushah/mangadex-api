@@ -1,7 +1,8 @@
 use mangadex_api_types::{
     ContentRating, Demographic, Language, MangaDexDateTime, MangaState, MangaStatus,
 };
-use serde::{Deserialize};
+use serde::Deserialize;
+use uuid::Uuid;
 
 use crate::v5::{
     language_array_or_skip_null, localizedstring_array_or_map, manga_links_array_or_struct,
@@ -56,4 +57,5 @@ pub struct MangaAttributes {
     #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub updated_at: Option<MangaDexDateTime>,
     pub version: u32,
+    pub latest_uploaded_chapter : Option<Uuid>
 }

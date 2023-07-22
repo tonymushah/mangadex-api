@@ -1,9 +1,11 @@
 //! User endpoint handler.
 //!
 //! <https://api.mangadex.org/swagger.html#/User>
-
+#[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+#[cfg(feature = "legacy-account")]
 mod approve_deletion;
 pub(crate) mod custom_lists;
+#[cfg(feature = "legacy-account")]
 mod delete;
 mod followed_custom_lists;
 pub(crate) mod followed_groups;
@@ -18,11 +20,15 @@ mod is_following_user;
 mod list;
 mod me;
 pub(crate) mod my_custom_lists;
+#[cfg(feature = "legacy-account")]
 mod update_email;
+#[cfg(feature = "legacy-account")]
 mod update_password;
 
+#[cfg(feature = "legacy-account")]
 use crate::v5::user::approve_deletion::ApproveUserDeletionBuilder;
 use crate::v5::user::custom_lists::UserCustomListsBuilder;
+#[cfg(feature = "legacy-account")]
 use crate::v5::user::delete::DeleteUserBuilder;
 use crate::v5::user::followed_custom_lists::GetFollowedCustomListsBuilder;
 use crate::v5::user::followed_groups::FollowedGroupsBuilder;
@@ -37,7 +43,9 @@ use crate::v5::user::is_following_user::IsFollowingUserBuilder;
 use crate::v5::user::list::ListUserBuilder;
 use crate::v5::user::me::GetMyUserDetailsBuilder;
 use crate::v5::user::my_custom_lists::MyCustomListsBuilder;
+#[cfg(feature = "legacy-account")]
 use crate::v5::user::update_email::UpdateUserEmailBuilder;
+#[cfg(feature = "legacy-account")]
 use crate::v5::user::update_password::UpdateUserPasswordBuilder;
 use crate::HttpClientRef;
 
@@ -102,6 +110,8 @@ impl UserBuilder {
     /// Delete a user.
     ///
     /// <https://api.mangadex.org/swagger.html#/User/delete-user-id>
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+    #[cfg(feature = "legacy-account")]
     pub fn delete(&self) -> DeleteUserBuilder {
         DeleteUserBuilder::default().http_client(self.http_client.clone())
     }
@@ -109,6 +119,8 @@ impl UserBuilder {
     /// Approve the deletion of a user.
     ///
     /// <https://api.mangadex.org/swagger.html#/User/post-user-delete-code>
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+    #[cfg(feature = "legacy-account")]
     pub fn approve_deletion(&self) -> ApproveUserDeletionBuilder {
         ApproveUserDeletionBuilder::default().http_client(self.http_client.clone())
     }
@@ -116,6 +128,8 @@ impl UserBuilder {
     /// Update the logged-in user's password.
     ///
     /// <https://api.mangadex.org/swagger.html#/User/post-user-password>
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+    #[cfg(feature = "legacy-account")]
     pub fn update_password(&self) -> UpdateUserPasswordBuilder {
         UpdateUserPasswordBuilder::default().http_client(self.http_client.clone())
     }
@@ -123,6 +137,8 @@ impl UserBuilder {
     /// Update the logged-in user's email.
     ///
     /// <https://api.mangadex.org/swagger.html#/User/post-user-email>
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+    #[cfg(feature = "legacy-account")]
     pub fn update_email(&self) -> UpdateUserEmailBuilder {
         UpdateUserEmailBuilder::default().http_client(self.http_client.clone())
     }

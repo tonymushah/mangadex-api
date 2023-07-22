@@ -42,29 +42,34 @@ use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
 
-use mangadex_api_types::error::Result; 
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
+use mangadex_api_types::error::Result;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct RemoveMangaFromCustomList<'a> {
+pub struct RemoveMangaFromCustomList {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub manga_id: &'a Uuid,
-    #[serde(skip)]
-    pub list_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub manga_id: Uuid,
+    #[serde(skip_serializing)]
+    pub list_id: Uuid,
 }
 
 endpoint! {
     DELETE ("/manga/{}/list/{}", manga_id, list_id),
-    #[no_data auth] RemoveMangaFromCustomList<'_>,
+    #[no_data auth] RemoveMangaFromCustomList,
     #[discard_result] Result<NoData>
 }
 
@@ -105,11 +110,11 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .manga()
             .remove_from_custom_list()
-            .manga_id(&manga_id)
-            .list_id(&list_id)
+            .manga_id(manga_id)
+            .list_id(list_id)
             .build()?
             .send()
             .await?;

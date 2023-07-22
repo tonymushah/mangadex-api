@@ -36,19 +36,24 @@ use mangadex_api_types::{
     ReferenceExpansionResource, Tag, TagSearchMode,
 };
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), default, pattern = "owned")]
 #[non_exhaustive]
-pub struct ListManga<'a> {
+pub struct ListManga {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     pub limit: Option<u32>,
     pub offset: Option<u32>,
-    pub title: Option<&'a str>,
+    pub title: Option<String>,
     #[builder(setter(each = "add_author"))]
     pub authors: Vec<Uuid>,
     #[builder(setter(each = "add_artist"))]
@@ -92,7 +97,7 @@ pub struct ListManga<'a> {
 
 endpoint! {
     GET "/manga",
-    #[query] ListManga<'_>,
+    #[query] ListManga,
     #[flatten_result] MangaListResponse
 }
 

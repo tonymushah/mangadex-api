@@ -10,6 +10,12 @@ pub enum ContentRating {
     Suggestive,
 }
 
+impl Default for ContentRating{
+    fn default() -> Self {
+        Self::Safe
+    }
+}
+
 impl From<String> for ContentRating {
     fn from(value: String) -> Self {
         match value.as_ref() {

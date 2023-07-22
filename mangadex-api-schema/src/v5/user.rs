@@ -1,4 +1,4 @@
-use serde::{Deserialize};
+use serde::Deserialize;
 
 /// General user information.
 #[derive(Clone, Debug, Deserialize)]

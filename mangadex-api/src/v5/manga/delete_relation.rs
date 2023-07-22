@@ -47,29 +47,34 @@ use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
 
-use mangadex_api_types::error::Result; 
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
+use mangadex_api_types::error::Result;
 
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into))]
-pub struct DeleteMangaRelation<'a> {
+pub struct DeleteMangaRelation {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub manga_id: &'a Uuid,
-    #[serde(skip)]
-    pub relation_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub manga_id: Uuid,
+    #[serde(skip_serializing)]
+    pub relation_id: Uuid,
 }
 
 endpoint! {
     DELETE ("/manga/{}/relation/{}", manga_id, relation_id),
-    #[no_data auth] DeleteMangaRelation<'_>,
+    #[no_data auth] DeleteMangaRelation,
     #[discard_result] Result<NoData>
 }
 
@@ -114,8 +119,8 @@ mod tests {
         let res = mangadex_client
             .manga()
             .delete_relation()
-            .manga_id(&manga_id)
-            .relation_id(&relation_id)
+            .manga_id(manga_id)
+            .relation_id(relation_id)
             .build()?
             .send()
             .await;
@@ -156,8 +161,8 @@ mod tests {
         let res = mangadex_client
             .manga()
             .delete_relation()
-            .manga_id(&manga_id)
-            .relation_id(&relation_id)
+            .manga_id(manga_id)
+            .relation_id(relation_id)
             .build()?
             .send()
             .await

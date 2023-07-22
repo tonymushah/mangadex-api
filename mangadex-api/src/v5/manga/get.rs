@@ -34,18 +34,23 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::MangaResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct GetManga<'a> {
+pub struct GetManga {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub manga_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub manga_id: Uuid,
 
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
@@ -53,7 +58,7 @@ pub struct GetManga<'a> {
 
 endpoint! {
     GET ("/manga/{}", manga_id),
-    #[query] GetManga<'_>,
+    #[query] GetManga,
     #[flatten_result] MangaResponse
 }
 
@@ -133,7 +138,7 @@ mod tests {
         let res = mangadex_client
             .manga()
             .get()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -227,7 +232,7 @@ mod tests {
         let res = mangadex_client
             .manga()
             .get()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .include(&ReferenceExpansionResource::Author)
             .build()?
             .send()
@@ -482,7 +487,7 @@ mod tests {
         let res = mangadex_client
             .manga()
             .get()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;

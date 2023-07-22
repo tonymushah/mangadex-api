@@ -46,27 +46,32 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::CoverResponse;
 use mangadex_api_types::Language;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct EditCover<'a> {
+pub struct EditCover {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     /// Manga **or** Cover ID.
-    #[serde(skip)]
-    pub cover_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub cover_id: Uuid,
 
     /// 0-8 characters in length.
-    pub volume: Option<Option<&'a str>>,
+    pub volume: Option<Option<String>>,
     /// 0-512 characters in length.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub description: Option<Option<&'a str>>,
+    pub description: Option<Option<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub locale: Option<Option<Language>>,
@@ -76,7 +81,7 @@ pub struct EditCover<'a> {
 
 endpoint! {
     PUT ("/cover/{}", cover_id),
-    #[body auth] EditCover<'_>,
+    #[body auth] EditCover,
     #[flatten_result] CoverResponse
 }
 
@@ -150,8 +155,8 @@ mod tests {
         let _ = mangadex_client
             .cover()
             .edit()
-            .cover_id(&cover_id)
-            .volume(Some("1"))
+            .cover_id(cover_id)
+            .volume(Some("1".to_string()))
             .version(2_u32)
             .build()?
             .send()

@@ -1,7 +1,7 @@
 //! Upload session information from a response body.
 
 use mangadex_api_types::{MangaDexDateTime, RelationshipType};
-use serde::{Deserialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
 use crate::FromResponse;

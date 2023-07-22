@@ -48,18 +48,20 @@ use mangadex_api_types::error::Result;
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
 
+#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct CreateUpdateMangaRating<'a> {
+pub struct CreateUpdateMangaRating {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
-    pub(crate) http_client: HttpClientRef,
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
+pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub manga_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub manga_id: Uuid,
 
     /// `[ 1 .. 10 ]`.
     ///
@@ -67,7 +69,7 @@ pub struct CreateUpdateMangaRating<'a> {
     pub rating: u8,
 }
 
-impl CreateUpdateMangaRating<'_> {
+impl CreateUpdateMangaRating {
     pub async fn send(&mut self) -> Result<NoData> {
         if self.rating < 1 {
             self.rating = 1;
@@ -76,7 +78,7 @@ impl CreateUpdateMangaRating<'_> {
         }
 
         #[cfg(not(feature = "multi-thread"))]
-        let res = self.http_client.borrow().send_request(self).await??;
+        let res = self.http_client.try_borrow()?.send_request(self).await??;
         #[cfg(feature = "multi-thread")]
         let res = self.http_client.lock().await.send_request(self).await??;
 
@@ -86,7 +88,7 @@ impl CreateUpdateMangaRating<'_> {
 
 endpoint! {
     POST ("/rating/{}", manga_id),
-    #[body auth] CreateUpdateMangaRating<'_>,
+    #[body auth] CreateUpdateMangaRating,
     #[no_send] Result<NoData>
 }
 
@@ -135,7 +137,7 @@ mod tests {
         let _res = mangadex_client
             .rating()
             .upsert_for_manga()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .rating(9)
             .build()?
             .send()
@@ -177,7 +179,7 @@ mod tests {
         let _res = mangadex_client
             .rating()
             .upsert_for_manga()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .rating(0)
             .build()?
             .send()
@@ -219,7 +221,7 @@ mod tests {
         let _res = mangadex_client
             .rating()
             .upsert_for_manga()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .rating(11)
             .build()?
             .send()
@@ -259,7 +261,7 @@ mod tests {
         let res = mangadex_client
             .rating()
             .upsert_for_manga()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .rating(7)
             .build()?
             .send()

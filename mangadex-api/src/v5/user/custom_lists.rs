@@ -34,18 +34,23 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::CustomListListResponse;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct UserCustomLists<'a> {
+pub struct UserCustomLists {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub user_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub user_id: Uuid,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
@@ -57,7 +62,7 @@ pub struct UserCustomLists<'a> {
 
 endpoint! {
     GET ("/user/{}/list", user_id),
-    #[query] UserCustomLists<'_>,
+    #[query] UserCustomLists,
     #[flatten_result] CustomListListResponse
 }
 
@@ -114,7 +119,7 @@ mod tests {
         let _ = mangadex_client
             .user()
             .custom_lists()
-            .user_id(&user_id)
+            .user_id(user_id)
             .limit(1_u32)
             .build()?
             .send()

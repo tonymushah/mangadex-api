@@ -41,22 +41,27 @@ use mangadex_api_types::error::Result;
 /// Mark a chapter as read for the current user.
 ///
 /// Makes a request to `POST /captcha/solve`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-pub struct SolveCaptcha<'a> {
+pub struct SolveCaptcha {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    pub captcha_challenge: &'a str,
+    pub captcha_challenge: String,
 }
 
 endpoint! {
     POST "/captcha/solve",
-    #[body] SolveCaptcha<'_>,
+    #[body] SolveCaptcha,
     #[discard_result] Result<NoData>
 }
 
@@ -92,7 +97,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .captcha()
             .solve()
             .captcha_challenge("solution")

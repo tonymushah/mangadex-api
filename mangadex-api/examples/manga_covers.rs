@@ -95,7 +95,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let manga = client
             .manga()
             .get()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -147,7 +147,7 @@ async fn download_file(
 ) -> anyhow::Result<()> {
     #[cfg(not(feature = "multi-thread"))]
     let image_bytes = http_client
-        .borrow()
+        .try_borrow()?
         .client
         .get(url)
         .send()

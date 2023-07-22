@@ -1,5 +1,5 @@
 use mangadex_api_types::ReadingStatus;
-use serde::{Deserialize};
+use serde::Deserialize;
 
 /// Reading status for a single manga.
 #[derive(Debug, Deserialize, Clone)]

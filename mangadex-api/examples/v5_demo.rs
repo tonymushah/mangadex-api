@@ -83,7 +83,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let manga_view = client
             .manga()
             .get()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -97,7 +97,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let manga_feed = client
             .manga()
             .feed()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -119,7 +119,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let node_url = client
             .at_home()
             .server()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .build()?
             .send()
             .await?;
@@ -147,7 +147,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let chapter_results = client
             .chapter()
             .list()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -161,7 +161,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let chapter_view = client
             .chapter()
             .get()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .build()?
             .send()
             .await?;
@@ -189,7 +189,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let cover_view = client
             .cover()
             .get()
-            .cover_id(&cover_id)
+            .cover_id(cover_id)
             .build()?
             .send()
             .await?;
@@ -203,7 +203,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let manga_aggregate = client
             .manga()
             .aggregate()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -231,7 +231,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let scanlation_group_view = client
             .scanlation_group()
             .get()
-            .group_id(&scanlation_group_id)
+            .group_id(scanlation_group_id)
             .build()?
             .send()
             .await?;

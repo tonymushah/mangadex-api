@@ -41,22 +41,29 @@ use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 
 /// Update a user's email.
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-pub struct UpdateUserEmail<'a> {
+#[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+#[cfg(feature = "legacy-account")]
+pub struct UpdateUserEmail {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    pub email: &'a str,
+    pub email: String,
 }
 
 endpoint! {
     POST "/user/email",
-    #[body auth] UpdateUserEmail<'_>,
+    #[body auth] UpdateUserEmail,
     #[discard_result] Result<NoData>
 }
 
@@ -101,7 +108,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .user()
             .update_email()
             .email(email.as_str())

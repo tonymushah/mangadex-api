@@ -56,7 +56,7 @@ impl ChapterDownload {
                 .at_home()
                 .server()
                 .force_port_443(self.force_port_443)
-                .chapter_id(&self.id)
+                .chapter_id(self.id)
                 .build()
             {
                 Ok(d) => d,

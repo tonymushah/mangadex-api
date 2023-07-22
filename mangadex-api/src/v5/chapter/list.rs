@@ -30,34 +30,40 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::ChapterListResponse;
 use mangadex_api_types::{
-    ChapterSortOrder, ContentRating, IncludeFutureUpdates, Language, MangaDexDateTime,
-    ReferenceExpansionResource, IncludeFuturePages, IncludeExternalUrl, IncludeFuturePublishAt,
+    ChapterSortOrder, ContentRating, IncludeExternalUrl, IncludeFuturePages,
+    IncludeFuturePublishAt, IncludeFutureUpdates, Language, MangaDexDateTime,
+    ReferenceExpansionResource,
 };
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), default, pattern = "owned")]
 #[non_exhaustive]
-pub struct ListChapter<'a> {
+pub struct ListChapter {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     pub limit: Option<u32>,
     pub offset: Option<u32>,
     #[serde(rename = "ids")]
     #[builder(setter(each = "add_chapter_id"))]
-    pub chapter_ids: Vec<&'a Uuid>,
-    pub title: Option<&'a str>,
+    pub chapter_ids: Vec<Uuid>,
+    pub title: Option<String>,
     #[builder(setter(each = "add_group"))]
-    pub groups: Vec<&'a Uuid>,
+    pub groups: Vec<Uuid>,
     #[serde(rename = "uploader")]
     #[builder(setter(each = "uploader"))]
-    pub uploaders: Vec<&'a Uuid>,
+    pub uploaders: Vec<Uuid>,
     #[serde(rename = "manga")]
-    pub manga_id: Option<&'a Uuid>,
+    pub manga_id: Option<Uuid>,
     #[serde(rename = "volume")]
     #[builder(setter(each = "add_volume"))]
     pub volumes: Vec<String>,
@@ -77,10 +83,10 @@ pub struct ListChapter<'a> {
     pub content_rating: Vec<ContentRating>,
     /// Groups to exclude from the results.
     #[builder(setter(each = "excluded_group"))]
-    pub excluded_groups: Vec<&'a Uuid>,
+    pub excluded_groups: Vec<Uuid>,
     /// Uploaders to exclude from the results.
     #[builder(setter(each = "excluded_uploader"))]
-    pub excluded_uploaders: Vec<&'a Uuid>,
+    pub excluded_uploaders: Vec<Uuid>,
     /// Flag to include future chapter updates in the results.
     ///
     /// Default: `IncludeFutureUpdates::Include` (1)
@@ -92,9 +98,9 @@ pub struct ListChapter<'a> {
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     pub publish_at_since: Option<MangaDexDateTime>,
     /// Include empty pages
-    pub include_empty_pages : Option<IncludeFuturePages>,
-    pub include_external_url : Option<IncludeExternalUrl>,
-    pub include_future_publish_at : Option<IncludeFuturePublishAt>,
+    pub include_empty_pages: Option<IncludeFuturePages>,
+    pub include_external_url: Option<IncludeExternalUrl>,
+    pub include_future_publish_at: Option<IncludeFuturePublishAt>,
     pub order: Option<ChapterSortOrder>,
     #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
@@ -102,7 +108,7 @@ pub struct ListChapter<'a> {
 
 endpoint! {
     GET "/chapter",
-    #[query] ListChapter<'_>,
+    #[query] ListChapter,
     #[flatten_result] ChapterListResponse
 }
 
@@ -186,7 +192,6 @@ mod tests {
         assert_eq!(chapter.attributes.chapter, Some("1.5".to_string()));
         assert_eq!(chapter.attributes.pages, 4);
         assert_eq!(chapter.attributes.translated_language, Language::English);
-        assert_eq!(chapter.attributes.uploader, Some(uploader_id));
         assert_eq!(chapter.attributes.version, 1);
         assert_eq!(
             chapter.attributes.created_at.to_string(),

@@ -20,6 +20,7 @@ pub mod username;
 pub mod include_empty_pages;
 pub mod include_future_publish_at;
 pub mod include_external_url;
+pub mod result;
 
 pub use include_future_updates::IncludeFutureUpdates;
 pub use language::Language;
@@ -50,3 +51,4 @@ pub use username::Username;
 pub use include_empty_pages::IncludeFuturePages;
 pub use include_future_publish_at::IncludeFuturePublishAt;
 pub use include_external_url::IncludeExternalUrl;
+pub use result::ResultType;

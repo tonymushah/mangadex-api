@@ -42,64 +42,66 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::GroupResponse;
 use mangadex_api_types::MangaDexDuration;
 
+#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct CreateGroup<'a> {
+pub struct CreateGroup {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
-    pub(crate) http_client: HttpClientRef,
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
+pub(crate) http_client: HttpClientRef,
 
-    pub name: &'a str,
+    pub name: String,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub website: Option<Option<&'a str>>,
+    pub website: Option<String>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub irc_server: Option<Option<&'a str>>,
+    pub irc_server: Option<String>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub irc_channel: Option<Option<&'a str>>,
+    pub irc_channel: Option<String>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub discord: Option<Option<&'a str>>,
+    pub discord: Option<String>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub contact_email: Option<Option<&'a str>>,
+    pub contact_email: Option<String>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub description: Option<Option<&'a str>>,
+    pub description: Option<String>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub twitter: Option<Option<&'a Url>>,
+    pub twitter: Option<Url>,
     /// Regex: [^https:/\/www\.mangaupdates\.com\/(?:groups|publishers)\.html\?id=\d+](https://www.mangaupdates.com)
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub manga_updates: Option<Option<&'a Url>>,
+    pub manga_updates: Option<Url>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub inactive: Option<bool>,
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub publish_delay: Option<Option<MangaDexDuration>>,
+    pub publish_delay: Option<MangaDexDuration>,
 }
 
 endpoint! {
     POST ("/group"),
-    #[body auth] CreateGroup<'_>,
+    #[body auth] CreateGroup,
     #[flatten_result] GroupResponse
 }
 

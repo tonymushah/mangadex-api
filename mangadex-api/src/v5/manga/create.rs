@@ -47,15 +47,20 @@ use mangadex_api_types::{ContentRating, Demographic, Language, MangaLinks, Manga
 /// This requires authentication.
 ///
 /// Makes a request to `POST /manga`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[non_exhaustive]
-pub struct CreateManga<'a> {
+pub struct CreateManga {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[builder(setter(each = "add_title"))]
@@ -78,10 +83,10 @@ pub struct CreateManga<'a> {
     pub original_language: Language,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub last_volume: Option<Option<&'a str>>,
+    pub last_volume: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub last_chapter: Option<Option<&'a str>>,
+    pub last_chapter: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub publication_demographic: Option<Option<Demographic>>,
@@ -106,7 +111,7 @@ pub struct CreateManga<'a> {
 
 endpoint! {
     POST "/manga",
-    #[body auth] CreateManga<'_>,
+    #[body auth] CreateManga,
     #[flatten_result] MangaResponse
 }
 
@@ -473,7 +478,6 @@ mod tests {
             .create()
             .add_title((Language::English, manga_title.clone()))
             .original_language(Language::Japanese)
-            .last_volume(None)
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
             .tags(vec![Tag::Action])

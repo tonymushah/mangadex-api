@@ -50,33 +50,38 @@ use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 use mangadex_api_types::ReportCategory;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct CreateReport<'a> {
+pub struct CreateReport {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     pub category: ReportCategory,
     /// The report reason ID for sub-categorization.
     ///
     /// For example, if a manga was being reported for being a troll entry, the specific reason ID should be used, obtained from the [list report reasons endpoint](crate::v5::report::list).
-    pub reason: &'a Uuid,
+    pub reason: Uuid,
     /// The ID from the category type.
     ///
     /// For example, if the category is "manga", this should be a manga UUID.
-    pub object_id: &'a Uuid,
+    pub object_id: Uuid,
     /// Optional notes about why this is being reported.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub details: Option<&'a str>,
+    pub details: Option<String>,
 }
 
 endpoint! {
     POST "/report",
-    #[body auth] CreateReport<'_>,
+    #[body auth] CreateReport,
     #[discard_result] Result<NoData>
 }
 
@@ -126,12 +131,12 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .report()
             .create()
             .category(ReportCategory::Manga)
-            .reason(&reason_id)
-            .object_id(&manga_id)
+            .reason(reason_id)
+            .object_id(manga_id)
             .build()?
             .send()
             .await?;

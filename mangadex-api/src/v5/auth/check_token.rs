@@ -43,7 +43,11 @@ use mangadex_api_types::error::Result;
 ///
 /// Makes a request to `POST /auth/check`.
 // It doesn't make much sense to make this a builder pattern but for consistency, it is.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 pub struct CheckToken {
@@ -51,6 +55,7 @@ pub struct CheckToken {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 }
 

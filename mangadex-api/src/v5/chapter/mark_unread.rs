@@ -47,23 +47,28 @@ use mangadex_api_types::error::Result;
 /// Mark a chapter as unread for the current user.
 ///
 /// Makes a request to `DELETE /chapter/{id}/read`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-pub struct MarkChapterUnread<'a> {
+pub struct MarkChapterUnread{
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(rename = "id", skip)]
-    pub chapter_id: &'a Uuid,
+    #[serde(rename = "id", skip_serializing)]
+    pub chapter_id: Uuid,
 }
 
 endpoint! {
     DELETE ("/chapter/{}/read", chapter_id),
-    #[no_data auth] MarkChapterUnread<'_>,
+    #[no_data auth] MarkChapterUnread,
     #[discard_result] Result<NoData>
 }
 
@@ -101,10 +106,10 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .chapter()
             .mark_unread()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .build()?
             .send()
             .await?;

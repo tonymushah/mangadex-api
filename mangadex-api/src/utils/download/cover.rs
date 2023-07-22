@@ -104,7 +104,7 @@ pub async fn download_via_cover_id(
     let cover = match mangadex_api_client
         .cover()
         .view()
-        .cover_id(&cover_id)
+        .cover_id(cover_id)
         .build()
     {
         Ok(d) => d,
@@ -140,7 +140,7 @@ pub async fn download_via_manga_api_object(
                         match mangadex_api_client
                             .cover()
                             .view()
-                            .cover_id(&relationship.id)
+                            .cover_id(relationship.id)
                             .build()
                         {
                             Ok(d) => d,
@@ -159,7 +159,7 @@ pub async fn download_via_manga_api_object(
                 match mangadex_api_client
                     .cover()
                     .view()
-                    .cover_id(&relationship.id)
+                    .cover_id(relationship.id)
                     .build()
                 {
                     Ok(d) => d,
@@ -193,7 +193,7 @@ pub async fn download_via_manga_id(
     cover_quality: CoverQuality,
 ) -> Result<DownloadElement> {
     let mangadex_api_client = MangaDexClient::new_with_http_client_ref(http_client.clone());
-    let manga : ApiObject<MangaAttributes> = match mangadex_api_client.manga().get().manga_id(&manga_id).includes(vec![ReferenceExpansionResource::CoverArt]).build() {
+    let manga : ApiObject<MangaAttributes> = match mangadex_api_client.manga().get().manga_id(manga_id).includes(vec![ReferenceExpansionResource::CoverArt]).build() {
         Ok(res) => {
             res.send().await?.data
         },

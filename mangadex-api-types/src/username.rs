@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
 use crate::error::{Error, Result};
 
@@ -6,7 +6,7 @@ const MIN_LEN: usize = 1;
 const MAX_LEN: usize = 64;
 
 /// Type to ensure usernames sent to the API are valid.
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, Deserialize)]
 pub struct Username(String);
 
 impl Username {
@@ -42,14 +42,14 @@ mod tests {
 
     #[test]
     fn username_fewer_than_1_char_parses_error() {
-        let short_username = Username::parse(&"a".repeat(MIN_LEN - 1));
+        let short_username = Username::parse("a".repeat(MIN_LEN - 1));
 
         assert!(short_username.is_err());
     }
 
     #[test]
     fn password_more_than_64_char_parses_error() {
-        let long_username = Username::parse(&"a".repeat(MAX_LEN + 1));
+        let long_username = Username::parse("a".repeat(MAX_LEN + 1));
 
         assert!(long_username.is_err());
     }

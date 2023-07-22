@@ -33,23 +33,28 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::CustomListResponse;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct GetCustomList<'a> {
+pub struct GetCustomList{
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub list_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub list_id: Uuid,
 }
 
 endpoint! {
     GET ("/list/{}", list_id),
-    #[query] GetCustomList<'_>,
+    #[query] GetCustomList,
     #[flatten_result] CustomListResponse
 }
 
@@ -102,7 +107,7 @@ mod tests {
         let res = mangadex_client
             .custom_list()
             .get()
-            .list_id(&list_id)
+            .list_id(list_id)
             .build()?
             .send()
             .await?;
@@ -149,7 +154,7 @@ mod tests {
         let res = mangadex_client
             .custom_list()
             .get()
-            .list_id(&list_id)
+            .list_id(list_id)
             .build()?
             .send()
             .await

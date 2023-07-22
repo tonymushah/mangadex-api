@@ -49,25 +49,30 @@ use crate::HttpClientRef;
 /// This requires authentication.
 ///
 /// Makes a request to `POST /upload/begin`.
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
-pub struct StartUploadSession<'a> {
+pub struct StartUploadSession {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     #[builder(setter(each = "add_group_id"))]
-    pub groups: Vec<&'a Uuid>,
+    pub groups: Vec<Uuid>,
     #[serde(rename = "manga")]
-    pub manga_id: &'a Uuid,
+    pub manga_id: Uuid,
 }
 
 endpoint! {
     POST "/upload/begin",
-    #[body auth] StartUploadSession<'_>,
+    #[body auth] StartUploadSession,
     UploadSessionResponse
 }
 
@@ -135,17 +140,17 @@ mod tests {
         let res = mangadex_client
             .upload()
             .start_session()
-            .add_group_id(&group_id)
-            .manga_id(&manga_id)
+            .add_group_id(group_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
 
         assert_eq!(res.id, session_id);
         assert_eq!(res.type_, RelationshipType::UploadSession);
-        assert_eq!(res.attributes.is_committed, false);
-        assert_eq!(res.attributes.is_processed, false);
-        assert_eq!(res.attributes.is_deleted, false);
+        assert!(!res.attributes.is_committed);
+        assert!(!res.attributes.is_processed);
+        assert!(!res.attributes.is_deleted);
         assert_eq!(res.attributes.version, 1);
         assert_eq!(res.attributes.created_at.to_string(), datetime.to_string());
         assert_eq!(res.attributes.updated_at.to_string(), datetime.to_string());

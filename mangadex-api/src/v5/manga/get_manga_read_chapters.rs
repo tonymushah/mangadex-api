@@ -33,23 +33,28 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::UngroupedMangaReadMarkersResponse;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct GetMangaReadChapters<'a> {
+pub struct GetMangaReadChapters {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub manga_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub manga_id: Uuid,
 }
 
 endpoint! {
     GET ("/manga/{}/read", manga_id),
-    #[no_data auth] GetMangaReadChapters<'_>,
+    #[no_data auth] GetMangaReadChapters,
     #[flatten_result] UngroupedMangaReadMarkersResponse
 }
 
@@ -98,7 +103,7 @@ mod tests {
         let _ = mangadex_client
             .manga()
             .get_manga_read_chapters()
-            .manga_id(&manga_id)
+            .manga_id(manga_id)
             .build()?
             .send()
             .await?;

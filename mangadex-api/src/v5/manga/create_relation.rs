@@ -50,25 +50,30 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::MangaRelationListResponse;
 use mangadex_api_types::MangaRelation;
 
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into))]
-pub struct CreateMangaRelation<'a> {
+pub struct CreateMangaRelation {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub manga_id: &'a Uuid,
-    pub target_manga: &'a Uuid,
-    pub relation: &'a MangaRelation,
+    #[serde(skip_serializing)]
+    pub manga_id: Uuid,
+    pub target_manga: Uuid,
+    pub relation: MangaRelation,
 }
 
 endpoint! {
     POST ("/manga/{}/relation", manga_id),
-    #[body auth] CreateMangaRelation<'_>,
+    #[body auth] CreateMangaRelation,
     #[flatten_result] MangaRelationListResponse
 }
 
@@ -197,9 +202,9 @@ mod tests {
         let res = mangadex_client
             .manga()
             .create_relation()
-            .manga_id(&manga_id)
-            .target_manga(&target_manga_id)
-            .relation(&MangaRelation::SpinOff)
+            .manga_id(manga_id)
+            .target_manga(target_manga_id)
+            .relation(MangaRelation::SpinOff)
             .build()?
             .send()
             .await?;
@@ -248,9 +253,9 @@ mod tests {
         let res = mangadex_client
             .manga()
             .create_relation()
-            .manga_id(&manga_id)
-            .target_manga(&target_manga_id)
-            .relation(&MangaRelation::Sequel)
+            .manga_id(manga_id)
+            .target_manga(target_manga_id)
+            .relation(MangaRelation::Sequel)
             .build()?
             .send()
             .await

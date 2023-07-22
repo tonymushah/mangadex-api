@@ -43,7 +43,11 @@ use mangadex_api_types::error::{Error, Result};
 /// Get a new session and refresh token.
 ///
 /// Makes a request to `POST /auth/refresh`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
@@ -52,6 +56,7 @@ pub struct RefreshToken {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
     /// Refresh token.
@@ -67,7 +72,7 @@ impl RefreshToken {
         // Attempt to get the authenticated user's refresh token, otherwise return an error.
         if self.refresh_token.trim().is_empty() {
             #[cfg(not(feature = "multi-thread"))]
-            let http_client = &self.http_client.borrow();
+            let http_client = &self.http_client.try_borrow()?;
             #[cfg(feature = "multi-thread")]
             let http_client = &self.http_client.lock().await;
 
@@ -80,9 +85,11 @@ impl RefreshToken {
 
         #[cfg(not(feature = "multi-thread"))]
         {
-            let res = self.http_client.borrow().send_request(self).await??;
+            let res = self.http_client.try_borrow()?.send_request(self).await??;
 
-            self.http_client.borrow_mut().set_auth_tokens(&res.token);
+            self.http_client
+                .try_borrow_mut()?
+                .set_auth_tokens(&res.token);
 
             Ok(res)
         }
@@ -156,7 +163,7 @@ mod tests {
 
         #[cfg(not(feature = "multi-thread"))]
         assert_eq!(
-            mangadex_client.http_client.borrow().get_tokens(),
+            mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
                 session: "newsessiontoken".to_string(),
                 refresh: "newrefreshtoken".to_string(),
@@ -219,7 +226,7 @@ mod tests {
 
         #[cfg(not(feature = "multi-thread"))]
         assert_eq!(
-            mangadex_client.http_client.borrow().get_tokens(),
+            mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "".to_string(),
@@ -293,7 +300,7 @@ mod tests {
 
         #[cfg(not(feature = "multi-thread"))]
         assert_eq!(
-            mangadex_client.http_client.borrow().get_tokens(),
+            mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "invalidtoken".to_string(),
@@ -367,7 +374,7 @@ mod tests {
 
         #[cfg(not(feature = "multi-thread"))]
         assert_eq!(
-            mangadex_client.http_client.borrow().get_tokens(),
+            mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "expiredtoken".to_string(),

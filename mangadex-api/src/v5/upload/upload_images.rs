@@ -56,18 +56,23 @@ use crate::HttpClientRef;
 /// This requires authentication.
 ///
 /// Makes a request to `POST /upload/{id}`.
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct UploadImages<'a> {
+pub struct UploadImages {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub session_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub session_id: Uuid,
 
     /// Image bytes.
     #[builder(setter(each = "add_file"))]
@@ -75,7 +80,7 @@ pub struct UploadImages<'a> {
 }
 
 // TODO: Come up with a way to generalize multipart form data for the `Endpoint` trait.
-impl Endpoint for UploadImages<'_> {
+impl Endpoint for UploadImages {
     type Query = ();
     type Body = ();
     type Response = UploadSessionFileResponse;
@@ -104,10 +109,10 @@ impl Endpoint for UploadImages<'_> {
     }
 }
 
-impl UploadImages<'_> {
+impl UploadImages {
     pub async fn send(&self) -> UploadSessionFileResponse {
         #[cfg(not(feature = "multi-thread"))]
-        let res = self.http_client.borrow().send_request(self).await?;
+        let res = self.http_client.try_borrow()?.send_request(self).await?;
         #[cfg(feature = "multi-thread")]
         let res = self.http_client.lock().await.send_request(self).await?;
 
@@ -176,7 +181,7 @@ mod tests {
         let _ = mangadex_client
             .upload()
             .upload_images()
-            .session_id(&session_id)
+            .session_id(session_id)
             .add_file(file_bytes.into())
             .build()?
             .send()

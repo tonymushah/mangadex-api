@@ -46,18 +46,23 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::CustomListResponse;
 use mangadex_api_types::CustomListVisibility;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct CreateCustomList<'a> {
+pub struct CreateCustomList {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    pub name: &'a str,
+    pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub visibility: Option<CustomListVisibility>,
@@ -71,7 +76,7 @@ pub struct CreateCustomList<'a> {
 
 endpoint! {
     POST ("/list"),
-    #[body auth] CreateCustomList<'_>,
+    #[body auth] CreateCustomList,
     #[flatten_result] CustomListResponse
 }
 

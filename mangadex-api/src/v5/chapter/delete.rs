@@ -40,27 +40,32 @@ use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
 
-use crate::{HttpClientRef};
+use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct DeleteChapter<'a> {
+pub struct DeleteChapter {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub chapter_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub chapter_id: Uuid,
 }
 
 endpoint! {
     DELETE ("/chapter/{}", chapter_id),
-    #[no_data auth] DeleteChapter<'_>,
+    #[no_data auth] DeleteChapter,
     #[discard_result] Result<NoData>
 }
 
@@ -100,10 +105,10 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .chapter()
             .delete()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .build()?
             .send()
             .await?;

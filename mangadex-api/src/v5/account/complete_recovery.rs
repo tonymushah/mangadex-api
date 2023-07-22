@@ -36,19 +36,24 @@ use mangadex_api_types::Password;
 /// Complete an account recovery.
 ///
 /// Makes a request to `POST /account/recover/{code}`.
-#[derive(Debug, Builder, Serialize, Clone)]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
+#[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-pub struct CompleteAccountRecovery<'a> {
+pub struct CompleteAccountRecovery {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub code: &'a str,
+    #[serde(skip_serializing)]
+    pub code: String,
 
     /// Update the account's password to this value.
     ///
@@ -60,7 +65,7 @@ pub struct CompleteAccountRecovery<'a> {
 
 endpoint! {
     POST ("/account/recover/{}", code),
-    #[body] CompleteAccountRecovery<'_>,
+    #[body] CompleteAccountRecovery,
     #[discard_result] Result<NoData>
 }
 
@@ -101,7 +106,7 @@ mod tests {
         let _ = mangadex_client
             .account()
             .complete_recovery()
-            .code(code.to_string().as_str())
+            .code(code.to_string())
             .new_password(MDPassword::parse(&new_password)?)
             .build()?
             .send()

@@ -67,6 +67,12 @@ macro_rules! languages {
                 )
             }
         }
+
+        impl Default for Language {
+            fn default() -> Self{
+                Self::Unknown
+            }
+        }
     };
 }
 

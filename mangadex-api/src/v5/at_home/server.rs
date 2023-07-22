@@ -34,18 +34,20 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::AtHomeServerResponse;
 
+#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
-pub struct GetAtHomeServer<'a> {
+pub struct GetAtHomeServer {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
-    pub(crate) http_client: HttpClientRef,
+    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
+pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip)]
-    pub chapter_id: &'a Uuid,
+    #[serde(skip_serializing)]
+    pub chapter_id: Uuid,
 
     /// Force selecting from MangaDex@Home servers that use the standard HTTPS port 443.
     ///
@@ -60,7 +62,7 @@ pub struct GetAtHomeServer<'a> {
 
 endpoint! {
     GET ("/at-home/server/{}", chapter_id),
-    #[query] GetAtHomeServer<'_>,
+    #[query] GetAtHomeServer,
     #[flatten_result] AtHomeServerResponse
 }
 
@@ -111,7 +113,7 @@ mod tests {
         let res = mangadex_client
             .at_home()
             .server()
-            .chapter_id(&chapter_id)
+            .chapter_id(chapter_id)
             .force_port_443(true)
             .build()?
             .send()
