@@ -217,6 +217,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             println!("done");
         } else {
             #[cfg(not(feature = "multi-thread"))]
+            #[cfg_attr(not(feature = "multi-thread"), allow(clippy::await_holding_refcell_ref))]
             let page_res = client
                 .get_http_client()
                 .clone()

@@ -331,6 +331,7 @@ macro_rules! endpoint {
     { @send:flatten_result, $typ:ty, $out:ty } => {
         impl $typ {
             /// Send the request.
+            #[allow(dead_code)]
             pub async fn send(&self) -> $out {
                 #[cfg(not(feature = "multi-thread"))]
                 {
@@ -347,6 +348,7 @@ macro_rules! endpoint {
     { @send:discard_result, $typ:ty, $out:ty } => {
         impl $typ {
             /// Send the request.
+            #[allow(dead_code)]
             pub async fn send(&self) -> mangadex_api_types::error::Result<()> {
                 #[cfg(not(feature = "multi-thread"))]
                 self.http_client.try_borrow()?.send_request(self).await??;

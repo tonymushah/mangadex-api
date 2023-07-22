@@ -25,8 +25,10 @@ mod update_email;
 #[cfg(feature = "legacy-account")]
 mod update_password;
 
+#[cfg(feature = "legacy-account")]
 use crate::v5::user::approve_deletion::ApproveUserDeletionBuilder;
 use crate::v5::user::custom_lists::UserCustomListsBuilder;
+#[cfg(feature = "legacy-account")]
 use crate::v5::user::delete::DeleteUserBuilder;
 use crate::v5::user::followed_custom_lists::GetFollowedCustomListsBuilder;
 use crate::v5::user::followed_groups::FollowedGroupsBuilder;
@@ -41,7 +43,9 @@ use crate::v5::user::is_following_user::IsFollowingUserBuilder;
 use crate::v5::user::list::ListUserBuilder;
 use crate::v5::user::me::GetMyUserDetailsBuilder;
 use crate::v5::user::my_custom_lists::MyCustomListsBuilder;
+#[cfg(feature = "legacy-account")]
 use crate::v5::user::update_email::UpdateUserEmailBuilder;
+#[cfg(feature = "legacy-account")]
 use crate::v5::user::update_password::UpdateUserPasswordBuilder;
 use crate::HttpClientRef;
 
