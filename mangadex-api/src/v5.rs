@@ -4,7 +4,6 @@ mod account;
 #[cfg(not(feature = "deserializable-endpoint"))]
 mod at_home;
 #[cfg(not(feature = "deserializable-endpoint"))]
-#[cfg(feature = "legacy-auth")]
 mod auth;
 #[cfg(not(feature = "deserializable-endpoint"))]
 mod author;
@@ -48,7 +47,6 @@ pub mod account;
 #[cfg(feature = "deserializable-endpoint")]
 pub mod at_home;
 #[cfg(feature = "deserializable-endpoint")]
-#[cfg(feature = "legacy-auth")]
 pub mod auth;
 #[cfg(feature = "deserializable-endpoint")]
 pub mod author;
@@ -103,7 +101,6 @@ use crate::v5::account::AccountBuilder;
 
 use crate::v5::at_home::AtHomeBuilder;
 
-#[cfg(feature = "legacy-auth")]
 use crate::v5::auth::AuthBuilder;
 
 use crate::v5::author::AuthorBuilder;
@@ -229,8 +226,8 @@ impl MangaDexClient {
     /// Get a builder for handling the account endpoints.
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Account>
-    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     #[cfg(feature = "legacy-account")]
+    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     pub fn account(&self) -> AccountBuilder {
         AccountBuilder::new(self.http_client.clone())
     }
@@ -247,8 +244,6 @@ impl MangaDexClient {
     /// This builder is deprecated
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication>
-    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-    #[cfg(feature = "legacy-auth")]
     pub fn auth(&self) -> AuthBuilder {
         AuthBuilder::new(self.http_client.clone())
     }
