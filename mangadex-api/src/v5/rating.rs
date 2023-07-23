@@ -2,9 +2,19 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Rating/Rating>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod create_update_for_manga;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod delete_for_manga;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get_your_manga_ratings;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod create_update_for_manga;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod delete_for_manga;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get_your_manga_ratings;
 
 use crate::v5::rating::create_update_for_manga::CreateUpdateMangaRatingBuilder;
 use crate::v5::rating::delete_for_manga::DeleteMangaRatingBuilder;

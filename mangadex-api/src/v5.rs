@@ -1,25 +1,89 @@
+#[cfg(not(feature = "deserializable-endpoint"))]
 #[cfg(feature = "legacy-account")]
 mod account;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod at_home;
+#[cfg(not(feature = "deserializable-endpoint"))]
 #[cfg(feature = "legacy-auth")]
 mod auth;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod author;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod captcha;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod chapter;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod cover;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod custom_list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod feed;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod infrastructure;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod legacy;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod manga;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod rating;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod report;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod scanlation_group;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod search;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod settings;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod statistics;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod upload;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod user;
+
+
+#[cfg(feature = "deserializable-endpoint")]
+#[cfg(feature = "legacy-account")]
+pub mod account;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod at_home;
+#[cfg(feature = "deserializable-endpoint")]
+#[cfg(feature = "legacy-auth")]
+pub mod auth;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod author;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod captcha;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod chapter;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod cover;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod custom_list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod feed;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod infrastructure;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod legacy;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod manga;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod rating;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod report;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod scanlation_group;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod search;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod settings;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod statistics;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod upload;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod user;
 
 #[cfg(not(feature = "multi-thread"))]
 use std::cell::RefCell;
@@ -117,7 +181,7 @@ impl MangaDexClient {
     }
 
     /// Create a new `MangaDexClient` with a custom client reference
-    pub fn new_with_http_client_ref(http_client: HttpClientRef) -> Self{
+    pub fn new_with_http_client_ref(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
     /// Create a new `MangaDexClient` with a custom [`HttpClient`](crate::HttpClient).
@@ -179,9 +243,9 @@ impl MangaDexClient {
     }
 
     /// Get a builder for handling the authentication endpoints.
-    /// 
+    ///
     /// This builder is deprecated
-    /// 
+    ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     #[cfg(feature = "legacy-auth")]
@@ -310,9 +374,9 @@ impl MangaDexClient {
         UserBuilder::new(self.http_client.clone())
     }
 
-    /// This is an api client for 
+    /// This is an api client for
     /// `api.mangadex.dev`
-    pub fn api_dev_client() -> Self{
+    pub fn api_dev_client() -> Self {
         Self::new_with_http_client(HttpClient::api_dev_client())
     }
     #[cfg(feature = "utils")]

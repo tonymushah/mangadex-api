@@ -2,13 +2,35 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/ScanlationGroup>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod create;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod delete;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod follow;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod unfollow;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod update;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod create;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod delete;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod follow;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod unfollow;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod update;
 
 use crate::v5::scanlation_group::create::CreateGroupBuilder;
 use crate::v5::scanlation_group::delete::DeleteGroupBuilder;

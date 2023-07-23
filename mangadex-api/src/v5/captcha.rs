@@ -2,7 +2,11 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Captcha>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod solve;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod solve;
 
 use crate::v5::captcha::solve::SolveCaptchaBuilder;
 use crate::HttpClientRef;

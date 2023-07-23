@@ -2,13 +2,35 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Chapter>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod delete;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod mark_batch;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod mark_read;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod mark_unread;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod update;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod delete;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod mark_batch;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod mark_read;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod mark_unread;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod update;
 
 use crate::v5::chapter::delete::DeleteChapterBuilder;
 use crate::v5::chapter::get::GetChapterBuilder;

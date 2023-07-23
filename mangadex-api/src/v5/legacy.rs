@@ -2,7 +2,11 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Legacy>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod id_mapping;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod id_mapping;
 
 use crate::v5::legacy::id_mapping::LegacyIdMappingBuilder;
 use crate::HttpClientRef;

@@ -2,10 +2,23 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Auth>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod check_token;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod login;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod logout;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod refresh_token;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod check_token;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod login;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod logout;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod refresh_token;
 
 use crate::v5::auth::check_token::CheckTokenBuilder;
 use crate::v5::auth::login::LoginBuilder;

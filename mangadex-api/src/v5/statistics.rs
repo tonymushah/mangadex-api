@@ -2,8 +2,15 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Statistics>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod find_manga;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get_manga;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod find_manga;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get_manga;
 
 use crate::v5::statistics::find_manga::FindMangaStatisticsBuilder;
 use crate::v5::statistics::get_manga::GetMangaStatisticsBuilder;

@@ -1,29 +1,90 @@
 //! User endpoint handler.
 //!
 //! <https://api.mangadex.org/swagger.html#/User>
+
+#[cfg(not(feature = "deserializable-endpoint"))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
 #[cfg(feature = "legacy-account")]
 mod approve_deletion;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod custom_lists;
+#[cfg(not(feature = "deserializable-endpoint"))]
 #[cfg(feature = "legacy-account")]
 mod delete;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod followed_custom_lists;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod followed_groups;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod followed_manga;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod followed_manga_feed;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod followed_users;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod is_following_custom_list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod is_following_group;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod is_following_manga;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod is_following_user;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod me;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod my_custom_lists;
+#[cfg(not(feature = "deserializable-endpoint"))]
 #[cfg(feature = "legacy-account")]
 mod update_email;
+#[cfg(not(feature = "deserializable-endpoint"))]
 #[cfg(feature = "legacy-account")]
 mod update_password;
+
+#[cfg(feature = "deserializable-endpoint")]
+#[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+#[cfg(feature = "legacy-account")]
+pub mod approve_deletion;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod custom_lists;
+#[cfg(feature = "deserializable-endpoint")]
+#[cfg(feature = "legacy-account")]
+pub mod delete;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod followed_custom_lists;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod followed_groups;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod followed_manga;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod followed_manga_feed;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod followed_users;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod is_following_custom_list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod is_following_group;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod is_following_manga;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod is_following_user;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod me;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod my_custom_lists;
+#[cfg(feature = "deserializable-endpoint")]
+#[cfg(feature = "legacy-account")]
+pub mod update_email;
+#[cfg(feature = "deserializable-endpoint")]
+#[cfg(feature = "legacy-account")]
+pub mod update_password;
 
 #[cfg(feature = "legacy-account")]
 use crate::v5::user::approve_deletion::ApproveUserDeletionBuilder;

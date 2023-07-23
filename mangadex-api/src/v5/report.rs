@@ -2,9 +2,19 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Report>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod create;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod list_reports_by_user;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod create;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list_reports_by_user;
 
 use crate::v5::report::create::CreateReportBuilder;
 use crate::v5::report::list::ListReasonsBuilder;
