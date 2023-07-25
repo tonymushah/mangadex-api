@@ -140,7 +140,7 @@ version = "0.5.11"
 [features]
 multi-thread = ["futures"]
 legacy-auth = []
-legacy-account = []
+legacy-account = ["legacy-auth"]
 default = []
 utils = ["dep:bytes", "dep:tokio", "dep:anyhow", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 non_exhaustive = ["mangadex-api-schema/non_exhaustive", "mangadex-api-types/non_exhaustive"]

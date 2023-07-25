@@ -61,69 +61,81 @@ pub struct CreateAuthor {
     pub(crate) http_client: HttpClientRef,
 
     pub name: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub biography: Option<LocalizedString>,
+    
     /// <https://twitter.com>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub twitter: Option<Option<Url>>,
+    
     /// <https://www.pixiv.net>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub pixiv: Option<Option<Url>>,
+    
     /// <https://www.melonbooks.co.jp>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub melon_book: Option<Option<Url>>,
+    
     /// <https://www.fanbox.cc>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub fan_box: Option<Option<Url>>,
+    
     /// <https://booth.pm>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub booth: Option<Option<Url>>,
+    
     /// <https://www.nicovideo.jp>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub nico_video: Option<Option<Url>>,
+    
     /// <https://skeb.jp>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub skeb: Option<Option<Url>>,
+    
     /// <https://fantia.jp>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub fantia: Option<Option<Url>>,
+    
     /// <https://www.tumblr.com>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub tumblr: Option<Option<Url>>,
+    
     /// <https://www.youtube.com>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub youtube: Option<Option<Url>>,
+    
     /// [https://weibo.cn/u/](https://weibo.cn)
     /// or
     /// [https://m.weibo.cn/u/](https://m.weibo.cn)
@@ -132,20 +144,18 @@ pub struct CreateAuthor {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub weibo: Option<Option<Url>>,
+    
     /// <https://blog.naver.com/>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub naver: Option<Option<Url>>,
+    
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub website: Option<Option<Url>>,
-    /// >= 1
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
-    pub version: Option<u32>,
 }
 
 endpoint! {
@@ -241,7 +251,6 @@ mod tests {
             .author()
             .create()
             .name(author_name.as_str())
-            .version(1u32)
             .build()?
             .send()
             .await?;

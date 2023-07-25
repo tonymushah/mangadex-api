@@ -1,3 +1,4 @@
+use mangadex_api_types::ResultType;
 use serde::Deserialize;
 use url::Url;
 
@@ -7,10 +8,10 @@ use url::Url;
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct AtHomeServer {
+    pub result : ResultType,
     /// The base URL to construct final image URLs from.
     /// The URL returned is valid for the requested chapter only, and for a duration of 15 minutes
     /// from the time of the response.
-    #[cfg_attr(feature = "specta", specta(type = String))]
     pub base_url: Url,
     pub chapter: ChapterData,
 }

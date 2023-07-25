@@ -2,12 +2,31 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Account>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod activate;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod check_username_available;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod complete_recovery;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod create;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod recover;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod resend_activation_code;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod activate;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod check_username_available;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod complete_recovery;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod create;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod recover;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod resend_activation_code;
 
 use crate::v5::account::activate::ActivateAccountBuilder;
 use crate::v5::account::check_username_available::CheckUsernameAvailableBuilder;

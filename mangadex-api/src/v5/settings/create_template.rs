@@ -30,6 +30,8 @@
 //! # }
 //! ```
 
+// TODO Implement a schema
+
 use derive_builder::Builder;
 use serde::Serialize;
 

@@ -49,7 +49,7 @@ use uuid::Uuid;
 
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::{LocalizedString, MangaResponse};
-use mangadex_api_types::{ContentRating, Demographic, Language, MangaLinks, MangaStatus, Tag};
+use mangadex_api_types::{ContentRating, Demographic, Language, MangaLinks, MangaStatus};
 
 /// Update a manga's information.
 ///
@@ -118,7 +118,7 @@ pub struct UpdateManga {
     pub chapter_numbers_reset_on_new_volume: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub tags: Option<Vec<Tag>>,
+    pub tags: Option<Vec<Uuid>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub primary_cover: Option<Option<Uuid>>,
@@ -335,7 +335,7 @@ mod tests {
             .original_language(Language::Japanese)
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
-            .tags(vec![Tag::Action])
+            .tags(vec![Tag::Action.into()])
             .version(1_u32)
             .build()?
             .send()
@@ -440,7 +440,7 @@ mod tests {
             .last_volume(None)
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
-            .tags(vec![Tag::Action])
+            .tags(vec![Tag::Action.into()])
             .version(1_u32)
             .build()?
             .send()
@@ -545,7 +545,7 @@ mod tests {
             .last_volume(Some("1".to_string()))
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
-            .tags(vec![Tag::Action])
+            .tags(vec![Tag::Action.into()])
             .version(1_u32)
             .build()?
             .send()

@@ -29,7 +29,7 @@ use serde::Serialize;
 
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::UserReportsListResponse;
-use mangadex_api_types::{ReportCategory, ReportSortOrder, ReportStatus};
+use mangadex_api_types::{ReportCategory, ReportSortOrder, ReportStatus, ReferenceExpansionResource};
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -50,6 +50,8 @@ pub struct ListReportsByUser {
     pub category: Option<ReportCategory>,
     pub status: Option<ReportStatus>,
     pub order: Option<ReportSortOrder>,
+    #[builder(setter(each = "include"))]
+    pub includes: Vec<ReferenceExpansionResource>,
 }
 
 endpoint! {

@@ -2,11 +2,27 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Cover>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod delete;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod edit;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod upload;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod delete;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod edit;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod upload;
 
 use crate::v5::cover::delete::DeleteCoverBuilder;
 use crate::v5::cover::edit::EditCoverBuilder;

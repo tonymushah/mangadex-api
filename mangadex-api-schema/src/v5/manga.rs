@@ -38,6 +38,7 @@ pub struct MangaAttributes {
     // TODO: Remove the default when MangaDex always returns this field.
     #[serde(default)]
     pub chapter_numbers_reset_on_new_volume: bool,
+    pub latest_uploaded_chapter : Option<Uuid>,
     // Known issue: MangaDex sometimes returns `null` as an element value, which doesn't match a possible language.
     #[serde(with = "language_array_or_skip_null")]
     pub available_translated_languages: Vec<Language>,
@@ -57,5 +58,4 @@ pub struct MangaAttributes {
     #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub updated_at: Option<MangaDexDateTime>,
     pub version: u32,
-    pub latest_uploaded_chapter : Option<Uuid>
 }

@@ -2,11 +2,27 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Author>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod create;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod delete;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod update;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod create;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod delete;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod update;
 
 use crate::v5::author::create::CreateAuthorBuilder;
 use crate::v5::author::delete::DeleteAuthorBuilder;

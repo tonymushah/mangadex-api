@@ -2,7 +2,11 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Infrastructure>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod ping;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod ping;
 
 use crate::v5::infrastructure::ping::PingBuilder;
 use crate::HttpClientRef;

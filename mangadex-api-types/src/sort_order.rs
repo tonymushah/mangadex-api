@@ -44,6 +44,14 @@ sort_order! {
 }
 
 sort_order! {
+    CoverSortOrder {
+        CreatedAt,
+        UpdatedAt,
+        Volume,
+    }
+}
+
+sort_order! {
     GroupSortOrder {
         CreatedAt,
         FollowedCount,

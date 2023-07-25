@@ -2,11 +2,27 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Settings>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod create_or_update_user_settings;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod create_template;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get_latest_template;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get_template_by_version_id;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get_user_settings;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod create_or_update_user_settings;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod create_template;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get_latest_template;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get_template_by_version_id;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get_user_settings;
 
 use crate::v5::settings::create_or_update_user_settings::CreateOrUpdateUserSettingsBuilder;
 use crate::v5::settings::create_template::CreateSettingsTemplateBuilder;

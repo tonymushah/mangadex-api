@@ -41,7 +41,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::ChapterListResponse;
 use mangadex_api_types::{
     ContentRating, IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
-    ReferenceExpansionResource,
+    ReferenceExpansionResource, IncludeFuturePages, IncludeFuturePublishAt, IncludeExternalUrl,
 };
 
 #[cfg_attr(
@@ -98,6 +98,12 @@ pub struct GetFollowedMangaFeed {
     pub order: Option<MangaFeedSortOrder>,
     #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
+    #[builder(default)]
+    pub include_empty_pages: Option<IncludeFuturePages>,
+    #[builder(default)]
+    pub include_future_publish_at : Option<IncludeFuturePublishAt>,
+    #[builder(default)]
+    pub include_external_url : Option<IncludeExternalUrl>,
 }
 
 endpoint! {

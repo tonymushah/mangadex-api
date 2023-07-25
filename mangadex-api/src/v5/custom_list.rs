@@ -2,13 +2,35 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/CustomList>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod create;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod delete;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod follow;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod manga_feed;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod unfollow;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod update;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod create;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod delete;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod follow;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod manga_feed;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod unfollow;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod update;
 
 use crate::v5::custom_list::create::CreateCustomListBuilder;
 use crate::v5::custom_list::delete::DeleteCustomListBuilder;

@@ -2,14 +2,39 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Upload>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod abandon_session;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod commit_session;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod delete_image;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod delete_images;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get_session;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod start_edit_chapter_session;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod start_session;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod upload_images;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod abandon_session;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod commit_session;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod delete_image;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod delete_images;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get_session;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod start_edit_chapter_session;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod start_session;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod upload_images;
 
 use crate::v5::cover::upload::UploadCoverBuilder;
 use crate::v5::upload::abandon_session::AbandonUploadSessionBuilder;

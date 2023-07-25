@@ -33,7 +33,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::MangaListResponse;
 use mangadex_api_types::{
     ContentRating, Demographic, Language, MangaDexDateTime, MangaSortOrder, MangaStatus,
-    ReferenceExpansionResource, Tag, TagSearchMode,
+    ReferenceExpansionResource, TagSearchMode,
 };
 
 #[cfg_attr(
@@ -54,16 +54,19 @@ pub struct ListManga {
     pub limit: Option<u32>,
     pub offset: Option<u32>,
     pub title: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default)]
+    pub author_or_artist : Option<Uuid>,
     #[builder(setter(each = "add_author"))]
     pub authors: Vec<Uuid>,
     #[builder(setter(each = "add_artist"))]
     pub artists: Vec<Uuid>,
     pub year: Option<u16>,
     #[builder(setter(each = "include_tag"))]
-    pub included_tags: Vec<Tag>,
+    pub included_tags: Vec<Uuid>,
     pub included_tags_mode: Option<TagSearchMode>,
     #[builder(setter(each = "exclude_tag"))]
-    pub excluded_tags: Vec<Tag>,
+    pub excluded_tags: Vec<Uuid>,
     pub excluded_tags_mode: Option<TagSearchMode>,
     #[builder(setter(each = "add_status"))]
     pub status: Vec<MangaStatus>,

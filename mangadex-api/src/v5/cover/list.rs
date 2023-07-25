@@ -32,7 +32,7 @@ use uuid::Uuid;
 
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::CoverListResponse;
-use mangadex_api_types::{ChapterSortOrder, Language, ReferenceExpansionResource};
+use mangadex_api_types::{Language, ReferenceExpansionResource, CoverSortOrder};
 
 /// Query parameters for `/cover`.
 #[cfg_attr(
@@ -64,7 +64,7 @@ pub struct ListCover {
     pub uploader_ids: Vec<Uuid>,
     #[builder(setter(each = "locale"))]
     pub locales: Vec<Language>,
-    pub order: Option<ChapterSortOrder>,
+    pub order: Option<CoverSortOrder>,
     #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
 }

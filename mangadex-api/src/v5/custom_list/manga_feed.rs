@@ -98,7 +98,7 @@ pub struct CustomListMangaFeed {
 endpoint! {
     GET ("/list/{}/feed", list_id),
     #[query] CustomListMangaFeed,
-    ChapterListResponse
+    #[flatten_result] ChapterListResponse
 }
 
 #[cfg(test)]

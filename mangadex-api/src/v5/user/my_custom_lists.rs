@@ -54,12 +54,12 @@ pub struct MyCustomLists {
     #[serde(skip)]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-pub(crate) http_client: HttpClientRef,
+    pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u32>,
+    pub limit: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    offset: Option<u32>,
+    pub offset: Option<u32>,
 }
 
 endpoint! {

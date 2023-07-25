@@ -1,8 +1,10 @@
 //! MangaDex@Home endpoint handler.
 //!
 //! <https://api.mangadex.org/swagger.html#/AtHome>
-
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod server;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod server;
 
 use crate::v5::at_home::server::GetAtHomeServerBuilder;
 use crate::HttpClientRef;

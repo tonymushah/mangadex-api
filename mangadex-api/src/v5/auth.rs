@@ -2,14 +2,36 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Auth>
 
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod check_token;
+#[cfg(not(feature = "deserializable-endpoint"))]
+#[cfg(feature = "legacy-auth")]
 mod login;
+#[cfg(not(feature = "deserializable-endpoint"))]
+#[cfg(feature = "legacy-auth")]
 mod logout;
+#[cfg(not(feature = "deserializable-endpoint"))]
+#[cfg(feature = "legacy-auth")]
 mod refresh_token;
 
+#[cfg(feature = "deserializable-endpoint")]
+pub mod check_token;
+#[cfg(feature = "deserializable-endpoint")]
+#[cfg(feature = "legacy-auth")]
+pub mod login;
+#[cfg(feature = "deserializable-endpoint")]
+#[cfg(feature = "legacy-auth")]
+pub mod logout;
+#[cfg(feature = "deserializable-endpoint")]
+#[cfg(feature = "legacy-auth")]
+pub mod refresh_token;
+
 use crate::v5::auth::check_token::CheckTokenBuilder;
+#[cfg(feature = "legacy-auth")]
 use crate::v5::auth::login::LoginBuilder;
+#[cfg(feature = "legacy-auth")]
 use crate::v5::auth::logout::LogoutBuilder;
+#[cfg(feature = "legacy-auth")]
 use crate::v5::auth::refresh_token::RefreshTokenBuilder;
 use crate::HttpClientRef;
 
@@ -29,6 +51,7 @@ impl AuthBuilder {
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-login>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+    #[cfg(feature = "legacy-auth")]
     pub fn login(&self) -> LoginBuilder {
         LoginBuilder::default().http_client(self.http_client.clone())
     }
@@ -37,6 +60,7 @@ impl AuthBuilder {
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-logout>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+    #[cfg(feature = "legacy-auth")]
     pub fn logout(&self) -> LogoutBuilder {
         LogoutBuilder::default().http_client(self.http_client.clone())
     }
@@ -45,6 +69,7 @@ impl AuthBuilder {
     ///
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-refresh>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
+    #[cfg(feature = "legacy-auth")]
     pub fn refresh_token(&self) -> RefreshTokenBuilder {
         RefreshTokenBuilder::default().http_client(self.http_client.clone())
     }

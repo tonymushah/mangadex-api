@@ -1,31 +1,103 @@
 //! Manga endpoint handler.
 //!
 //! <https://api.mangadex.org/swagger.html#/Manga>
-
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod add_to_custom_list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod aggregate;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod create;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod create_relation;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod delete;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod delete_relation;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod feed;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod follow;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get_draft;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get_manga_read_chapters;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod get_read_chapters;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod list_drafts;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod list_relations;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod list_tags;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod random;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod reading_status;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod reading_statuses;
+#[cfg(not(feature = "deserializable-endpoint"))]
 pub(crate) mod remove_from_custom_list;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod submit_draft;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod unfollow;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod update;
+#[cfg(not(feature = "deserializable-endpoint"))]
 mod update_reading_status;
+
+#[cfg(feature = "deserializable-endpoint")]
+pub mod add_to_custom_list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod aggregate;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod create;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod create_relation;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod delete;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod delete_relation;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod feed;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod follow;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get_draft;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get_manga_read_chapters;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod get_read_chapters;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list_drafts;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list_relations;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod list_tags;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod random;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod reading_status;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod reading_statuses;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod remove_from_custom_list;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod submit_draft;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod unfollow;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod update;
+#[cfg(feature = "deserializable-endpoint")]
+pub mod update_reading_status;
 
 use crate::v5::manga::add_to_custom_list::AddMangaToCustomListBuilder;
 use crate::v5::manga::aggregate::GetMangaAggregateBuilder;
