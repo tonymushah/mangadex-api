@@ -1,6 +1,7 @@
 #[cfg(feature = "serialize")]
 use std::collections::HashMap;
 
+use mangadex_api_types::ResultType;
 #[cfg(feature = "serialize")]
 use serde::Serialize;
 
@@ -14,6 +15,7 @@ use crate::v5::{chapter_aggregate_array_or_map, volume_aggregate_array_or_map};
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaAggregate {
+    pub result : ResultType,
     /// Object with (volume_number, volume) key-value pairs.
     #[serde(with = "volume_aggregate_array_or_map")]
     pub volumes: Vec<VolumeAggregate>,
@@ -27,13 +29,14 @@ impl Into<MangaAggregatSer> for MangaAggregate {
         for volume in self.volumes{
             volumes.insert(volume.volume.clone(), Into::into(volume.clone()));
         }
-        MangaAggregatSer { volumes }
+        MangaAggregatSer { result : self.result , volumes }
     }
 }
 
 #[cfg(feature = "serialize")]
 #[derive(serde::Serialize, Clone)]
 pub struct MangaAggregatSer{
+    result : ResultType,
     volumes : HashMap<String, VolumeAggregateSer>
 }
 

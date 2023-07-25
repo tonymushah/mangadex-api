@@ -1,4 +1,4 @@
-use mangadex_api_types::ResultType;
+use mangadex_api_types::{ResultType, UserRole};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
@@ -8,6 +8,6 @@ use serde::Deserialize;
 pub struct CheckTokenResponse {
     pub result : ResultType,
     pub is_authenticated: bool,
-    pub roles: Vec<String>, // TODO: Deserialize the strings into `UserRole` enum.
+    pub roles: Vec<UserRole>, 
     pub permissions: Vec<String>, // TODO: Deserialize the strings into `UserPermission` enum.
 }

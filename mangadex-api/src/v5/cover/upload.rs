@@ -62,7 +62,7 @@ use mangadex_api_types::Language;
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[non_exhaustive]
-pub struct UploadCover<'a> {
+pub struct UploadCover {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -82,14 +82,14 @@ pub struct UploadCover<'a> {
     /// * <= 8 characters
     /// * Pattern: `^(0|[1-9]\\d*)((\\.\\d+){1,2})?[a-z]?$`
     #[builder(default)]
-    pub volume: Option<Cow<'a, str>>,
+    pub volume: Option<String>,
     #[builder(default)]
-    pub description: Cow<'a, str>,
+    pub description: String,
     pub locale: Language,
 }
 
 // TODO: Come up with a way to generalize multipart form data for the `Endpoint` trait.
-impl Endpoint for UploadCover<'_> {
+impl Endpoint for UploadCover {
     type Query = ();
     type Body = ();
     type Response = CoverResponse;
@@ -123,7 +123,7 @@ impl Endpoint for UploadCover<'_> {
     }
 }
 
-impl UploadCover<'_> {
+impl UploadCover {
     pub async fn send(&self) -> CoverResponse {
         #[cfg(not(feature = "multi-thread"))]
         {

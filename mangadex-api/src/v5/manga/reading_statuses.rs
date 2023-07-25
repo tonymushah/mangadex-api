@@ -52,7 +52,7 @@ pub struct MangaReadingStatuses {
 endpoint! {
     GET "/manga/status",
     #[query auth] MangaReadingStatuses,
-    MangaReadingStatusesResponse
+    #[flatten_result] MangaReadingStatusesResponse
 }
 
 #[cfg(test)]

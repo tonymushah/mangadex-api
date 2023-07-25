@@ -60,12 +60,12 @@ pub struct GetFollowedCustomLists {
     ///
     /// Default: 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u32>,
+    pub limit: Option<u32>,
     /// Number of custom lists to offset.
     ///
     /// Default: 0.
     #[serde(skip_serializing_if = "Option::is_none")]
-    offset: Option<u32>,
+    pub offset: Option<u32>,
 }
 
 endpoint! {

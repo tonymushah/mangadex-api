@@ -1,5 +1,6 @@
 use serde::Deserialize;
 use url::Url;
+use uuid::Uuid;
 
 use crate::deserialize_null_default;
 use mangadex_api_types::{Language, MangaDexDateTime};
@@ -23,6 +24,8 @@ pub struct ChapterAttributes {
     pub pages: u32,
     /// Language the text is in.
     pub translated_language: Language,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub uploader : Option<Uuid>,
     /// Denotes a chapter that links to an external source.
     pub external_url: Option<Url>,
     pub version: u32,

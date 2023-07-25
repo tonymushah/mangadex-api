@@ -1,5 +1,3 @@
-/// TODO Factor and split export to multiple files
-
 use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
 pub use super::at_home_server::AtHomeServer;
 pub use super::auth_tokens::AuthTokens;

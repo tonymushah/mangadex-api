@@ -99,7 +99,9 @@ pub struct ListChapter {
     pub publish_at_since: Option<MangaDexDateTime>,
     /// Include empty pages
     pub include_empty_pages: Option<IncludeFuturePages>,
+    /// Include external url chapters
     pub include_external_url: Option<IncludeExternalUrl>,
+    /// Include future publish at
     pub include_future_publish_at: Option<IncludeFuturePublishAt>,
     pub order: Option<ChapterSortOrder>,
     #[builder(setter(each = "include"))]

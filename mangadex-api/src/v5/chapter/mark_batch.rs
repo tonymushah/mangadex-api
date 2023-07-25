@@ -72,10 +72,13 @@ pub struct MarkChapterBatch{
     pub chapter_ids_read: Vec<Uuid>,
     #[builder(setter(each = "mark_chapter_unread"), default)]
     pub chapter_ids_unread: Vec<Uuid>,
+    #[serde(skip_serializing)]
+    #[builder(default)]
+    pub update_history : bool,
 }
 
 endpoint! {
-    POST ("/manga/{}/read", manga_id),
+    POST ("/manga/{}/read?updateHistory={}", manga_id, update_history),
     #[body auth] MarkChapterBatch,
     #[discard_result] Result<NoData>
 }

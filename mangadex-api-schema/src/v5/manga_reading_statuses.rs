@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use mangadex_api_types::ReadingStatus;
+use mangadex_api_types::{ReadingStatus, ResultType};
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -10,6 +10,7 @@ use uuid::Uuid;
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaReadingStatuses {
+    pub result : ResultType,
     /// Mapping of manga ID to reading status.
     pub statuses: HashMap<Uuid, ReadingStatus>,
 }

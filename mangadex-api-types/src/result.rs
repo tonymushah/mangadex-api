@@ -7,3 +7,9 @@ pub enum ResultType{
     Ok,
     Error
 }
+
+impl Default for ResultType {
+    fn default() -> Self {
+        Self::Ok
+    }
+}

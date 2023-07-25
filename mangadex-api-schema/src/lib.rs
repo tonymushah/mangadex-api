@@ -110,6 +110,12 @@ impl<A, T> FromResponse for ApiObject<A, T> {
     }
 }
 
+impl<T> PartialEq for ApiObject<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id && self.type_ == other.type_ 
+    }
+}
+
 #[derive(Debug, Default, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -142,7 +148,9 @@ impl<A, T> FromResponse for ApiObjectNoRelationships<A, T> {
 ///     #[discard_result] Result<NoData> // `Result<()>` results in a deserialization error despite discarding the result.
 /// }
 #[derive(Debug, Default, Deserialize, Clone, Hash, PartialEq, Eq)]
-pub struct NoData;
+pub struct NoData{
+    result : ResultType
+}
 
 impl<T> FromResponse for Result<T, Error> {
     type Response = ApiResult<T, MangaDexErrorResponse>;

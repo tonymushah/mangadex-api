@@ -24,8 +24,9 @@
 
 use derive_builder::Builder;
 use mangadex_api_schema::v5::MangaResponse;
-use mangadex_api_types::{ContentRating, ReferenceExpansionResource};
+use mangadex_api_types::{ContentRating, ReferenceExpansionResource, TagSearchMode};
 use serde::Serialize;
+use uuid::Uuid;
 
 use crate::HttpClientRef;
 
@@ -55,6 +56,12 @@ pub struct GetRandomManga {
     ///     - erotica
     #[builder(setter(each = "add_content_rating"), default)]
     pub content_rating: Vec<ContentRating>,
+    #[builder(setter(each = "include_tag"))]
+    pub included_tags: Vec<Uuid>,
+    pub included_tags_mode: Option<TagSearchMode>,
+    #[builder(setter(each = "exclude_tag"))]
+    pub excluded_tags: Vec<Uuid>,
+    pub excluded_tags_mode: Option<TagSearchMode>,
 }
 
 endpoint! {

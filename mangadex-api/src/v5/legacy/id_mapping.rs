@@ -32,7 +32,10 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::IdMappingListResponse;
 use mangadex_api_types::LegacyMappingType;
 
-#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), pattern = "owned")]
@@ -42,7 +45,7 @@ pub struct LegacyIdMapping {
     #[serde(skip)]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-pub(crate) http_client: HttpClientRef,
+    pub(crate) http_client: HttpClientRef,
 
     #[serde(rename = "type")]
     #[builder(setter(name = "map_type"))]
