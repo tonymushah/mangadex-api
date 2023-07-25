@@ -2,8 +2,8 @@
 
 use std::collections::HashMap;
 
-use mangadex_api_types::MangaDexDateTime;
-use serde::{Deserialize};
+use mangadex_api_types::{MangaDexDateTime, ResultType};
+use serde::Deserialize;
 use uuid::Uuid;
 
 #[derive(Clone, Debug, Deserialize)]
@@ -12,6 +12,7 @@ use uuid::Uuid;
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct RatingsList {
+    pub result : ResultType,
     pub ratings: HashMap<Uuid, Rating>,
 }
 

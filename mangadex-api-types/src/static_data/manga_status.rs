@@ -14,6 +14,12 @@ pub enum MangaStatus {
     Cancelled,
 }
 
+impl Default for MangaStatus {
+    fn default() -> Self {
+        Self::Ongoing
+    }
+}
+
 impl std::fmt::Display for MangaStatus {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
         let name = match self {

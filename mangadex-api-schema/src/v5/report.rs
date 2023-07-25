@@ -1,5 +1,5 @@
 use mangadex_api_types::ReportCategory;
-use serde::{Deserialize};
+use serde::Deserialize;
 
 use crate::v5::LocalizedString;
 

@@ -1,5 +1,5 @@
 use mangadex_api_types::{Language, MangaDexDateTime};
-use serde::{Deserialize};
+use serde::Deserialize;
 
 /// General cover information.
 #[derive(Clone, Debug, Deserialize, PartialEq)]

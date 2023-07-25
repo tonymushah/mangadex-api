@@ -41,6 +41,12 @@ pub enum MangaRelation {
     SpinOff,
 }
 
+impl Default for MangaRelation{
+    fn default() -> Self {
+        Self::Monochrome
+    }
+}
+
 impl std::fmt::Display for MangaRelation {
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
         let name = match self {

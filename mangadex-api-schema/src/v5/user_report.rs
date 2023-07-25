@@ -1,5 +1,5 @@
 use mangadex_api_types::{MangaDexDateTime, ReportStatus};
-use serde::{Deserialize};
+use serde::Deserialize;
 
 /// User submitted report information.
 #[derive(Clone, Debug, Deserialize)]

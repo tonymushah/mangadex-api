@@ -33,4 +33,12 @@ pub enum ReferenceExpansionResource {
     User,
     /// CustomList resource.
     CustomList,
+    /// The user that created the resource
+    Creator,
+    /// Report reason
+    Reason,
+    /// Leader of a group
+    Leader,
+    /// Member of a group
+    Member
 }

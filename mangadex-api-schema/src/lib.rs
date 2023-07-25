@@ -1,12 +1,12 @@
 //! MangaDex API response object types.
 
 pub mod v5;
-
+mod bind;
 use std::borrow::Cow;
 
 use mangadex_api_types::error::schema::MangaDexErrorResponse;
 use mangadex_api_types::error::Error;
-use mangadex_api_types::{RelationshipType, ResponseType};
+use mangadex_api_types::{RelationshipType, ResponseType, ResultType};
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Deserializer, Serialize};
 use uuid::Uuid;
@@ -86,6 +86,7 @@ impl<T, E> ApiResult<T, E> {
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiData<T> {
+    pub result : ResultType,
     pub response: ResponseType,
     pub data: T,
 }
@@ -106,6 +107,12 @@ impl<A, T> FromResponse for ApiObject<A, T> {
 
     fn from_response(value: Self::Response) -> Self {
         value
+    }
+}
+
+impl<T> PartialEq for ApiObject<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id && self.type_ == other.type_ 
     }
 }
 
@@ -141,7 +148,9 @@ impl<A, T> FromResponse for ApiObjectNoRelationships<A, T> {
 ///     #[discard_result] Result<NoData> // `Result<()>` results in a deserialization error despite discarding the result.
 /// }
 #[derive(Debug, Default, Deserialize, Clone, Hash, PartialEq, Eq)]
-pub struct NoData;
+pub struct NoData{
+    result : ResultType
+}
 
 impl<T> FromResponse for Result<T, Error> {
     type Response = ApiResult<T, MangaDexErrorResponse>;

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use mangadex_api_types::MangaDexDateTime;
-use serde::{Deserialize};
+use mangadex_api_types::{MangaDexDateTime, ResultType};
+use serde::Deserialize;
 use uuid::Uuid;
 
 /// User Settings response.
@@ -12,6 +12,7 @@ use uuid::Uuid;
 #[allow(unused)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct UserSettingsAttributes {
+    pub result : ResultType,
     #[cfg_attr(feature = "specta", specta(type = String))]
     pub updated_at: MangaDexDateTime,
     #[serde(skip)]

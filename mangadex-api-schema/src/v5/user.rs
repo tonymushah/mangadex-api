@@ -1,4 +1,5 @@
-use serde::{Deserialize};
+use mangadex_api_types::UserRole;
+use serde::Deserialize;
 
 /// General user information.
 #[derive(Clone, Debug, Deserialize)]
@@ -7,7 +8,6 @@ use serde::{Deserialize};
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct UserAttributes {
     pub username: String,
-    // TODO: Map these roles to an enum.
-    pub roles: Vec<String>,
+    pub roles: Vec<UserRole>,
     pub version: u32,
 }

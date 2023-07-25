@@ -1,5 +1,5 @@
 use mangadex_api_types::{Language, MangaDexDateTime, MangaDexDuration};
-use serde::{Deserialize};
+use serde::Deserialize;
 use url::Url;
 
 use crate::v5::LocalizedString;
@@ -22,13 +22,11 @@ pub struct ScanlationGroupAttributes {
     /// <https://twitter.com>
     ///
     /// Nullable.
-    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub twitter: Option<Url>,
     /// Regex: [^https:/\/www\.mangaupdates\.com\/(?:groups|publishers)\.html\?id=\d+](https://www.mangaupdates.com)
     ///
     /// Nullable.
     /// 
-    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub manga_updates: Option<Url>,
     /// Languages the scanlation primarily translates or uploads works into.
     pub focused_languages: Option<Vec<Language>>,
@@ -37,6 +35,8 @@ pub struct ScanlationGroupAttributes {
     // Known issue: This field is unlisted on the MangaDex documentation but is present in the response.
     pub verified: bool,
     pub inactive: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ex_licensed : Option<bool>,
     /// Should respected ISO 8601 duration specification: <https://en.wikipedia.org/wiki/ISO_8601#Durations>
     ///
     /// Pattern: `^(P([1-9]|[1-9][0-9])D)?(P?([1-9])W)?(P?T(([1-9]|1[0-9]|2[0-4])H)?(([1-9]|[1-5][0-9]|60)M)?(([1-9]|[1-5][0-9]|60)S)?)?$`
@@ -50,9 +50,7 @@ pub struct ScanlationGroupAttributes {
     pub publish_delay: Option<MangaDexDuration>,
     pub version: u32,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
-    #[cfg_attr(feature = "specta", specta(type = String))]
     pub created_at: MangaDexDateTime,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
-    #[cfg_attr(feature = "specta", specta(type = String))]
     pub updated_at: MangaDexDateTime,
 }

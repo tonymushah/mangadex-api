@@ -1,4 +1,4 @@
-use serde::{Deserialize};
+use serde::Deserialize;
 use url::Url;
 use uuid::Uuid;
 
@@ -6,6 +6,7 @@ use crate::deserialize_null_default;
 use mangadex_api_types::{Language, MangaDexDateTime};
 
 /// General chapter information.
+/// More details at https://api.mangadex.org/docs/swagger.html#model-ChapterAttributes
 #[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -23,17 +24,14 @@ pub struct ChapterAttributes {
     pub pages: u32,
     /// Language the text is in.
     pub translated_language: Language,
-    /// User ID (UUID) who uploaded the chapter.
-    pub uploader: Option<Uuid>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub uploader : Option<Uuid>,
     /// Denotes a chapter that links to an external source.
-    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub external_url: Option<Url>,
     pub version: u32,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
-    #[cfg_attr(feature = "specta", specta(type = String))]
     pub created_at: MangaDexDateTime,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
-    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub updated_at: Option<MangaDexDateTime>,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
     #[cfg_attr(feature = "specta", specta(type = String))]

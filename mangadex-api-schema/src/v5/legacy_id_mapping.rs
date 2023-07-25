@@ -1,5 +1,5 @@
 use mangadex_api_types::LegacyMappingType;
-use serde::{Deserialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
 #[derive(Debug, Deserialize)]
