@@ -69,6 +69,7 @@ pub struct ListChapter {
     pub volumes: Vec<String>,
     /// Chapter number in the series or volume.
     #[builder(setter(each = "add_chapter"))]
+    #[serde(rename = "chapter")]
     pub chapters: Vec<String>,
     #[serde(rename = "translatedLanguage")]
     #[builder(setter(each = "add_translated_language"))]
