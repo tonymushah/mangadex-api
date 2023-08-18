@@ -1,0 +1,15 @@
+[package]
+name = "mangadex-api-tests"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+mangadex-api = { path = "../mangadex-api", features = ["multi-thread"]}
+mangadex-api-types-rust = { path = "../mangadex-api-types" }
+mangadex-api-schema-rust = { path = "../mangadex-api-schema" }
+tokio = { version = "1.32", features = ["full"] }
+anyhow = { version = "1" }
+reqwest = "0.11"
+uuid = "1"
