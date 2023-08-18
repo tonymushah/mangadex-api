@@ -15,6 +15,7 @@ use crate::v5::{chapter_aggregate_array_or_map, volume_aggregate_array_or_map};
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaAggregate {
+    #[serde(default)]
     pub result : ResultType,
     /// Object with (volume_number, volume) key-value pairs.
     #[serde(with = "volume_aggregate_array_or_map")]

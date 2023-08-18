@@ -6,6 +6,7 @@ use serde::Deserialize;
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CheckTokenResponse {
+    #[serde(default)]
     pub result : ResultType,
     pub is_authenticated: bool,
     pub roles: Vec<UserRole>, 

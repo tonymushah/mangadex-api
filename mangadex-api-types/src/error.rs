@@ -95,10 +95,14 @@ pub mod schema {
     use serde::{Deserialize, Serialize};
     use uuid::Uuid;
 
+    use crate::ResultType;
+
     #[derive(Debug, thiserror::Error, Deserialize, Serialize)]
     #[error("Bad request")]
     #[cfg_attr(feature = "specta", derive(specta::Type))]
     pub struct MangaDexErrorResponse {
+        #[serde(default = "ResultType::error")]
+        pub result : ResultType,
         #[serde(default)]
         pub errors: Vec<MangaDexError>,
     }

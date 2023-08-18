@@ -13,3 +13,12 @@ impl Default for ResultType {
         Self::Ok
     }
 }
+
+impl ResultType {
+    pub fn ok() -> Self {
+        Self::Ok
+    }
+    pub fn error() -> Self{
+        Self::Error
+    }
+}

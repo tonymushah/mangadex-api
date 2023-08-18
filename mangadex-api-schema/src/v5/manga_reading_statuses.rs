@@ -10,6 +10,7 @@ use uuid::Uuid;
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaReadingStatuses {
+    #[serde(default)]
     pub result : ResultType,
     /// Mapping of manga ID to reading status.
     pub statuses: HashMap<Uuid, ReadingStatus>,

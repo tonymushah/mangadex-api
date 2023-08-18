@@ -12,6 +12,7 @@ use uuid::Uuid;
 #[allow(unused)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct UserSettingsAttributes {
+    #[serde(default)]
     pub result : ResultType,
     #[cfg_attr(feature = "specta", specta(type = String))]
     pub updated_at: MangaDexDateTime,

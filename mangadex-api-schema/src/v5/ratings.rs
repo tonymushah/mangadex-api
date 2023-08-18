@@ -12,6 +12,7 @@ use uuid::Uuid;
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct RatingsList {
+    #[serde(default)]
     pub result : ResultType,
     pub ratings: HashMap<Uuid, Rating>,
 }

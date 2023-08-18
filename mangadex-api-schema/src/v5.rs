@@ -96,6 +96,7 @@ pub struct Relationship {
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct Results<T> {
+    #[serde(default)]
     pub result: ResultType,
     pub response: ResponseType,
     pub data: Vec<T>,
