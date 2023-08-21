@@ -6,7 +6,7 @@ use mangadex_api_schema::{
 };
 use mangadex_api_types::{
     error::{Error, Result},
-    ReferenceExpansionResource, RelationshipType, ChapterSortOrder, OrderDirection,
+    ReferenceExpansionResource, RelationshipType, OrderDirection, CoverSortOrder,
 };
 use reqwest::Client;
 use url::Url;
@@ -174,7 +174,7 @@ pub async fn download_via_manga_api_object(
         }
         // Getting the file name via the list of the manga cover ordered by volume `desc` otherwise
         None => {
-            match mangadex_api_client.cover().list().add_manga_id(&manga.id).order(ChapterSortOrder::Volume(OrderDirection::Descending)).build(){
+            match mangadex_api_client.cover().list().add_manga_id(&manga.id).order(CoverSortOrder::Volume(OrderDirection::Descending)).build(){
                 Ok(d) => match d.send().await?.data.first() {
                     None => return Err(Error::UnexpectedError(anyhow::Error::msg("can't find the first cover of this manga"))),
                     Some(cover) => cover.attributes.file_name.clone()

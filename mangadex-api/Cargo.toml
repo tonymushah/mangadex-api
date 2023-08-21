@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api"
-version = "2.3.0"
+version = "2.3.1"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
 description = "SDK for the MangaDex API"
 readme = "README.md"
@@ -143,7 +143,7 @@ version = "0.5.11"
 multi-thread = ["futures"]
 legacy-auth = []
 legacy-account = ["legacy-auth"]
-default = []
+default = ["utils"]
 utils = ["dep:bytes", "dep:tokio", "dep:anyhow", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 non_exhaustive = ["mangadex-api-schema/non_exhaustive", "mangadex-api-types/non_exhaustive"]
 deserializable-endpoint = ["dep:getset"]
