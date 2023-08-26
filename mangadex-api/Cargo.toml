@@ -107,7 +107,7 @@ features = ["derive"]
 version = "2.4.3"
 
 [dev-dependencies.serde_json]
-version = "1.0.79"
+version = "1.0.105"
 
 [dev-dependencies.tokio]
 version = "1.18.1"
