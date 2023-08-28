@@ -78,7 +78,7 @@ version = "0.3.28"
 features = ["serde-human-readable"]
 
 [dependencies.url]
-version = "2.4.0"
+version = "2.4.1"
 features = ["serde"]
 
 [dependencies.uuid]
