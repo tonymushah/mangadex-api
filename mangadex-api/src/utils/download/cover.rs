@@ -144,7 +144,7 @@ pub async fn download_via_manga_api_object(
                         .file_name
                     }
                 }
-            } 
+            }
             // Getting it via the `MangadexClient` otherwise
             else {
                 match mangadex_api_client
@@ -165,12 +165,22 @@ pub async fn download_via_manga_api_object(
         }
         // Getting the file name via the list of the manga cover ordered by volume `desc` otherwise
         None => {
-            match mangadex_api_client.cover().list().add_manga_id(&manga.id).order(CoverSortOrder::Volume(OrderDirection::Descending)).build(){
+            match mangadex_api_client
+                .cover()
+                .list()
+                .add_manga_id(&manga.id)
+                .order(CoverSortOrder::Volume(OrderDirection::Descending))
+                .build()
+            {
                 Ok(d) => match d.send().await?.data.first() {
-                    None => return Err(Error::UnexpectedError(anyhow::Error::msg("can't find the first cover of this manga"))),
-                    Some(cover) => cover.attributes.file_name.clone()
+                    None => {
+                        return Err(Error::UnexpectedError(anyhow::Error::msg(
+                            "can't find the first cover of this manga",
+                        )))
+                    }
+                    Some(cover) => cover.attributes.file_name.clone(),
                 },
-                Err(e) => return Err(Error::RequestBuilderError(e.to_string()))
+                Err(e) => return Err(Error::RequestBuilderError(e.to_string())),
             }
         }
     };
