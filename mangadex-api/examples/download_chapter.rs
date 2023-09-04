@@ -69,7 +69,7 @@ struct Args {
     #[clap(long)]
     data_saver: bool,
     /// Location to save the cover art.
-    #[clap(short, long = "download", parse(from_os_str))]
+    #[clap(short, long = "download")]
     output: Option<PathBuf>,
 }
 

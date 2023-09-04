@@ -1,6 +1,6 @@
-//! Builder for resending the account activation code.
+//! Builder for initiating the account recovery process.
 //!
-//! <https://api.mangadex.org/swagger.html#/Account/post-account-activate-resend>
+//! <https://api.mangadex.org/swagger.html#/Account/post-account-recover>
 //!
 //! # Examples
 //!
@@ -10,15 +10,15 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let account_resend_res = client
+//! let account_recover_res = client
 //!     .account()
-//!     .resend_activation_code()
+//!     .recover()
 //!     .email("test@example.com")
 //!     .build()?
 //!     .send()
 //!     .await?;
 //!
-//! println!("account resend activation code: {:?}", account_resend_res);
+//! println!("account recovery: {:?}", account_recover_res);
 //! # Ok(())
 //! # }
 //! ```
@@ -30,9 +30,9 @@ use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 
-/// Resend the account activation code.
+/// Recover an account.
 ///
-/// Makes a request to `POST /account/activate/resend`.
+/// Makes a request to `POST /account/recover`.
 #[cfg_attr(
     feature = "deserializable-endpoint",
     derive(serde::Deserialize, getset::Getters, getset::Setters)
@@ -41,7 +41,7 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-pub struct ResendActivationCode {
+pub struct RecoverAccount{
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -53,8 +53,8 @@ pub struct ResendActivationCode {
 }
 
 endpoint! {
-    POST "/account/activate/resend",
-    #[body] ResendActivationCode,
+    POST "/account/recover",
+    #[body] RecoverAccount,
     #[discard_result] Result<NoData>
 }
 
@@ -70,7 +70,7 @@ mod tests {
     use crate::{HttpClient, MangaDexClient};
 
     #[tokio::test]
-    async fn resend_activation_code_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn recover_fires_a_request_to_base_url() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
@@ -80,7 +80,7 @@ mod tests {
         let email: String = SafeEmail().fake();
 
         Mock::given(method("POST"))
-            .and(path_regex(r"/account/activate/resend"))
+            .and(path_regex(r"/account/recover"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(json!({ "email": email })))
             .respond_with(ResponseTemplate::new(200).set_body_json(json!({"result": "ok"})))
@@ -90,7 +90,8 @@ mod tests {
 
         let _ = mangadex_client
             .account()
-            .resend_activation_code()
+            .recover()
+            .post()
             .email(email)
             .build()?
             .send()

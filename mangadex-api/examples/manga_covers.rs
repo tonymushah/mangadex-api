@@ -49,7 +49,7 @@ struct Args {
     #[clap()]
     manga_ids: Vec<Uuid>,
     /// Location to save the cover art.
-    #[clap(short, long = "download", parse(from_os_str))]
+    #[clap(short, long = "download")]
     output: Option<PathBuf>,
 }
 

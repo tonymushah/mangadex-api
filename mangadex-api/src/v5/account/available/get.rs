@@ -88,7 +88,8 @@ mod tests {
 
         let res = mangadex_client
             .account()
-            .check_username_available()
+            .available()
+            .get()
             .username("myusername")
             .build()?
             .send()

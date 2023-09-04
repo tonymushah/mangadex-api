@@ -1,40 +1,14 @@
 //! Account endpoint handler.
 //!
 //! <https://api.mangadex.org/swagger.html#/Account>
-
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod activate;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod check_username_available;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod complete_recovery;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod create;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod recover;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod resend_activation_code;
-
-#[cfg(feature = "deserializable-endpoint")]
+pub mod available;
 pub mod activate;
-#[cfg(feature = "deserializable-endpoint")]
-pub mod check_username_available;
-#[cfg(feature = "deserializable-endpoint")]
-pub mod complete_recovery;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod create;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod recover;
-#[cfg(feature = "deserializable-endpoint")]
-pub mod resend_activation_code;
 
-use crate::v5::account::activate::ActivateAccountBuilder;
-use crate::v5::account::check_username_available::CheckUsernameAvailableBuilder;
-use crate::v5::account::complete_recovery::CompleteAccountRecoveryBuilder;
-use crate::v5::account::create::CreateAccountBuilder;
-use crate::v5::account::recover::RecoverAccountBuilder;
-use crate::v5::account::resend_activation_code::ResendActivationCodeBuilder;
 use crate::HttpClientRef;
+
+use self::{activate::ActivateEndpoint, available::AvailableEndpoint, create::CreateEndpoint, recover::RecoverEndpoint};
 
 /// Account endpoint handler builder.
 #[derive(Debug)]
@@ -48,51 +22,23 @@ impl AccountBuilder {
         Self { http_client }
     }
 
-    /// Create a new MangaDex account.
-    ///
-    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-create>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-    pub fn create(&self) -> CreateAccountBuilder {
-        CreateAccountBuilder::default().http_client(self.http_client.clone())
+    pub fn available(&self) -> AvailableEndpoint {
+        AvailableEndpoint::new(self.http_client.clone())
     }
 
-    /// Activate a MangaDex account after creating one.
-    ///
-    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/get-account-activate-code>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-    pub fn activate(&self) -> ActivateAccountBuilder {
-        ActivateAccountBuilder::default().http_client(self.http_client.clone())
+    pub fn activate(&self) -> ActivateEndpoint {
+        ActivateEndpoint::new(self.http_client.clone())
     }
 
-    /// Resend the account activation code.
-    ///
-    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-activate-resend>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-    pub fn resend_activation_code(&self) -> ResendActivationCodeBuilder {
-        ResendActivationCodeBuilder::default().http_client(self.http_client.clone())
+    pub fn create(&self) -> CreateEndpoint {
+        CreateEndpoint::new(self.http_client.clone())
     }
 
-    /// Initiate the account recovery process.
-    ///
-    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-recover>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-    pub fn recover(&self) -> RecoverAccountBuilder {
-        RecoverAccountBuilder::default().http_client(self.http_client.clone())
-    }
-
-    /// Complete the account recovery process.
-    ///
-    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-recover-code>
-    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-    pub fn complete_recovery(&self) -> CompleteAccountRecoveryBuilder {
-        CompleteAccountRecoveryBuilder::default().http_client(self.http_client.clone())
-    }
-
-    /// Check if an account username is available.
-    ///
-    /// <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/get-account-available>
-    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-    pub fn check_username_available(&self) -> CheckUsernameAvailableBuilder {
-        CheckUsernameAvailableBuilder::default().http_client(self.http_client.clone())
+    pub fn recover(&self) -> RecoverEndpoint {
+        RecoverEndpoint::new(self.http_client.clone())
     }
 }
