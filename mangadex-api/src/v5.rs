@@ -1,86 +1,24 @@
-#[cfg(not(feature = "deserializable-endpoint"))]
-#[cfg(feature = "legacy-account")]
-mod account;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod at_home;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod auth;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod author;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod captcha;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod chapter;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod cover;
-#[cfg(not(feature = "deserializable-endpoint"))]
-pub(crate) mod custom_list;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod feed;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod infrastructure;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod legacy;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod manga;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod rating;
-#[cfg(not(feature = "deserializable-endpoint"))]
-pub(crate) mod report;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod scanlation_group;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod search;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod settings;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod statistics;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod upload;
-#[cfg(not(feature = "deserializable-endpoint"))]
-pub(crate) mod user;
-
-
-#[cfg(feature = "deserializable-endpoint")]
 #[cfg(feature = "legacy-account")]
 pub mod account;
-#[cfg(feature = "deserializable-endpoint")]
+pub mod api_client;
 pub mod at_home;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod auth;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod author;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod captcha;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod chapter;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod cover;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod custom_list;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod feed;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod infrastructure;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod legacy;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod manga;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod rating;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod report;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod scanlation_group;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod search;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod settings;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod statistics;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod upload;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod user;
 
 #[cfg(not(feature = "multi-thread"))]
