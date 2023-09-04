@@ -204,7 +204,7 @@ pub async fn download_via_manga_id(
 
 #[derive(Clone, Builder)]
 #[builder(setter(into, strip_option), pattern = "owned")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct CoverDownload{
     #[doc(hidden)]
     #[builder(pattern = "immutable")]

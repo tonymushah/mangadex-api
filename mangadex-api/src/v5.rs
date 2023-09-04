@@ -23,11 +23,13 @@ pub mod user;
 
 #[cfg(not(feature = "multi-thread"))]
 use std::cell::RefCell;
+use std::fmt::Display;
 #[cfg(not(feature = "multi-thread"))]
 use std::rc::Rc;
 #[cfg(feature = "multi-thread")]
 use std::sync::Arc;
 
+use derive_builder::UninitializedFieldError;
 #[cfg(feature = "multi-thread")]
 use futures::lock::Mutex;
 pub use mangadex_api_schema::v5 as schema;
@@ -329,3 +331,4 @@ fn create_ref_counted_http_client(http_client: HttpClient) -> HttpClientRef {
         Arc::new(Mutex::new(http_client))
     }
 }
+

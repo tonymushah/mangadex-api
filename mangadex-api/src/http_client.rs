@@ -24,7 +24,7 @@ pub type HttpClientRef = Rc<RefCell<HttpClient>>;
 pub type HttpClientRef = Arc<Mutex<HttpClient>>;
 
 #[derive(Debug, Builder, Clone)]
-#[builder(setter(into, strip_option), default)]
+#[builder(setter(into, strip_option), default, build_fn(error = "mangadex_api_types::error::BuilderError"))]
 pub struct HttpClient {
     pub client: Client,
     pub base_url: Url,

@@ -1,5 +1,6 @@
-use std::cell::{BorrowError, BorrowMutError};
+use std::{cell::{BorrowError, BorrowMutError}, fmt::Display};
 
+use derive_builder::UninitializedFieldError;
 use schema::MangaDexErrorResponse;
 
 pub type Result<T, E = Error> = std::result::Result<T, E>;
@@ -18,9 +19,12 @@ pub enum Error {
     #[error("failed to send a request to MangaDex: {0:?}")]
     RequestError(#[from] reqwest::Error),
 
+    #[error("a field is missing when building the request: {0:?}")]
+    UninitializedFieldError(#[from] UninitializedFieldError),
+    
     /// Error when building the request.
     #[error("failed to build the request: {0:?}")]
-    BuilderError(#[from] derive_builder::UninitializedFieldError),
+    BuilderError(#[from] BuilderError),
 
     #[error("missing auth tokens; please log in to MangaDex")]
     MissingTokens,
@@ -74,7 +78,7 @@ impl serde::Serialize for Error{
             Error::MissingTokens => serializer.serialize_str("missing auth tokens; please log in to MangaDex"),
             Error::UsernameError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::PasswordError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::PingError => todo!(),
+            Error::PingError => serializer.serialize_str("Cannot ping the Mangadex API. Please checkout your internet connection"),
             Error::Api(e) => e.serialize(serializer),
             Error::RequestBuilderError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::ParseError(e) => serializer.serialize_str(e.to_string().as_str()),
@@ -82,6 +86,7 @@ impl serde::Serialize for Error{
             Error::BorrowMutError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::Io(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::UnexpectedError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::UninitializedFieldError(e) => serializer.serialize_str(format!("the field {} must be initialized", e.field_name()).as_str()),
         }
     }
 }
@@ -154,3 +159,32 @@ pub mod schema {
         pub context: Option<HashMap<String, String>>,
     }
 }
+
+#[derive(Debug)]
+pub enum BuilderError{
+    /// Uninitialized field
+    UninitializedField(String),
+    /// Custom validation error
+    ValidationError(String),
+}
+
+impl From<String> for BuilderError{
+    fn from(value : String) -> Self{
+        Self::ValidationError(value)
+    }
+}
+
+impl From<UninitializedFieldError> for BuilderError {
+    fn from(value: UninitializedFieldError) -> Self {
+        Self::UninitializedField(value.field_name().to_string())
+    }
+}
+impl Display for BuilderError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self{
+            BuilderError::UninitializedField(s) => f.write_str(format!("the field {s} must initialized").as_str()),
+            BuilderError::ValidationError(s) => f.write_str(s.as_str()),
+        }
+    }
+}
+impl std::error::Error for BuilderError {}

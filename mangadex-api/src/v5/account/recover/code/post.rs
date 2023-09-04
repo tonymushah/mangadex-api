@@ -42,7 +42,7 @@ use mangadex_api_types::Password;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option))]
+#[builder(setter(into, strip_option), build_fn(error = "mangadex_api_types::error::BuilderError"))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
 pub struct CompleteAccountRecovery {
     /// This should never be set manually as this is only for internal use.

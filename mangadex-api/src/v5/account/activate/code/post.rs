@@ -30,6 +30,7 @@ use serde::Serialize;
 use crate::HttpClientRef;
 use mangadex_api_types::error::Result;
 
+use mangadex_api_types::error::BuilderError;
 /// Activate an account.
 ///
 /// Makes a request to `POST /account/activate/{code}`.
@@ -39,7 +40,7 @@ use mangadex_api_types::error::Result;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option))]
+#[builder(setter(into, strip_option), build_fn(error = "BuilderError"))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
 pub struct ActivateAccount {
     /// This should never be set manually as this is only for internal use.

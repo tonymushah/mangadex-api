@@ -55,7 +55,7 @@ use crate::HttpClientRef;
 )]
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option))]
+#[builder(setter(into, strip_option), build_fn(error = "mangadex_api_types::error::BuilderError"))]
 pub struct StartUploadSession {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

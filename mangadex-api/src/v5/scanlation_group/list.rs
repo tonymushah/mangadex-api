@@ -39,7 +39,7 @@ use mangadex_api_types::{GroupSortOrder, Language, ReferenceExpansionResource};
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), default, pattern = "owned")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ListGroup {
     #[doc(hidden)]
     #[serde(skip)]

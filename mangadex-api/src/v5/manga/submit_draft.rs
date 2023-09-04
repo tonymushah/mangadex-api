@@ -54,7 +54,7 @@ use mangadex_api_schema::v5::MangaResponse;
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into))]
+#[builder(setter(into), build_fn(error = "mangadex_api_types::error::BuilderError"))]
 pub struct SubmitMangaDraft {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

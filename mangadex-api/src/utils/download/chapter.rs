@@ -23,8 +23,8 @@ pub use pre_download::AtHomePreDownloadImageData;
 pub use report::AtHomeReport;
 
 #[derive(Clone, Builder)]
-#[builder(setter(into, strip_option), pattern = "owned")]
-#[non_exhaustive]
+#[builder(setter(into, strip_option), pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ChapterDownload {
     #[doc(hidden)]
     #[builder(pattern = "immutable")]

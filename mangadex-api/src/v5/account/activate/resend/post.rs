@@ -28,7 +28,8 @@ use serde::Serialize;
 
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
-use mangadex_api_types::error::Result;
+use mangadex_api_types::error::{Result, BuilderError};
+
 
 /// Resend the account activation code.
 ///
@@ -39,7 +40,7 @@ use mangadex_api_types::error::Result;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option))]
+#[builder(setter(into, strip_option), build_fn(error = "BuilderError"))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
 pub struct ResendActivationCode {
     /// This should never be set manually as this is only for internal use.

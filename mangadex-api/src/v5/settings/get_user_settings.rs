@@ -47,8 +47,8 @@ use crate::HttpClientRef;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option))]
-#[non_exhaustive]
+#[builder(setter(into, strip_option), build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct GetUserSettings {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

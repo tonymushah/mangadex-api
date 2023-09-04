@@ -43,7 +43,7 @@ use mangadex_api_types::{
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into, strip_option), default, pattern = "owned")]
-#[non_exhaustive]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ListManga {
     #[doc(hidden)]
     #[serde(skip)]

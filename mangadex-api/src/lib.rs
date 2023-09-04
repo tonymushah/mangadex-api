@@ -4,7 +4,7 @@
 
 pub mod constants;
 #[macro_use]
-mod http_client;
+pub mod http_client;
 pub mod v5;
 
 #[cfg(feature = "utils")]

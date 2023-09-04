@@ -51,7 +51,7 @@ use crate::HttpClientRef;
 #[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), pattern = "owned")]
+#[builder(setter(into, strip_option), pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
 pub struct DeleteImages{
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

@@ -47,7 +47,7 @@ use mangadex_api_schema::v5::CustomListListResponse;
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), pattern = "owned", default)]
+#[builder(setter(into, strip_option), pattern = "owned", default, build_fn(error = "mangadex_api_types::error::BuilderError"))]
 pub struct MyCustomLists {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

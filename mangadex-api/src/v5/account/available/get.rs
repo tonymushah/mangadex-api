@@ -28,6 +28,7 @@ use mangadex_api_schema::v5::CheckUsernameAvailableResponse;
 use serde::Serialize;
 
 use crate::HttpClientRef;
+use mangadex_api_types::error::BuilderError;
 
 /// Check if the given username is available.
 ///
@@ -38,7 +39,7 @@ use crate::HttpClientRef;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option))]
+#[builder(setter(into, strip_option), build_fn(error = "BuilderError"))]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
 pub struct CheckUsernameAvailable {
     /// This should never be set manually as this is only for internal use.

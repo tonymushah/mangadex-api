@@ -50,8 +50,8 @@ use mangadex_api_types::{MangaDraftsSortOrder, MangaState, ReferenceExpansionRes
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), default, pattern = "owned")]
-#[non_exhaustive]
+#[builder(setter(into, strip_option), default, pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ListMangaDrafts {
     #[doc(hidden)]
     #[serde(skip)]

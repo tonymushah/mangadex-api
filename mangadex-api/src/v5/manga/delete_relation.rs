@@ -57,7 +57,7 @@ use mangadex_api_types::error::Result;
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into))]
+#[builder(setter(into), build_fn(error = "mangadex_api_types::error::BuilderError"))]
 pub struct DeleteMangaRelation {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

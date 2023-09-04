@@ -37,7 +37,7 @@ use mangadex_api_types::{ReportCategory, ReportSortOrder, ReportStatus, Referenc
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), default, pattern = "owned")]
+#[builder(setter(into, strip_option), default, pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
 pub struct ListReportsByUser {
     #[doc(hidden)]
     #[serde(skip)]
