@@ -43,7 +43,11 @@ use mangadex_api_schema::v5::MangaStatisticsResponse;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct GetMangaStatistics {
     #[doc(hidden)]

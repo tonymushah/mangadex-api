@@ -33,8 +33,8 @@
 use derive_builder::Builder;
 use serde::Serialize;
 
-use mangadex_api_schema::v5::UserSettingsResponse;
 use crate::HttpClientRef;
+use mangadex_api_schema::v5::UserSettingsResponse;
 
 /// Getting a user's Settings.
 ///
@@ -47,7 +47,10 @@ use crate::HttpClientRef;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct GetUserSettings {
     /// This should never be set manually as this is only for internal use.
@@ -73,8 +76,8 @@ mod tests {
     use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
-    use mangadex_api_types::error::Error;
     use crate::{HttpClient, MangaDexClient};
+    use mangadex_api_types::error::Error;
 
     #[tokio::test]
     async fn get_user_settings_requires_auth() -> anyhow::Result<()> {

@@ -42,10 +42,17 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::GroupResponse;
 use mangadex_api_types::MangaDexDuration;
 
-#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize, getset::Getters, getset::Setters))]
+#[cfg_attr(
+    feature = "deserializable-endpoint",
+    derive(serde::Deserialize, getset::Getters, getset::Setters)
+)]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct CreateGroup {
     /// This should never be set manually as this is only for internal use.
@@ -53,7 +60,7 @@ pub struct CreateGroup {
     #[serde(skip)]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-pub(crate) http_client: HttpClientRef,
+    pub(crate) http_client: HttpClientRef,
 
     pub name: String,
     /// Nullable.

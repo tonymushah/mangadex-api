@@ -11,13 +11,13 @@ pub struct ActivateEndpoint {
     http_client: HttpClientRef,
 }
 
-impl ActivateEndpoint{
+impl ActivateEndpoint {
     #[doc(hidden)]
     pub(crate) fn new(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
 
-    pub fn code(&self, code: String) -> CodeEndpoint{
+    pub fn code(&self, code: String) -> CodeEndpoint {
         CodeEndpoint::new(self.http_client.clone(), code)
     }
     pub fn resend(&self) -> ResendEndpoint {

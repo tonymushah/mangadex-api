@@ -10,13 +10,13 @@ pub struct CreateEndpoint {
     http_client: HttpClientRef,
 }
 
-impl CreateEndpoint{
+impl CreateEndpoint {
     #[doc(hidden)]
     pub(crate) fn new(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
 
-    pub fn post(&self) -> CreateAccountBuilder{
+    pub fn post(&self) -> CreateAccountBuilder {
         CreateAccountBuilder::default().http_client(self.http_client.clone())
     }
 }

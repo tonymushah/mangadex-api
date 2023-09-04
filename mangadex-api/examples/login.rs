@@ -1,5 +1,5 @@
 //! This will log in with the credentials provided upon compilation.
-//! 
+//!
 //! Work only with `legacy-auth` and `legacy-account` feature
 //!  
 //! You must edit the [`login.rs`](login.rs) file with your credentials in the login builder pattern to use this.
@@ -11,9 +11,9 @@
 //! ```
 
 #[cfg(all(feature = "legacy-auth", feature = "legacy-account"))]
-use mangadex_api_types::{Password, Username};
-#[cfg(all(feature = "legacy-auth", feature = "legacy-account"))]
 use mangadex_api::v5::MangaDexClient;
+#[cfg(all(feature = "legacy-auth", feature = "legacy-account"))]
+use mangadex_api_types::{Password, Username};
 
 #[tokio::main]
 async fn main() {

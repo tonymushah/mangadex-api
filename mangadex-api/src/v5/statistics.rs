@@ -33,8 +33,8 @@ impl StatisticsBuilder {
     /// <https://api.mangadex.org/swagger.html#/Statistics/get-statistics-manga>
     ///
     /// This endpoint allows searching multiple Manga.
-    /// 
-    /// This endpoint is disabled for perfomance reason 
+    ///
+    /// This endpoint is disabled for perfomance reason
     pub fn find_manga(&self) -> FindMangaStatisticsBuilder {
         FindMangaStatisticsBuilder::default().http_client(self.http_client.clone())
     }

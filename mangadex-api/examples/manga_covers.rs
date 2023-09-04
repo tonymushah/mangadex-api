@@ -35,9 +35,9 @@ use clap::Parser;
 use reqwest::Url;
 use uuid::Uuid;
 
-use mangadex_api_types::{Language, RelationshipType};
 use mangadex_api::v5::MangaDexClient;
 use mangadex_api::{HttpClientRef, CDN_URL};
+use mangadex_api_types::{Language, RelationshipType};
 
 #[derive(Parser)]
 #[clap(

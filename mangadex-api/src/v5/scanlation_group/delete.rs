@@ -50,8 +50,12 @@ use mangadex_api_types::error::Result;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
-pub struct DeleteGroup{
+#[builder(
+    setter(into, strip_option),
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
+pub struct DeleteGroup {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]

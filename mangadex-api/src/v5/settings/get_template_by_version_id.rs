@@ -38,8 +38,8 @@ use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
 
-use mangadex_api_schema::NoData;
 use crate::HttpClientRef;
+use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 
 /// Get a Settings template by version ID.
@@ -53,7 +53,10 @@ use mangadex_api_types::error::Result;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct GetSettingsTemplateByVersionId {
     /// This should never be set manually as this is only for internal use.
@@ -82,8 +85,8 @@ mod tests {
     use wiremock::matchers::{method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
-    use mangadex_api_types::error::Error;
     use crate::{HttpClient, MangaDexClient};
+    use mangadex_api_types::error::Error;
 
     #[tokio::test]
     async fn get_settings_template_by_version_id_requires_auth() -> anyhow::Result<()> {

@@ -57,8 +57,11 @@ use mangadex_api_types::error::Result;
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), build_fn(error = "mangadex_api_types::error::BuilderError"))]
-pub struct MarkChapterBatch{
+#[builder(
+    setter(into, strip_option),
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
+pub struct MarkChapterBatch {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -74,7 +77,7 @@ pub struct MarkChapterBatch{
     pub chapter_ids_unread: Vec<Uuid>,
     #[serde(skip_serializing)]
     #[builder(default)]
-    pub update_history : bool,
+    pub update_history: bool,
 }
 
 endpoint! {

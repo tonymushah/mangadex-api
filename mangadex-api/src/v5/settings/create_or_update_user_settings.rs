@@ -51,7 +51,10 @@ use crate::HttpClientRef;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct CreateOrUpdateUserSettings {
     /// This should never be set manually as this is only for internal use.
@@ -81,8 +84,8 @@ mod tests {
     use wiremock::matchers::{header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
-    use mangadex_api_types::error::Error;
     use crate::{HttpClient, MangaDexClient};
+    use mangadex_api_types::error::Error;
 
     #[tokio::test]
     async fn create_or_update_user_settings_requires_auth() -> anyhow::Result<()> {

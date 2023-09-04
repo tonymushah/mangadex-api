@@ -56,7 +56,7 @@ pub struct ListManga {
     pub title: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub author_or_artist : Option<Uuid>,
+    pub author_or_artist: Option<Uuid>,
     #[builder(setter(each = "add_author"))]
     pub authors: Vec<Uuid>,
     #[builder(setter(each = "add_artist"))]

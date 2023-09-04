@@ -29,7 +29,9 @@ use serde::Serialize;
 
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::UserReportsListResponse;
-use mangadex_api_types::{ReportCategory, ReportSortOrder, ReportStatus, ReferenceExpansionResource};
+use mangadex_api_types::{
+    ReferenceExpansionResource, ReportCategory, ReportSortOrder, ReportStatus,
+};
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -37,7 +39,12 @@ use mangadex_api_types::{ReportCategory, ReportSortOrder, ReportStatus, Referenc
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), default, pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    default,
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 pub struct ListReportsByUser {
     #[doc(hidden)]
     #[serde(skip)]

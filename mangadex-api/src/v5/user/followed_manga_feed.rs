@@ -40,8 +40,9 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::ChapterListResponse;
 use mangadex_api_types::{
-    ContentRating, IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
-    ReferenceExpansionResource, IncludeFuturePages, IncludeFuturePublishAt, IncludeExternalUrl,
+    ContentRating, IncludeExternalUrl, IncludeFuturePages, IncludeFuturePublishAt,
+    IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
+    ReferenceExpansionResource,
 };
 
 #[cfg_attr(
@@ -50,7 +51,12 @@ use mangadex_api_types::{
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), pattern = "owned", default, build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    pattern = "owned",
+    default,
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct GetFollowedMangaFeed {
     /// This should never be set manually as this is only for internal use.
@@ -101,9 +107,9 @@ pub struct GetFollowedMangaFeed {
     #[builder(default)]
     pub include_empty_pages: Option<IncludeFuturePages>,
     #[builder(default)]
-    pub include_future_publish_at : Option<IncludeFuturePublishAt>,
+    pub include_future_publish_at: Option<IncludeFuturePublishAt>,
     #[builder(default)]
-    pub include_external_url : Option<IncludeExternalUrl>,
+    pub include_external_url: Option<IncludeExternalUrl>,
 }
 
 endpoint! {

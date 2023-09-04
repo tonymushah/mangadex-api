@@ -50,7 +50,11 @@ use mangadex_api_schema::v5::{AuthorResponse, LocalizedString};
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct CreateAuthor {
     /// This should never be set manually as this is only for internal use.
@@ -65,77 +69,77 @@ pub struct CreateAuthor {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub biography: Option<LocalizedString>,
-    
+
     /// <https://twitter.com>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub twitter: Option<Option<Url>>,
-    
+
     /// <https://www.pixiv.net>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub pixiv: Option<Option<Url>>,
-    
+
     /// <https://www.melonbooks.co.jp>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub melon_book: Option<Option<Url>>,
-    
+
     /// <https://www.fanbox.cc>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub fan_box: Option<Option<Url>>,
-    
+
     /// <https://booth.pm>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub booth: Option<Option<Url>>,
-    
+
     /// <https://www.nicovideo.jp>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub nico_video: Option<Option<Url>>,
-    
+
     /// <https://skeb.jp>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub skeb: Option<Option<Url>>,
-    
+
     /// <https://fantia.jp>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub fantia: Option<Option<Url>>,
-    
+
     /// <https://www.tumblr.com>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub tumblr: Option<Option<Url>>,
-    
+
     /// <https://www.youtube.com>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub youtube: Option<Option<Url>>,
-    
+
     /// [https://weibo.cn/u/](https://weibo.cn)
     /// or
     /// [https://m.weibo.cn/u/](https://m.weibo.cn)
@@ -144,14 +148,14 @@ pub struct CreateAuthor {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub weibo: Option<Option<Url>>,
-    
+
     /// <https://blog.naver.com/>
     ///
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub naver: Option<Option<Url>>,
-    
+
     /// Nullable.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]

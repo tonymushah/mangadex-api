@@ -28,8 +28,7 @@ use serde::Serialize;
 
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
-use mangadex_api_types::error::{Result, BuilderError};
-
+use mangadex_api_types::error::{BuilderError, Result};
 
 /// Resend the account activation code.
 ///

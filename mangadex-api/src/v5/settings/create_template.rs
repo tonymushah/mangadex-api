@@ -35,8 +35,8 @@
 use derive_builder::Builder;
 use serde::Serialize;
 
-use mangadex_api_schema::NoData;
 use crate::HttpClientRef;
+use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 
 /// Create a Settings template.
@@ -50,7 +50,10 @@ use mangadex_api_types::error::Result;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct CreateSettingsTemplate {
     /// This should never be set manually as this is only for internal use.
@@ -76,8 +79,8 @@ mod tests {
     use wiremock::matchers::{header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
-    use mangadex_api_types::error::Error;
     use crate::{HttpClient, MangaDexClient};
+    use mangadex_api_types::error::Error;
 
     #[tokio::test]
     async fn create_settings_template_requires_auth() -> anyhow::Result<()> {

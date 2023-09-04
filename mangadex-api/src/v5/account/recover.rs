@@ -4,8 +4,8 @@ use self::post::RecoverAccountBuilder;
 
 use self::code::CodeEndpoint;
 
-pub mod post;
 pub mod code;
+pub mod post;
 
 /// Account endpoint handler builder.
 #[derive(Debug)]
@@ -19,11 +19,11 @@ impl RecoverEndpoint {
         Self { http_client }
     }
 
-    pub fn post(&self) -> RecoverAccountBuilder{
+    pub fn post(&self) -> RecoverAccountBuilder {
         RecoverAccountBuilder::default().http_client(self.http_client.clone())
     }
 
-    pub fn code(&self, code: String) -> CodeEndpoint{
+    pub fn code(&self, code: String) -> CodeEndpoint {
         CodeEndpoint::new(self.http_client.clone(), code)
     }
 }

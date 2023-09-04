@@ -32,7 +32,7 @@ use uuid::Uuid;
 
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::CoverListResponse;
-use mangadex_api_types::{Language, ReferenceExpansionResource, CoverSortOrder};
+use mangadex_api_types::{CoverSortOrder, Language, ReferenceExpansionResource};
 
 /// Query parameters for `/cover`.
 #[cfg_attr(
@@ -41,7 +41,12 @@ use mangadex_api_types::{Language, ReferenceExpansionResource, CoverSortOrder};
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), default, pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    default,
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ListCover {
     /// This should never be set manually as this is only for internal use.

@@ -331,4 +331,3 @@ fn create_ref_counted_http_client(http_client: HttpClient) -> HttpClientRef {
         Arc::new(Mutex::new(http_client))
     }
 }
-

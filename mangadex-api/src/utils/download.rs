@@ -6,8 +6,10 @@ use uuid::Uuid;
 
 use crate::HttpClientRef;
 
-use self::{chapter::ChapterDownloadBuilder, cover::{CoverDownloadBuilder, CoverQuality}};
-
+use self::{
+    chapter::ChapterDownloadBuilder,
+    cover::{CoverDownloadBuilder, CoverQuality},
+};
 
 pub type DownloadElement = (String, Option<Bytes>);
 

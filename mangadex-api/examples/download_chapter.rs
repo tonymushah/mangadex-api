@@ -53,9 +53,9 @@ use clap::Parser;
 use reqwest::Url;
 use uuid::Uuid;
 
-use mangadex_api_types::RelationshipType;
 use mangadex_api::v5::MangaDexClient;
 use mangadex_api::HttpClientRef;
+use mangadex_api_types::RelationshipType;
 
 #[derive(Parser, Debug)]
 #[clap(
@@ -217,7 +217,10 @@ async fn run(args: Args) -> anyhow::Result<()> {
             println!("done");
         } else {
             #[cfg(not(feature = "multi-thread"))]
-            #[cfg_attr(not(feature = "multi-thread"), allow(clippy::await_holding_refcell_ref))]
+            #[cfg_attr(
+                not(feature = "multi-thread"),
+                allow(clippy::await_holding_refcell_ref)
+            )]
             let page_res = client
                 .get_http_client()
                 .clone()

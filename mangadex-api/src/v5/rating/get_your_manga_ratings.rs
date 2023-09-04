@@ -52,7 +52,12 @@ use mangadex_api_schema::v5::RatingsResponse;
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), default, pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    default,
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 pub struct GetYourMangaRatings {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

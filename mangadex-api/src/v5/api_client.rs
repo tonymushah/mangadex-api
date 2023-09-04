@@ -1,3 +1,3 @@
 pub mod get;
-pub mod post;
 pub mod id;
+pub mod post;

@@ -30,10 +30,10 @@ use std::iter::FromIterator;
 use clap::Parser;
 use uuid::Uuid;
 
+use mangadex_api::v5::MangaDexClient;
 use mangadex_api_types::{
     ChapterSortOrder, Language, OrderDirection, ReferenceExpansionResource, RelationshipType,
 };
-use mangadex_api::v5::MangaDexClient;
 
 #[derive(Parser)]
 #[clap(

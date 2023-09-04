@@ -1,14 +1,17 @@
 //! Account endpoint handler.
 //!
 //! <https://api.mangadex.org/swagger.html#/Account>
-pub mod available;
 pub mod activate;
+pub mod available;
 pub mod create;
 pub mod recover;
 
 use crate::HttpClientRef;
 
-use self::{activate::ActivateEndpoint, available::AvailableEndpoint, create::CreateEndpoint, recover::RecoverEndpoint};
+use self::{
+    activate::ActivateEndpoint, available::AvailableEndpoint, create::CreateEndpoint,
+    recover::RecoverEndpoint,
+};
 
 /// Account endpoint handler builder.
 #[derive(Debug)]

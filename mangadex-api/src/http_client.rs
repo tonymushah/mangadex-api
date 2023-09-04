@@ -15,7 +15,7 @@ use serde::de::DeserializeOwned;
 use url::Url;
 
 use crate::v5::AuthTokens;
-use crate::{API_URL, API_DEV_URL};
+use crate::{API_DEV_URL, API_URL};
 use mangadex_api_types::error::Result;
 
 #[cfg(not(feature = "multi-thread"))]
@@ -24,7 +24,11 @@ pub type HttpClientRef = Rc<RefCell<HttpClient>>;
 pub type HttpClientRef = Arc<Mutex<HttpClient>>;
 
 #[derive(Debug, Builder, Clone)]
-#[builder(setter(into, strip_option), default, build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    default,
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 pub struct HttpClient {
     pub client: Client,
     pub base_url: Url,
@@ -171,12 +175,12 @@ impl HttpClient {
         self.captcha = None;
     }
     /// Create a new client of api.mangadex.dev
-    pub fn api_dev_client() -> Self{
-        Self { 
-            client: Client::new(), 
-            base_url: Url::parse(API_DEV_URL).expect("error parsing the base url"), 
-            auth_tokens: None, 
-            captcha: None 
+    pub fn api_dev_client() -> Self {
+        Self {
+            client: Client::new(),
+            base_url: Url::parse(API_DEV_URL).expect("error parsing the base url"),
+            auth_tokens: None,
+            captcha: None,
         }
     }
 }

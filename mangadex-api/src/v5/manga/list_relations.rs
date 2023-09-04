@@ -42,7 +42,11 @@ use mangadex_api_types::ReferenceExpansionResource;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), pattern = "owned", build_fn(error = "mangadex_api_types::error::BuilderError"))]
+#[builder(
+    setter(into, strip_option),
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 pub struct ListMangaRelations {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

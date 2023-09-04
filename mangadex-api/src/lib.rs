@@ -1,6 +1,9 @@
 #![doc = include_str!("../README.md")]
 #![forbid(unsafe_code)]
-#![cfg_attr(not(feature = "multi-thread"), allow(clippy::await_holding_refcell_ref))]
+#![cfg_attr(
+    not(feature = "multi-thread"),
+    allow(clippy::await_holding_refcell_ref)
+)]
 
 pub mod constants;
 #[macro_use]

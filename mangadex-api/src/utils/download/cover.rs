@@ -6,7 +6,7 @@ use mangadex_api_schema::{
 };
 use mangadex_api_types::{
     error::{Error, Result},
-    ReferenceExpansionResource, RelationshipType, OrderDirection, CoverSortOrder,
+    CoverSortOrder, OrderDirection, ReferenceExpansionResource, RelationshipType,
 };
 use reqwest::Client;
 use url::Url;
@@ -39,26 +39,18 @@ pub async fn download_cover(
     cover_quality: CoverQuality,
 ) -> Result<DownloadElement> {
     let file_name = match cover_quality {
-        CoverQuality::Default => {
-            file_name
-        }
+        CoverQuality::Default => file_name,
         CoverQuality::Size256 => {
-            format!(
-                "{}.{}.jpg",
-                file_name, 256
-            )
+            format!("{}.{}.jpg", file_name, 256)
         }
         CoverQuality::Size512 => {
-            format!(
-                "{}.{}.jpg",
-                file_name, 512
-            )
+            format!("{}.{}.jpg", file_name, 512)
         }
     };
     let cover_url = match Url::parse(&format!("{}/covers/{}/{}", CDN_URL, manga_id, file_name)) {
-                Ok(d) => d,
-                Err(e) => return Err(Error::ParseError(e.to_string())),
-            };
+        Ok(d) => d,
+        Err(e) => return Err(Error::ParseError(e.to_string())),
+    };
     let res = match client.get(cover_url).send().await {
         Err(e) => return Err(Error::RequestError(e)),
         Ok(d) => d,
@@ -121,9 +113,8 @@ pub async fn download_via_manga_api_object(
     cover_quality: CoverQuality,
 ) -> Result<DownloadElement> {
     let mangadex_api_client = MangaDexClient::new_with_http_client_ref(http_client.clone());
-    let file_name: String = 
     // Search if there is a cover relationship object in the MangaObject
-    match manga
+    let file_name: String = match manga
         .relationships
         .iter()
         .find(|relationship| relationship.type_ == RelationshipType::CoverArt)
@@ -183,7 +174,7 @@ pub async fn download_via_manga_api_object(
             }
         }
     };
-    let client : Client = get_reqwest_client(&mangadex_api_client).await;
+    let client: Client = get_reqwest_client(&mangadex_api_client).await;
     download_cover(&client, file_name, manga.id, cover_quality).await
 }
 
@@ -193,10 +184,14 @@ pub async fn download_via_manga_id(
     cover_quality: CoverQuality,
 ) -> Result<DownloadElement> {
     let mangadex_api_client = MangaDexClient::new_with_http_client_ref(http_client.clone());
-    let manga : ApiObject<MangaAttributes> = match mangadex_api_client.manga().get().manga_id(manga_id).includes(vec![ReferenceExpansionResource::CoverArt]).build() {
-        Ok(res) => {
-            res.send().await?.data
-        },
+    let manga: ApiObject<MangaAttributes> = match mangadex_api_client
+        .manga()
+        .get()
+        .manga_id(manga_id)
+        .includes(vec![ReferenceExpansionResource::CoverArt])
+        .build()
+    {
+        Ok(res) => res.send().await?.data,
         Err(e) => return Err(Error::RequestBuilderError(e.to_string())),
     };
     download_via_manga_api_object(http_client, manga, cover_quality).await
@@ -205,22 +200,28 @@ pub async fn download_via_manga_id(
 #[derive(Clone, Builder)]
 #[builder(setter(into, strip_option), pattern = "owned")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
-pub struct CoverDownload{
+pub struct CoverDownload {
     #[doc(hidden)]
     #[builder(pattern = "immutable")]
     http_client: HttpClientRef,
 
-    quality : CoverQuality
+    quality: CoverQuality,
 }
 
-impl CoverDownload{
-    pub async fn via_cover_api_object(&self, cover: ApiObject<CoverAttributes>) -> Result<DownloadElement> {
+impl CoverDownload {
+    pub async fn via_cover_api_object(
+        &self,
+        cover: ApiObject<CoverAttributes>,
+    ) -> Result<DownloadElement> {
         download_via_cover_api_object(self.http_client.clone(), cover, self.quality.clone()).await
     }
     pub async fn via_cover_id(&self, cover_id: Uuid) -> Result<DownloadElement> {
         download_via_cover_id(self.http_client.clone(), cover_id, self.quality.clone()).await
     }
-    pub async fn via_manga_api_object(&self, manga: ApiObject<MangaAttributes>) -> Result<DownloadElement> {
+    pub async fn via_manga_api_object(
+        &self,
+        manga: ApiObject<MangaAttributes>,
+    ) -> Result<DownloadElement> {
         download_via_manga_api_object(self.http_client.clone(), manga, self.quality.clone()).await
     }
     pub async fn via_manga_id(&self, manga_id: Uuid) -> Result<DownloadElement> {
@@ -229,31 +230,41 @@ impl CoverDownload{
 }
 
 #[cfg(test)]
-mod tests{
-    use anyhow::Result;
-    use uuid::Uuid;
+mod tests {
     use crate::MangaDexClient;
-    use std::{io::Write, fs::File};
+    use anyhow::Result;
+    use std::{fs::File, io::Write};
+    use uuid::Uuid;
 
     /// Download the volume 2 cover of [Lycoris Recoil](https://mangadex.org/title/9c21fbcd-e22e-4e6d-8258-7d580df9fc45/lycoris-recoil)
     #[tokio::test]
-    pub async fn via_cover_id() -> Result<()>{
-        let cover_id : Uuid = Uuid::parse_str("0bc12ff4-3cec-4244-8582-965b8be496ea")?;
-        let client : MangaDexClient = MangaDexClient::default();
-        let (filename, bytes) = client.download().cover().build()?.via_cover_id(cover_id).await?;
+    pub async fn via_cover_id() -> Result<()> {
+        let cover_id: Uuid = Uuid::parse_str("0bc12ff4-3cec-4244-8582-965b8be496ea")?;
+        let client: MangaDexClient = MangaDexClient::default();
+        let (filename, bytes) = client
+            .download()
+            .cover()
+            .build()?
+            .via_cover_id(cover_id)
+            .await?;
         let mut file = File::create(format!("{}/{}", "test-outputs/covers", filename))?;
         file.write_all(&bytes.unwrap())?;
         Ok(())
     }
 
     /// Download the [Kimi tte Watashi no Koto Suki Nandesho?](https://mangadex.org/title/f75c2845-0241-4e69-87c7-b93575b532dd/kimi-tte-watashi-no-koto-suki-nandesho) cover
-    /// 
+    ///
     /// For test... of course :3
     #[tokio::test]
-    pub async fn via_manga_id() -> Result<()>{
-        let manga_id : Uuid = Uuid::parse_str("f75c2845-0241-4e69-87c7-b93575b532dd")?;
-        let client : MangaDexClient = MangaDexClient::default();
-        let (filename, bytes) = client.download().cover().build()?.via_manga_id(manga_id).await?;
+    pub async fn via_manga_id() -> Result<()> {
+        let manga_id: Uuid = Uuid::parse_str("f75c2845-0241-4e69-87c7-b93575b532dd")?;
+        let client: MangaDexClient = MangaDexClient::default();
+        let (filename, bytes) = client
+            .download()
+            .cover()
+            .build()?
+            .via_manga_id(manga_id)
+            .await?;
         let mut file = File::create(format!("{}/{}", "test-outputs/covers", filename))?;
         file.write_all(&bytes.unwrap())?;
         Ok(())
