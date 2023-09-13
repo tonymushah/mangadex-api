@@ -31,7 +31,6 @@ pub struct DeleteMangaBatchViaCustomList {
     pub list_id: Uuid,
 
     #[builder(default)]
-    #[serde(rename = "mangaIds")]
     #[builder(setter(each = "manga_id"))]
     pub manga_ids: Vec<Uuid>,
 }

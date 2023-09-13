@@ -86,7 +86,7 @@ mod tests {
     use crate::{HttpClient, MangaDexClient};
 
     #[tokio::test]
-    async fn unfollow_custom_list_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn unbookmark_custom_list_fires_a_request_to_base_url() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
@@ -103,7 +103,7 @@ mod tests {
         });
 
         Mock::given(method("DELETE"))
-            .and(path_regex(r"/list/[0-9a-fA-F-]+/follow"))
+            .and(path_regex(r"/list/[0-9a-fA-F-]+/bookmark"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
@@ -113,6 +113,7 @@ mod tests {
         mangadex_client
             .custom_list()
             .id(custom_list_id)
+            .bookmark()
             .delete()
             .build()?
             .send()

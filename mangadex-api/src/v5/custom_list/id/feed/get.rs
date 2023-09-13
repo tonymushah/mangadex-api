@@ -62,8 +62,10 @@ pub struct CustomListMangaFeed {
     pub list_id: Uuid,
 
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none", default)]
     pub limit: Option<u32>,
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none", default)]
     pub offset: Option<u32>,
     #[builder(setter(each = "add_translated_language"), default)]
     pub translated_language: Vec<Language>,

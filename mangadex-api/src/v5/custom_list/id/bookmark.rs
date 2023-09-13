@@ -20,9 +20,13 @@ impl BookMarkEndpoint {
         Self { http_client, id }
     }
     pub fn post(&self) -> BookMarkCustomListBuilder {
-        todo!("implement the post method please")
+        BookMarkCustomListBuilder::default()
+            .http_client(self.http_client.clone())
+            .list_id(self.id)
     }
     pub fn delete(&self) -> UnBookMarkCustomListBuilder {
-        todo!("implement the delete method please")
+        UnBookMarkCustomListBuilder::default()
+            .http_client(self.http_client.clone())
+            .list_id(self.id)
     }
 }
