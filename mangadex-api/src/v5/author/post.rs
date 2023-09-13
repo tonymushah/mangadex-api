@@ -253,7 +253,7 @@ mod tests {
 
         let _ = mangadex_client
             .author()
-            .create()
+            .post()
             .name(author_name.as_str())
             .build()?
             .send()

@@ -66,6 +66,7 @@ pub struct UpdateAuthor {
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
+    #[builder(pattern = "immutable")]
     pub author_id: Uuid,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -246,8 +247,8 @@ mod tests {
 
         let res = mangadex_client
             .author()
-            .update()
-            .author_id(author_id)
+            .id(author_id)
+            .put()
             .website(Some(Url::parse("https://example.org").unwrap()))
             .version(2u32)
             .build()?

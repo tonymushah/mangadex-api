@@ -133,7 +133,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(name) = args.author_search {
         let author_builder = client.author();
 
-        let mut author_list_builder = author_builder.list();
+        let mut author_list_builder = author_builder.get();
         if !name.is_empty() {
             author_list_builder = author_list_builder.name(name.as_str());
         }

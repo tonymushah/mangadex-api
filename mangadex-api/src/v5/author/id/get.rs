@@ -1,6 +1,6 @@
-//! Builder for the author delete endpoint.
+//! Builder for the author view endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Author/delete-author-id>
+//! <https://api.mangadex.org/swagger.html#/Author/get-author-id>
 //!
 //! # Examples
 //!
@@ -8,30 +8,20 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
-//!
 //! let author_id = Uuid::new_v4();
 //! let res = client
 //!     .author()
-//!     .delete()
+//!     .get()
 //!     .author_id(&author_id)
 //!     .build()?
 //!     .send()
 //!     .await?;
 //!
-//! println!("author delete: {:?}", res);
+//! println!("author view: {:?}", res);
 //! # Ok(())
 //! # }
 //! ```
@@ -41,8 +31,8 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::NoData;
-use mangadex_api_types::error::Result;
+use mangadex_api_schema::v5::AuthorResponse;
+use mangadex_api_types::ReferenceExpansionResource;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -55,7 +45,7 @@ use mangadex_api_types::error::Result;
     pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
-pub struct DeleteAuthor {
+pub struct GetAuthor {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -64,46 +54,83 @@ pub struct DeleteAuthor {
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
+    #[builder(pattern = "immutable")]
     pub author_id: Uuid,
+
+    #[builder(setter(each = "include"), default)]
+    pub includes: Vec<ReferenceExpansionResource>,
 }
 
 endpoint! {
-    DELETE ("/author/{}", author_id),
-    #[no_data auth] DeleteAuthor,
-    #[discard_result] Result<NoData>
+    GET ("/author/{}", author_id),
+    #[query] GetAuthor,
+    #[flatten_result] AuthorResponse
 }
 
 #[cfg(test)]
 mod tests {
+    use fake::faker::lorem::en::Sentence;
+    use fake::faker::name::en::Name;
+    use fake::Fake;
     use serde_json::json;
+    use time::OffsetDateTime;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{header, method, path_regex};
+    use wiremock::matchers::{method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
-    use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
+    use mangadex_api_types::MangaDexDateTime;
 
     #[tokio::test]
-    async fn delete_author_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn get_author_fires_a_request_to_base_url() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
-            .auth_tokens(AuthTokens {
-                session: "sessiontoken".to_string(),
-                refresh: "refreshtoken".to_string(),
-            })
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
         let author_id = Uuid::new_v4();
+        let author_name: String = Name().fake();
+        let author_biography: String = Sentence(1..2).fake();
+
+        let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
+
         let response_body = json!({
             "result": "ok",
+            "response": "entity",
+            "data": {
+                "id": author_id,
+                "type": "author",
+                "attributes": {
+                    "name": author_name,
+                    "imageUrl": "",
+                    "biography": {
+                        "en": author_biography,
+                    },
+                    "twitter": null,
+                    "pixiv": null,
+                    "melonBook": null,
+                    "fanBox": null,
+                    "booth": null,
+                    "nicoVideo": null,
+                    "skeb": null,
+                    "fantia": null,
+                    "tumblr": null,
+                    "youtube": null,
+                    "weibo": null,
+                    "naver": null,
+                    "website": null,
+                    "version": 1,
+                    "createdAt": datetime.to_string(),
+                    "updatedAt": datetime.to_string(),
+                },
+                "relationships": []
+            }
         });
 
-        Mock::given(method("DELETE"))
+        Mock::given(method("GET"))
             .and(path_regex(r"/author/[0-9a-fA-F-]+"))
-            .and(header("Authorization", "Bearer sessiontoken"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
@@ -111,8 +138,8 @@ mod tests {
 
         mangadex_client
             .author()
-            .delete()
-            .author_id(author_id)
+            .id(author_id)
+            .get()
             .build()?
             .send()
             .await?;
