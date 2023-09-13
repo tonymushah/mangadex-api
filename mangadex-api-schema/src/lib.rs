@@ -150,6 +150,7 @@ impl<A, T> FromResponse for ApiObjectNoRelationships<A, T> {
 /// }
 #[derive(Debug, Default, Deserialize, Clone, Hash, PartialEq, Eq)]
 pub struct NoData{
+    #[serde(default)]
     result : ResultType
 }
 

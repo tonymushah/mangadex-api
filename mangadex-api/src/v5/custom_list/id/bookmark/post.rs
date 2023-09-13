@@ -64,6 +64,7 @@ pub struct BookMarkCustomList {
     pub(crate) http_client: HttpClientRef,
 
     /// CustomList ID.
+    #[serde(skip_serializing)]
     pub list_id: Uuid,
 }
 
