@@ -55,7 +55,7 @@ use mangadex_api_types::error::Result;
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
-pub struct FollowCustomList {
+pub struct BookMarkCustomList {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -68,8 +68,8 @@ pub struct FollowCustomList {
 }
 
 endpoint! {
-    POST ("/list/{}/follow", list_id),
-    #[body auth] FollowCustomList,
+    POST ("/list/{}/bookmark", list_id),
+    #[body auth] BookMarkCustomList,
     #[discard_result] Result<NoData>
 }
 

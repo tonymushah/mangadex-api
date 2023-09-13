@@ -55,7 +55,7 @@ use mangadex_api_types::error::Result;
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
-pub struct UnfollowCustomList {
+pub struct UnBookMarkCustomList {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -68,8 +68,8 @@ pub struct UnfollowCustomList {
 }
 
 endpoint! {
-    DELETE ("/list/{}/follow", list_id),
-    #[body auth] UnfollowCustomList,
+    DELETE ("/list/{}/bookmark", list_id),
+    #[body auth] UnBookMarkCustomList,
     #[discard_result] Result<NoData>
 }
 

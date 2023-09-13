@@ -143,7 +143,7 @@ mod tests {
 
         let _ = mangadex_client
             .custom_list()
-            .create()
+            .post()
             .name(custom_list_name.as_str())
             .version(1u32)
             .build()?
