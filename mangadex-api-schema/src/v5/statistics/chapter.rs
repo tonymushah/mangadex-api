@@ -13,7 +13,7 @@ use super::Comments;
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ChapterStatisticsObject {
     #[serde(default)]
-    pub result : ResultType,
+    pub result: ResultType,
     /// JSON object of `MangaId-StatisticsObject`.
     pub statistics: HashMap<Uuid, ChapterStatistics>,
 }
@@ -22,5 +22,5 @@ pub struct ChapterStatisticsObject {
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ChapterStatistics {
-    pub comments : Option<Comments>
+    pub comments: Option<Comments>,
 }

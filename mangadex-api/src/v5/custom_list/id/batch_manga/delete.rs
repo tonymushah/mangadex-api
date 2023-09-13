@@ -25,7 +25,7 @@ pub struct DeleteMangaBatchViaCustomList {
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
-    
+
     #[serde(skip_serializing)]
     /// CustomList ID.
     pub list_id: Uuid,
@@ -33,21 +33,21 @@ pub struct DeleteMangaBatchViaCustomList {
     #[builder(default)]
     #[serde(rename = "mangaIds")]
     #[builder(setter(each = "manga_id"))]
-    pub manga_ids : Vec<Uuid>
+    pub manga_ids: Vec<Uuid>,
 }
 
-endpoint!{
+endpoint! {
     DELETE ("/list/{}/batch-manga", list_id),
     #[body auth] DeleteMangaBatchViaCustomList,
     #[flatten_result] Result<NoData>
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{header, method, path_regex, body_json};
+    use wiremock::matchers::{body_json, header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::v5::AuthTokens;
@@ -90,7 +90,8 @@ mod tests{
         Ok(())
     }
     #[tokio::test]
-    async fn delete_manga_by_batch_with_batch_custom_list_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn delete_manga_by_batch_with_batch_custom_list_fires_a_request_to_base_url(
+    ) -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
@@ -102,11 +103,7 @@ mod tests{
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
         let custom_list_id = Uuid::new_v4();
-        let manga_ids = vec![
-            Uuid::new_v4(),
-            Uuid::new_v4(),
-            Uuid::new_v4()
-        ];
+        let manga_ids = vec![Uuid::new_v4(), Uuid::new_v4(), Uuid::new_v4()];
         let response_body = json!({
             "result": "ok"
         });
@@ -128,9 +125,7 @@ mod tests{
             .mount(&mock_server)
             .await;
 
-        endpoint_
-            .send()
-            .await?;
+        endpoint_.send().await?;
 
         Ok(())
     }

@@ -5,13 +5,13 @@ use post::LogoutBuilder;
 use crate::HttpClientRef;
 
 #[derive(Clone, Debug)]
-pub struct LogoutEndpoint{
-    http_client : HttpClientRef
+pub struct LogoutEndpoint {
+    http_client: HttpClientRef,
 }
 
-impl LogoutEndpoint{
+impl LogoutEndpoint {
     #[doc(hidden)]
-    pub fn new(http_client: HttpClientRef) -> Self{
+    pub fn new(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
     pub fn post(&self) -> LogoutBuilder {

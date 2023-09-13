@@ -1,4 +1,4 @@
-use super::{UserReportAttributes, ApiObject, ApiData, Results, Result};
+use super::{ApiData, ApiObject, Result, Results, UserReportAttributes};
 
 pub type UserReportsObject = ApiObject<UserReportAttributes>;
 pub type UserReportsData = ApiData<UserReportsObject>;

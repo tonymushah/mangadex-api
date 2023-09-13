@@ -2,10 +2,9 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Author>
 
-pub mod post;
-pub mod id;
 pub mod get;
-
+pub mod id;
+pub mod post;
 
 use uuid::Uuid;
 
@@ -39,9 +38,9 @@ impl AuthorBuilder {
     pub fn post(&self) -> CreateAuthorBuilder {
         CreateAuthorBuilder::default().http_client(self.http_client.clone())
     }
-    
+
     // TODO add docs
-    pub fn id(&self, id: Uuid) -> IdEndpoint{
+    pub fn id(&self, id: Uuid) -> IdEndpoint {
         IdEndpoint::new(self.http_client.clone(), id)
     }
 }

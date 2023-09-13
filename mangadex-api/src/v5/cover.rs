@@ -2,9 +2,9 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Cover>
 
-pub mod manga_id;
 pub mod cover_id;
 pub mod get;
+pub mod manga_id;
 
 use uuid::Uuid;
 
@@ -33,10 +33,10 @@ impl CoverBuilder {
         ListCoverBuilder::default().http_client(self.http_client.clone())
     }
 
-    pub fn cover_id(&self, cover_id : Uuid) -> CoverIdEndpoint{
+    pub fn cover_id(&self, cover_id: Uuid) -> CoverIdEndpoint {
         CoverIdEndpoint::new(self.http_client.clone(), cover_id)
     }
-    pub fn manga_id(&self, manga_id : Uuid) -> MangaIdEndpoint{
+    pub fn manga_id(&self, manga_id: Uuid) -> MangaIdEndpoint {
         MangaIdEndpoint::new(self.http_client.clone(), manga_id)
     }
 }

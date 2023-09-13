@@ -1,4 +1,7 @@
-use std::{cell::{BorrowError, BorrowMutError}, fmt::Display};
+use std::{
+    cell::{BorrowError, BorrowMutError},
+    fmt::Display,
+};
 
 use derive_builder::UninitializedFieldError;
 use schema::MangaDexErrorResponse;
@@ -21,7 +24,7 @@ pub enum Error {
 
     #[error("a field is missing when building the request: {0:?}")]
     UninitializedFieldError(#[from] UninitializedFieldError),
-    
+
     /// Error when building the request.
     #[error("failed to build the request: {0:?}")]
     BuilderError(#[from] BuilderError),
@@ -49,7 +52,7 @@ pub enum Error {
     /// Error while parsing the type.
     #[error("an error occurred while parsing the type: {0}")]
     ParseError(String),
-    
+
     #[error("an error occurred when borrowing the http client")]
     BorrowError(#[from] BorrowError),
 
@@ -57,28 +60,33 @@ pub enum Error {
     BorrowMutError(#[from] BorrowMutError),
 
     #[error("an eccor captured")]
-
     Io(#[from] std::io::Error),
 
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
-
-    
 }
 
-impl serde::Serialize for Error{
+impl serde::Serialize for Error {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
-        S: serde::Serializer {
+        S: serde::Serializer,
+    {
         match self {
             Error::ParseUrlError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::ServerError(port, host) => serializer.serialize_str(format!("there was an error from the MangaDex servers (HTTP {host}): {port}").as_str()),
+            Error::ServerError(port, host) => serializer.serialize_str(
+                format!("there was an error from the MangaDex servers (HTTP {host}): {port}")
+                    .as_str(),
+            ),
             Error::RequestError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::BuilderError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::MissingTokens => serializer.serialize_str("missing auth tokens; please log in to MangaDex"),
+            Error::MissingTokens => {
+                serializer.serialize_str("missing auth tokens; please log in to MangaDex")
+            }
             Error::UsernameError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::PasswordError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::PingError => serializer.serialize_str("Cannot ping the Mangadex API. Please checkout your internet connection"),
+            Error::PingError => serializer.serialize_str(
+                "Cannot ping the Mangadex API. Please checkout your internet connection",
+            ),
             Error::Api(e) => e.serialize(serializer),
             Error::RequestBuilderError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::ParseError(e) => serializer.serialize_str(e.to_string().as_str()),
@@ -86,13 +94,15 @@ impl serde::Serialize for Error{
             Error::BorrowMutError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::Io(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::UnexpectedError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::UninitializedFieldError(e) => serializer.serialize_str(format!("the field {} must be initialized", e.field_name()).as_str()),
+            Error::UninitializedFieldError(e) => serializer.serialize_str(
+                format!("the field {} must be initialized", e.field_name()).as_str(),
+            ),
         }
     }
 }
 
 #[cfg(feature = "specta")]
-impl specta::Type for Error{}
+impl specta::Type for Error {}
 
 pub mod schema {
     use std::collections::HashMap;
@@ -107,7 +117,7 @@ pub mod schema {
     #[cfg_attr(feature = "specta", derive(specta::Type))]
     pub struct MangaDexErrorResponse {
         #[serde(default = "ResultType::error")]
-        pub result : ResultType,
+        pub result: ResultType,
         #[serde(default)]
         pub errors: Vec<MangaDexError>,
     }
@@ -161,15 +171,15 @@ pub mod schema {
 }
 
 #[derive(Debug)]
-pub enum BuilderError{
+pub enum BuilderError {
     /// Uninitialized field
     UninitializedField(String),
     /// Custom validation error
     ValidationError(String),
 }
 
-impl From<String> for BuilderError{
-    fn from(value : String) -> Self{
+impl From<String> for BuilderError {
+    fn from(value: String) -> Self {
         Self::ValidationError(value)
     }
 }
@@ -181,8 +191,10 @@ impl From<UninitializedFieldError> for BuilderError {
 }
 impl Display for BuilderError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self{
-            BuilderError::UninitializedField(s) => f.write_str(format!("the field {s} must initialized").as_str()),
+        match self {
+            BuilderError::UninitializedField(s) => {
+                f.write_str(format!("the field {s} must initialized").as_str())
+            }
             BuilderError::ValidationError(s) => f.write_str(s.as_str()),
         }
     }

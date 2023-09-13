@@ -1,7 +1,7 @@
 use super::{
-    ApiData, ApiObject, MangaAggregate, MangaAttributes, MangaReadingStatus,
-    MangaRelationAttributes, MangaStatisticsObject, Result, Results, UngroupedMangaReadMarkers,
-    MangaReadMarkers, MangaReadingStatuses
+    ApiData, ApiObject, MangaAggregate, MangaAttributes, MangaReadMarkers, MangaReadingStatus,
+    MangaReadingStatuses, MangaRelationAttributes, MangaStatisticsObject, Result, Results,
+    UngroupedMangaReadMarkers,
 };
 
 pub type MangaObject = ApiObject<MangaAttributes>;

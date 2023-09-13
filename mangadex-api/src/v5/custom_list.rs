@@ -2,8 +2,8 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/CustomList>
 
-pub mod post;
 pub mod id;
+pub mod post;
 use uuid::Uuid;
 
 use crate::v5::custom_list::post::CreateCustomListBuilder;
@@ -30,8 +30,7 @@ impl CustomListBuilder {
     }
 
     /// Containing existing endpoint in https://api.mangadex.org/list/{id}
-    pub fn id(&self, id : Uuid) -> IdEnpoint {
+    pub fn id(&self, id: Uuid) -> IdEnpoint {
         IdEnpoint::new(self.http_client.clone(), id)
     }
-
 }

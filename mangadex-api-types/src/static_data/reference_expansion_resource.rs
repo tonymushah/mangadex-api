@@ -40,5 +40,5 @@ pub enum ReferenceExpansionResource {
     /// Leader of a group
     Leader,
     /// Member of a group
-    Member
+    Member,
 }

@@ -5,17 +5,17 @@ use crate::HttpClientRef;
 pub mod post;
 
 #[derive(Debug, Clone)]
-pub struct DefaultEndpoint{
+pub struct DefaultEndpoint {
     http_client: HttpClientRef,
-    id: Uuid
+    id: Uuid,
 }
 
-impl DefaultEndpoint{
+impl DefaultEndpoint {
     #[doc(hidden)]
-    pub fn new(http_client: HttpClientRef, id: Uuid) -> Self{
-        Self{http_client, id}
+    pub fn new(http_client: HttpClientRef, id: Uuid) -> Self {
+        Self { http_client, id }
     }
-    pub fn post(&self){
+    pub fn post(&self) {
         todo!("implement the post method please")
     }
 }

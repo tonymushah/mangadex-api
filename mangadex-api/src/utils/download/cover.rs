@@ -93,12 +93,7 @@ pub async fn download_via_cover_id(
     cover_quality: CoverQuality,
 ) -> Result<DownloadElement> {
     let mangadex_api_client = MangaDexClient::new_with_http_client_ref(http_client.clone());
-    let cover = match mangadex_api_client
-        .cover()
-        .cover_id(cover_id)
-        .get()
-        .build()
-    {
+    let cover = match mangadex_api_client.cover().cover_id(cover_id).get().build() {
         Ok(d) => d,
         Err(e) => return Err(Error::RequestBuilderError(e.to_string())),
     }
@@ -152,11 +147,11 @@ pub async fn download_via_manga_api_object(
                     .cover_id(relationship.id)
                     .get()
                     .build()?
-                .send()
-                .await?
-                .data
-                .attributes
-                .file_name
+                    .send()
+                    .await?
+                    .data
+                    .attributes
+                    .file_name
             }
         }
         // Getting the file name via the list of the manga cover ordered by volume `desc` otherwise

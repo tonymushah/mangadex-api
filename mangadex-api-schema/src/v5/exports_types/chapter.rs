@@ -1,4 +1,4 @@
-use super::{ApiData, ApiObject, ChapterAttributes, Result, Results, ChapterStatisticsObject};
+use super::{ApiData, ApiObject, ChapterAttributes, ChapterStatisticsObject, Result, Results};
 
 pub type ChapterObject = ApiObject<ChapterAttributes>;
 pub type ChapterData = ApiData<ChapterObject>;

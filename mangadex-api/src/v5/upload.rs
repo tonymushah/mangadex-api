@@ -65,7 +65,9 @@ impl UploadBuilder {
     ///
     /// <https://api.mangadex.org/swagger.html#/Upload/upload-cover>
     pub fn cover(&self, manga_id: Uuid) -> UploadCoverBuilder {
-        UploadCoverBuilder::default().http_client(self.http_client.clone()).manga_id(manga_id)
+        UploadCoverBuilder::default()
+            .http_client(self.http_client.clone())
+            .manga_id(manga_id)
     }
 
     /// Get the logged-in user's current upload session.

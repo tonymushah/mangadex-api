@@ -5,13 +5,13 @@ pub mod post;
 use post::RefreshTokenBuilder;
 
 #[derive(Clone, Debug)]
-pub struct RefreshEndpoint{
-    http_client : HttpClientRef
+pub struct RefreshEndpoint {
+    http_client: HttpClientRef,
 }
 
-impl RefreshEndpoint{
+impl RefreshEndpoint {
     #[doc(hidden)]
-    pub fn new(http_client : HttpClientRef) -> Self{
+    pub fn new(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
     pub fn post(&self) -> RefreshTokenBuilder {

@@ -1,5 +1,5 @@
-pub mod manga;
 pub mod chapter;
-pub mod groups;
 mod comments;
+pub mod groups;
+pub mod manga;
 pub use comments::Comments;

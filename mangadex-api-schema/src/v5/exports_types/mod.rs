@@ -1,4 +1,3 @@
-use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
 pub use super::at_home_server::AtHomeServer;
 pub use super::auth_tokens::AuthTokens;
 pub use super::author::AuthorAttributes;
@@ -30,6 +29,7 @@ pub use super::upload_session_file::{UploadSessionFileAttributes, UploadSessionF
 pub use super::user::UserAttributes;
 pub use super::user_report::UserReportAttributes;
 pub use super::user_settings::UserSettingsAttributes;
+use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
 
 use super::statistics::chapter::ChapterStatisticsObject;
 use super::statistics::groups::GroupStatisticsObject;

@@ -17,7 +17,7 @@ use super::Comments;
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaStatisticsObject {
     #[serde(default)]
-    pub result : ResultType,
+    pub result: ResultType,
     /// JSON object of `MangaId-StatisticsObject`.
     pub statistics: HashMap<Uuid, MangaStatistics>,
 }
@@ -31,7 +31,7 @@ pub struct MangaStatistics {
     // The API documentation has placed this within the `rating` object as of MangaDex API 5.4.9 but
     // the actual response has this field at this level.
     pub follows: u64,
-    pub comments : Option<Comments>
+    pub comments: Option<Comments>,
 }
 
 #[derive(Clone, Debug, Deserialize)]

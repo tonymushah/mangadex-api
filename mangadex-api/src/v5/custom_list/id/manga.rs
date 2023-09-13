@@ -3,14 +3,14 @@ use uuid::Uuid;
 pub mod get;
 
 #[derive(Debug, Clone)]
-pub struct MangaEndpoint{
+pub struct MangaEndpoint {
     http_client: HttpClientRef,
-    id: Uuid
+    id: Uuid,
 }
 
-impl MangaEndpoint{
+impl MangaEndpoint {
     #[doc(hidden)]
-    pub fn new(http_client: HttpClientRef, id: Uuid) -> Self{
+    pub fn new(http_client: HttpClientRef, id: Uuid) -> Self {
         Self { http_client, id }
     }
     pub fn get(&self) {

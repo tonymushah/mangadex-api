@@ -30,7 +30,7 @@ impl ChapterBuilder {
         ListChapterBuilder::default().http_client(self.http_client.clone())
     }
 
-    pub fn id(&self, id : Uuid) -> IdEndpoint{
+    pub fn id(&self, id: Uuid) -> IdEndpoint {
         IdEndpoint::new(self.http_client.clone(), id)
     }
 }
