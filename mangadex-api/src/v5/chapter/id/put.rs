@@ -176,8 +176,8 @@ mod tests {
 
         let _ = mangadex_client
             .chapter()
-            .update()
-            .chapter_id(chapter_id)
+            .id(chapter_id)
+            .put()
             .version(2_u32)
             .build()?
             .send()
@@ -242,8 +242,8 @@ mod tests {
 
         let _ = mangadex_client
             .chapter()
-            .update()
-            .chapter_id(chapter_id)
+            .id(chapter_id)
+            .put()
             .version(2_u32)
             .build()?
             .send()
@@ -308,8 +308,8 @@ mod tests {
 
         let _ = mangadex_client
             .chapter()
-            .update()
-            .chapter_id(chapter_id)
+            .id(chapter_id)
+            .put()
             .version(2_u32)
             .build()?
             .send()
@@ -375,8 +375,8 @@ mod tests {
 
         let _ = mangadex_client
             .chapter()
-            .update()
-            .chapter_id(chapter_id)
+            .id(chapter_id)
+            .put()
             .title(chapter_title.as_str())
             .version(2_u32)
             .build()?

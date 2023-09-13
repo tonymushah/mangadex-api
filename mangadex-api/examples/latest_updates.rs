@@ -77,7 +77,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
     let chapters = client
         .chapter()
-        .list()
+        .get()
         .offset(get_page_offset(args.page, args.limit))
         .limit(args.limit)
         .translated_languages(args.languages)

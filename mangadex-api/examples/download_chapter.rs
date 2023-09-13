@@ -92,8 +92,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
     // Fetch chapter data to use for naming the output directory.
     let chapter = client
         .chapter()
+        .id(args.chapter_id)
         .get()
-        .chapter_id(args.chapter_id)
         .build()?
         .send()
         .await?;

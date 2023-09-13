@@ -147,7 +147,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.chapter_search {
         let chapter_results = client
             .chapter()
-            .list()
+            .get()
             .manga_id(manga_id)
             .build()?
             .send()
@@ -161,8 +161,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(chapter_id) = args.chapter_view {
         let chapter_view = client
             .chapter()
+            .id(chapter_id)
             .get()
-            .chapter_id(chapter_id)
             .build()?
             .send()
             .await?;
