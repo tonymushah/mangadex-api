@@ -123,7 +123,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client.auth().check_token().build()?.send().await?;
+        let _ = mangadex_client.auth().check().get().build()?.send().await?;
 
         Ok(())
     }

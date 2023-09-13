@@ -35,6 +35,7 @@ async fn run() -> anyhow::Result<()> {
     let _login_res = client
         .auth()
         .login()
+        .post()
         // You may also use an email address by replacing `username()` with `email()`.
         .username(Username::parse("<YOUR_USERNAME_HERE>")?)
         // The raw string prefix is used because one may have a password with characters
@@ -44,7 +45,7 @@ async fn run() -> anyhow::Result<()> {
         .send()
         .await?;
 
-    let _logout_res = client.auth().logout().build()?.send().await;
+    let _logout_res = client.auth().logout().post().build()?.send().await;
 
     // The login and logout succeeded if the program doesn't exit prematurely.
     Ok(())

@@ -165,6 +165,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     let at_home = client
         .at_home()
         .server()
+        .get()
         .chapter_id(args.chapter_id)
         .build()?
         .send()

@@ -159,7 +159,8 @@ mod tests {
 
         let _ = mangadex_client
             .auth()
-            .refresh_token()
+            .refresh()
+            .post()
             .build()?
             .send()
             .await?;
@@ -221,7 +222,8 @@ mod tests {
 
         let res = mangadex_client
             .auth()
-            .refresh_token()
+            .refresh()
+            .post()
             .build()?
             .send()
             .await
@@ -295,7 +297,8 @@ mod tests {
 
         let res = mangadex_client
             .auth()
-            .refresh_token()
+            .refresh()
+            .post()
             .build()?
             .send()
             .await
@@ -369,7 +372,8 @@ mod tests {
 
         let res = mangadex_client
             .auth()
-            .refresh_token()
+            .refresh()
+            .post()
             .build()?
             .send()
             .await
