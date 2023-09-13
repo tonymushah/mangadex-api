@@ -112,8 +112,8 @@ mod tests {
 
         mangadex_client
             .cover()
-            .delete()
             .cover_id(cover_id)
+            .delete()
             .build()?
             .send()
             .await?;

@@ -1,6 +1,6 @@
-//! Builder for the cover view endpoint.
+//! Builder for the cover art list endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Cover/get-cover-id>
+//! <https://api.mangadex.org/swagger.html#/Cover/get-cover>
 //!
 //! # Examples
 //!
@@ -15,13 +15,13 @@
 //! let cover_id = Uuid::new_v4();
 //! let cover_res = client
 //!     .cover()
-//!     .get()
-//!     .cover_id(&cover_id)
+//!     .list()
+//!     .add_cover_id(&cover_id)
 //!     .build()?
 //!     .send()
 //!     .await?;
 //!
-//! println!("cover: {:?}", cover_res);
+//! println!("covers: {:?}", cover_res);
 //! # Ok(())
 //! # }
 //! ```
@@ -31,21 +31,24 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::CoverResponse;
-use mangadex_api_types::ReferenceExpansionResource;
+use mangadex_api_schema::v5::CoverListResponse;
+use mangadex_api_types::{CoverSortOrder, Language, ReferenceExpansionResource};
 
+/// Query parameters for `/cover`.
 #[cfg_attr(
     feature = "deserializable-endpoint",
     derive(serde::Deserialize, getset::Getters, getset::Setters)
 )]
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
+    default,
     pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
-pub struct GetCover {
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+pub struct ListCover {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -53,18 +56,28 @@ pub struct GetCover {
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    /// Manga **or** Cover ID.
-    #[serde(skip_serializing)]
-    pub cover_id: Uuid,
-
-    #[builder(setter(each = "include"), default)]
+    pub limit: Option<u32>,
+    pub offset: Option<u32>,
+    #[serde(rename = "manga")]
+    #[builder(setter(each = "add_manga_id"))]
+    pub manga_ids: Vec<Uuid>,
+    #[serde(rename = "ids")]
+    #[builder(setter(each = "add_cover_id"))]
+    pub cover_ids: Vec<Uuid>,
+    #[serde(rename = "uploaders")]
+    #[builder(setter(each = "add_uploader_id"))]
+    pub uploader_ids: Vec<Uuid>,
+    #[builder(setter(each = "locale"))]
+    pub locales: Vec<Language>,
+    pub order: Option<CoverSortOrder>,
+    #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 
 endpoint! {
-    GET ("/cover/{}", cover_id),
-    #[query] GetCover,
-    #[flatten_result] CoverResponse
+    GET "/cover",
+    #[query] ListCover,
+    #[flatten_result] CoverListResponse
 }
 
 #[cfg(test)]
@@ -75,15 +88,15 @@ mod tests {
     use time::OffsetDateTime;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{method, path_regex};
+    use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
     use mangadex_api_types::error::Error;
-    use mangadex_api_types::{Language, MangaDexDateTime};
+    use mangadex_api_types::{Language, MangaDexDateTime, ResponseType};
 
     #[tokio::test]
-    async fn get_cover_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn list_cover_fires_a_request_to_base_url() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
@@ -97,26 +110,31 @@ mod tests {
 
         let response_body = json!({
             "result": "ok",
-            "response": "entity",
-            "data": {
-                "id": cover_id,
-                "type": "cover_art",
-                "attributes": {
-                    "volume": "1",
-                    "fileName": "1.jpg",
-                    "description": description,
-                    "locale": "en",
-                    "version": 1,
-                    "createdAt": datetime.to_string(),
-                    "updatedAt": datetime.to_string(),
+            "response": "collection",
+            "data": [
+                {
+                    "id": cover_id,
+                    "type": "cover_art",
+                    "attributes": {
+                        "volume": "1",
+                        "fileName": "1.jpg",
+                        "description": description,
+                        "locale": "en",
+                        "version": 1,
+                        "createdAt": datetime.to_string(),
+                        "updatedAt": datetime.to_string(),
 
-                },
-                "relationships": []
-            }
+                    },
+                    "relationships": []
+                }
+            ],
+            "limit": 1,
+            "offset": 0,
+            "total": 1
         });
 
         Mock::given(method("GET"))
-            .and(path_regex(r"/cover/[0-9a-fA-F-]+"))
+            .and(path("/cover"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
@@ -125,23 +143,25 @@ mod tests {
         let res = mangadex_client
             .cover()
             .get()
-            .cover_id(cover_id)
+            .limit(1u32)
             .build()?
             .send()
             .await?;
 
-        assert_eq!(res.data.id, cover_id);
-        assert_eq!(res.data.attributes.volume, Some("1".to_string()));
-        assert_eq!(res.data.attributes.file_name, "1.jpg".to_string());
-        assert_eq!(res.data.attributes.description, description);
-        assert_eq!(res.data.attributes.locale, Some(Language::English));
-        assert_eq!(res.data.attributes.version, 1);
+        assert_eq!(res.response, ResponseType::Collection);
+        let cover = &res.data[0];
+        assert_eq!(cover.id, cover_id);
+        assert_eq!(cover.attributes.volume, Some("1".to_string()));
+        assert_eq!(cover.attributes.file_name, "1.jpg".to_string());
+        assert_eq!(cover.attributes.description, description);
+        assert_eq!(cover.attributes.locale, Some(Language::English));
+        assert_eq!(cover.attributes.version, 1);
         assert_eq!(
-            res.data.attributes.created_at.to_string(),
+            cover.attributes.created_at.to_string(),
             datetime.to_string()
         );
         assert_eq!(
-            res.data.attributes.updated_at.as_ref().unwrap().to_string(),
+            cover.attributes.updated_at.as_ref().unwrap().to_string(),
             datetime.to_string()
         );
 
@@ -149,29 +169,28 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn get_chapter_handles_404() -> anyhow::Result<()> {
+    async fn list_cover_handles_400() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client: HttpClient = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
-        let cover_id = Uuid::new_v4();
         let error_id = Uuid::new_v4();
 
         let response_body = json!({
             "result": "error",
             "errors": [{
                 "id": error_id.to_string(),
-                "status": 404,
-                "title": "Not found",
-                "detail": "Cover could not be found"
+                "status": 400,
+                "title": "Invalid limit",
+                "detail": "Limit must be between 1 and 100"
             }]
         });
 
         Mock::given(method("GET"))
-            .and(path_regex(r"/cover/[0-9a-fA-F-]+"))
-            .respond_with(ResponseTemplate::new(404).set_body_json(response_body))
+            .and(path("/cover"))
+            .respond_with(ResponseTemplate::new(400).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -179,7 +198,7 @@ mod tests {
         let res = mangadex_client
             .cover()
             .get()
-            .cover_id(cover_id)
+            .limit(0u32)
             .build()?
             .send()
             .await
@@ -189,11 +208,11 @@ mod tests {
             assert_eq!(errors.errors.len(), 1);
 
             assert_eq!(errors.errors[0].id, error_id);
-            assert_eq!(errors.errors[0].status, 404);
-            assert_eq!(errors.errors[0].title, Some("Not found".to_string()));
+            assert_eq!(errors.errors[0].status, 400);
+            assert_eq!(errors.errors[0].title, Some("Invalid limit".to_string()));
             assert_eq!(
                 errors.errors[0].detail,
-                Some("Cover could not be found".to_string())
+                Some("Limit must be between 1 and 100".to_string())
             );
         }
 

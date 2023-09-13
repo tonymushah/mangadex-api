@@ -4,7 +4,7 @@
 
 use crate::v5::author::get::ListAuthorBuilder;
 use crate::v5::chapter::get::ListChapterBuilder;
-use crate::v5::cover::list::ListCoverBuilder;
+use crate::v5::cover::get::ListCoverBuilder;
 use crate::v5::manga::list::ListMangaBuilder;
 use crate::v5::scanlation_group::list::ListGroupBuilder;
 use crate::HttpClientRef;

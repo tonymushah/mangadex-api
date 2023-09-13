@@ -158,8 +158,8 @@ mod tests {
 
         let _ = mangadex_client
             .cover()
-            .edit()
             .cover_id(cover_id)
+            .put()
             .volume(Some("1".to_string()))
             .version(2_u32)
             .build()?

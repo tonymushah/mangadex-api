@@ -73,7 +73,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
     let manga_covers = client
         .cover()
-        .list()
+        .get()
         .manga_ids(args.manga_ids)
         .build()?
         .send()

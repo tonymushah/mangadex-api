@@ -36,7 +36,9 @@ pub mod start_session;
 #[cfg(feature = "deserializable-endpoint")]
 pub mod upload_images;
 
-use crate::v5::cover::upload::UploadCoverBuilder;
+use uuid::Uuid;
+
+use crate::v5::cover::manga_id::post::UploadCoverBuilder;
 use crate::v5::upload::abandon_session::AbandonUploadSessionBuilder;
 use crate::v5::upload::commit_session::CommitUploadSessionBuilder;
 use crate::v5::upload::delete_image::DeleteImageBuilder;
@@ -62,8 +64,8 @@ impl UploadBuilder {
     /// Upload a manga cover image.
     ///
     /// <https://api.mangadex.org/swagger.html#/Upload/upload-cover>
-    pub fn cover(&self) -> UploadCoverBuilder {
-        UploadCoverBuilder::default().http_client(self.http_client.clone())
+    pub fn cover(&self, manga_id: Uuid) -> UploadCoverBuilder {
+        UploadCoverBuilder::default().http_client(self.http_client.clone()).manga_id(manga_id)
     }
 
     /// Get the logged-in user's current upload session.

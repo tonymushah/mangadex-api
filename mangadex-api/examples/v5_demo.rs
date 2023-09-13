@@ -175,7 +175,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.cover_search {
         let cover_results = client
             .cover()
-            .list()
+            .get()
             .add_manga_id(&manga_id)
             .build()?
             .send()
@@ -189,8 +189,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(cover_id) = args.cover_view {
         let cover_view = client
             .cover()
-            .get()
             .cover_id(cover_id)
+            .get()
             .build()?
             .send()
             .await?;

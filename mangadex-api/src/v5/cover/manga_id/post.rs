@@ -205,8 +205,7 @@ mod tests {
 
         let _ = mangadex_client
             .upload()
-            .cover()
-            .manga_id(manga_id)
+            .cover(manga_id)
             .file(file_bytes)
             .locale(Language::English)
             .build()?

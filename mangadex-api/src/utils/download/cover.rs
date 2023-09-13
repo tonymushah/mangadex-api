@@ -95,8 +95,8 @@ pub async fn download_via_cover_id(
     let mangadex_api_client = MangaDexClient::new_with_http_client_ref(http_client.clone());
     let cover = match mangadex_api_client
         .cover()
-        .view()
         .cover_id(cover_id)
+        .get()
         .build()
     {
         Ok(d) => d,
@@ -130,8 +130,8 @@ pub async fn download_via_manga_api_object(
                     _ => {
                         match mangadex_api_client
                             .cover()
-                            .view()
                             .cover_id(relationship.id)
+                            .get()
                             .build()
                         {
                             Ok(d) => d,
@@ -147,15 +147,11 @@ pub async fn download_via_manga_api_object(
             }
             // Getting it via the `MangadexClient` otherwise
             else {
-                match mangadex_api_client
+                mangadex_api_client
                     .cover()
-                    .view()
                     .cover_id(relationship.id)
-                    .build()
-                {
-                    Ok(d) => d,
-                    Err(e) => return Err(Error::RequestBuilderError(e.to_string())),
-                }
+                    .get()
+                    .build()?
                 .send()
                 .await?
                 .data
@@ -167,7 +163,7 @@ pub async fn download_via_manga_api_object(
         None => {
             match mangadex_api_client
                 .cover()
-                .list()
+                .get()
                 .add_manga_id(&manga.id)
                 .order(CoverSortOrder::Volume(OrderDirection::Descending))
                 .build()
