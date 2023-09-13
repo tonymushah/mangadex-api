@@ -115,7 +115,7 @@ mod tests {
             .delete()
             .manga_ids(manga_ids)
             .build()?;
-
+        println!("{}", serde_json::to_string_pretty(&(endpoint_.clone()))?);
         Mock::given(method("DELETE"))
             .and(path_regex(r"/list/[0-9a-fA-F-]+/batch-manga"))
             .and(header("Authorization", "Bearer sessiontoken"))

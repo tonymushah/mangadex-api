@@ -5,6 +5,7 @@ pub mod post;
 
 use crate::HttpClientRef;
 use delete::DeleteMangaBatchViaCustomListBuilder;
+use post::AddMangaBatchViaCustomListBuilder;
 
 #[derive(Debug, Clone)]
 pub struct BatchMangaEndpoint {
@@ -17,8 +18,10 @@ impl BatchMangaEndpoint {
     pub fn new(http_client: HttpClientRef, id: Uuid) -> Self {
         Self { http_client, id }
     }
-    pub fn post(&self) {
-        todo!("Implement the post method please")
+    pub fn post(&self) -> AddMangaBatchViaCustomListBuilder {
+        AddMangaBatchViaCustomListBuilder::default()
+            .http_client(self.http_client.clone())
+            .list_id(self.id)
     }
     pub fn delete(&self) -> DeleteMangaBatchViaCustomListBuilder {
         DeleteMangaBatchViaCustomListBuilder::default()
