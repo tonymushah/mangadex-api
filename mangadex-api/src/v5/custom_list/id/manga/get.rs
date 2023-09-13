@@ -1,0 +1,1 @@
+// NOTE output Results<Manga>

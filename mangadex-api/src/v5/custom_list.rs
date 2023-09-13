@@ -3,7 +3,7 @@
 //! <https://api.mangadex.org/swagger.html#/CustomList>
 
 #[cfg(not(feature = "deserializable-endpoint"))]
-mod create;
+mod post;
 #[cfg(not(feature = "deserializable-endpoint"))]
 mod delete;
 #[cfg(not(feature = "deserializable-endpoint"))]
@@ -32,7 +32,7 @@ pub mod unfollow;
 #[cfg(feature = "deserializable-endpoint")]
 pub mod update;
 
-use crate::v5::custom_list::create::CreateCustomListBuilder;
+use crate::v5::custom_list::post::CreateCustomListBuilder;
 use crate::v5::custom_list::delete::DeleteCustomListBuilder;
 use crate::v5::custom_list::follow::FollowCustomListBuilder;
 use crate::v5::custom_list::get::GetCustomListBuilder;
