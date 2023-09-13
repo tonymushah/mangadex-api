@@ -2,7 +2,9 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Feed>
 
-use crate::v5::custom_list::manga_feed::CustomListMangaFeedBuilder;
+use uuid::Uuid;
+
+use crate::v5::custom_list::id::feed::get::CustomListMangaFeedBuilder;
 use crate::v5::user::followed_manga_feed::GetFollowedMangaFeedBuilder;
 use crate::HttpClientRef;
 
@@ -60,7 +62,7 @@ impl FeedBuilder {
     ///
     /// <https://api.mangadex.org/swagger.html#/Feed/get-list-id-feed>
     ///
-    /// Alias to [`MangaDexClient::custom_list().manga_feed()`](crate::v5::custom_list::manga_feed).
+    /// Alias to [`MangaDexClient::custom_list().id(uuid::Uuid).feed().get()`](crate::v5::custom_list::id::feed::get::CustomListMangaFeedBuilder;).
     ///
     /// # Examples
     ///
@@ -82,7 +84,7 @@ impl FeedBuilder {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn custom_list_manga(&self) -> CustomListMangaFeedBuilder {
-        CustomListMangaFeedBuilder::default().http_client(self.http_client.clone())
+    pub fn custom_list_manga(&self, list_id: Uuid) -> CustomListMangaFeedBuilder {
+        CustomListMangaFeedBuilder::default().http_client(self.http_client.clone()).list_id(list_id)
     }
 }

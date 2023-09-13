@@ -112,8 +112,9 @@ mod tests {
 
         mangadex_client
             .custom_list()
-            .follow()
-            .list_id(custom_list_id)
+            .id(custom_list_id)
+            .bookmark()
+            .post()
             .build()?
             .send()
             .await?;

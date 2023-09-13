@@ -111,8 +111,8 @@ mod tests {
 
         mangadex_client
             .custom_list()
-            .unfollow()
-            .list_id(custom_list_id)
+            .id(custom_list_id)
+            .delete()
             .build()?
             .send()
             .await?;

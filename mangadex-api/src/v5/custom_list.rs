@@ -8,6 +8,7 @@ use uuid::Uuid;
 
 use crate::v5::custom_list::post::CreateCustomListBuilder;
 use crate::HttpClientRef;
+use id::IdEnpoint;
 
 /// CustomList endpoint handler builder.
 #[derive(Debug)]
@@ -28,7 +29,9 @@ impl CustomListBuilder {
         CreateCustomListBuilder::default().http_client(self.http_client.clone())
     }
 
-    pub fn id(&self, id : Uuid) {
-        todo!()
+    /// Containing existing endpoint in https://api.mangadex.org/list/{id}
+    pub fn id(&self, id : Uuid) -> IdEnpoint {
+        IdEnpoint::new(self.http_client.clone(), id)
     }
+
 }

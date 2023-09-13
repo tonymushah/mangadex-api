@@ -181,8 +181,9 @@ mod tests {
 
         let _ = mangadex_client
             .custom_list()
-            .manga_feed()
-            .list_id(list_id)
+            .id(list_id)
+            .feed()
+            .get()
             .limit(1u32)
             .build()?
             .send()

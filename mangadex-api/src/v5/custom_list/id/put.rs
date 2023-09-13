@@ -147,8 +147,8 @@ mod tests {
 
         let _ = mangadex_client
             .custom_list()
-            .update()
-            .list_id(list_id)
+            .id(list_id)
+            .put()
             .version(2u32)
             .build()?
             .send()

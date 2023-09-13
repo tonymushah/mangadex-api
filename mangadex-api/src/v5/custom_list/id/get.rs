@@ -110,8 +110,8 @@ mod tests {
 
         let res = mangadex_client
             .custom_list()
+            .id(list_id)
             .get()
-            .list_id(list_id)
             .build()?
             .send()
             .await?;
@@ -157,8 +157,8 @@ mod tests {
 
         let res = mangadex_client
             .custom_list()
+            .id(list_id)
             .get()
-            .list_id(list_id)
             .build()?
             .send()
             .await
