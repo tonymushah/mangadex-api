@@ -61,7 +61,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
     let mapped_ids = client
         .legacy()
-        .id_mapping()
+        .mapping()
+        .post()
         .map_type(args.r#type)
         .ids(args.ids)
         .build()?

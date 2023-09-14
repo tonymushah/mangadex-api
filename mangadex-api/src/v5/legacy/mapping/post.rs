@@ -122,7 +122,8 @@ mod tests {
 
         let res = mangadex_client
             .legacy()
-            .id_mapping()
+            .mapping()
+            .post()
             .map_type(LegacyMappingType::Manga)
             .add_id(1)
             .build()?
@@ -175,7 +176,8 @@ mod tests {
 
         let res = mangadex_client
             .legacy()
-            .id_mapping()
+            .mapping()
+            .post()
             .map_type(LegacyMappingType::Group)
             .add_id(0)
             .build()?
