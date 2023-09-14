@@ -29,6 +29,7 @@ pub mod upload_session_file;
 pub mod user;
 pub mod user_report;
 pub mod user_settings;
+pub mod forum_thread;
 
 pub use self::exports_types::*;
 use std::collections::HashMap;
