@@ -94,8 +94,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .collect::<Vec<Uuid>>()[0];
         let manga = client
             .manga()
+            .id(manga_id)
             .get()
-            .manga_id(manga_id)
             .build()?
             .send()
             .await?;

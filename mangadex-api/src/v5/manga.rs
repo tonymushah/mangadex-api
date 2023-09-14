@@ -19,6 +19,11 @@ use get::ListMangaBuilder;
 use uuid::Uuid;
 use id::IdEndpoint;
 use mangaId::MangaIdEndpoint;
+use post::CreateMangaBuilder;
+use random::RandomEndpoint;
+use read::ReadEndpoint;
+use status::StatusEndpoint;
+use tag::TagEndpoint;
 
 /// Manga endpoint handler.
 #[derive(Debug)]
@@ -46,5 +51,20 @@ impl MangaBuilder {
 
     pub fn manga_id(&self, manga_id: Uuid) -> MangaIdEndpoint{
         MangaIdEndpoint::new(self.http_client.clone(), manga_id)
+    }
+    pub fn post(&self) -> CreateMangaBuilder {
+        CreateMangaBuilder::default().http_client(self.http_client.clone())
+    }
+    pub fn random(&self) -> RandomEndpoint{
+        RandomEndpoint::new(self.http_client.clone())
+    }
+    pub fn read(&self) -> ReadEndpoint{
+        ReadEndpoint::new(self.http_client.clone())
+    }
+    pub fn status(&self) -> StatusEndpoint{
+        StatusEndpoint::new(self.http_client.clone())
+    }
+    pub fn tag(&self) -> TagEndpoint{
+        TagEndpoint::new(self.http_client.clone())
     }
 }

@@ -12,10 +12,10 @@ async fn main() -> anyhow::Result<()> {
 
     let random_manga = client
         .manga()
-        .get()
-        .manga_id(uuid::Uuid::parse_str(
+        .id(uuid::Uuid::parse_str(
             "63fb6354-0ace-4f74-b8b8-af1be314f245",
         )?)
+        .get()
         .build()?
         .send()
         .await?;

@@ -116,7 +116,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .get_read_chapters()
+            .read()
+            .get()
             .add_manga_id(manga_id)
             .build()?
             .send()
@@ -164,7 +165,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .get_read_chapters()
+            .read()
+            .get()
             .add_manga_id(manga_id)
             .grouped(true)
             .build()?

@@ -67,7 +67,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(title) = args.manga_search {
         let manga_builder = client.manga();
 
-        let mut manga_list_builder = manga_builder.list();
+        let mut manga_list_builder = manga_builder.get();
         if !title.is_empty() {
             manga_list_builder = manga_list_builder.title(title.as_str());
         }
@@ -82,8 +82,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.manga_view {
         let manga_view = client
             .manga()
+            .id(manga_id)
             .get()
-            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -96,8 +96,9 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.manga_feed {
         let manga_feed = client
             .manga()
+            .id(manga_id)
             .feed()
-            .manga_id(manga_id)
+            .get()
             .build()?
             .send()
             .await?;
@@ -108,7 +109,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     }
 
     if args.manga_random {
-        let manga = client.manga().random().build()?.send().await?;
+        let manga = client.manga().random().get().build()?.send().await?;
 
         println!("Manga: {:#?}", manga);
 
@@ -203,8 +204,9 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.manga_aggregate {
         let manga_aggregate = client
             .manga()
+            .id(manga_id)
             .aggregate()
-            .manga_id(manga_id)
+            .get()
             .build()?
             .send()
             .await?;

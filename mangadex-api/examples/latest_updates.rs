@@ -104,7 +104,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
     let manga_list_res = client
         .manga()
-        .list()
+        .get()
         // This isn't used but if this data were to be used in an application,
         // having the cover art UUIDs would make it convenient to fetch the images.
         .include(&ReferenceExpansionResource::CoverArt)

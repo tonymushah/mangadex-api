@@ -222,7 +222,7 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .create()
+            .post()
             .add_title((Language::English, manga_title.clone()))
             .original_language(Language::Japanese)
             .publication_demographic(Demographic::Shounen)
@@ -372,7 +372,7 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .create()
+            .post()
             .add_title((Language::English, manga_title.clone()))
             .original_language(Language::Japanese)
             .status(MangaStatus::Ongoing)
@@ -478,7 +478,7 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .create()
+            .post()
             .add_title((Language::English, manga_title.clone()))
             .original_language(Language::Japanese)
             .status(MangaStatus::Ongoing)
@@ -584,7 +584,7 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .create()
+            .post()
             .add_title((Language::English, manga_title.clone()))
             .original_language(Language::Japanese)
             .last_volume("1")

@@ -120,7 +120,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client.manga().list_tags().build()?.send().await?;
+        let res = mangadex_client.manga().tag().get().build()?.send().await?;
 
         assert_eq!(res.response, ResponseType::Collection);
         let oneshot = &res.data[0];

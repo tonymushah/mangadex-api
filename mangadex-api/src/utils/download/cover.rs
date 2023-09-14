@@ -187,8 +187,8 @@ pub async fn download_via_manga_id(
     let mangadex_api_client = MangaDexClient::new_with_http_client_ref(http_client.clone());
     let manga: ApiObject<MangaAttributes> = match mangadex_api_client
         .manga()
+        .id(manga_id)
         .get()
-        .manga_id(manga_id)
         .includes(vec![ReferenceExpansionResource::CoverArt])
         .build()
     {
