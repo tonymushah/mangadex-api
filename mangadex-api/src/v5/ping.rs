@@ -2,22 +2,19 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Infrastructure>
 
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod ping;
+pub mod get;
 
-#[cfg(feature = "deserializable-endpoint")]
-pub mod ping;
+use get::PingBuilder;
 
-use crate::v5::infrastructure::ping::PingBuilder;
 use crate::HttpClientRef;
 
 /// Legacy endpoint handler builder.
 #[derive(Clone, Debug)]
-pub struct InfrastructureBuilder {
+pub struct PingEndpointBuilder {
     http_client: HttpClientRef,
 }
 
-impl InfrastructureBuilder {
+impl PingEndpointBuilder {
     #[doc(hidden)]
     pub(crate) fn new(http_client: HttpClientRef) -> Self {
         Self { http_client }
@@ -26,7 +23,7 @@ impl InfrastructureBuilder {
     /// Ping the server.
     ///
     /// <https://api.mangadex.org/swagger.html#/Infrastructure/get_ping>
-    pub fn ping(self) -> PingBuilder {
+    pub fn get(self) -> PingBuilder {
         PingBuilder::default().http_client(self.http_client)
     }
 }

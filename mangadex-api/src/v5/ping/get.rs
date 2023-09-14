@@ -109,8 +109,8 @@ mod tests {
             .await;
 
         let res = mangadex_client
-            .infrastructure()
             .ping()
+            .get()
             .build()?
             .send()
             .await?;

@@ -9,7 +9,7 @@ pub mod chapter;
 pub mod cover;
 pub mod custom_list;
 pub mod feed;
-pub mod infrastructure;
+pub mod ping;
 pub mod legacy;
 pub mod manga;
 pub mod rating;
@@ -23,13 +23,10 @@ pub mod user;
 
 #[cfg(not(feature = "multi-thread"))]
 use std::cell::RefCell;
-use std::fmt::Display;
 #[cfg(not(feature = "multi-thread"))]
 use std::rc::Rc;
 #[cfg(feature = "multi-thread")]
 use std::sync::Arc;
-
-use derive_builder::UninitializedFieldError;
 #[cfg(feature = "multi-thread")]
 use futures::lock::Mutex;
 pub use mangadex_api_schema::v5 as schema;
@@ -49,7 +46,7 @@ use crate::v5::chapter::ChapterBuilder;
 use crate::v5::cover::CoverBuilder;
 use crate::v5::custom_list::CustomListBuilder;
 use crate::v5::feed::FeedBuilder;
-use crate::v5::infrastructure::InfrastructureBuilder;
+use crate::v5::ping::PingEndpointBuilder;
 use crate::v5::legacy::LegacyBuilder;
 use crate::v5::manga::MangaBuilder;
 use crate::v5::rating::RatingBuilder;
@@ -233,8 +230,8 @@ impl MangaDexClient {
     /// Get a builder for handling the infrastructure endpoints.
     ///
     /// <https://api.mangadex.org/swagger.html#/Infrastructure>
-    pub fn infrastructure(&self) -> InfrastructureBuilder {
-        InfrastructureBuilder::new(self.http_client.clone())
+    pub fn ping(&self) -> PingEndpointBuilder {
+        PingEndpointBuilder::new(self.http_client.clone())
     }
 
     /// Get a builder for handling the legacy endpoints.
