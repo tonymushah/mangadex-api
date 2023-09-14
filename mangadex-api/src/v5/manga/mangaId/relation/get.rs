@@ -177,8 +177,9 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .list_relations()
             .manga_id(manga_id)
+            .relation()
+            .get()
             .build()?
             .send()
             .await?;

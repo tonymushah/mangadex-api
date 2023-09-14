@@ -18,6 +18,7 @@ use draft::DraftEndpoint;
 use get::ListMangaBuilder;
 use uuid::Uuid;
 use id::IdEndpoint;
+use mangaId::MangaIdEndpoint;
 
 /// Manga endpoint handler.
 #[derive(Debug)]
@@ -41,5 +42,9 @@ impl MangaBuilder {
     
     pub fn id(&self, id: Uuid) -> IdEndpoint{
         IdEndpoint::new(self.http_client.clone(), id)
+    }
+
+    pub fn manga_id(&self, manga_id: Uuid) -> MangaIdEndpoint{
+        MangaIdEndpoint::new(self.http_client.clone(), manga_id)
     }
 }

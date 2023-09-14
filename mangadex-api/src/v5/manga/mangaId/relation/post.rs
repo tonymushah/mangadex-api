@@ -204,8 +204,9 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .create_relation()
             .manga_id(manga_id)
+            .relation()
+            .post()
             .target_manga(target_manga_id)
             .relation(MangaRelation::SpinOff)
             .build()?
@@ -255,8 +256,9 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .create_relation()
             .manga_id(manga_id)
+            .relation()
+            .post()
             .target_manga(target_manga_id)
             .relation(MangaRelation::Sequel)
             .build()?

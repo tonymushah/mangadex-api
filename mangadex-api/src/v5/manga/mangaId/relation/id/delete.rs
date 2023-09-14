@@ -121,9 +121,10 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .delete_relation()
             .manga_id(manga_id)
-            .relation_id(relation_id)
+            .relation()
+            .id(relation_id)
+            .delete()
             .build()?
             .send()
             .await;
@@ -163,9 +164,10 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .delete_relation()
             .manga_id(manga_id)
-            .relation_id(relation_id)
+            .relation()
+            .id(relation_id)
+            .delete()
             .build()?
             .send()
             .await
