@@ -1,7 +1,6 @@
 use crate::ApiData;
-use crate::ApiResult;
-use super::{ForumThreadObject, ForumThreadAttributes};
+use super::{ForumThreadObject, ForumThreadAttributes, Result};
 
 pub type ForumThread = ForumThreadObject<ForumThreadAttributes>;
 pub type ForumThreadResponseData = ApiData<ForumThread>;
-pub type ForumThreadResponse = ApiResult<ForumThreadResponseData>;
+pub type ForumThreadResponse = Result<ForumThreadResponseData>;

@@ -21,6 +21,7 @@ pub mod tag_search_mode;
 pub mod upload_source;
 pub mod user_role;
 pub mod username;
+pub mod forum_thread;
 
 pub use include_empty_pages::IncludeFuturePages;
 pub use include_external_url::IncludeExternalUrl;
@@ -52,3 +53,4 @@ pub use tag_search_mode::TagSearchMode;
 pub use upload_source::UploadSource;
 pub use user_role::UserRole;
 pub use username::Username;
+pub use forum_thread::ForumThreadType;

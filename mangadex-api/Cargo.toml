@@ -52,12 +52,13 @@ features = [
 
 [dependencies.mangadex-api-schema]
 package = "mangadex-api-schema-rust"
-version = "0.4"
+version = "0.5"
 path = "../mangadex-api-schema"
 default-features = false
 
 [dependencies.mangadex-api-types]
 package = "mangadex-api-types-rust"
+version = "0.5"
 path = "../mangadex-api-types"
 default-features = false
 

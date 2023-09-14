@@ -49,7 +49,7 @@ mod tests {
     use crate::{HttpClient, MangaDexClient};
 
     #[tokio::test]
-    async fn bookmark_custom_list_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn unpin_custom_list_fires_a_request_to_base_url() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)

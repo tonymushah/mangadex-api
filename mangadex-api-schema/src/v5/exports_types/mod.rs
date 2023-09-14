@@ -29,7 +29,7 @@ pub use super::upload_session_file::{UploadSessionFileAttributes, UploadSessionF
 pub use super::user::UserAttributes;
 pub use super::user_report::UserReportAttributes;
 pub use super::user_settings::UserSettingsAttributes;
-pub use super::forum_thread::{ForumThreadAttributes, ForumThreadObject, ForumThreadType};
+pub use super::forum_thread::{ForumThreadAttributes, ForumThreadObject};
 use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
 
 use super::statistics::chapter::ChapterStatisticsObject;

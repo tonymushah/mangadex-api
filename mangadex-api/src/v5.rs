@@ -20,6 +20,7 @@ pub mod settings;
 pub mod statistics;
 pub mod upload;
 pub mod user;
+pub mod forums;
 
 #[cfg(not(feature = "multi-thread"))]
 use std::cell::RefCell;
@@ -59,6 +60,7 @@ use crate::v5::upload::UploadBuilder;
 use crate::v5::user::UserBuilder;
 use crate::HttpClient;
 use crate::HttpClientRef;
+use crate::v5::forums::ForumsEndpoint;
 
 #[cfg(feature = "utils")]
 use crate::utils::download::DownloadBuilder;
@@ -314,6 +316,9 @@ impl MangaDexClient {
     #[cfg(feature = "utils")]
     pub fn download(&self) -> DownloadBuilder {
         DownloadBuilder::new(self.http_client.clone())
+    }
+    pub fn forums(&self) -> ForumsEndpoint{
+        ForumsEndpoint::new(self.http_client.clone())
     }
 }
 
