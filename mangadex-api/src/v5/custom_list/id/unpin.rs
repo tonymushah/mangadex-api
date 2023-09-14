@@ -3,6 +3,7 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 
 pub mod post;
+use post::UnPinCustomListBuilder;
 
 #[derive(Debug, Clone)]
 pub struct UnPinEndpoint {
@@ -15,7 +16,9 @@ impl UnPinEndpoint {
     pub fn new(http_client: HttpClientRef, id: Uuid) -> Self {
         Self { http_client, id }
     }
-    pub fn post(&self) {
-        todo!("implement the post method please")
+    pub fn post(&self) -> UnPinCustomListBuilder {
+        UnPinCustomListBuilder::default()
+            .http_client(self.http_client.clone())
+            .list_id(self.id)
     }
 }
