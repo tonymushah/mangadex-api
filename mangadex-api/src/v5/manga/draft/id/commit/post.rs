@@ -67,6 +67,7 @@ pub struct SubmitMangaDraft {
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
+    #[builder(pattern = "immutable")]
     pub manga_id: Uuid,
 
     pub version: u32,
@@ -175,8 +176,10 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .submit_draft()
-            .manga_id(manga_id)
+            .draft()
+            .id(manga_id)
+            .commit()
+            .post()
             .version(1_u32)
             .build()?
             .send()
@@ -255,8 +258,10 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .submit_draft()
-            .manga_id(manga_id)
+            .draft()
+            .id(manga_id)
+            .commit()
+            .post()
             .version(1_u32)
             .build()?
             .send()

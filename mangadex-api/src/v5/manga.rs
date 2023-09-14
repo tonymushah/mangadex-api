@@ -14,6 +14,9 @@ pub mod read;
 pub mod status;
 pub mod tag;
 
+use draft::DraftEndpoint;
+use get::ListMangaBuilder;
+
 /// Manga endpoint handler.
 #[derive(Debug)]
 pub struct MangaBuilder {
@@ -26,5 +29,11 @@ impl MangaBuilder {
         Self { http_client }
     }
 
-    
+    pub fn draft(&self) -> DraftEndpoint{
+        DraftEndpoint::new(self.http_client.clone())
+    }
+
+    pub fn get(&self) -> ListMangaBuilder{
+        ListMangaBuilder::default().http_client(self.http_client.clone())
+    }
 }

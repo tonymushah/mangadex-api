@@ -167,7 +167,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .search_drafts()
+            .draft()
+            .get()
             .limit(1u32)
             .build()?
             .send()
@@ -245,7 +246,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .search_drafts()
+            .draft()
+            .get()
             .limit(0u32)
             .build()?
             .send()
@@ -296,7 +298,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .search_drafts()
+            .draft()
+            .get()
             .limit(0u32)
             .build()?
             .send()

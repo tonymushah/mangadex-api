@@ -42,7 +42,12 @@ use mangadex_api_types::{
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), default, pattern = "owned")]
+#[builder(
+    setter(into, strip_option),
+    default,
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ListManga {
     #[doc(hidden)]
@@ -180,7 +185,7 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .search()
+            .get()
             .limit(1u32)
             .build()?
             .send()
@@ -254,7 +259,7 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .search()
+            .get()
             .limit(0u32)
             .build()?
             .send()

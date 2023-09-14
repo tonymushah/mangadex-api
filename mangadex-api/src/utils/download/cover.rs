@@ -199,7 +199,11 @@ pub async fn download_via_manga_id(
 }
 
 #[derive(Clone, Builder)]
-#[builder(setter(into, strip_option), pattern = "owned")]
+#[builder(
+    setter(into, strip_option),
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct CoverDownload {
     #[doc(hidden)]
