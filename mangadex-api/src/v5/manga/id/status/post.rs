@@ -48,6 +48,7 @@ use mangadex_api_types::ReadingStatus;
     pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
+#[deprecated(since = "3.0.0-rc1", note = "After the introduction of the Subscription system, this endpoint will be removed in 3.0.0")]
 pub struct UpdateMangaReadingStatus {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
@@ -113,8 +114,9 @@ mod tests {
 
         mangadex_client
             .manga()
-            .update_reading_status()
-            .manga_id(manga_id)
+            .id(manga_id)
+            .status()
+            .post()
             .status(Some(ReadingStatus::Reading))
             .build()?
             .send()
@@ -155,8 +157,9 @@ mod tests {
 
         mangadex_client
             .manga()
-            .update_reading_status()
-            .manga_id(manga_id)
+            .id(manga_id)
+            .status()
+            .post()
             .status(None)
             .build()?
             .send()

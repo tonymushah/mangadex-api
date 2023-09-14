@@ -129,9 +129,10 @@ mod tests {
             .await;
 
         mangadex_client
-            .chapter()
-            .mark_batch()
-            .manga_id(manga_id)
+            .manga()
+            .id(manga_id)
+            .read()
+            .post()
             .mark_chapter_read(read_chapter_id)
             .mark_chapter_unread(unread_chapter_id)
             .build()?

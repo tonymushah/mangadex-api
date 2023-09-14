@@ -141,8 +141,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
+            .id(manga_id)
             .get()
-            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -235,8 +235,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
+            .id(manga_id)
             .get()
-            .manga_id(manga_id)
             .include(&ReferenceExpansionResource::Author)
             .build()?
             .send()
@@ -490,8 +490,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
+            .id(manga_id)
             .get()
-            .manga_id(manga_id)
             .build()?
             .send()
             .await?;

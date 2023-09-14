@@ -116,8 +116,9 @@ mod tests {
 
         let res = mangadex_client
             .manga()
+            .id(manga_id)
             .aggregate()
-            .manga_id(manga_id)
+            .get()
             .build()?
             .send()
             .await?;
@@ -160,8 +161,9 @@ mod tests {
 
         let res = mangadex_client
             .manga()
+            .id(manga_id)
             .aggregate()
-            .manga_id(manga_id)
+            .get()
             .build()?
             .send()
             .await?;
@@ -241,8 +243,9 @@ mod tests {
 
         let res = mangadex_client
             .manga()
+            .id(manga_id)
             .aggregate()
-            .manga_id(manga_id)
+            .get()
             .build()?
             .send()
             .await?;

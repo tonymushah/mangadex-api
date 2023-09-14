@@ -111,8 +111,8 @@ mod tests {
 
         mangadex_client
             .manga()
+            .id(manga_id)
             .delete()
-            .manga_id(manga_id)
             .build()?
             .send()
             .await?;

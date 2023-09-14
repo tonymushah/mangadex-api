@@ -116,9 +116,10 @@ mod tests {
 
         mangadex_client
             .manga()
-            .add_to_custom_list()
-            .manga_id(manga_id)
+            .id(manga_id)
+            .list()
             .list_id(list_id)
+            .post()
             .build()?
             .send()
             .await?;

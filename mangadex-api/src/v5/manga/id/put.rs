@@ -235,8 +235,8 @@ mod tests {
 
         let _ = mangadex_client
             .manga()
-            .update()
-            .manga_id(manga_id)
+            .id(manga_id)
+            .put()
             .title(title)
             .version(2_u32)
             .build()?
@@ -333,8 +333,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .update()
-            .manga_id(manga_id)
+            .id(manga_id)
+            .put()
             .original_language(Language::Japanese)
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
@@ -437,8 +437,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .update()
-            .manga_id(manga_id)
+            .id(manga_id)
+            .put()
             .original_language(Language::Japanese)
             .last_volume(None)
             .status(MangaStatus::Ongoing)
@@ -542,8 +542,8 @@ mod tests {
 
         let res = mangadex_client
             .manga()
-            .update()
-            .manga_id(manga_id)
+            .id(manga_id)
+            .put()
             .original_language(Language::Japanese)
             .last_volume(Some("1".to_string()))
             .status(MangaStatus::Ongoing)

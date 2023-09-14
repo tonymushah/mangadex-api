@@ -106,8 +106,9 @@ mod tests {
 
         let _ = mangadex_client
             .manga()
-            .get_manga_read_chapters()
-            .manga_id(manga_id)
+            .id(manga_id)
+            .read()
+            .get()
             .build()?
             .send()
             .await?;
