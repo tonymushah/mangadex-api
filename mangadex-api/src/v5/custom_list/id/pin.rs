@@ -4,6 +4,8 @@ use crate::HttpClientRef;
 
 pub mod post;
 
+use post::PinCustomListBuilder;
+
 #[derive(Debug, Clone)]
 pub struct PinEndpoint {
     http_client: HttpClientRef,
@@ -15,7 +17,9 @@ impl PinEndpoint {
     pub fn new(http_client: HttpClientRef, id: Uuid) -> Self {
         Self { http_client, id }
     }
-    pub fn post(&self) {
-        todo!("implement the post method please")
+    pub fn post(&self) -> PinCustomListBuilder {
+        PinCustomListBuilder::default()
+            .http_client(self.http_client.clone())
+            .list_id(self.id)
     }
 }
