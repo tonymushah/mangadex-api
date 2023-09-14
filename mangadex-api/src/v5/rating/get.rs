@@ -120,7 +120,7 @@ mod tests {
 
         let res = mangadex_client
             .rating()
-            .get_your_manga_ratings()
+            .get()
             .build()?
             .send()
             .await?;
@@ -158,7 +158,7 @@ mod tests {
 
         let res = mangadex_client
             .rating()
-            .get_your_manga_ratings()
+            .get()
             .build()?
             .send()
             .await

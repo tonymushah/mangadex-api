@@ -117,8 +117,8 @@ mod tests {
 
         mangadex_client
             .rating()
-            .delete_for_manga()
             .manga_id(manga_id)
+            .delete()
             .build()?
             .send()
             .await?;
@@ -156,8 +156,8 @@ mod tests {
 
         let res = mangadex_client
             .rating()
-            .delete_for_manga()
             .manga_id(manga_id)
+            .delete()
             .build()?
             .send()
             .await

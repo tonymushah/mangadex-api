@@ -143,8 +143,8 @@ mod tests {
 
         let _res = mangadex_client
             .rating()
-            .upsert_for_manga()
             .manga_id(manga_id)
+            .post()
             .rating(9)
             .build()?
             .send()
@@ -185,8 +185,8 @@ mod tests {
 
         let _res = mangadex_client
             .rating()
-            .upsert_for_manga()
             .manga_id(manga_id)
+            .post()
             .rating(0)
             .build()?
             .send()
@@ -227,8 +227,8 @@ mod tests {
 
         let _res = mangadex_client
             .rating()
-            .upsert_for_manga()
             .manga_id(manga_id)
+            .post()
             .rating(11)
             .build()?
             .send()
@@ -267,8 +267,8 @@ mod tests {
 
         let res = mangadex_client
             .rating()
-            .upsert_for_manga()
             .manga_id(manga_id)
+            .post()
             .rating(7)
             .build()?
             .send()
