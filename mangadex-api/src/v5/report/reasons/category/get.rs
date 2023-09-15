@@ -117,8 +117,9 @@ mod tests {
 
         let res = mangadex_client
             .report()
-            .list()
+            .reasons()
             .category(ReportCategory::Manga)
+            .get()
             .build()?
             .send()
             .await?;

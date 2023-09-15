@@ -137,7 +137,7 @@ mod tests {
 
         mangadex_client
             .report()
-            .create()
+            .post()
             .category(ReportCategory::Manga)
             .reason(reason_id)
             .object_id(manga_id)
