@@ -111,8 +111,8 @@ mod tests {
 
         mangadex_client
             .scanlation_group()
+            .id(group_id)
             .delete()
-            .group_id(group_id)
             .build()?
             .send()
             .await?;

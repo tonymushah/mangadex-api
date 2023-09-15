@@ -1,10 +1,10 @@
 pub mod get;
-pub mod listId;
+pub mod list_id;
 
 use crate::HttpClientRef;
 
 use get::GetMangaCustomListsBuilder;
-use listId::ListIdEndpoint;
+use list_id::ListIdEndpoint;
 use uuid::Uuid;
 
 #[derive(Debug)]

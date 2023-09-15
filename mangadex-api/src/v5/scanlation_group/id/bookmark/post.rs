@@ -1,6 +1,6 @@
-//! Builder for the unfollow scanlation group endpoint.
+//! Builder for the follow scanlation group endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/delete-group-id-follow>
+//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/post-group-id-follow>
 //!
 //! # Examples
 //!
@@ -25,13 +25,13 @@
 //! let group_id = Uuid::new_v4();
 //! let res = client
 //!     .scanlation_group()
-//!     .unfollow()
+//!     .follow()
 //!     .group_id(&group_id)
 //!     .build()?
 //!     .send()
 //!     .await?;
 //!
-//! println!("unfollow group: {:?}", res);
+//! println!("follow group: {:?}", res);
 //! # Ok(())
 //! # }
 //! ```
@@ -55,7 +55,7 @@ use mangadex_api_types::error::Result;
     pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
-pub struct UnfollowGroup {
+pub struct BookmarkGroup {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -68,8 +68,8 @@ pub struct UnfollowGroup {
 }
 
 endpoint! {
-    DELETE ("/group/{}/follow", group_id),
-    #[no_data auth] UnfollowGroup,
+    POST ("/group/{}/bookmark", group_id),
+    #[no_data auth] BookmarkGroup,
     #[discard_result] Result<NoData>
 }
 
@@ -85,7 +85,7 @@ mod tests {
     use crate::{HttpClient, MangaDexClient};
 
     #[tokio::test]
-    async fn unfollow_group_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn bookmark_group_fires_a_request_to_base_url() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
@@ -101,8 +101,8 @@ mod tests {
             "result": "ok",
         });
 
-        Mock::given(method("DELETE"))
-            .and(path_regex(r"/group/[0-9a-fA-F-]+/follow"))
+        Mock::given(method("POST"))
+            .and(path_regex(r"/group/[0-9a-fA-F-]+/bookmark"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
@@ -111,8 +111,9 @@ mod tests {
 
         mangadex_client
             .scanlation_group()
-            .unfollow()
-            .group_id(group_id)
+            .id(group_id)
+            .bookmark()
+            .post()
             .build()?
             .send()
             .await?;

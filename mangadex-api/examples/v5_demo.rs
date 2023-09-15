@@ -219,7 +219,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(name) = args.group_search {
         let scanlation_group_builder = client.scanlation_group();
 
-        let mut scanlation_group_list_builder = scanlation_group_builder.list();
+        let mut scanlation_group_list_builder = scanlation_group_builder.get();
         if !name.is_empty() {
             scanlation_group_list_builder = scanlation_group_list_builder.name(name.as_str());
         }
@@ -233,8 +233,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(scanlation_group_id) = args.group_view {
         let scanlation_group_view = client
             .scanlation_group()
+            .id(scanlation_group_id)
             .get()
-            .group_id(scanlation_group_id)
             .build()?
             .send()
             .await?;

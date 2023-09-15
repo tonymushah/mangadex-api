@@ -105,8 +105,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
         if r.type_ == RelationshipType::ScanlationGroup {
             let group = client
                 .scanlation_group()
+                .id(r.id)
                 .get()
-                .group_id(r.id)
                 .build()?
                 .send()
                 .await?;
