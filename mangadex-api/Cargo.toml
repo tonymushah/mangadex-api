@@ -100,7 +100,7 @@ optional = true
 version = "1.0.75"
 
 [dev-dependencies.clap]
-version = "4.4.2"
+version = "4.4.4"
 features = ["derive"]
 
 [dev-dependencies.fake]
