@@ -41,7 +41,7 @@ features = ["derive"]
 version = "0.12.0"
 
 [dependencies.thiserror]
-version = "1.0.48"
+version = "1.0.49"
 
 [dependencies.url]
 version = "2.4.1"
