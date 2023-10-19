@@ -267,6 +267,7 @@ macro_rules! endpoint {
         }
 
         endpoint! { @send $(:$out_res)?, $typ, $out }
+
     };
 
     { @path ($path:expr, $($arg:ident),+) } => {
@@ -330,6 +331,7 @@ macro_rules! endpoint {
                 }
             }
         }
+
     };
     // Return the `Result` variants, `Ok` or `Err`.
     { @send:flatten_result, $typ:ty, $out:ty } => {
@@ -347,6 +349,8 @@ macro_rules! endpoint {
                 }
             }
         }
+
+        
     };
     // Don't return any data from the response.
     { @send:discard_result, $typ:ty, $out:ty } => {
@@ -365,4 +369,41 @@ macro_rules! endpoint {
     };
     // Don't implement `send()` and require manual implementation.
     { @send:no_send, $typ:ty, $out:ty } => { };
+
 }
+/// Helper macros for implementing the send function on the builder 
+/// 
+/// Introduced in v3.0.0-alpha.1
+/// 
+/// 
+macro_rules! builder_send {
+    {
+        #[$builder:ident] $typ:ty,
+        $(#[$out_res:ident])? $out_type:ty
+    } => {
+        builder_send! { @send $(:$out_res)?, $typ, $out_type }
+    };
+    { @send:out, $typ:ty, $out_type:ty } => {
+        impl $typ {
+            pub async fn send(&self) -> mangadex_api_types::error::Result<$out_type>{
+                self.build()?.send().await
+            }
+        }
+    };
+    { @send:discard_result, $typ:ty, $out_type:ty } => {
+        impl $typ {
+            pub async fn send(&self) -> mangadex_api_types::error::Result<()>{
+                self.build()?.send().await?;
+                Ok(())
+            }
+        }
+    };
+    { @send:flatten_result, $typ:ty, $out_type:ty } => {
+        impl $typ {
+            pub async fn send(&self) -> $out_type{
+                self.build()?.send().await?
+            }
+        }
+    }
+}
+

@@ -9,7 +9,7 @@ use delete::UnfollowGroupBuilder;
 use post::FollowGroupBuilder;
 
 #[deprecated(
-    since = "3.0.0-rc1",
+    since = "3.0.0-alpha.1",
     note = "After the introduction of the Subscription system, this endpoint will be removed in 3.0.0. Please use the Bookmark Endpoint instead"
 )]
 #[derive(Debug)]

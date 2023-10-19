@@ -71,7 +71,7 @@ impl IdEnpoint {
             .list_id(self.id)
     }
     /// Same as `.bookmark()`
-    #[deprecated(since = "3.0.0-rc1", note = "Use `.bookmark()` instead")]
+    #[deprecated(since = "3.0.0-alpha.1", note = "Use `.bookmark()` instead")]
     pub fn follow(&self) -> BookMarkEndpoint {
         self.bookmark()
     }

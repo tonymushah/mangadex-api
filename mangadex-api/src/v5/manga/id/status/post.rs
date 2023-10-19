@@ -48,7 +48,7 @@ use mangadex_api_types::ReadingStatus;
     pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
-#[deprecated(since = "3.0.0-rc1", note = "After the introduction of the Subscription system, this endpoint will be removed in 3.0.0")]
+#[deprecated(since = "3.0.0-alpha.1", note = "After the introduction of the Subscription system, this endpoint will be removed in 3.0.0")]
 pub struct UpdateMangaReadingStatus {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

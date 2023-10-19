@@ -97,6 +97,11 @@ endpoint! {
     #[no_send] Result<LoginResponse>
 }
 
+builder_send! {
+    #[builder] LoginBuilder,
+    #[out] LoginResponse
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;
@@ -145,7 +150,6 @@ mod tests {
             .post()
             .username(Username::parse("myusername")?)
             .password(Password::parse("mypassword")?)
-            .build()?
             .send()
             .await?;
 

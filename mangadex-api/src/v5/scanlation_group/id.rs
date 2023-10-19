@@ -28,7 +28,7 @@ impl IdEndpoint {
     pub fn bookmark(&self) -> BookMarkEndpoint {
         BookMarkEndpoint::new(self.http_client.clone(), self.id)
     }
-    #[deprecated(since = "3.0.0-rc1", note = "use .bookmark() instead")]
+    #[deprecated(since = "3.0.0-alpha.1", note = "use .bookmark() instead")]
     pub fn follow(&self) -> FollowEndpoint {
         FollowEndpoint::new(self.http_client.clone(), self.id)
     }

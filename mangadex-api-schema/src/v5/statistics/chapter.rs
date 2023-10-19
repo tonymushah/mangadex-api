@@ -18,7 +18,7 @@ pub struct ChapterStatisticsObject {
     pub statistics: HashMap<Uuid, ChapterStatistics>,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Copy)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ChapterStatistics {

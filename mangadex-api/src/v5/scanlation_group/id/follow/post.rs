@@ -56,7 +56,7 @@ use mangadex_api_types::error::Result;
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[deprecated(
-    since = "3.0.0-rc1",
+    since = "3.0.0-alpha.1",
     note = "After the introduction of the Subscription system, this endpoint will be removed in 3.0.0. Please use the BookMarkGroup instead"
 )]
 pub struct FollowGroup {

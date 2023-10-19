@@ -149,6 +149,7 @@ impl<A, T> FromResponse for ApiObjectNoRelationships<A, T> {
 ///     #[discard_result] Result<NoData> // `Result<()>` results in a deserialization error despite discarding the result.
 /// }
 #[derive(Debug, Default, Deserialize, Clone, Hash, PartialEq, Eq)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct NoData {
     #[serde(default)]
     result: ResultType,

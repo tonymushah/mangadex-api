@@ -22,7 +22,7 @@ pub struct MangaStatisticsObject {
     pub statistics: HashMap<Uuid, MangaStatistics>,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Copy)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaStatistics {
@@ -34,7 +34,7 @@ pub struct MangaStatistics {
     pub comments: Option<Comments>,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Copy)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaRating {
@@ -58,7 +58,7 @@ pub struct MangaRating {
 ///
 /// Because Rust identifies may not begin with a number, the fields are prefixed with an arbitrary
 /// "r" to denote "rating".
-#[derive(Clone, Debug, Deserialize, Default)]
+#[derive(Clone, Debug, Deserialize, Default, Copy)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct RatingsDistribution {
     #[serde(rename = "1")]
