@@ -1,6 +1,6 @@
-//! Builder for creating a Settings template.
+//! Builder for creating or updating a user's Settings.
 //!
-//! <https://api.mangadex.org/swagger.html#/Settings/post-settings-template>
+//! <https://api.mangadex.org/swagger.html#/Settings/post-settings>
 //!
 //! ```ignore
 //! use mangadex_api::MangaDexClient;
@@ -20,30 +20,31 @@
 //!
 //! let res = client
 //!     .settings()
-//!     .create_template()
+//!     .create_or_update_user_settings()
 //!     .build()?
 //!     .send()
 //!     .await?;
 //!
-//! println!("Create Settings template: {:?}", res);
+//! println!("Create Settings: {:?}", res);
 //! # Ok(())
 //! # }
 //! ```
 
-// TODO Implement a schema
+use std::collections::HashMap;
 
 use derive_builder::Builder;
+// use mangadex_api_schema::v5::UserSettingsResponse;
+// use mangadex_api_types::error::Result;
+use mangadex_api_types::MangaDexDateTime;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::NoData;
-use mangadex_api_types::error::Result;
 
-/// Create a Settings template.
+/// Create or update a user's Settings.
 ///
 /// This requires authentication.
 ///
-/// Makes a request to `POST /settings/template`.
+/// Makes a request to `POST /settings`.
 #[cfg_attr(
     feature = "deserializable-endpoint",
     derive(serde::Deserialize, getset::Getters, getset::Setters)
@@ -55,7 +56,7 @@ use mangadex_api_types::error::Result;
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
-pub struct CreateSettingsTemplate {
+pub struct CreateOrUpdateUserSettings {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -63,12 +64,16 @@ pub struct CreateSettingsTemplate {
     #[allow(unused)]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
+
+    // TODO: Flesh out body.
+    pub settings: HashMap<String, String>,
+    pub updated_at: MangaDexDateTime,
 }
 
 endpoint! {
-    POST "/settings/template",
-    #[body auth] CreateSettingsTemplate,
-    #[discard_result] Result<NoData>
+    POST "/settings",
+    #[body auth] CreateOrUpdateUserSettings,
+    #[flatten_result] mangadex_api_schema::v5::UserSettingsResponse
 }
 
 #[cfg(test)]
@@ -83,7 +88,7 @@ mod tests {
     use mangadex_api_types::error::Error;
 
     #[tokio::test]
-    async fn create_settings_template_requires_auth() -> anyhow::Result<()> {
+    async fn create_or_update_user_settings_requires_auth() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client: HttpClient = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
@@ -102,7 +107,7 @@ mod tests {
         });
 
         Mock::given(method("POST"))
-            .and(path("/settings/template"))
+            .and(path("/settings"))
             .and(header("Content-Type", "application/json"))
             .respond_with(ResponseTemplate::new(403).set_body_json(response_body))
             .expect(0)
@@ -111,7 +116,7 @@ mod tests {
 
         let res = mangadex_client
             .settings()
-            .create_template()
+            .post()
             .build()?
             .send()
             .await

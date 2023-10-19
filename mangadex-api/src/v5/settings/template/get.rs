@@ -1,10 +1,11 @@
-//! Builder for getting a user's Settings.
+//! Builder for getting the latest Settings template.
 //!
-//! <https://api.mangadex.org/swagger.html#/Settings/get-settings>
+//! <https://api.mangadex.org/swagger.html#/Settings/get-settings-template>
 //!
 //! ```ignore
 //! use mangadex_api::MangaDexClient;
 //! use mangadex_api_types::{Password, Username};
+//! use uuid::Uuid;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
@@ -20,12 +21,12 @@
 //!
 //! let res = client
 //!     .settings()
-//!     .get_user_settings()
+//!     .get_latest_template()
 //!     .build()?
 //!     .send()
 //!     .await?;
 //!
-//! println!("User Settings: {:?}", res);
+//! println!("Settings template: {:?}", res);
 //! # Ok(())
 //! # }
 //! ```
@@ -34,13 +35,14 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UserSettingsResponse;
+use mangadex_api_schema::NoData;
+use mangadex_api_types::error::Result;
 
-/// Getting a user's Settings.
+/// Get the latest Settings template.
 ///
 /// This requires authentication.
 ///
-/// Makes a request to `GET /settings`.
+/// Makes a request to `GET /settings/template`.
 #[cfg_attr(
     feature = "deserializable-endpoint",
     derive(serde::Deserialize, getset::Getters, getset::Setters)
@@ -52,7 +54,7 @@ use mangadex_api_schema::v5::UserSettingsResponse;
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
-pub struct GetUserSettings {
+pub struct GetLatestSettingsTemplate {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -63,9 +65,9 @@ pub struct GetUserSettings {
 }
 
 endpoint! {
-    GET "/settings",
-    #[no_data auth] GetUserSettings,
-    #[flatten_result] UserSettingsResponse
+    GET "/settings/template",
+    #[no_data auth] GetLatestSettingsTemplate,
+    #[discard_result] Result<NoData>
 }
 
 #[cfg(test)]
@@ -73,14 +75,14 @@ mod tests {
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{method, path};
+    use wiremock::matchers::{method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
     use mangadex_api_types::error::Error;
 
     #[tokio::test]
-    async fn get_user_settings_requires_auth() -> anyhow::Result<()> {
+    async fn get_latest_settings_template_requires_auth() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client: HttpClient = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
@@ -99,7 +101,7 @@ mod tests {
         });
 
         Mock::given(method("GET"))
-            .and(path("/settings"))
+            .and(path_regex("/settings/template"))
             .respond_with(ResponseTemplate::new(403).set_body_json(response_body))
             .expect(0)
             .mount(&mock_server)
@@ -107,7 +109,8 @@ mod tests {
 
         let res = mangadex_client
             .settings()
-            .get_user_settings()
+            .template()
+            .get()
             .build()?
             .send()
             .await
