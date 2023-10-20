@@ -32,11 +32,11 @@ mod is_following_manga;
 #[cfg(not(feature = "deserializable-endpoint"))]
 mod is_following_user;
 #[cfg(not(feature = "deserializable-endpoint"))]
-mod list;
+mod get;
 #[cfg(not(feature = "deserializable-endpoint"))]
 mod me;
 #[cfg(not(feature = "deserializable-endpoint"))]
-pub(crate) mod my_custom_lists;
+pub(crate) mod list;
 #[cfg(not(feature = "deserializable-endpoint"))]
 #[cfg(feature = "legacy-account")]
 mod update_email;
@@ -101,9 +101,9 @@ use crate::v5::user::is_following_custom_list::IsFollowingCustomListBuilder;
 use crate::v5::user::is_following_group::IsFollowingGroupBuilder;
 use crate::v5::user::is_following_manga::IsFollowingMangaBuilder;
 use crate::v5::user::is_following_user::IsFollowingUserBuilder;
-use crate::v5::user::list::ListUserBuilder;
+use crate::v5::user::get::ListUserBuilder;
 use crate::v5::user::me::GetMyUserDetailsBuilder;
-use crate::v5::user::my_custom_lists::MyCustomListsBuilder;
+use crate::v5::user::list::MyCustomListsBuilder;
 #[cfg(feature = "legacy-account")]
 use crate::v5::user::update_email::UpdateUserEmailBuilder;
 #[cfg(feature = "legacy-account")]
