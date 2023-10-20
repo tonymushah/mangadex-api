@@ -136,8 +136,9 @@ mod tests {
 
         let res = mangadex_client
             .upload()
-            .start_edit_chapter_session()
+            .begin()
             .chapter_id(chapter_id)
+            .post()
             .version(2_u32)
             .build()?
             .send()

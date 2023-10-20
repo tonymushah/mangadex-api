@@ -184,8 +184,8 @@ mod tests {
 
         let _ = mangadex_client
             .upload()
-            .upload_images()
-            .session_id(session_id)
+            .upload_session_id(session_id)
+            .post()
             .add_file(file_bytes.into())
             .build()?
             .send()

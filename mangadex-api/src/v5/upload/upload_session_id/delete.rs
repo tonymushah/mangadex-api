@@ -1,13 +1,13 @@
-//! Builder for getting the current user's upload session endpoint.
+//! Builder for abandoning an upload session.
 //!
-//! <https://api.mangadex.org/swagger.html#/Upload/get-upload-session>
+//! <https://api.mangadex.org/swagger.html#/Upload/abandon-upload-session>
 //!
 //! # Examples
 //!
 //! ```rust
 //! use uuid::Uuid;
 //!
-//! use mangadex_api::MangaDexClient;
+//! use mangadex_api::v5::MangaDexClient;
 //! use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
@@ -22,23 +22,27 @@
 //!     .send()
 //!     .await?;
 //!
+//! let session_id = Uuid::new_v4();
 //! let res = client
 //!     .upload()
-//!     .get_session()
+//!     .abandon_session()
+//!     .session_id(&session_id)
 //!     .build()?
 //!     .send()
 //!     .await?;
 //!
-//! println!("current upload session: {:?}", res);
+//! println!("abandon session: {:?}", res);
 //! # Ok(())
 //! # }
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::UploadSessionResponse;
+use mangadex_api_schema::NoData;
 use serde::Serialize;
+use uuid::Uuid;
 
 use crate::HttpClientRef;
+use mangadex_api_types::error::Result;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -51,65 +55,64 @@ use crate::HttpClientRef;
     pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
-pub struct GetUploadSession {
+pub struct AbandonUploadSession {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
+
+    #[serde(skip_serializing)]
+    pub session_id: Uuid,
 }
 
 endpoint! {
-    GET "/upload",
-    #[no_data] GetUploadSession,
-    UploadSessionResponse
+    DELETE ("/upload/{}", session_id),
+    #[no_data auth] AbandonUploadSession,
+    #[discard_result] Result<NoData>
 }
 
 #[cfg(test)]
 mod tests {
     use serde_json::json;
-    use time::OffsetDateTime;
     use url::Url;
-    use wiremock::matchers::{method, path};
+    use uuid::Uuid;
+    use wiremock::matchers::{header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::MangaDexDateTime;
 
     #[tokio::test]
-    async fn get_upload_session_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn abandon_session_fires_a_request_to_base_url() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
+            .auth_tokens(AuthTokens {
+                session: "sessiontoken".to_string(),
+                refresh: "refreshtoken".to_string(),
+            })
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
-        let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
-
+        let session_id = Uuid::new_v4();
         let response_body = json!({
-            "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-            "type": "upload_session",
-            "attributes": {
-                "isCommitted": true,
-                "isProcessed": true,
-                "isDeleted": true,
-                "version": 1,
-                "createdAt": datetime.to_string(),
-                "updatedAt": datetime.to_string(),
-            }
+            "result": "ok",
         });
 
-        Mock::given(method("GET"))
-            .and(path(r"/upload"))
+        Mock::given(method("DELETE"))
+            .and(path_regex(r"/upload/[0-9a-fA-F-]+"))
+            .and(header("Authorization", "Bearer sessiontoken"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
+        mangadex_client
             .upload()
-            .get_session()
+            .upload_session_id(session_id)
+            .delete()
             .build()?
             .send()
             .await?;

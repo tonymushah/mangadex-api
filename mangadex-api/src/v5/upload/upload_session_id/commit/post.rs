@@ -319,8 +319,9 @@ mod tests {
 
         let res = mangadex_client
             .upload()
-            .commit_session()
-            .session_id(session_id)
+            .upload_session_id(session_id)
+            .commit()
+            .post()
             .volume(Some("1".to_string()))
             .chapter(Some("2.5".to_string()))
             .title(Some(chapter_title.clone()))

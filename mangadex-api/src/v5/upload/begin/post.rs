@@ -142,7 +142,8 @@ mod tests {
 
         let res = mangadex_client
             .upload()
-            .start_session()
+            .begin()
+            .post()
             .add_group_id(group_id)
             .manga_id(manga_id)
             .build()?
