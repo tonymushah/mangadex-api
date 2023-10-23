@@ -179,7 +179,7 @@ mod tests {
         });
 
         Mock::given(method("GET"))
-            .and(path_regex(r"/user/follows/group/[0-9a-fA-F-]+"))
+            .and(path_regex(r"/user/bookmarks/group/[0-9a-fA-F-]+"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .respond_with(ResponseTemplate::new(404).set_body_json(response_body))
             .expect(1)
@@ -226,7 +226,7 @@ mod tests {
         });
 
         Mock::given(method("GET"))
-            .and(path_regex(r"/user/follows/group/[0-9a-fA-F-]+"))
+            .and(path_regex(r"/user/bookmarks/group/[0-9a-fA-F-]+"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .respond_with(ResponseTemplate::new(404).set_body_json(response_body))
             .expect(1)
