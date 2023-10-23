@@ -350,7 +350,7 @@ macro_rules! endpoint {
             }
         }
 
-        
+
     };
     // Don't return any data from the response.
     { @send:discard_result, $typ:ty, $out:ty } => {
@@ -371,11 +371,11 @@ macro_rules! endpoint {
     { @send:no_send, $typ:ty, $out:ty } => { };
 
 }
-/// Helper macros for implementing the send function on the builder 
-/// 
+/// Helper macros for implementing the send function on the builder
+///
 /// Introduced in v3.0.0-alpha.1
-/// 
-/// 
+///
+///
 macro_rules! builder_send {
     {
         #[$builder:ident] $typ:ty,
@@ -407,3 +407,33 @@ macro_rules! builder_send {
     }
 }
 
+macro_rules! create_endpoint_node {
+    {
+        #[$name:ident] $sname:ident $tname:ident,
+        #[$args:ident] {$($arg_name:ident: $arg_ty:ty,)+},
+        #[$methods:ident] {$($func:ident($($farg_name:ident: $farg_ty:ty,)*) -> $output:ty;)*}
+    } => {
+        #[derive(Debug)]
+        pub struct $sname {
+            $( $arg_name: $arg_ty, )+
+        }
+        trait $tname {
+            $(
+                fn $func(&self, $( $farg_name: $farg_ty, )*) -> $output;
+            )*
+        }
+        impl $sname {
+            pub fn new($( $arg_name: $arg_ty, )+) -> Self {
+                Self {
+                    $( $arg_name, )+
+                }
+            }
+            $(
+                pub fn $func(&self, $( $farg_name: $farg_ty, )*) -> $output {
+                    <Self as $tname>::$func(&self, $( $farg_name,)*)
+                }
+            )*
+        }
+    }
+
+}

@@ -5,7 +5,7 @@
 use uuid::Uuid;
 
 use crate::v5::custom_list::id::feed::get::CustomListMangaFeedBuilder;
-use crate::v5::user::followed_manga_feed::GetFollowedMangaFeedBuilder;
+//use crate::v5::user::followed_manga_feed::GetFollowedMangaFeedBuilder;
 use crate::HttpClientRef;
 
 /// Feed endpoint handler builder.
@@ -54,9 +54,10 @@ impl FeedBuilder {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn followed_manga(&self) -> GetFollowedMangaFeedBuilder {
+    /// TODO Re-add this later
+    /*pub fn followed_manga(&self) -> GetFollowedMangaFeedBuilder {
         GetFollowedMangaFeedBuilder::default().http_client(self.http_client.clone())
-    }
+    }*/
 
     /// Get the manga feed for a given custom list.
     ///

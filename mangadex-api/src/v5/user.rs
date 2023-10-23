@@ -15,16 +15,26 @@ pub mod subscription;
 
 use crate::HttpClientRef;
 
-/// User endpoint handler builder.
-#[derive(Debug)]
-pub struct UserBuilder {
-    http_client: HttpClientRef,
+use bookmarks::BookmarksEndpoint;
+use get::ListUserBuilder;
+
+create_endpoint_node! {
+    #[name] UserBuilder UserBuilderMethods,
+    #[args] {
+        http_client: HttpClientRef,
+    },
+    #[methods] {
+        bookmarks() -> BookmarksEndpoint;
+        get() -> ListUserBuilder;
+    }
 }
 
-impl UserBuilder {
-    #[doc(hidden)]
-    pub(crate) fn new(http_client: HttpClientRef) -> Self {
-        Self { http_client }
+impl UserBuilderMethods for UserBuilder {
+    fn bookmarks(&self) -> BookmarksEndpoint {
+        BookmarksEndpoint::new(self.http_client.clone())
     }
 
+    fn get(&self) -> ListUserBuilder {
+        ListUserBuilder::default().http_client(self.http_client.clone())
+    }
 }

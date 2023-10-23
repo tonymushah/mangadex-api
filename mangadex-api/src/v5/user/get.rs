@@ -148,7 +148,7 @@ mod tests {
 
         let res = mangadex_client
             .user()
-            .search()
+            .get()
             .limit(1u32)
             .build()?
             .send()
@@ -196,7 +196,7 @@ mod tests {
 
         let res = mangadex_client
             .user()
-            .search()
+            .get()
             .limit(0u32)
             .build()?
             .send()
