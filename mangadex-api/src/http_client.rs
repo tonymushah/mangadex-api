@@ -435,5 +435,4 @@ macro_rules! create_endpoint_node {
             )*
         }
     }
-
 }

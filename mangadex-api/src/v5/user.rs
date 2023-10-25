@@ -18,6 +18,8 @@ use crate::HttpClientRef;
 use bookmarks::BookmarksEndpoint;
 use get::ListUserBuilder;
 
+use delete::DeleteEndpoint;
+
 create_endpoint_node! {
     #[name] UserBuilder UserBuilderMethods,
     #[args] {
@@ -26,6 +28,7 @@ create_endpoint_node! {
     #[methods] {
         bookmarks() -> BookmarksEndpoint;
         get() -> ListUserBuilder;
+        delete() -> DeleteEndpoint;
     }
 }
 
@@ -36,5 +39,9 @@ impl UserBuilderMethods for UserBuilder {
 
     fn get(&self) -> ListUserBuilder {
         ListUserBuilder::default().http_client(self.http_client.clone())
+    }
+
+    fn delete(&self) -> DeleteEndpoint {
+        DeleteEndpoint::new(self.http_client.clone())
     }
 }

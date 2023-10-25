@@ -99,8 +99,9 @@ mod tests {
 
         mangadex_client
             .user()
-            .approve_deletion()
+            .delete()
             .code(code)
+            .post()
             .build()?
             .send()
             .await?;
