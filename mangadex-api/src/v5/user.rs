@@ -20,6 +20,8 @@ use get::ListUserBuilder;
 
 use delete::DeleteEndpoint;
 
+use email::EmailEndpoint;
+
 create_endpoint_node! {
     #[name] UserBuilder UserBuilderMethods,
     #[args] {
@@ -29,6 +31,7 @@ create_endpoint_node! {
         bookmarks() -> BookmarksEndpoint;
         get() -> ListUserBuilder;
         delete() -> DeleteEndpoint;
+        email() -> EmailEndpoint;
     }
 }
 
@@ -43,5 +46,9 @@ impl UserBuilderMethods for UserBuilder {
 
     fn delete(&self) -> DeleteEndpoint {
         DeleteEndpoint::new(self.http_client.clone())
+    }
+
+    fn email(&self) -> EmailEndpoint {
+        EmailEndpoint::new(self.http_client.clone())
     }
 }

@@ -113,7 +113,8 @@ mod tests {
 
         mangadex_client
             .user()
-            .update_email()
+            .email()
+            .post()
             .email(email.as_str())
             .build()?
             .send()
