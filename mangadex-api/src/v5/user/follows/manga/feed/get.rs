@@ -58,6 +58,10 @@ use mangadex_api_types::{
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[deprecated(
+    since = "3.0.0-alpha.1",
+    note = "After the introduction of the Subscription system, this endpoint will be removed in 3.0.0"
+)]
 pub struct GetFollowedMangaFeed {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
@@ -189,7 +193,10 @@ mod tests {
 
         let _ = mangadex_client
             .user()
-            .followed_manga_feed()
+            .follows()
+            .manga()
+            .feed()
+            .get()
             .limit(1u32)
             .build()?
             .send()

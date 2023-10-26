@@ -58,6 +58,10 @@ use mangadex_api_types::error::{Error, Result};
     setter(into, strip_option),
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
+#[deprecated(
+    since = "3.0.0-alpha.1",
+    note = "After the introduction of the Subscription system, this endpoint will be removed in 3.0.0"
+)]
 pub struct IsFollowingGroup {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
@@ -148,8 +152,10 @@ mod tests {
 
         let res = mangadex_client
             .user()
-            .is_following_group()
-            .group_id(scanlation_group_id)
+            .follows()
+            .group()
+            .id(scanlation_group_id)
+            .get()
             .build()?
             .send()
             .await?;
@@ -186,8 +192,10 @@ mod tests {
 
         let res = mangadex_client
             .user()
-            .is_following_group()
-            .group_id(scanlation_group_id)
+            .follows()
+            .group()
+            .id(scanlation_group_id)
+            .get()
             .build()?
             .send()
             .await?;
@@ -231,8 +239,10 @@ mod tests {
 
         let res = mangadex_client
             .user()
-            .is_following_group()
-            .group_id(scanlation_group_id)
+            .follows()
+            .group()
+            .id(scanlation_group_id)
+            .get()
             .build()?
             .send()
             .await
