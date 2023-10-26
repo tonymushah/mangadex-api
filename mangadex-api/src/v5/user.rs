@@ -11,6 +11,7 @@ pub mod follows;
 pub mod get;
 pub mod history;
 pub mod id;
+pub mod list;
 pub mod me;
 #[cfg(feature = "legacy-account")]
 pub mod password;
@@ -28,6 +29,7 @@ use follows::FollowsEndpoint;
 use get::ListUserBuilder;
 use history::HistoryEndpoint;
 use id::IdEndpoint;
+use list::ListEndpoint;
 
 #[derive(Debug)]
 pub struct UserBuilder {
@@ -63,7 +65,12 @@ impl UserBuilder {
     pub fn history(&self) -> HistoryEndpoint {
         HistoryEndpoint::new(self.http_client.clone())
     }
+
     pub fn id(&self, id: Uuid) -> IdEndpoint {
         IdEndpoint::new(self.http_client.clone(), id)
+    }
+
+    pub fn list(&self) -> ListEndpoint {
+        ListEndpoint::new(self.http_client.clone())
     }
 }

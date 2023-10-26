@@ -130,7 +130,8 @@ mod tests {
 
         let _ = mangadex_client
             .user()
-            .my_custom_lists()
+            .list()
+            .get()
             .limit(1_u32)
             .build()?
             .send()

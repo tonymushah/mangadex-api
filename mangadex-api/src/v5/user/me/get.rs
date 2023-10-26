@@ -114,7 +114,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client.user().me().build()?.send().await?;
+        let _ = mangadex_client.user().me().get().build()?.send().await?;
 
         Ok(())
     }
