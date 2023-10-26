@@ -19,7 +19,7 @@ create_endpoint_node! {
 impl ListEndpointMethods for ListEndpoint {
     fn get(&self) -> UserCustomListsBuilder {
         UserCustomListsBuilder::default()
-            .user_id(self.id.clone())
+            .user_id(self.id)
             .http_client(self.http_client.clone())
     }
 }
