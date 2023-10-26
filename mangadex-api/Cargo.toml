@@ -141,6 +141,7 @@ version = "0.5.19"
 
 [features]
 multi-thread = ["futures"]
+tokio-multi-thread = ["tokio/sync"]
 legacy-auth = []
 legacy-account = ["legacy-auth"]
 default = ["utils", "legacy-account"]

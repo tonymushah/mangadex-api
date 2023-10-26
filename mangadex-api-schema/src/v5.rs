@@ -8,6 +8,7 @@ pub mod cover;
 pub mod custom_list;
 pub mod error;
 mod exports_types;
+pub mod forum_thread;
 pub mod is_following_response;
 pub mod legacy_id_mapping;
 pub mod login_response;
@@ -27,9 +28,9 @@ pub mod tag;
 pub mod upload_session;
 pub mod upload_session_file;
 pub mod user;
+pub mod user_history;
 pub mod user_report;
 pub mod user_settings;
-pub mod forum_thread;
 
 pub use self::exports_types::*;
 use std::collections::HashMap;

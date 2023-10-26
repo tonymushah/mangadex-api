@@ -6,6 +6,7 @@ pub use super::check_token_response::CheckTokenResponse;
 pub use super::check_username_available::CheckUsernameAvailableResponse;
 pub use super::cover::CoverAttributes;
 pub use super::custom_list::CustomListAttributes;
+pub use super::forum_thread::{ForumThreadAttributes, ForumThreadObject};
 pub use super::is_following_response::IsFollowingResponse;
 pub use super::legacy_id_mapping::LegacyMappingIdAttributes;
 pub use super::login_response::LoginResponse;
@@ -29,7 +30,6 @@ pub use super::upload_session_file::{UploadSessionFileAttributes, UploadSessionF
 pub use super::user::UserAttributes;
 pub use super::user_report::UserReportAttributes;
 pub use super::user_settings::UserSettingsAttributes;
-pub use super::forum_thread::{ForumThreadAttributes, ForumThreadObject};
 use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
 
 use super::statistics::chapter::ChapterStatisticsObject;

@@ -12,6 +12,8 @@ use mangadex_api_schema::{Endpoint, FromResponse, UrlSerdeQS};
 use mangadex_api_types::error::Error;
 use reqwest::Client;
 use serde::de::DeserializeOwned;
+#[cfg(feature = "tokio-multi-thread")]
+use tokio::sync::Mutex;
 use url::Url;
 
 use crate::v5::AuthTokens;
@@ -20,9 +22,8 @@ use mangadex_api_types::error::Result;
 
 #[cfg(not(feature = "multi-thread"))]
 pub type HttpClientRef = Rc<RefCell<HttpClient>>;
-#[cfg(feature = "multi-thread")]
+#[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
 pub type HttpClientRef = Arc<Mutex<HttpClient>>;
-
 #[derive(Debug, Builder, Clone)]
 #[builder(
     setter(into, strip_option),

@@ -16,13 +16,11 @@ pub mod subscription;
 use crate::HttpClientRef;
 
 use bookmarks::BookmarksEndpoint;
-use get::ListUserBuilder;
-
 use delete::DeleteEndpoint;
-
 use email::EmailEndpoint;
-
 use follows::FollowsEndpoint;
+use get::ListUserBuilder;
+use history::HistoryEndpoint;
 
 create_endpoint_node! {
     #[name] UserBuilder UserBuilderMethods,
@@ -35,6 +33,7 @@ create_endpoint_node! {
         delete() -> DeleteEndpoint;
         email() -> EmailEndpoint;
         follows() -> FollowsEndpoint;
+        history() -> HistoryEndpoint;
     }
 }
 
@@ -57,5 +56,9 @@ impl UserBuilderMethods for UserBuilder {
 
     fn follows(&self) -> FollowsEndpoint {
         FollowsEndpoint::new(self.http_client.clone())
+    }
+
+    fn history(&self) -> HistoryEndpoint {
+        HistoryEndpoint::new(self.http_client.clone())
     }
 }
