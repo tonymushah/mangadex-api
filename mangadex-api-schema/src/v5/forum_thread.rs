@@ -8,10 +8,10 @@ use crate::FromResponse;
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
-pub struct ForumThreadObject<A, T = RelationshipType>{
-    pub type_ : T,
-    pub id : usize,
-    pub attributes: A
+pub struct ForumThreadObject<A, T = RelationshipType> {
+    pub type_: T,
+    pub id: usize,
+    pub attributes: A,
 }
 
 impl<A, T> FromResponse for ForumThreadObject<A, T> {
@@ -27,6 +27,6 @@ impl<A, T> FromResponse for ForumThreadObject<A, T> {
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
-pub struct ForumThreadAttributes{
-    pub replies_count : usize
+pub struct ForumThreadAttributes {
+    pub replies_count: usize,
 }

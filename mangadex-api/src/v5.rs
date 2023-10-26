@@ -9,9 +9,10 @@ pub mod chapter;
 pub mod cover;
 pub mod custom_list;
 pub mod feed;
-pub mod ping;
+pub mod forums;
 pub mod legacy;
 pub mod manga;
+pub mod ping;
 pub mod rating;
 pub mod report;
 pub mod scanlation_group;
@@ -20,19 +21,18 @@ pub mod settings;
 pub mod statistics;
 pub mod upload;
 pub mod user;
-pub mod forums;
 
+#[cfg(feature = "multi-thread")]
+use futures::lock::Mutex;
+pub use mangadex_api_schema::v5 as schema;
+pub(crate) use mangadex_api_schema::v5::AuthTokens;
+use reqwest::Client;
 #[cfg(not(feature = "multi-thread"))]
 use std::cell::RefCell;
 #[cfg(not(feature = "multi-thread"))]
 use std::rc::Rc;
 #[cfg(feature = "multi-thread")]
 use std::sync::Arc;
-#[cfg(feature = "multi-thread")]
-use futures::lock::Mutex;
-pub use mangadex_api_schema::v5 as schema;
-pub(crate) use mangadex_api_schema::v5::AuthTokens;
-use reqwest::Client;
 
 #[cfg(feature = "legacy-account")]
 use crate::v5::account::AccountBuilder;
@@ -47,9 +47,10 @@ use crate::v5::chapter::ChapterBuilder;
 use crate::v5::cover::CoverBuilder;
 use crate::v5::custom_list::CustomListBuilder;
 use crate::v5::feed::FeedBuilder;
-use crate::v5::ping::PingEndpointBuilder;
+use crate::v5::forums::ForumsEndpoint;
 use crate::v5::legacy::LegacyBuilder;
 use crate::v5::manga::MangaBuilder;
+use crate::v5::ping::PingEndpointBuilder;
 use crate::v5::rating::RatingBuilder;
 use crate::v5::report::ReportBuilder;
 use crate::v5::scanlation_group::ScanlationGroupBuilder;
@@ -60,7 +61,6 @@ use crate::v5::upload::UploadBuilder;
 use crate::v5::user::UserBuilder;
 use crate::HttpClient;
 use crate::HttpClientRef;
-use crate::v5::forums::ForumsEndpoint;
 
 #[cfg(feature = "utils")]
 use crate::utils::download::DownloadBuilder;
@@ -317,7 +317,7 @@ impl MangaDexClient {
     pub fn download(&self) -> DownloadBuilder {
         DownloadBuilder::new(self.http_client.clone())
     }
-    pub fn forums(&self) -> ForumsEndpoint{
+    pub fn forums(&self) -> ForumsEndpoint {
         ForumsEndpoint::new(self.http_client.clone())
     }
 }

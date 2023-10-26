@@ -1,9 +1,9 @@
-pub mod post;
 pub mod chapter_id;
+pub mod post;
 
 use crate::HttpClientRef;
 
-use self::{post::StartUploadSessionBuilder, chapter_id::ChapterIdEndpoint};
+use self::{chapter_id::ChapterIdEndpoint, post::StartUploadSessionBuilder};
 
 /// Statistics endpoint handler builder.
 #[derive(Clone, Debug)]

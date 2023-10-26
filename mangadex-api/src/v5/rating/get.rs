@@ -118,12 +118,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .rating()
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.rating().get().build()?.send().await?;
 
         assert_eq!(res.ratings.get(&manga_id).unwrap().rating, 7);
 

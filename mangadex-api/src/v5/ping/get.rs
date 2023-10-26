@@ -108,12 +108,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .ping()
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.ping().get().build()?.send().await?;
 
         assert_eq!(res, "pong".to_string());
 

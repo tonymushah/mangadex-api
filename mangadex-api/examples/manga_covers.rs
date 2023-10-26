@@ -92,13 +92,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
                 }
             })
             .collect::<Vec<Uuid>>()[0];
-        let manga = client
-            .manga()
-            .id(manga_id)
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let manga = client.manga().id(manga_id).get().build()?.send().await?;
 
         let no_title = "<NO ENGLISH TITLE>".to_string();
         let manga_title = manga

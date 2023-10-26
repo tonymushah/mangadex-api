@@ -10,7 +10,7 @@ pub mod post;
 #[derive(Clone, Debug)]
 pub struct ChapterIdEndpoint {
     http_client: HttpClientRef,
-    id: Uuid
+    id: Uuid,
 }
 
 impl ChapterIdEndpoint {
@@ -19,6 +19,8 @@ impl ChapterIdEndpoint {
         Self { http_client, id }
     }
     pub fn post(&self) -> StartEditChapterSessionBuilder {
-        StartEditChapterSessionBuilder::default().chapter_id(self.id).http_client(self.http_client.clone())
+        StartEditChapterSessionBuilder::default()
+            .chapter_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

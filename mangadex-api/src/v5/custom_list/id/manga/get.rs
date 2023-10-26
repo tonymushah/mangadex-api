@@ -5,8 +5,8 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_types::{ContentRating, ReferenceExpansionResource};
 use mangadex_api_schema::v5::MangaListResponse;
+use mangadex_api_types::{ContentRating, ReferenceExpansionResource};
 #[cfg_attr(
     feature = "deserializable-endpoint",
     derive(serde::Deserialize, getset::Getters, getset::Setters)
@@ -19,7 +19,7 @@ use mangadex_api_schema::v5::MangaListResponse;
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
-pub struct GetCustomListManga{
+pub struct GetCustomListManga {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -45,7 +45,7 @@ pub struct GetCustomListManga{
     pub includes: Vec<ReferenceExpansionResource>,
 }
 
-endpoint!{
+endpoint! {
     GET ("/list/{}/manga", list_id),
     #[query] GetCustomListManga,
     #[flatten_result] MangaListResponse

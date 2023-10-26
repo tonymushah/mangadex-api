@@ -15,7 +15,6 @@ impl MappingEndpoint {
         Self { http_client }
     }
     pub fn post(&self) -> LegacyIdMappingBuilder {
-        LegacyIdMappingBuilder::default()
-            .http_client(self.http_client.clone())
+        LegacyIdMappingBuilder::default().http_client(self.http_client.clone())
     }
 }

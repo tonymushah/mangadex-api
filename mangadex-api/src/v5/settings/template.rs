@@ -20,13 +20,13 @@ impl SettingsTemplateBuilder {
     pub(crate) fn new(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
-    pub fn get(&self) -> GetLatestSettingsTemplateBuilder{
+    pub fn get(&self) -> GetLatestSettingsTemplateBuilder {
         GetLatestSettingsTemplateBuilder::default().http_client(self.http_client.clone())
     }
-    pub fn post(&self) -> CreateSettingsTemplateBuilder{
+    pub fn post(&self) -> CreateSettingsTemplateBuilder {
         CreateSettingsTemplateBuilder::default().http_client(self.http_client.clone())
     }
-    pub fn version(&self, id: Uuid) -> SettingsTemplateVersionBuilder{
+    pub fn version(&self, id: Uuid) -> SettingsTemplateVersionBuilder {
         SettingsTemplateVersionBuilder::new(self.http_client.clone(), id)
     }
 }

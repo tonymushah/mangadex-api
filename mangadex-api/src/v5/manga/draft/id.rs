@@ -3,9 +3,9 @@ pub mod get;
 
 use crate::HttpClientRef;
 
+use commit::CommitEndpoint;
 use get::GetMangaDraftBuilder;
 use uuid::Uuid;
-use commit::CommitEndpoint;
 
 #[derive(Debug)]
 pub struct IdEndpoint {

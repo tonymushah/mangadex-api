@@ -278,7 +278,13 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client.manga().random().get().build()?.send().await?;
+        let res = mangadex_client
+            .manga()
+            .random()
+            .get()
+            .build()?
+            .send()
+            .await?;
 
         if let Some(links) = res.data.attributes.links {
             assert_eq!(links.book_walker.unwrap().0, "1".to_string());
