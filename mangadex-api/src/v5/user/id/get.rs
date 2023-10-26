@@ -124,8 +124,8 @@ mod tests {
 
         let _ = mangadex_client
             .user()
+            .id(user_id)
             .get()
-            .user_id(user_id)
             .build()?
             .send()
             .await?;

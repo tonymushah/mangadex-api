@@ -113,8 +113,8 @@ mod tests {
 
         mangadex_client
             .user()
+            .id(user_id)
             .delete()
-            .user_id(user_id)
             .build()?
             .send()
             .await?;

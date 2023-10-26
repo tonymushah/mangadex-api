@@ -122,8 +122,9 @@ mod tests {
 
         let _ = mangadex_client
             .user()
-            .custom_lists()
-            .user_id(user_id)
+            .id(user_id)
+            .list()
+            .get()
             .limit(1_u32)
             .build()?
             .send()
