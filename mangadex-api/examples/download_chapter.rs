@@ -118,7 +118,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if scanlation_groups.is_empty() {
         for r in &chapter.data.relationships {
             if r.type_ == RelationshipType::User {
-                let user = client.user().get().user_id(r.id).build()?.send().await?;
+                let user = client.user().id(r.id).get().build()?.send().await?;
 
                 users.push(user.data.attributes.username);
             }
