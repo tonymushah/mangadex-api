@@ -30,6 +30,7 @@ use get::ListUserBuilder;
 use history::HistoryEndpoint;
 use id::IdEndpoint;
 use list::ListEndpoint;
+use me::MeEndpoint;
 
 #[derive(Debug)]
 pub struct UserBuilder {
@@ -72,5 +73,9 @@ impl UserBuilder {
 
     pub fn list(&self) -> ListEndpoint {
         ListEndpoint::new(self.http_client.clone())
+    }
+
+    pub fn me(&self) -> MeEndpoint {
+        MeEndpoint::new(self.http_client.clone())
     }
 }
