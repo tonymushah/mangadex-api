@@ -31,6 +31,8 @@ use history::HistoryEndpoint;
 use id::IdEndpoint;
 use list::ListEndpoint;
 use me::MeEndpoint;
+#[cfg(feature = "legacy-account")]
+use password::PasswordEndpoint;
 
 #[derive(Debug)]
 pub struct UserBuilder {
@@ -77,5 +79,9 @@ impl UserBuilder {
 
     pub fn me(&self) -> MeEndpoint {
         MeEndpoint::new(self.http_client.clone())
+    }
+    #[cfg(feature = "legacy-account")]
+    pub fn password(&self) -> PasswordEndpoint {
+        PasswordEndpoint::new(self.http_client.clone())
     }
 }

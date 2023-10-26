@@ -121,7 +121,8 @@ mod tests {
 
         mangadex_client
             .user()
-            .update_password()
+            .password()
+            .post()
             .old_password(MdPassword::parse(&old_password)?)
             .new_password(MdPassword::parse(&new_password)?)
             .build()?
