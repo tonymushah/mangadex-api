@@ -60,3 +60,9 @@ impl std::fmt::Display for MangaDexDateTime {
         fmt.write_str(&self.as_ref().format(&format).unwrap())
     }
 }
+
+impl Default for MangaDexDateTime {
+    fn default() -> Self {
+        MangaDexDateTime(OffsetDateTime::now_utc())
+    }
+}

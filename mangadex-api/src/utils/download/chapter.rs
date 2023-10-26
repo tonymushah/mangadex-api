@@ -23,8 +23,12 @@ pub use pre_download::AtHomePreDownloadImageData;
 pub use report::AtHomeReport;
 
 #[derive(Clone, Builder)]
-#[builder(setter(into, strip_option), pattern = "owned")]
-#[non_exhaustive]
+#[builder(
+    setter(into, strip_option),
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ChapterDownload {
     #[doc(hidden)]
     #[builder(pattern = "immutable")]
@@ -55,6 +59,7 @@ impl ChapterDownload {
             match client
                 .at_home()
                 .server()
+                .get()
                 .force_port_443(self.force_port_443)
                 .chapter_id(self.id)
                 .build()
@@ -120,7 +125,7 @@ impl ChapterDownload {
             }
         })
     }
-    /// Download chapter with stream output 
+    /// Download chapter with stream output
     pub async fn download_stream_with_checker<C>(
         &self,
         should_check_: C,
@@ -251,13 +256,13 @@ mod tests {
         while let Some((data, index, len, _)) = chapter_files.next().await {
             print!("{index} - {len} : ");
             if let core::result::Result::Ok(resp) = data {
-                let (filename, bytes_) = resp ;
+                let (filename, bytes_) = resp;
                 if let Some(bytes) = bytes_ {
                     let mut file: File =
                         File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
                     file.write_all(&bytes)?;
                     println!("Downloaded {filename}");
-                }else{
+                } else {
                     println!("Skipped {filename}");
                 }
             } else if let core::result::Result::Err(resp) = data {

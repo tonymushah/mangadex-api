@@ -1,4 +1,6 @@
-use super::{ApiData, ApiObject, ScanlationGroupAttributes, Result, Results, GroupStatisticsObject};
+use super::{
+    ApiData, ApiObject, GroupStatisticsObject, Result, Results, ScanlationGroupAttributes,
+};
 
 pub type GroupObject = ApiObject<ScanlationGroupAttributes>;
 pub type GroupData = ApiData<GroupObject>;

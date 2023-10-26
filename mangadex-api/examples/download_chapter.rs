@@ -53,9 +53,9 @@ use clap::Parser;
 use reqwest::Url;
 use uuid::Uuid;
 
-use mangadex_api_types::RelationshipType;
 use mangadex_api::v5::MangaDexClient;
 use mangadex_api::HttpClientRef;
+use mangadex_api_types::RelationshipType;
 
 #[derive(Parser, Debug)]
 #[clap(
@@ -69,7 +69,7 @@ struct Args {
     #[clap(long)]
     data_saver: bool,
     /// Location to save the cover art.
-    #[clap(short, long = "download", parse(from_os_str))]
+    #[clap(short, long = "download")]
     output: Option<PathBuf>,
 }
 
@@ -92,8 +92,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
     // Fetch chapter data to use for naming the output directory.
     let chapter = client
         .chapter()
+        .id(args.chapter_id)
         .get()
-        .chapter_id(args.chapter_id)
         .build()?
         .send()
         .await?;
@@ -105,8 +105,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
         if r.type_ == RelationshipType::ScanlationGroup {
             let group = client
                 .scanlation_group()
+                .id(r.id)
                 .get()
-                .group_id(r.id)
                 .build()?
                 .send()
                 .await?;
@@ -118,7 +118,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if scanlation_groups.is_empty() {
         for r in &chapter.data.relationships {
             if r.type_ == RelationshipType::User {
-                let user = client.user().get().user_id(r.id).build()?.send().await?;
+                let user = client.user().id(r.id).get().build()?.send().await?;
 
                 users.push(user.data.attributes.username);
             }
@@ -165,6 +165,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     let at_home = client
         .at_home()
         .server()
+        .get()
         .chapter_id(args.chapter_id)
         .build()?
         .send()
@@ -217,7 +218,10 @@ async fn run(args: Args) -> anyhow::Result<()> {
             println!("done");
         } else {
             #[cfg(not(feature = "multi-thread"))]
-            #[cfg_attr(not(feature = "multi-thread"), allow(clippy::await_holding_refcell_ref))]
+            #[cfg_attr(
+                not(feature = "multi-thread"),
+                allow(clippy::await_holding_refcell_ref)
+            )]
             let page_res = client
                 .get_http_client()
                 .clone()

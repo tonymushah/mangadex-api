@@ -10,8 +10,8 @@ use tokio::time::Instant;
 use tokio_stream::StreamExt;
 use url::Url;
 
-use super::DownloadMode;
 use super::AtHomeReport;
+use super::DownloadMode;
 
 use super::DownloadElement;
 
@@ -25,7 +25,14 @@ pub struct AtHomePreDownloadImageData {
 }
 
 impl AtHomePreDownloadImageData {
-    async fn report(&self, start: Instant, page_url: Url, bytes : usize, success : bool, cached : bool) {
+    async fn report(
+        &self,
+        start: Instant,
+        page_url: Url,
+        bytes: usize,
+        success: bool,
+        cached: bool,
+    ) {
         if self.report {
             let end = Instant::now();
             let _ = AtHomeReport {
@@ -85,14 +92,16 @@ impl AtHomePreDownloadImageData {
             match chunk {
                 Ok(chunk_bytes) => {
                     bytes.extend(chunk_bytes);
-                },
+                }
                 Err(chunk_error) => {
-                    self.report(start, page_url_clone, bytes.len(), false, is_cache).await;
+                    self.report(start, page_url_clone, bytes.len(), false, is_cache)
+                        .await;
                     return Err(Error::RequestError(chunk_error));
                 }
             }
         }
-        self.report(start, page_url_clone, bytes.len(), true, is_cache).await;
+        self.report(start, page_url_clone, bytes.len(), true, is_cache)
+            .await;
         Ok((self.filename.clone(), Some(Bytes::from(bytes))))
     }
 }

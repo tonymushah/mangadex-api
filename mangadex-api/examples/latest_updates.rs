@@ -30,10 +30,10 @@ use std::iter::FromIterator;
 use clap::Parser;
 use uuid::Uuid;
 
+use mangadex_api::v5::MangaDexClient;
 use mangadex_api_types::{
     ChapterSortOrder, Language, OrderDirection, ReferenceExpansionResource, RelationshipType,
 };
-use mangadex_api::v5::MangaDexClient;
 
 #[derive(Parser)]
 #[clap(
@@ -77,7 +77,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
     let chapters = client
         .chapter()
-        .list()
+        .get()
         .offset(get_page_offset(args.page, args.limit))
         .limit(args.limit)
         .translated_languages(args.languages)
@@ -104,7 +104,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
     let manga_list_res = client
         .manga()
-        .list()
+        .get()
         // This isn't used but if this data were to be used in an application,
         // having the cover art UUIDs would make it convenient to fetch the images.
         .include(&ReferenceExpansionResource::CoverArt)

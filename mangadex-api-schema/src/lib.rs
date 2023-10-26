@@ -1,7 +1,7 @@
 //! MangaDex API response object types.
 
-pub mod v5;
 mod bind;
+pub mod v5;
 use std::borrow::Cow;
 
 use mangadex_api_types::error::schema::MangaDexErrorResponse;
@@ -87,12 +87,12 @@ impl<T, E> ApiResult<T, E> {
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiData<T> {
     #[serde(default)]
-    pub result : ResultType,
+    pub result: ResultType,
     pub response: ResponseType,
     pub data: T,
 }
 
-#[derive(Debug, Default, Deserialize, Clone, )]
+#[derive(Debug, Default, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
@@ -113,7 +113,7 @@ impl<A, T> FromResponse for ApiObject<A, T> {
 
 impl<T> PartialEq for ApiObject<T> {
     fn eq(&self, other: &Self) -> bool {
-        self.id == other.id && self.type_ == other.type_ 
+        self.id == other.id && self.type_ == other.type_
     }
 }
 
@@ -149,8 +149,10 @@ impl<A, T> FromResponse for ApiObjectNoRelationships<A, T> {
 ///     #[discard_result] Result<NoData> // `Result<()>` results in a deserialization error despite discarding the result.
 /// }
 #[derive(Debug, Default, Deserialize, Clone, Hash, PartialEq, Eq)]
-pub struct NoData{
-    result : ResultType
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct NoData {
+    #[serde(default)]
+    result: ResultType,
 }
 
 impl<T> FromResponse for Result<T, Error> {

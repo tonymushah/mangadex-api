@@ -10,7 +10,7 @@ pub enum ContentRating {
     Suggestive,
 }
 
-impl Default for ContentRating{
+impl Default for ContentRating {
     fn default() -> Self {
         Self::Safe
     }

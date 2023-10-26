@@ -67,7 +67,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(title) = args.manga_search {
         let manga_builder = client.manga();
 
-        let mut manga_list_builder = manga_builder.list();
+        let mut manga_list_builder = manga_builder.get();
         if !title.is_empty() {
             manga_list_builder = manga_list_builder.title(title.as_str());
         }
@@ -82,8 +82,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.manga_view {
         let manga_view = client
             .manga()
+            .id(manga_id)
             .get()
-            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
@@ -96,8 +96,9 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.manga_feed {
         let manga_feed = client
             .manga()
+            .id(manga_id)
             .feed()
-            .manga_id(manga_id)
+            .get()
             .build()?
             .send()
             .await?;
@@ -108,7 +109,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     }
 
     if args.manga_random {
-        let manga = client.manga().random().build()?.send().await?;
+        let manga = client.manga().random().get().build()?.send().await?;
 
         println!("Manga: {:#?}", manga);
 
@@ -119,6 +120,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let node_url = client
             .at_home()
             .server()
+            .get()
             .chapter_id(chapter_id)
             .build()?
             .send()
@@ -132,7 +134,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(name) = args.author_search {
         let author_builder = client.author();
 
-        let mut author_list_builder = author_builder.list();
+        let mut author_list_builder = author_builder.get();
         if !name.is_empty() {
             author_list_builder = author_list_builder.name(name.as_str());
         }
@@ -146,7 +148,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.chapter_search {
         let chapter_results = client
             .chapter()
-            .list()
+            .get()
             .manga_id(manga_id)
             .build()?
             .send()
@@ -160,8 +162,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(chapter_id) = args.chapter_view {
         let chapter_view = client
             .chapter()
+            .id(chapter_id)
             .get()
-            .chapter_id(chapter_id)
             .build()?
             .send()
             .await?;
@@ -174,7 +176,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.cover_search {
         let cover_results = client
             .cover()
-            .list()
+            .get()
             .add_manga_id(&manga_id)
             .build()?
             .send()
@@ -188,8 +190,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(cover_id) = args.cover_view {
         let cover_view = client
             .cover()
-            .get()
             .cover_id(cover_id)
+            .get()
             .build()?
             .send()
             .await?;
@@ -202,8 +204,9 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.manga_aggregate {
         let manga_aggregate = client
             .manga()
+            .id(manga_id)
             .aggregate()
-            .manga_id(manga_id)
+            .get()
             .build()?
             .send()
             .await?;
@@ -216,7 +219,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(name) = args.group_search {
         let scanlation_group_builder = client.scanlation_group();
 
-        let mut scanlation_group_list_builder = scanlation_group_builder.list();
+        let mut scanlation_group_list_builder = scanlation_group_builder.get();
         if !name.is_empty() {
             scanlation_group_list_builder = scanlation_group_list_builder.name(name.as_str());
         }
@@ -230,8 +233,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(scanlation_group_id) = args.group_view {
         let scanlation_group_view = client
             .scanlation_group()
+            .id(scanlation_group_id)
             .get()
-            .group_id(scanlation_group_id)
             .build()?
             .send()
             .await?;

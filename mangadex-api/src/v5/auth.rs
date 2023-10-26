@@ -2,37 +2,21 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Auth>
 
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod check_token;
-#[cfg(not(feature = "deserializable-endpoint"))]
-#[cfg(feature = "legacy-auth")]
-mod login;
-#[cfg(not(feature = "deserializable-endpoint"))]
-#[cfg(feature = "legacy-auth")]
-mod logout;
-#[cfg(not(feature = "deserializable-endpoint"))]
-#[cfg(feature = "legacy-auth")]
-mod refresh_token;
-
-#[cfg(feature = "deserializable-endpoint")]
-pub mod check_token;
-#[cfg(feature = "deserializable-endpoint")]
+pub mod check;
 #[cfg(feature = "legacy-auth")]
 pub mod login;
-#[cfg(feature = "deserializable-endpoint")]
 #[cfg(feature = "legacy-auth")]
 pub mod logout;
-#[cfg(feature = "deserializable-endpoint")]
 #[cfg(feature = "legacy-auth")]
-pub mod refresh_token;
+pub mod refresh;
 
-use crate::v5::auth::check_token::CheckTokenBuilder;
+use crate::v5::auth::check::CheckEndpoint;
 #[cfg(feature = "legacy-auth")]
-use crate::v5::auth::login::LoginBuilder;
+use crate::v5::auth::login::LoginEndpoint;
 #[cfg(feature = "legacy-auth")]
-use crate::v5::auth::logout::LogoutBuilder;
+use crate::v5::auth::logout::LogoutEndpoint;
 #[cfg(feature = "legacy-auth")]
-use crate::v5::auth::refresh_token::RefreshTokenBuilder;
+use crate::v5::auth::refresh::RefreshEndpoint;
 use crate::HttpClientRef;
 
 /// Authentication endpoint handler builder.
@@ -52,8 +36,8 @@ impl AuthBuilder {
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-login>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     #[cfg(feature = "legacy-auth")]
-    pub fn login(&self) -> LoginBuilder {
-        LoginBuilder::default().http_client(self.http_client.clone())
+    pub fn login(&self) -> LoginEndpoint {
+        LoginEndpoint::new(self.http_client.clone())
     }
 
     /// Log out of an account.
@@ -61,8 +45,8 @@ impl AuthBuilder {
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-logout>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     #[cfg(feature = "legacy-auth")]
-    pub fn logout(&self) -> LogoutBuilder {
-        LogoutBuilder::default().http_client(self.http_client.clone())
+    pub fn logout(&self) -> LogoutEndpoint {
+        LogoutEndpoint::new(self.http_client.clone())
     }
 
     /// Get a new session token from the refresh token.
@@ -70,14 +54,14 @@ impl AuthBuilder {
     /// <https://api.mangadex.org/docs/redoc.html#tag/Authentication/operation/post-auth-refresh>
     #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
     #[cfg(feature = "legacy-auth")]
-    pub fn refresh_token(&self) -> RefreshTokenBuilder {
-        RefreshTokenBuilder::default().http_client(self.http_client.clone())
+    pub fn refresh(&self) -> RefreshEndpoint {
+        RefreshEndpoint::new(self.http_client.clone())
     }
 
     /// Check the current session token and get basic info about the authenticated user.
     ///
     /// <https://api.mangadex.org/swagger.html#/Auth/get-auth-check>
-    pub fn check_token(&self) -> CheckTokenBuilder {
-        CheckTokenBuilder::default().http_client(self.http_client.clone())
+    pub fn check(&self) -> CheckEndpoint {
+        CheckEndpoint::new(self.http_client.clone())
     }
 }

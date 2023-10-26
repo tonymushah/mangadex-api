@@ -1,87 +1,26 @@
-#[cfg(not(feature = "deserializable-endpoint"))]
-#[cfg(feature = "legacy-account")]
-mod account;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod at_home;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod auth;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod author;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod captcha;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod chapter;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod cover;
-#[cfg(not(feature = "deserializable-endpoint"))]
-pub(crate) mod custom_list;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod feed;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod infrastructure;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod legacy;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod manga;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod rating;
-#[cfg(not(feature = "deserializable-endpoint"))]
-pub(crate) mod report;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod scanlation_group;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod search;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod settings;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod statistics;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod upload;
-#[cfg(not(feature = "deserializable-endpoint"))]
-pub(crate) mod user;
-
-
-#[cfg(feature = "deserializable-endpoint")]
 #[cfg(feature = "legacy-account")]
 pub mod account;
-#[cfg(feature = "deserializable-endpoint")]
+pub mod api_client;
 pub mod at_home;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod auth;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod author;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod captcha;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod chapter;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod cover;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod custom_list;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod feed;
-#[cfg(feature = "deserializable-endpoint")]
-pub mod infrastructure;
-#[cfg(feature = "deserializable-endpoint")]
+pub mod ping;
 pub mod legacy;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod manga;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod rating;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod report;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod scanlation_group;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod search;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod settings;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod statistics;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod upload;
-#[cfg(feature = "deserializable-endpoint")]
 pub mod user;
+pub mod forums;
 
 #[cfg(not(feature = "multi-thread"))]
 use std::cell::RefCell;
@@ -89,7 +28,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 #[cfg(feature = "multi-thread")]
 use std::sync::Arc;
-
 #[cfg(feature = "multi-thread")]
 use futures::lock::Mutex;
 pub use mangadex_api_schema::v5 as schema;
@@ -109,7 +47,7 @@ use crate::v5::chapter::ChapterBuilder;
 use crate::v5::cover::CoverBuilder;
 use crate::v5::custom_list::CustomListBuilder;
 use crate::v5::feed::FeedBuilder;
-use crate::v5::infrastructure::InfrastructureBuilder;
+use crate::v5::ping::PingEndpointBuilder;
 use crate::v5::legacy::LegacyBuilder;
 use crate::v5::manga::MangaBuilder;
 use crate::v5::rating::RatingBuilder;
@@ -122,6 +60,7 @@ use crate::v5::upload::UploadBuilder;
 use crate::v5::user::UserBuilder;
 use crate::HttpClient;
 use crate::HttpClientRef;
+use crate::v5::forums::ForumsEndpoint;
 
 #[cfg(feature = "utils")]
 use crate::utils::download::DownloadBuilder;
@@ -293,8 +232,8 @@ impl MangaDexClient {
     /// Get a builder for handling the infrastructure endpoints.
     ///
     /// <https://api.mangadex.org/swagger.html#/Infrastructure>
-    pub fn infrastructure(&self) -> InfrastructureBuilder {
-        InfrastructureBuilder::new(self.http_client.clone())
+    pub fn ping(&self) -> PingEndpointBuilder {
+        PingEndpointBuilder::new(self.http_client.clone())
     }
 
     /// Get a builder for handling the legacy endpoints.
@@ -377,6 +316,9 @@ impl MangaDexClient {
     #[cfg(feature = "utils")]
     pub fn download(&self) -> DownloadBuilder {
         DownloadBuilder::new(self.http_client.clone())
+    }
+    pub fn forums(&self) -> ForumsEndpoint{
+        ForumsEndpoint::new(self.http_client.clone())
     }
 }
 

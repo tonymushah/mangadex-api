@@ -25,7 +25,7 @@ pub struct ChapterAttributes {
     /// Language the text is in.
     pub translated_language: Language,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub uploader : Option<Uuid>,
+    pub uploader: Option<Uuid>,
     /// Denotes a chapter that links to an external source.
     pub external_url: Option<Url>,
     pub version: u32,

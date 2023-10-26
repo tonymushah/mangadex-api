@@ -9,7 +9,7 @@ use url::Url;
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct AtHomeServer {
     #[serde(default)]
-    pub result : ResultType,
+    pub result: ResultType,
     /// The base URL to construct final image URLs from.
     /// The URL returned is valid for the requested chapter only, and for a duration of 15 minutes
     /// from the time of the response.

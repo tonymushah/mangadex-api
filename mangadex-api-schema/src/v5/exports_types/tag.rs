@@ -1,4 +1,4 @@
-use super::{TagAttributes, ApiData, ApiObject, Result, Results};
+use super::{ApiData, ApiObject, Result, Results, TagAttributes};
 
 pub type TagObject = ApiObject<TagAttributes>;
 pub type TagData = ApiData<TagObject>;

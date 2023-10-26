@@ -8,6 +8,6 @@ use serde::Deserialize;
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaReadingStatus {
     #[serde(default)]
-    pub result : ResultType,
+    pub result: ResultType,
     pub status: ReadingStatus,
 }

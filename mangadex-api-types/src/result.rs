@@ -1,11 +1,10 @@
-
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Hash, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
-pub enum ResultType{
+pub enum ResultType {
     Ok,
-    Error
+    Error,
 }
 
 impl Default for ResultType {
@@ -18,7 +17,7 @@ impl ResultType {
     pub fn ok() -> Self {
         Self::Ok
     }
-    pub fn error() -> Self{
+    pub fn error() -> Self {
         Self::Error
     }
 }

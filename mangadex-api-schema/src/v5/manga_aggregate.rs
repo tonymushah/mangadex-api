@@ -16,7 +16,7 @@ use crate::v5::{chapter_aggregate_array_or_map, volume_aggregate_array_or_map};
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaAggregate {
     #[serde(default)]
-    pub result : ResultType,
+    pub result: ResultType,
     /// Object with (volume_number, volume) key-value pairs.
     #[serde(with = "volume_aggregate_array_or_map")]
     pub volumes: Vec<VolumeAggregate>,
@@ -26,39 +26,42 @@ pub struct MangaAggregate {
 #[allow(clippy::from_over_into)]
 impl Into<MangaAggregatSer> for MangaAggregate {
     fn into(self) -> MangaAggregatSer {
-        let mut volumes : HashMap<String, VolumeAggregateSer> = HashMap::new();
-        for volume in self.volumes{
+        let mut volumes: HashMap<String, VolumeAggregateSer> = HashMap::new();
+        for volume in self.volumes {
             volumes.insert(volume.volume.clone(), Into::into(volume.clone()));
         }
-        MangaAggregatSer { result : self.result , volumes }
+        MangaAggregatSer {
+            result: self.result,
+            volumes,
+        }
     }
 }
 
 #[cfg(feature = "serialize")]
 #[derive(serde::Serialize, Clone)]
-pub struct MangaAggregatSer{
-    result : ResultType,
-    volumes : HashMap<String, VolumeAggregateSer>
+pub struct MangaAggregatSer {
+    result: ResultType,
+    volumes: HashMap<String, VolumeAggregateSer>,
 }
 
 #[cfg(feature = "serialize")]
 #[derive(serde::Serialize, Clone)]
-pub struct VolumeAggregateSer{
+pub struct VolumeAggregateSer {
     /// Volume number.
     pub volume: String,
     /// Number of chapter translations for the volume.
     pub count: u32,
     /// Object with (chapter_number, chapter) key-value pairs.
-    pub chapters: HashMap<String, ChapterAggregate>
+    pub chapters: HashMap<String, ChapterAggregate>,
 }
 
 #[cfg(feature = "serialize")]
-impl Serialize for MangaAggregate{
+impl Serialize for MangaAggregate {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: serde::Serializer {
-        
-        let ser : MangaAggregatSer = Into::into(self.clone());
+    where
+        S: serde::Serializer,
+    {
+        let ser: MangaAggregatSer = Into::into(self.clone());
         ser.serialize(serializer)
     }
 }
@@ -79,13 +82,17 @@ pub struct VolumeAggregate {
 
 #[cfg(feature = "serialize")]
 #[allow(clippy::from_over_into)]
-impl Into<VolumeAggregateSer> for VolumeAggregate{
+impl Into<VolumeAggregateSer> for VolumeAggregate {
     fn into(self) -> VolumeAggregateSer {
-        let mut chapters : HashMap<String, ChapterAggregate> = HashMap::new();
+        let mut chapters: HashMap<String, ChapterAggregate> = HashMap::new();
         for chapter in self.chapters {
             chapters.insert(chapter.chapter.clone(), chapter);
         }
-        VolumeAggregateSer { volume: self.volume, count: self.count, chapters }
+        VolumeAggregateSer {
+            volume: self.volume,
+            count: self.count,
+            chapters,
+        }
     }
 }
 

@@ -41,7 +41,7 @@ pub enum MangaRelation {
     SpinOff,
 }
 
-impl Default for MangaRelation{
+impl Default for MangaRelation {
     fn default() -> Self {
         Self::Monochrome
     }

@@ -27,8 +27,8 @@
 use clap::Parser;
 use uuid::Uuid;
 
-use mangadex_api_types::LegacyMappingType;
 use mangadex_api::v5::MangaDexClient;
+use mangadex_api_types::LegacyMappingType;
 
 #[derive(Parser)]
 #[clap(
@@ -61,7 +61,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
     let mapped_ids = client
         .legacy()
-        .id_mapping()
+        .mapping()
+        .post()
         .map_type(args.r#type)
         .ids(args.ids)
         .build()?

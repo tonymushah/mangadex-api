@@ -1,27 +1,26 @@
-//! Builder for the manga view endpoint.
+//! Builder for the manga list endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-manga-id>
+//! <https://api.mangadex.org/swagger.html#/Manga/get-search-manga>
 //!
 //! # Examples
 //!
 //! ```rust
-//! use uuid::Uuid;
-//!
+//! use mangadex_api_types::MangaStatus;
 //! use mangadex_api::v5::MangaDexClient;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let manga_id = Uuid::new_v4();
 //! let manga_res = client
 //!     .manga()
-//!     .get()
-//!     .manga_id(&manga_id)
+//!     .list()
+//!     .title("full metal")
+//!     .add_status(MangaStatus::Completed)
 //!     .build()?
 //!     .send()
 //!     .await?;
 //!
-//! println!("manga view: {:?}", manga_res);
+//! println!("manga: {:?}", manga_res);
 //! # Ok(())
 //! # }
 //! ```
@@ -31,35 +30,83 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaResponse;
-use mangadex_api_types::ReferenceExpansionResource;
+use mangadex_api_schema::v5::MangaListResponse;
+use mangadex_api_types::{
+    ContentRating, Demographic, Language, MangaDexDateTime, MangaSortOrder, MangaStatus,
+    ReferenceExpansionResource, TagSearchMode,
+};
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
     derive(serde::Deserialize, getset::Getters, getset::Setters)
 )]
-#[derive(Debug, Serialize, Clone, Builder)]
+#[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(setter(into, strip_option), pattern = "owned")]
-pub struct GetManga {
-    /// This should never be set manually as this is only for internal use.
+#[builder(
+    setter(into, strip_option),
+    default,
+    pattern = "owned",
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+pub struct ListManga {
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
-    #[serde(skip_serializing)]
-    pub manga_id: Uuid,
-
-    #[builder(setter(each = "include"), default)]
+    pub limit: Option<u32>,
+    pub offset: Option<u32>,
+    pub title: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default)]
+    pub author_or_artist: Option<Uuid>,
+    #[builder(setter(each = "add_author"))]
+    pub authors: Vec<Uuid>,
+    #[builder(setter(each = "add_artist"))]
+    pub artists: Vec<Uuid>,
+    pub year: Option<u16>,
+    #[builder(setter(each = "include_tag"))]
+    pub included_tags: Vec<Uuid>,
+    pub included_tags_mode: Option<TagSearchMode>,
+    #[builder(setter(each = "exclude_tag"))]
+    pub excluded_tags: Vec<Uuid>,
+    pub excluded_tags_mode: Option<TagSearchMode>,
+    #[builder(setter(each = "add_status"))]
+    pub status: Vec<MangaStatus>,
+    /// Languages the manga results are originally published in.
+    #[builder(setter(each = "add_original_language"))]
+    pub original_language: Vec<Language>,
+    /// A list of original languages to exclude.
+    #[builder(setter(each = "exclude_original_language"))]
+    pub excluded_original_language: Vec<Language>,
+    /// A list of languages that the manga is translated into.
+    #[builder(setter(each = "add_available_translated_language"))]
+    pub available_translated_language: Vec<Language>,
+    #[builder(setter(each = "add_publication_demographic"))]
+    pub publication_demographic: Vec<Demographic>,
+    #[builder(setter(each = "add_manga_id"))]
+    #[serde(rename = "ids")]
+    pub manga_ids: Vec<Uuid>,
+    #[builder(setter(each = "add_content_rating"))]
+    pub content_rating: Vec<ContentRating>,
+    /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
+    pub created_at_since: Option<MangaDexDateTime>,
+    /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
+    pub updated_at_since: Option<MangaDexDateTime>,
+    pub order: Option<MangaSortOrder>,
+    #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
+    pub has_available_chapters: Option<bool>,
+    /// Scanlation group ID.
+    pub group: Option<Uuid>,
 }
 
 endpoint! {
-    GET ("/manga/{}", manga_id),
-    #[query] GetManga,
-    #[flatten_result] MangaResponse
+    GET "/manga",
+    #[query] ListManga,
+    #[flatten_result] MangaListResponse
 }
 
 #[cfg(test)]
@@ -68,17 +115,17 @@ mod tests {
     use time::OffsetDateTime;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{method, path_regex};
+    use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_schema::v5::RelatedAttributes;
+    use mangadex_api_types::error::Error;
     use mangadex_api_types::{
-        MangaDexDateTime, MangaRelation, ReferenceExpansionResource, RelationshipType,
+        ContentRating, Demographic, Language, MangaDexDateTime, MangaStatus, ResponseType,
     };
 
     #[tokio::test]
-    async fn get_manga_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn list_manga_fires_a_request_to_base_url() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
@@ -86,50 +133,51 @@ mod tests {
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
         let manga_id = Uuid::new_v4();
+        let manga_title = "Test Manga".to_string();
 
         let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
 
         let response_body = json!({
             "result": "ok",
-            "response": "entity",
-            "data": {
-                "id": manga_id,
-                "type": "manga",
-                "attributes": {
-                    "title": {
-                        "en": "Test Manga"
+            "response": "collection",
+            "data": [
+                {
+                    "id": manga_id,
+                    "type": "manga",
+                    "attributes": {
+                        "title": {
+                            "en": manga_title
+                        },
+                        "altTitles": [],
+                        "description": {},
+                        "isLocked": false,
+                        "links": null,
+                        "originalLanguage": "ja",
+                        "lastVolume": null,
+                        "lastChapter": null,
+                        "publicationDemographic": "shoujo",
+                        "status": "ongoing",
+                        "year": null,
+                        "contentRating": "safe",
+                        "chapterNumbersResetOnNewVolume": true,
+                        "availableTranslatedLanguages": ["en"],
+                        "tags": [],
+                        "state": "published",
+                        "createdAt": datetime.to_string(),
+                        "updatedAt": datetime.to_string(),
+
+                        "version": 1
                     },
-                    "altTitles": [],
-                    "description": {},
-                    "isLocked": false,
-                    "links": {},
-                    "originalLanguage": "ja",
-                    "lastVolume": "1",
-                    "lastChapter": "1",
-                    "publicationDemographic": "shoujo",
-                    "status": "completed",
-                    "year": 2021,
-                    "contentRating": "safe",
-                    "chapterNumbersResetOnNewVolume": true,
-                    "availableTranslatedLanguages": ["en"],
-                    "tags": [],
-                    "state": "published",
-                    "version": 1,
-                    "createdAt": datetime.to_string(),
-                    "updatedAt": datetime.to_string(),
-                },
-                "relationships": [
-                    {
-                        "id": "a3219a4f-73c0-4213-8730-05985130539a",
-                        "type": "manga",
-                        "related": "side_story",
-                    }
-                ]
-            }
+                    "relationships": []
+                }
+            ],
+            "limit": 1,
+            "offset": 0,
+            "total": 1
         });
 
         Mock::given(method("GET"))
-            .and(path_regex(r"/manga/[0-9a-fA-F-]+"))
+            .and(path("/manga"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
@@ -138,93 +186,73 @@ mod tests {
         let res = mangadex_client
             .manga()
             .get()
-            .manga_id(manga_id)
+            .limit(1u32)
             .build()?
             .send()
             .await?;
 
-        assert_eq!(res.data.relationships[0].type_, RelationshipType::Manga);
+        assert_eq!(res.response, ResponseType::Collection);
+        let manga = &res.data[0];
+        assert_eq!(manga.id, manga_id);
         assert_eq!(
-            res.data.relationships[0].related,
-            Some(MangaRelation::SideStory)
+            manga.attributes.title.get(&Language::English).unwrap(),
+            &manga_title
         );
-        assert!(res.data.relationships[0].attributes.is_none());
+        assert!(manga.attributes.alt_titles.is_empty());
+        assert!(manga.attributes.description.is_empty());
+        assert!(!manga.attributes.is_locked);
+        assert_eq!(manga.attributes.links, None);
+        assert_eq!(manga.attributes.original_language, Language::Japanese);
+        assert_eq!(manga.attributes.last_volume, None);
+        assert_eq!(manga.attributes.last_chapter, None);
+        assert_eq!(
+            manga.attributes.publication_demographic.unwrap(),
+            Demographic::Shoujo
+        );
+        assert_eq!(manga.attributes.status, MangaStatus::Ongoing);
+        assert_eq!(manga.attributes.year, None);
+        assert_eq!(
+            manga.attributes.content_rating.unwrap(),
+            ContentRating::Safe
+        );
+        assert!(manga.attributes.chapter_numbers_reset_on_new_volume);
+        assert!(manga.attributes.tags.is_empty());
+        assert_eq!(
+            manga.attributes.created_at.to_string(),
+            datetime.to_string()
+        );
+        assert_eq!(
+            manga.attributes.updated_at.as_ref().unwrap().to_string(),
+            datetime.to_string()
+        );
+        assert_eq!(manga.attributes.version, 1);
 
         Ok(())
     }
 
     #[tokio::test]
-    async fn get_manga_handles_reference_expansion() -> anyhow::Result<()> {
+    async fn list_manga_handles_400() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
-        let http_client = HttpClient::builder()
+        let http_client: HttpClient = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
-        let manga_id = Uuid::new_v4();
-
-        let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
+        let error_id = Uuid::new_v4();
 
         let response_body = json!({
-            "result": "ok",
-            "response": "entity",
-            "data": {
-                "id": manga_id,
-                "type": "manga",
-                "attributes": {
-                    "title": {
-                        "en": "Test Manga"
-                    },
-                    "altTitles": [],
-                    "description": {},
-                    "isLocked": false,
-                    "links": {},
-                    "originalLanguage": "ja",
-                    "lastVolume": "1",
-                    "lastChapter": "1",
-                    "publicationDemographic": "shoujo",
-                    "status": "completed",
-                    "year": 2021,
-                    "contentRating": "safe",
-                    "chapterNumbersResetOnNewVolume": true,
-                    "availableTranslatedLanguages": ["en"],
-                    "tags": [],
-                    "state": "published",
-                    "version": 1,
-                    "createdAt": datetime.to_string(),
-                    "updatedAt": datetime.to_string(),
-                },
-                "relationships": [
-                    {
-                        "id": "fc343004-569b-4750-aba0-05ab35efc17c",
-                        "type": "author",
-                        "attributes": {
-                            "name": "Hologfx",
-                            "imageUrl": null,
-                            "biography": [],
-                            "twitter": null,
-                            "pixiv": null,
-                            "melonBook": null,
-                            "fanBox": null,
-                            "booth": null,
-                            "nicoVideo": null,
-                            "skeb": null,
-                            "fantia": null,
-                            "tumblr": null,
-                            "youtube": null,
-                            "website": null,
-                            "createdAt": "2021-04-19T21:59:45+00:00",
-                            "updatedAt": "2021-04-19T21:59:45+00:00",
-                            "version": 1
-                        }
-                    }
-                ]
-            }
+            "result": "error",
+            "errors": [{
+                "id": error_id.to_string(),
+                "status": 400,
+                "title": "Invalid limit",
+                "detail": "Limit must be between 1 and 100"
+            }]
         });
 
         Mock::given(method("GET"))
-            .and(path_regex(r"/manga/[0-9a-fA-F-]+"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .and(path("/manga"))
+            .respond_with(ResponseTemplate::new(400).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -232,268 +260,23 @@ mod tests {
         let res = mangadex_client
             .manga()
             .get()
-            .manga_id(manga_id)
-            .include(&ReferenceExpansionResource::Author)
+            .limit(0u32)
             .build()?
             .send()
-            .await?;
+            .await
+            .expect_err("expected error");
 
-        assert_eq!(res.data.relationships[0].type_, RelationshipType::Author);
-        assert!(res.data.relationships[0].related.is_none());
-        match res.data.relationships[0].attributes.as_ref().unwrap() {
-            RelatedAttributes::Author(author) => assert_eq!(author.name, "Hologfx".to_string()),
-            _ => panic!("Expected author RelatedAttributes"),
+        if let Error::Api(errors) = res {
+            assert_eq!(errors.errors.len(), 1);
+
+            assert_eq!(errors.errors[0].id, error_id);
+            assert_eq!(errors.errors[0].status, 400);
+            assert_eq!(errors.errors[0].title, Some("Invalid limit".to_string()));
+            assert_eq!(
+                errors.errors[0].detail,
+                Some("Limit must be between 1 and 100".to_string())
+            );
         }
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn get_manga_handles_null_available_translated_languages_element_value(
-    ) -> anyhow::Result<()> {
-        let mock_server = MockServer::start().await;
-        let http_client = HttpClient::builder()
-            .base_url(Url::parse(&mock_server.uri())?)
-            .build()?;
-        let mangadex_client = MangaDexClient::new_with_http_client(http_client);
-
-        let manga_id = Uuid::new_v4();
-
-        let response_body = json!({
-            "result": "ok",
-            "response": "entity",
-            "data": {
-                "id": manga_id,
-                "type": "manga",
-                "attributes": {
-                    "title": {
-                        "en": "Komi-san wa Komyushou Desu."
-                    },
-                    "altTitles": [
-                        {
-                            "ja-ro": "Comi-san ha Comyusho Desu."
-                        },
-                        {
-                            "en": "Komi Can't Communicate"
-                        },
-                        {
-                            "en": "Komi-san Can't Communicate."
-                        },
-                        {
-                            "en": "Komi-san Has a Communication Disorder."
-                        },
-                        {
-                            "ja-ro": "Komi-san wa Komyushou Desu"
-                        },
-                        {
-                            "ja-ro": "Komi-san wa, Communication Shougai desu."
-                        },
-                        {
-                            "ja-ro": "Komi-san wa, Comyushou desu."
-                        },
-                        {
-                            "ja-ro": "Komi-san wa, Komyushou desu."
-                        },
-                        {
-                            "en": "Miss Komi Is Bad at Communication."
-                        },
-                        {
-                            "ru": "У Коми-сан проблемы с общением"
-                        },
-                        {
-                            "th": "โฉมงามพูดไม่เก่งกับผองเพื่อนไม่เต็มเต็ง"
-                        },
-                        {
-                            "ja": "古見さんは、コミュ症です。"
-                        },
-                        {
-                            "zh": "古見同學有交流障礙症"
-                        },
-                        {
-                            "ko": "코미 양은, 커뮤증이에요"
-                        }
-                    ],
-                    "description": {
-                        "en": "Komi-san is a beautiful and admirable girl that no one can take their eyes off of. Almost the whole school sees her as the cold beauty that's out of their league, but Tadano Hitohito knows the truth: she's just really bad at communicating with others.\n\nKomi-san, who wishes to fix this bad habit of hers, tries to improve it with the help of Tadano-kun by achieving her goal of having 100 friends.",
-                        "pl": "Komi-san jest piękną i godną podziwu dziewczyną, od której nikt nie może oderwać oczu. Prawie cała szkoła postrzega ją jako zimne piękno, które jest poza ich zasięgiem, ale Tadano Hitohito zna prawdę: młoda piękność po prostu źle komunikuje się z innymi. Komi-san, chce to zmienić, a ma jej w tym pomóc Tadano.",
-                        "pt-br": "Komi-san é uma bela e admirável garota que ninguém consegue tirar os olhos. Quase todos da escola a veem como alguém fora do alcance, mas Tadano Shigeo sabe a verdade: **ela apenas não sabe como se comunicar com os outras pessoas**. Komi-san, que deseja corrigir este mau hábito dela, tenta melhorar com a ajuda do Tadano-kun..."
-                    },
-                    "isLocked": true,
-                    "links": {
-                        "al": "97852",
-                        "ap": "komi-cant-communicate",
-                        "bw": "series/129153",
-                        "kt": "37855",
-                        "mu": "127281",
-                        "amz": "https://www.amazon.co.jp/gp/product/B07CBD8DKM",
-                        "cdj": "http://www.cdjapan.co.jp/product/NEOBK-1985640",
-                        "ebj": "https://ebookjapan.yahoo.co.jp/books/382444/",
-                        "mal": "99007",
-                        "raw": "https://websunday.net/rensai/komisan/",
-                        "engtl": "https://www.viz.com/komi-can-t-communicate"
-                    },
-                    "originalLanguage": "ja",
-                    "lastVolume": "",
-                    "lastChapter": "",
-                    "publicationDemographic": "shounen",
-                    "status": "ongoing",
-                    "year": 2016,
-                    "contentRating": "safe",
-                    "tags": [
-                        {
-                            "id": "423e2eae-a7a2-4a8b-ac03-a8351462d71d",
-                            "type": "tag",
-                            "attributes": {
-                                "name": {
-                                    "en": "Romance"
-                                },
-                                "description": [],
-                                "group": "genre",
-                                "version": 1
-                            },
-                            "relationships": []
-                        },
-                        {
-                            "id": "4d32cc48-9f00-4cca-9b5a-a839f0764984",
-                            "type": "tag",
-                            "attributes": {
-                                "name": {
-                                    "en": "Comedy"
-                                },
-                                "description": [],
-                                "group": "genre",
-                                "version": 1
-                            },
-                            "relationships": []
-                        },
-                        {
-                            "id": "caaa44eb-cd40-4177-b930-79d3ef2afe87",
-                            "type": "tag",
-                            "attributes": {
-                                "name": {
-                                  "en": "School Life"
-                                },
-                                "description": [],
-                                "group": "theme",
-                                "version": 1
-                            },
-                            "relationships": []
-                        },
-                        {
-                            "id": "e5301a23-ebd9-49dd-a0cb-2add944c7fe9",
-                            "type": "tag",
-                            "attributes": {
-                                "name": {
-                                  "en": "Slice of Life"
-                                },
-                                "description": [],
-                                "group": "genre",
-                                "version": 1
-                            },
-                            "relationships": []
-                        }
-                    ],
-                    "state": "published",
-                    "chapterNumbersResetOnNewVolume": false,
-                    "createdAt": "2018-11-22T23:31:37+00:00",
-                    "updatedAt": "2022-02-13T22:49:56+00:00",
-                    "version": 85,
-                    "availableTranslatedLanguages": [
-                        "pt-br",
-                        "cs",
-                        "ru",
-                        "en",
-                        "fa",
-                        "tr",
-                        "fr",
-                        "pl",
-                        "mn",
-                        "es-la",
-                        "id",
-                        "it",
-                        "hi",
-                        "tl",
-                        "hu",
-                        "de",
-                        "ro",
-                        "nl",
-                        null
-                    ]
-                },
-                "relationships": [
-                    {
-                        "id": "4218b1ee-cde4-44dc-84c7-d9a794a7e56d",
-                        "type": "author"
-                    },
-                    {
-                        "id": "4218b1ee-cde4-44dc-84c7-d9a794a7e56d",
-                        "type": "artist"
-                    },
-                    {
-                        "id": "9324d3c0-d90d-4f3e-b79b-866029b721a7",
-                        "type": "cover_art"
-                    },
-                    {
-                        "id": "2917e1b1-06c0-45fe-b30b-6688d83859b2",
-                        "type": "manga",
-                        "related": "doujinshi"
-                    },
-                    {
-                        "id": "3e8df40e-e2b3-4336-987b-f3e52d00ce5f",
-                        "type": "manga",
-                        "related": "doujinshi"
-                    },
-                    {
-                        "id": "60e5c222-f0aa-4f14-baba-b18207321d5e",
-                        "type": "manga",
-                        "related": "doujinshi"
-                    },
-                    {
-                        "id": "82478f68-943e-4391-b445-f2f9b0007b95",
-                        "type": "manga",
-                        "related": "doujinshi"
-                    },
-                    {
-                        "id": "973de049-748a-4446-98b9-dfea826f61a5",
-                        "type": "manga",
-                        "related": "doujinshi"
-                    },
-                    {
-                        "id": "cb655d77-f369-4a06-9a35-b38c00f34e9b",
-                        "type": "manga",
-                        "related": "doujinshi"
-                    },
-                    {
-                        "id": "d6448e6b-4409-4380-b74e-1629c6d1d1a7",
-                        "type": "manga",
-                        "related": "doujinshi"
-                    },
-                    {
-                        "id": "fb569d12-1e00-47e3-86cd-793b4eae715c",
-                        "type": "manga",
-                        "related": "colored"
-                    }
-                ]
-            }
-        });
-
-        Mock::given(method("GET"))
-            .and(path_regex(r"/manga/[0-9a-fA-F-]+"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
-            .expect(1)
-            .mount(&mock_server)
-            .await;
-
-        let res = mangadex_client
-            .manga()
-            .get()
-            .manga_id(manga_id)
-            .build()?
-            .send()
-            .await?;
-
-        // `null` should not be included in the sequence.
-        assert_eq!(res.data.attributes.available_translated_languages.len(), 18);
 
         Ok(())
     }

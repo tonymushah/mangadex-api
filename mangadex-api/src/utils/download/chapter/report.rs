@@ -5,7 +5,6 @@ use reqwest::{Client, Response};
 use serde::Serialize;
 use url::Url;
 
-
 /// Send a report to `https://api.mangadex.network/report`.
 ///
 /// More details at : https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint

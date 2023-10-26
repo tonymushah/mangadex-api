@@ -1,4 +1,4 @@
-use super::{ApiObjectNoRelationships, ReportReasonAttributes, Results, Result};
+use super::{ApiObjectNoRelationships, ReportReasonAttributes, Result, Results};
 
 pub type ReportReasonObject = ApiObjectNoRelationships<ReportReasonAttributes>;
 pub type ReportReasonCollection = Results<ReportReasonObject>;

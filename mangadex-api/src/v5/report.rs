@@ -2,24 +2,14 @@
 //!
 //! <https://api.mangadex.org/swagger.html#/Report>
 
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod create;
-#[cfg(not(feature = "deserializable-endpoint"))]
-pub(crate) mod list;
-#[cfg(not(feature = "deserializable-endpoint"))]
-mod list_reports_by_user;
+pub mod get;
+pub mod post;
+pub mod reasons;
 
-#[cfg(feature = "deserializable-endpoint")]
-pub mod create;
-#[cfg(feature = "deserializable-endpoint")]
-pub mod list;
-#[cfg(feature = "deserializable-endpoint")]
-pub mod list_reports_by_user;
-
-use crate::v5::report::create::CreateReportBuilder;
-use crate::v5::report::list::ListReasonsBuilder;
-use crate::v5::report::list_reports_by_user::ListReportsByUserBuilder;
 use crate::HttpClientRef;
+use get::ListReportsByUserBuilder;
+use post::CreateReportBuilder;
+use reasons::ReasonsEndpoint;
 
 /// Report endpoint handler builder.
 #[derive(Clone, Debug)]
@@ -33,24 +23,13 @@ impl ReportBuilder {
         Self { http_client }
     }
 
-    /// Get a list of report reasons.
-    ///
-    /// <https://api.mangadex.org/swagger.html#/Report/get-report-reasons-by-category>
-    pub fn list(&self) -> ListReasonsBuilder {
-        ListReasonsBuilder::default().http_client(self.http_client.clone())
-    }
-
-    /// Get a list of reports by the user.
-    ///
-    /// <https://api.mangadex.org/swagger.html#/Report/get-reports>
-    pub fn list_reports_by_user(&self) -> ListReportsByUserBuilder {
+    pub fn get(&self) -> ListReportsByUserBuilder {
         ListReportsByUserBuilder::default().http_client(self.http_client.clone())
     }
-
-    /// Create a new report.
-    ///
-    /// <https://api.mangadex.org/swagger.html#/Report/post-report>
-    pub fn create(&self) -> CreateReportBuilder {
+    pub fn post(&self) -> CreateReportBuilder {
         CreateReportBuilder::default().http_client(self.http_client.clone())
+    }
+    pub fn reasons(&self) -> ReasonsEndpoint {
+        ReasonsEndpoint::new(self.http_client.clone())
     }
 }

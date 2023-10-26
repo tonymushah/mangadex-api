@@ -12,19 +12,24 @@ use mangadex_api_schema::{Endpoint, FromResponse, UrlSerdeQS};
 use mangadex_api_types::error::Error;
 use reqwest::Client;
 use serde::de::DeserializeOwned;
+#[cfg(feature = "tokio-multi-thread")]
+use tokio::sync::Mutex;
 use url::Url;
 
 use crate::v5::AuthTokens;
-use crate::{API_URL, API_DEV_URL};
+use crate::{API_DEV_URL, API_URL};
 use mangadex_api_types::error::Result;
 
 #[cfg(not(feature = "multi-thread"))]
 pub type HttpClientRef = Rc<RefCell<HttpClient>>;
-#[cfg(feature = "multi-thread")]
+#[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
 pub type HttpClientRef = Arc<Mutex<HttpClient>>;
-
 #[derive(Debug, Builder, Clone)]
-#[builder(setter(into, strip_option), default)]
+#[builder(
+    setter(into, strip_option),
+    default,
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
 pub struct HttpClient {
     pub client: Client,
     pub base_url: Url,
@@ -171,12 +176,12 @@ impl HttpClient {
         self.captcha = None;
     }
     /// Create a new client of api.mangadex.dev
-    pub fn api_dev_client() -> Self{
-        Self { 
-            client: Client::new(), 
-            base_url: Url::parse(API_DEV_URL).expect("error parsing the base url"), 
-            auth_tokens: None, 
-            captcha: None 
+    pub fn api_dev_client() -> Self {
+        Self {
+            client: Client::new(),
+            base_url: Url::parse(API_DEV_URL).expect("error parsing the base url"),
+            auth_tokens: None,
+            captcha: None,
         }
     }
 }
@@ -263,6 +268,7 @@ macro_rules! endpoint {
         }
 
         endpoint! { @send $(:$out_res)?, $typ, $out }
+
     };
 
     { @path ($path:expr, $($arg:ident),+) } => {
@@ -326,6 +332,7 @@ macro_rules! endpoint {
                 }
             }
         }
+
     };
     // Return the `Result` variants, `Ok` or `Err`.
     { @send:flatten_result, $typ:ty, $out:ty } => {
@@ -343,6 +350,8 @@ macro_rules! endpoint {
                 }
             }
         }
+
+
     };
     // Don't return any data from the response.
     { @send:discard_result, $typ:ty, $out:ty } => {
@@ -361,4 +370,70 @@ macro_rules! endpoint {
     };
     // Don't implement `send()` and require manual implementation.
     { @send:no_send, $typ:ty, $out:ty } => { };
+
+}
+/// Helper macros for implementing the send function on the builder
+///
+/// Introduced in v3.0.0-alpha.1
+///
+///
+macro_rules! builder_send {
+    {
+        #[$builder:ident] $typ:ty,
+        $(#[$out_res:ident])? $out_type:ty
+    } => {
+        builder_send! { @send $(:$out_res)?, $typ, $out_type }
+    };
+    { @send:out, $typ:ty, $out_type:ty } => {
+        impl $typ {
+            pub async fn send(&self) -> mangadex_api_types::error::Result<$out_type>{
+                self.build()?.send().await
+            }
+        }
+    };
+    { @send:discard_result, $typ:ty, $out_type:ty } => {
+        impl $typ {
+            pub async fn send(&self) -> mangadex_api_types::error::Result<()>{
+                self.build()?.send().await?;
+                Ok(())
+            }
+        }
+    };
+    { @send:flatten_result, $typ:ty, $out_type:ty } => {
+        impl $typ {
+            pub async fn send(&self) -> $out_type{
+                self.build()?.send().await?
+            }
+        }
+    }
+}
+
+macro_rules! create_endpoint_node {
+    {
+        #[$name:ident] $sname:ident $tname:ident,
+        #[$args:ident] {$($arg_name:ident: $arg_ty:ty,)+},
+        #[$methods:ident] {$($func:ident($($farg_name:ident: $farg_ty:ty,)*) -> $output:ty;)*}
+    } => {
+        #[derive(Debug)]
+        pub struct $sname {
+            $( $arg_name: $arg_ty, )+
+        }
+        trait $tname {
+            $(
+                fn $func(&self, $( $farg_name: $farg_ty, )*) -> $output;
+            )*
+        }
+        impl $sname {
+            pub fn new($( $arg_name: $arg_ty, )+) -> Self {
+                Self {
+                    $( $arg_name, )+
+                }
+            }
+            $(
+                pub fn $func(&self, $( $farg_name: $farg_ty, )*) -> $output {
+                    <Self as $tname>::$func(&self, $( $farg_name,)*)
+                }
+            )*
+        }
+    }
 }

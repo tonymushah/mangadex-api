@@ -35,9 +35,9 @@ use clap::Parser;
 use reqwest::Url;
 use uuid::Uuid;
 
-use mangadex_api_types::{Language, RelationshipType};
 use mangadex_api::v5::MangaDexClient;
 use mangadex_api::{HttpClientRef, CDN_URL};
+use mangadex_api_types::{Language, RelationshipType};
 
 #[derive(Parser)]
 #[clap(
@@ -49,7 +49,7 @@ struct Args {
     #[clap()]
     manga_ids: Vec<Uuid>,
     /// Location to save the cover art.
-    #[clap(short, long = "download", parse(from_os_str))]
+    #[clap(short, long = "download")]
     output: Option<PathBuf>,
 }
 
@@ -73,7 +73,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
     let manga_covers = client
         .cover()
-        .list()
+        .get()
         .manga_ids(args.manga_ids)
         .build()?
         .send()
@@ -94,8 +94,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .collect::<Vec<Uuid>>()[0];
         let manga = client
             .manga()
+            .id(manga_id)
             .get()
-            .manga_id(manga_id)
             .build()?
             .send()
             .await?;
