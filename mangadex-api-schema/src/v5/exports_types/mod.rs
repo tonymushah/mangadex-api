@@ -1,3 +1,4 @@
+pub use super::api_client::ApiClientAttributes;
 pub use super::at_home_server::AtHomeServer;
 pub use super::auth_tokens::AuthTokens;
 pub use super::author::AuthorAttributes;
@@ -83,3 +84,6 @@ pub use user_settings::*;
 
 mod forum_thread;
 pub use forum_thread::*;
+
+mod api_client;
+pub use api_client::*;

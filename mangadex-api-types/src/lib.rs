@@ -1,3 +1,5 @@
+pub mod api_client_profile;
+pub mod api_client_state;
 pub mod error;
 pub mod forum_thread;
 pub mod include_empty_pages;
@@ -23,6 +25,8 @@ pub mod upload_source;
 pub mod user_role;
 pub mod username;
 
+pub use api_client_profile::ApiClientProfile;
+pub use api_client_state::ApiClientState;
 pub use forum_thread::ForumThreadType;
 pub use include_empty_pages::IncludeFuturePages;
 pub use include_external_url::IncludeExternalUrl;
