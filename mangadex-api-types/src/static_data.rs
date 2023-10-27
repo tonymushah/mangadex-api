@@ -2,12 +2,12 @@
 //!
 //! <https://api.mangadex.org/docs/static-data/>
 
-pub(crate) mod content_rating;
-pub(crate) mod custom_list_visibility;
-pub(crate) mod demographic;
-pub(crate) mod manga_relation;
-pub(crate) mod manga_status;
-pub(crate) mod reading_status;
-pub(crate) mod reference_expansion_resource;
-pub(crate) mod relationship_type;
-pub(crate) mod response_type;
+pub mod content_rating;
+pub mod custom_list_visibility;
+pub mod demographic;
+pub mod manga_relation;
+pub mod manga_status;
+pub mod reading_status;
+pub mod reference_expansion_resource;
+pub mod relationship_type;
+pub mod response_type;

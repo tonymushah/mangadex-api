@@ -48,6 +48,7 @@ pub enum RelationshipType {
     MangaRelation,
     Creator,
     Thread,
+    ApiClient,
     /// Unsupported resource.
     ///
     /// This is not used by MangaDex, but this library, in case new types appear before the library
