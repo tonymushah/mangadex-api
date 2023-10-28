@@ -8,3 +8,18 @@ pub enum ApiClientProfile {
     Personal,
     Public,
 }
+
+impl Default for ApiClientProfile {
+    fn default() -> Self {
+        Self::Personal
+    }
+}
+
+impl ApiClientProfile {
+    pub fn is_personal(&self) -> bool {
+        *self == ApiClientProfile::Personal
+    }
+    pub fn is_public(&self) -> bool {
+        *self == ApiClientProfile::Public
+    }
+}
