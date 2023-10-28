@@ -41,6 +41,7 @@ use crate::v5::at_home::AtHomeBuilder;
 
 use crate::v5::auth::AuthBuilder;
 
+use crate::v5::api_client::ApiClientEndpoint;
 use crate::v5::author::AuthorBuilder;
 use crate::v5::captcha::CaptchaBuilder;
 use crate::v5::chapter::ChapterBuilder;
@@ -206,6 +207,10 @@ impl MangaDexClient {
     /// <https://api.mangadex.org/swagger.html#/Chapter>
     pub fn chapter(&self) -> ChapterBuilder {
         ChapterBuilder::new(self.http_client.clone())
+    }
+
+    pub fn client(&self) -> ApiClientEndpoint {
+        ApiClientEndpoint::new(self.http_client.clone())
     }
 
     /// Get a builder for handling manga volume cover art endpoints.
