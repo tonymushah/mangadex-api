@@ -6,6 +6,7 @@ pub mod secret;
 use crate::HttpClientRef;
 use uuid::Uuid;
 
+use delete::DeleteClientBuilder;
 use get::GetClientBuilder;
 use post::EditClientBuilder;
 
@@ -18,6 +19,7 @@ create_endpoint_node! {
     #[methods] {
         get() -> GetClientBuilder;
         post() -> EditClientBuilder;
+        delete() -> DeleteClientBuilder;
     }
 }
 
@@ -30,6 +32,12 @@ impl IdEndpointMethods for IdEndpoint {
 
     fn post(&self) -> EditClientBuilder {
         EditClientBuilder::default()
+            .client_id(<&Self as Into<Uuid>>::into(self))
+            .http_client(<&Self as Into<HttpClientRef>>::into(self))
+    }
+
+    fn delete(&self) -> DeleteClientBuilder {
+        DeleteClientBuilder::default()
             .client_id(<&Self as Into<Uuid>>::into(self))
             .http_client(<&Self as Into<HttpClientRef>>::into(self))
     }
