@@ -9,6 +9,7 @@ use uuid::Uuid;
 use delete::DeleteClientBuilder;
 use get::GetClientBuilder;
 use post::EditClientBuilder;
+use secret::SecretEndpoint;
 
 create_endpoint_node! {
     #[name] IdEndpoint IdEndpointMethods,
@@ -20,6 +21,7 @@ create_endpoint_node! {
         get() -> GetClientBuilder;
         post() -> EditClientBuilder;
         delete() -> DeleteClientBuilder;
+        secret() -> SecretEndpoint;
     }
 }
 
@@ -40,5 +42,9 @@ impl IdEndpointMethods for IdEndpoint {
         DeleteClientBuilder::default()
             .client_id(<&Self as Into<Uuid>>::into(self))
             .http_client(<&Self as Into<HttpClientRef>>::into(self))
+    }
+
+    fn secret(&self) -> SecretEndpoint {
+        SecretEndpoint::new(From::from(self), From::from(self))
     }
 }

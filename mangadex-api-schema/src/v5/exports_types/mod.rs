@@ -1,4 +1,4 @@
-pub use super::api_client::ApiClientAttributes;
+pub use super::api_client::{ApiClientAttributes, ApiClientSecret};
 pub use super::at_home_server::AtHomeServer;
 pub use super::auth_tokens::AuthTokens;
 pub use super::author::AuthorAttributes;
