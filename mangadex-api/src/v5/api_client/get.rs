@@ -81,7 +81,7 @@ mod tests {
     use time::OffsetDateTime;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{method, path};
+    use wiremock::matchers::{header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
@@ -136,6 +136,7 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path("/client"))
+            .and(header("Authorization", "Bearer myToken"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
