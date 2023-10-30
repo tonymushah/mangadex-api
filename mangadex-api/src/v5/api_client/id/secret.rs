@@ -5,6 +5,7 @@ use crate::HttpClientRef;
 use uuid::Uuid;
 
 use get::GetClientSecretBuilder;
+use post::RegenerateClientSecretBuilder;
 
 create_endpoint_node! {
     #[name] SecretEndpoint SecretEndpointMethods,
@@ -14,12 +15,19 @@ create_endpoint_node! {
     },
     #[methods] {
         get() -> GetClientSecretBuilder;
+        post() -> RegenerateClientSecretBuilder;
     }
 }
 
 impl SecretEndpointMethods for SecretEndpoint {
     fn get(&self) -> GetClientSecretBuilder {
         GetClientSecretBuilder::default()
+            .client_id(<&Self as Into<Uuid>>::into(self))
+            .http_client(<&Self as Into<HttpClientRef>>::into(self))
+    }
+
+    fn post(&self) -> RegenerateClientSecretBuilder {
+        RegenerateClientSecretBuilder::default()
             .client_id(<&Self as Into<Uuid>>::into(self))
             .http_client(<&Self as Into<HttpClientRef>>::into(self))
     }
