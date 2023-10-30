@@ -8,7 +8,7 @@ pub mod get;
 #[derive(Clone, Debug)]
 pub struct IdEndpoint {
     http_client: HttpClientRef,
-    id: Uuid
+    id: Uuid,
 }
 
 impl IdEndpoint {
@@ -16,7 +16,9 @@ impl IdEndpoint {
     pub(crate) fn new(http_client: HttpClientRef, id: Uuid) -> Self {
         Self { http_client, id }
     }
-    pub fn get(&self) -> GetMangaStatisticsBuilder{
-        GetMangaStatisticsBuilder::default().http_client(self.http_client.clone()).manga_id(self.id)
+    pub fn get(&self) -> GetMangaStatisticsBuilder {
+        GetMangaStatisticsBuilder::default()
+            .http_client(self.http_client.clone())
+            .manga_id(self.id)
     }
 }

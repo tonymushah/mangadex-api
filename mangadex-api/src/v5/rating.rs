@@ -20,11 +20,10 @@ impl RatingBuilder {
     pub(crate) fn new(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
-    pub fn get(&self) -> GetYourMangaRatingsBuilder{
-        GetYourMangaRatingsBuilder::default()
-            .http_client(self.http_client.clone())
+    pub fn get(&self) -> GetYourMangaRatingsBuilder {
+        GetYourMangaRatingsBuilder::default().http_client(self.http_client.clone())
     }
-    pub fn manga_id(&self, manga_id : Uuid) -> MangaIdEndpoint{
+    pub fn manga_id(&self, manga_id: Uuid) -> MangaIdEndpoint {
         MangaIdEndpoint::new(self.http_client.clone(), manga_id)
     }
 }

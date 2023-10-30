@@ -30,7 +30,7 @@ impl ListIdEndpoint {
             .manga_id(self.id)
             .list_id(self.list_id)
     }
-    pub fn post(&self) -> AddMangaToCustomListBuilder{
+    pub fn post(&self) -> AddMangaToCustomListBuilder {
         AddMangaToCustomListBuilder::default()
             .http_client(self.http_client.clone())
             .manga_id(self.id)

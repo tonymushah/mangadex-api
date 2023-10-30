@@ -1,9 +1,9 @@
+use crate::HttpClientRef;
 use derive_builder::Builder;
 use mangadex_api_schema::v5::ForumThreadResponse;
 use mangadex_api_types::ForumThreadType;
 use serde::Serialize;
 use uuid::Uuid;
-use crate::HttpClientRef;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -144,7 +144,8 @@ mod tests {
             .type_(ForumThreadType::Manga)
             .build()?
             .send()
-            .await.expect_err("an error should be received");
+            .await
+            .expect_err("an error should be received");
 
         Ok(())
     }
@@ -195,7 +196,8 @@ mod tests {
             .type_(ForumThreadType::Manga)
             .build()?
             .send()
-            .await.expect_err("an error should be received");
+            .await
+            .expect_err("an error should be received");
 
         Ok(())
     }

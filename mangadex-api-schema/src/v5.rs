@@ -1,3 +1,4 @@
+pub mod api_client;
 pub mod at_home_server;
 pub mod auth_tokens;
 pub mod author;

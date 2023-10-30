@@ -37,12 +37,12 @@ impl IdEndpoint {
             .http_client(self.http_client.clone())
             .group_id(self.id)
     }
-    pub fn delete(&self) -> DeleteGroupBuilder{
+    pub fn delete(&self) -> DeleteGroupBuilder {
         DeleteGroupBuilder::default()
             .http_client(self.http_client.clone())
             .group_id(self.id)
     }
-    pub fn put(&self) -> UpdateGroupBuilder{
+    pub fn put(&self) -> UpdateGroupBuilder {
         UpdateGroupBuilder::default()
             .http_client(self.http_client.clone())
             .group_id(self.id)

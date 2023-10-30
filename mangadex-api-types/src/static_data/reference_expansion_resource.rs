@@ -42,5 +42,5 @@ pub enum ReferenceExpansionResource {
     /// Member of a group
     Member,
     /// A Mangadex Forums Thread,
-    Thread
+    Thread,
 }

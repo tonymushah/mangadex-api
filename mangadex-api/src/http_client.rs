@@ -435,5 +435,12 @@ macro_rules! create_endpoint_node {
                 }
             )*
         }
+        $(
+            impl From<&$sname> for $arg_ty {
+                fn from(value: &$sname) -> Self {
+                    value.$arg_name.clone()
+                }
+            }
+        )+
     }
 }

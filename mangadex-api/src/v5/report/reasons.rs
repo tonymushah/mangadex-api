@@ -1,8 +1,8 @@
 pub mod category;
 use mangadex_api_types::ReportCategory;
 
-use category::CategoryEndpoint;
 use crate::HttpClientRef;
+use category::CategoryEndpoint;
 
 /// Report endpoint handler builder.
 #[derive(Clone, Debug)]
@@ -15,7 +15,7 @@ impl ReasonsEndpoint {
     pub(crate) fn new(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
-    pub fn category(&self, category : ReportCategory) -> CategoryEndpoint {
+    pub fn category(&self, category: ReportCategory) -> CategoryEndpoint {
         CategoryEndpoint::new(self.http_client.clone(), category)
     }
 }

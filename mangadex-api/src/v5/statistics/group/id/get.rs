@@ -117,8 +117,14 @@ mod tests {
             .build()?
             .send()
             .await?;
-        let ctt = res.statistics.get(&manga_id).ok_or(std::io::Error::new(std::io::ErrorKind::NotFound, "This id is not found"))?;
-        let comments = ctt.comments.ok_or(std::io::Error::new(std::io::ErrorKind::NotFound, "The comment is not found"))?;
+        let ctt = res.statistics.get(&manga_id).ok_or(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "This id is not found",
+        ))?;
+        let comments = ctt.comments.ok_or(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "The comment is not found",
+        ))?;
         assert_eq!(comments.thread_id, thread_id);
         assert_eq!(comments.replies_count, replies_count);
         Ok(())

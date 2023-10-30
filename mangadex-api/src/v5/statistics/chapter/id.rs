@@ -10,7 +10,7 @@ pub mod get;
 #[derive(Clone, Debug)]
 pub struct IdEndpoint {
     http_client: HttpClientRef,
-    id: Uuid
+    id: Uuid,
 }
 
 impl IdEndpoint {
@@ -19,6 +19,8 @@ impl IdEndpoint {
         Self { http_client, id }
     }
     pub fn get(&self) -> GetChapterStatisticsBuilder {
-        GetChapterStatisticsBuilder::default().http_client(self.http_client.clone()).chapter_id(self.id)
+        GetChapterStatisticsBuilder::default()
+            .http_client(self.http_client.clone())
+            .chapter_id(self.id)
     }
 }

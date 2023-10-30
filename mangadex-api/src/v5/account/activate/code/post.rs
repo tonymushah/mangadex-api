@@ -87,7 +87,7 @@ mod tests {
 
         let code = Uuid::new_v4();
 
-        let _ = mangadex_client
+        mangadex_client
             .account()
             .activate()
             .code(code.to_string())

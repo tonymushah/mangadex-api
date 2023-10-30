@@ -80,13 +80,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     }
 
     if let Some(manga_id) = args.manga_view {
-        let manga_view = client
-            .manga()
-            .id(manga_id)
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let manga_view = client.manga().id(manga_id).get().build()?.send().await?;
 
         println!("Manga view: {:#?}", manga_view);
 

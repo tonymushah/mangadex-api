@@ -3,12 +3,12 @@
 //! <https://api.mangadex.org/swagger.html#/ScanlationGroup>
 
 pub mod get;
-pub mod post;
 pub mod id;
+pub mod post;
 
 use get::ListGroupBuilder;
-use post::CreateGroupBuilder;
 use id::IdEndpoint;
+use post::CreateGroupBuilder;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
@@ -24,13 +24,13 @@ impl ScanlationGroupBuilder {
     pub(crate) fn new(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
-    pub fn get(&self) -> ListGroupBuilder{
+    pub fn get(&self) -> ListGroupBuilder {
         ListGroupBuilder::default().http_client(self.http_client.clone())
-    } 
-    pub fn post(&self) -> CreateGroupBuilder{
+    }
+    pub fn post(&self) -> CreateGroupBuilder {
         CreateGroupBuilder::default().http_client(self.http_client.clone())
     }
-    pub fn id(&self, id: Uuid) -> IdEndpoint{
+    pub fn id(&self, id: Uuid) -> IdEndpoint {
         IdEndpoint::new(self.http_client.clone(), id)
     }
 }
