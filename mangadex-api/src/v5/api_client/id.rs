@@ -7,6 +7,7 @@ use crate::HttpClientRef;
 use uuid::Uuid;
 
 use get::GetClientBuilder;
+use post::EditClientBuilder;
 
 create_endpoint_node! {
     #[name] IdEndpoint IdEndpointMethods,
@@ -16,6 +17,7 @@ create_endpoint_node! {
     },
     #[methods] {
         get() -> GetClientBuilder;
+        post() -> EditClientBuilder;
     }
 }
 
@@ -24,5 +26,11 @@ impl IdEndpointMethods for IdEndpoint {
         GetClientBuilder::default()
             .http_client(<&Self as Into<HttpClientRef>>::into(self))
             .client_id(<&Self as Into<Uuid>>::into(self))
+    }
+
+    fn post(&self) -> EditClientBuilder {
+        EditClientBuilder::default()
+            .client_id(<&Self as Into<Uuid>>::into(self))
+            .http_client(<&Self as Into<HttpClientRef>>::into(self))
     }
 }
