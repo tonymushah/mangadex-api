@@ -160,6 +160,7 @@ impl HttpClient {
     where
         E: Endpoint,
         <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
+        <E as mangadex_api_schema::Endpoint>::Response: Clone,
     {
         let resp = self.send_request_with_checks(endpoint).await?;
 
@@ -184,7 +185,7 @@ impl HttpClient {
     where
         E: Endpoint,
         <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
-        <E as mangadex_api_schema::Endpoint>::Response: serde::Serialize,
+        <E as mangadex_api_schema::Endpoint>::Response: serde::Serialize + Clone,
     {
         use mangadex_api_types::rate_limit::RateLimit;
 

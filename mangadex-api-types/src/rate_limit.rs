@@ -34,7 +34,7 @@ pub const RETRY_AFTER: &str = "x-ratelimit-retry-after";
 ///     }
 /// ```
 ///
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct RateLimit {
     /// value from `x-ratelimit-limit` header

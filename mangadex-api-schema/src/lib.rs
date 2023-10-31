@@ -188,18 +188,21 @@ where
 /// `rate_limit` is for the rate limit metadata
 /// `body` is the response data
 #[cfg(feature = "serialize")]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Clone)]
 pub struct Limited<T>
 where
-    T: Serialize,
+    T: Serialize + Clone,
 {
     pub rate_limit: RateLimit,
     pub body: T,
 }
 
 #[cfg(not(feature = "serialize"))]
-#[derive(Debug)]
-pub struct Limited<T> {
+#[derive(Debug, Clone)]
+pub struct Limited<T>
+where
+    T: Clone,
+{
     pub rate_limit: RateLimit,
     pub body: T,
 }
