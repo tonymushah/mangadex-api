@@ -68,7 +68,8 @@ impl ChapterDownload {
                 Err(d) => return Result::Err(Error::RequestBuilderError(d.to_string())),
             }
             .send()
-            .await?,
+            .await?
+            .body,
         );
         let http_client = Arc::new(get_reqwest_client(&client).await);
         let page_filenames = match match self.mode.clone() {

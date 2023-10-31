@@ -32,7 +32,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::AtHomeServerResponse;
+use mangadex_api_schema::v5::AtHomeServer;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -70,7 +70,7 @@ pub struct GetAtHomeServer {
 endpoint! {
     GET ("/at-home/server/{}", chapter_id),
     #[query] GetAtHomeServer,
-    #[flatten_result] AtHomeServerResponse
+    #[rate_limited] AtHomeServer
 }
 
 #[cfg(test)]
@@ -112,12 +112,18 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path_regex(r"/at-home/server/[0-9a-fA-F-]+"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
+        let resp = mangadex_client
             .at_home()
             .server()
             .get()
@@ -126,6 +132,14 @@ mod tests {
             .build()?
             .send()
             .await?;
+
+        let rate_limit = resp.rate_limit;
+
+        assert_eq!(rate_limit.limit, 40);
+        assert_eq!(rate_limit.remaining, 39);
+        println!("{}", rate_limit.retry_after);
+
+        let res = resp.body;
 
         assert_eq!(res.base_url, Url::parse("https://example.org")?);
         assert_eq!(res.chapter.hash, hash);

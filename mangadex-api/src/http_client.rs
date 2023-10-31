@@ -397,6 +397,23 @@ macro_rules! endpoint {
         }
 
     };
+    // Return the response as a `Result`.
+    { @send:rate_limited, $typ:ty, $out:ty } => {
+        impl $typ {
+            /// Send the request.
+            pub async fn send(&self) -> mangadex_api_types::error::Result<mangadex_api_schema::Limited<$out>> {
+                #[cfg(not(feature = "multi-thread"))]
+                {
+                    self.http_client.try_borrow()?.send_request_with_rate_limit(self).await
+                }
+                #[cfg(feature = "multi-thread")]
+                {
+                    self.http_client.lock().await.send_request_with_rate_limit(self).await
+                }
+            }
+        }
+
+    };
     // Return the `Result` variants, `Ok` or `Err`.
     { @send:flatten_result, $typ:ty, $out:ty } => {
         impl $typ {
