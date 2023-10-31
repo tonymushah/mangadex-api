@@ -8,7 +8,7 @@ use std::sync::Arc;
 use derive_builder::Builder;
 #[cfg(feature = "multi-thread")]
 use futures::lock::Mutex;
-use mangadex_api_schema::{Endpoint, FromResponse, UrlSerdeQS};
+use mangadex_api_schema::{Endpoint, FromResponse, Limited, UrlSerdeQS};
 use mangadex_api_types::error::Error;
 use reqwest::Client;
 use serde::de::DeserializeOwned;
@@ -118,25 +118,88 @@ impl HttpClient {
         Ok(req.send().await?)
     }
 
+    async fn send_request_with_checks<E>(&self, endpoint: &E) -> Result<reqwest::Response>
+    where
+        E: Endpoint,
+    {
+        let res = self.send_request_without_deserializing(endpoint).await?;
+
+        let status_code = res.status();
+
+        if status_code.as_u16() == 429 {
+            return Err(Error::RateLimitExcedeed);
+        }
+
+        if status_code.is_server_error() {
+            return Err(Error::ServerError(status_code.as_u16(), res.text().await?));
+        }
+        Ok(res)
+    }
+
     /// Send the request to the endpoint and deserialize the response body.
     pub(crate) async fn send_request<E>(&self, endpoint: &E) -> Result<E::Response>
     where
         E: Endpoint,
         <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
     {
-        let res = self.send_request_without_deserializing(endpoint).await?;
-
-        let status_code = res.status();
-
-        if status_code.is_server_error() {
-            return Err(Error::ServerError(status_code.as_u16(), res.text().await?));
-        }
+        let res = self.send_request_with_checks(endpoint).await?;
 
         let res = res
             .json::<<E::Response as FromResponse>::Response>()
             .await?;
 
         Ok(FromResponse::from_response(res))
+    }
+
+    /// Send the request to the endpoint and deserialize the response body.
+    #[cfg(not(feature = "serialize"))]
+    pub(crate) async fn send_request_with_rate_limit<E>(
+        &self,
+        endpoint: &E,
+    ) -> Result<Limited<E::Response>>
+    where
+        E: Endpoint,
+        <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
+    {
+        let resp = self.send_request_with_checks(endpoint).await?;
+
+        let rate_limit: RateLimit = TryFrom::try_from(&resp)?;
+
+        let res = resp
+            .json::<<E::Response as FromResponse>::Response>()
+            .await?;
+
+        Ok(Limited {
+            rate_limit,
+            body: FromResponse::from_response(res),
+        })
+    }
+
+    /// Send the request to the endpoint and deserialize the response body.
+    #[cfg(feature = "serialize")]
+    pub(crate) async fn send_request_with_rate_limit<E>(
+        &self,
+        endpoint: &E,
+    ) -> Result<Limited<E::Response>>
+    where
+        E: Endpoint,
+        <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
+        <E as mangadex_api_schema::Endpoint>::Response: serde::Serialize,
+    {
+        use mangadex_api_types::rate_limit::RateLimit;
+
+        let resp = self.send_request_with_checks(endpoint).await?;
+
+        let rate_limit: RateLimit = TryFrom::try_from(&resp)?;
+
+        let res = resp
+            .json::<<E::Response as FromResponse>::Response>()
+            .await?;
+
+        Ok(Limited {
+            rate_limit,
+            body: FromResponse::from_response(res),
+        })
     }
 
     /// Get the authentication tokens stored in the client.

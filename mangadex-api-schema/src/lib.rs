@@ -6,6 +6,7 @@ use std::borrow::Cow;
 
 use mangadex_api_types::error::schema::MangaDexErrorResponse;
 use mangadex_api_types::error::Error;
+use mangadex_api_types::rate_limit::RateLimit;
 use mangadex_api_types::{RelationshipType, ResponseType, ResultType};
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Deserializer, Serialize};
@@ -181,4 +182,21 @@ where
 {
     let opt = Option::deserialize(deserializer)?;
     Ok(opt.unwrap_or_default())
+}
+
+#[cfg(feature = "serialize")]
+#[derive(Debug)]
+pub struct Limited<T>
+where
+    T: Serialize,
+{
+    pub rate_limit: RateLimit,
+    pub body: T,
+}
+
+#[cfg(not(feature = "serialize"))]
+#[derive(Debug)]
+pub struct Limited<T> {
+    pub rate_limit: RateLimit,
+    pub body: T,
 }
