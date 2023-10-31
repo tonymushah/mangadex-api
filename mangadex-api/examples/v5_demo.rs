@@ -114,8 +114,8 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let node_url = client
             .at_home()
             .server()
+            .id(chapter_id)
             .get()
-            .chapter_id(chapter_id)
             .build()?
             .send()
             .await?;

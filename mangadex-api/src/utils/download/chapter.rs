@@ -59,9 +59,9 @@ impl ChapterDownload {
             match client
                 .at_home()
                 .server()
+                .id(self.id)
                 .get()
                 .force_port_443(self.force_port_443)
-                .chapter_id(self.id)
                 .build()
             {
                 Ok(d) => d,

@@ -126,8 +126,8 @@ mod tests {
         let resp = mangadex_client
             .at_home()
             .server()
+            .id(chapter_id)
             .get()
-            .chapter_id(chapter_id)
             .force_port_443(true)
             .build()?
             .send()
