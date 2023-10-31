@@ -77,6 +77,7 @@ endpoint! {
 mod tests {
     use fake::faker::internet::en::Password;
     use fake::Fake;
+    use mangadex_api_types::error::Error;
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
@@ -147,5 +148,54 @@ mod tests {
         assert_eq!(res.chapter.data_saver, vec!["1.jpg"]);
 
         Ok(())
+    }
+
+    #[tokio::test]
+    async fn handle_missing_header() -> anyhow::Result<()> {
+        let mock_server = MockServer::start().await;
+        let http_client = HttpClient::builder()
+            .base_url(Url::parse(&mock_server.uri())?)
+            .build()?;
+        let mangadex_client = MangaDexClient::new_with_http_client(http_client);
+
+        let chapter_id = Uuid::new_v4();
+        let hash: String = Password(16..24).fake();
+
+        let response_body = json!({
+            "result": "ok",
+            "baseUrl": "https://example.org",
+            "chapter": {
+                "hash": hash,
+                "data": [
+                    "1.jpg"
+                ],
+                "dataSaver": [
+                    "1.jpg"
+                ],
+            }
+        });
+
+        Mock::given(method("GET"))
+            .and(path_regex(r"/at-home/server/[0-9a-fA-F-]+"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let resp = mangadex_client
+            .at_home()
+            .server()
+            .id(chapter_id)
+            .get()
+            .force_port_443(true)
+            .build()?
+            .send()
+            .await
+            .unwrap_err();
+        if let Error::RateLimitParseError(_) = resp {
+            Ok(())
+        } else {
+            panic!("Invalid Error Received")
+        }
     }
 }

@@ -184,6 +184,9 @@ where
     Ok(opt.unwrap_or_default())
 }
 
+/// This struct is used for rate limited endpoint
+/// `rate_limit` is for the rate limit metadata
+/// `body` is the response data
 #[cfg(feature = "serialize")]
 #[derive(Debug)]
 pub struct Limited<T>

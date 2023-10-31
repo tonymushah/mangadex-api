@@ -15,10 +15,35 @@ pub const REMAINING: &str = "x-ratelimit-remaining";
 
 pub const RETRY_AFTER: &str = "x-ratelimit-retry-after";
 
+/// This `RateLimit` struct contains all the data needed for rate limit handling
+/// It can be parsed via a [`reqwest::Response`] or [`reqwest::header::HeaderMap`]
+/// ```rust
+///     use mangadex_api_types_rust::rate_limit::{LIMIT, REMAINING, RETRY_AFTER, RateLimit, RateLimitParseError};
+///     use reqwest::header::{HeaderMap, HeaderValue};
+///
+///     fn main() -> Result<(), RateLimitParseError> {
+///         let mut headers = HeaderMap::new();
+///         headers.append(RETRY_AFTER, HeaderValue::from_static("1698723860"));
+///         headers.append(LIMIT, HeaderValue::from_static("40"));
+///         headers.append(REMAINING, HeaderValue::from_static("39"));
+///         assert_eq!(headers.len(), 3);
+///         let rate_limit: RateLimit = TryFrom::try_from(&headers)?;
+///         assert_eq!(rate_limit.limit, 40);
+///         assert_eq!(rate_limit.remaining, 39);
+///         Ok(())
+///     }
+/// ```
+///
 #[derive(Serialize, Debug)]
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct RateLimit {
+    /// value from `x-ratelimit-limit` header
     pub limit: u32,
+    /// value from `x-ratelimit-remaining` header
     pub remaining: u32,
+    /// value from `x-ratelimit-retry-after` header
+    /// It's normally an [`i64`] [(Unix timestamp)](https://www.unixtimestamp.com/)
+    /// but can be parsed as a [`crate::MangaDexDateTime`]
     pub retry_after: MangaDexDateTime,
 }
 
