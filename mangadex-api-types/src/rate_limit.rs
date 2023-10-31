@@ -1,7 +1,7 @@
 use std::num::ParseIntError;
 
 use reqwest::{
-    header::{HeaderMap,ToStrError},
+    header::{HeaderMap, ToStrError},
     Response,
 };
 use serde::Serialize;
@@ -38,7 +38,6 @@ impl TryFrom<&HeaderMap> for RateLimit {
     type Error = RateLimitParseError;
 
     fn try_from(value: &HeaderMap) -> Result<Self, Self::Error> {
-        println!("parsing len {}", value.len());
         let limit: u32 = value
             .iter()
             .find(|(name, _)| (*name).eq(&LIMIT))

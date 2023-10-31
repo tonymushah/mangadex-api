@@ -18,6 +18,8 @@ create_endpoint_node! {
 
 impl IdEndpointMethods for IdEndpoint {
     fn get(&self) -> GetAtHomeServerBuilder {
-        todo!()
+        GetAtHomeServerBuilder::default()
+            .http_client(<&Self as Into<HttpClientRef>>::into(self))
+            .chapter_id(<&Self as Into<Uuid>>::into(self))
     }
 }
