@@ -28,6 +28,7 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::Limited;
 use serde::Serialize;
 
 use crate::v5::HttpClientRef;
@@ -69,20 +70,34 @@ pub struct Login {
 }
 
 impl Login {
-    pub async fn send(&self) -> Result<LoginResponse> {
+    pub async fn send(&self) -> Result<Limited<LoginResponse>> {
         #[cfg(not(feature = "multi-thread"))]
         let res = {
-            let res = self.http_client.try_borrow()?.send_request(self).await??;
+            let res = self
+                .http_client
+                .try_borrow()?
+                .send_request_with_rate_limit(self)
+                .await?;
 
-            self.http_client.borrow_mut().set_auth_tokens(&res.token);
+            self.http_client
+                .borrow_mut()
+                .set_auth_tokens(&res.body.token);
 
             res
         };
         #[cfg(feature = "multi-thread")]
         let res = {
-            let res = self.http_client.lock().await.send_request(self).await??;
+            let res = self
+                .http_client
+                .lock()
+                .await
+                .send_request_with_rate_limit(self)
+                .await?;
 
-            self.http_client.lock().await.set_auth_tokens(&res.token);
+            self.http_client
+                .lock()
+                .await
+                .set_auth_tokens(&res.body.token);
 
             res
         };
@@ -94,12 +109,12 @@ impl Login {
 endpoint! {
     POST "/auth/login",
     #[body] Login,
-    #[no_send] Result<LoginResponse>
+    #[no_send] LoginResponse
 }
 
 builder_send! {
     #[builder] LoginBuilder,
-    #[out] LoginResponse
+    #[out] Limited<LoginResponse>
 }
 
 #[cfg(test)]
@@ -139,7 +154,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -195,7 +216,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(400).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(400)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -241,7 +268,12 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(401))
+            .respond_with(
+                ResponseTemplate::new(401)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39"),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -288,7 +320,12 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(503))
+            .respond_with(
+                ResponseTemplate::new(503)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39"),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
