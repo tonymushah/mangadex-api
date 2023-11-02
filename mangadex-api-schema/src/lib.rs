@@ -93,6 +93,17 @@ pub struct ApiData<T> {
     pub data: T,
 }
 
+impl<T> FromResponse for ApiData<T>
+where
+    T: DeserializeOwned,
+{
+    type Response = Self;
+
+    fn from_response(value: Self::Response) -> Self {
+        value
+    }
+}
+
 #[derive(Debug, Default, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
