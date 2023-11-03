@@ -3,6 +3,7 @@
 mod bind;
 pub mod v5;
 use std::borrow::Cow;
+use std::ops::Deref;
 
 use mangadex_api_types::error::schema::MangaDexErrorResponse;
 use mangadex_api_types::error::Error;
@@ -224,4 +225,26 @@ where
 {
     pub rate_limit: RateLimit,
     pub body: T,
+}
+
+#[cfg(not(feature = "serialize"))]
+impl<T> Deref for Limited<T>
+where
+    T: Clone,
+{
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.body
+    }
+}
+
+#[cfg(feature = "serialize")]
+impl<T> Deref for Limited<T>
+where
+    T: Clone + serde::Serialize,
+{
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.body
+    }
 }
