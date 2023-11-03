@@ -37,7 +37,7 @@
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::UploadSessionResponse;
+use mangadex_api_schema::v5::UploadSessionData;
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -75,7 +75,7 @@ pub struct StartEditChapterSession {
 endpoint! {
     POST ("/upload/begin/{}", chapter_id),
     #[body auth] StartEditChapterSession,
-    UploadSessionResponse
+    #[rate_limited] UploadSessionData
 }
 
 #[cfg(test)]
@@ -112,16 +112,21 @@ mod tests {
             "version": 2,
         });
         let response_body = json!({
-            "id": session_id,
-            "type": "upload_session",
-            "attributes": {
-                "isCommitted": false,
-                "isProcessed": false,
-                "isDeleted": false,
-                "version": 2,
-                "createdAt": datetime.to_string(),
-                "updatedAt": datetime.to_string(),
-            },
+            "result": "ok",
+            "response": "entity",
+            "data" : {
+                "id": session_id,
+                "type": "upload_session",
+                "attributes": {
+                    "isCommitted": false,
+                    "isProcessed": false,
+                    "isDeleted": false,
+                    "version": 2,
+                    "createdAt": datetime.to_string(),
+                    "updatedAt": datetime.to_string(),
+                },
+                "relationships": []
+            }
         });
 
         Mock::given(method("POST"))
@@ -129,7 +134,13 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -143,6 +154,8 @@ mod tests {
             .build()?
             .send()
             .await?;
+
+        let res = &res.data;
 
         assert_eq!(res.id, session_id);
         assert_eq!(res.type_, RelationshipType::UploadSession);
