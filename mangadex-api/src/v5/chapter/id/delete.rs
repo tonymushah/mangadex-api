@@ -42,7 +42,6 @@ use uuid::Uuid;
 
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
-use mangadex_api_types::error::Result;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
