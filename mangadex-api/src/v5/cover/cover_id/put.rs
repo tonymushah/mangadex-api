@@ -43,7 +43,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::CoverResponse;
+use mangadex_api_schema::v5::CoverData;
 use mangadex_api_types::Language;
 
 #[cfg_attr(
@@ -86,7 +86,7 @@ pub struct EditCover {
 endpoint! {
     PUT ("/cover/{}", cover_id),
     #[body auth] EditCover,
-    #[flatten_result] CoverResponse
+    #[rate_limited] CoverData
 }
 
 #[cfg(test)]
@@ -151,7 +151,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;

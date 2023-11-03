@@ -42,7 +42,7 @@ use std::borrow::Cow;
 use derive_builder::Builder;
 use mangadex_api_schema::v5::CoverData;
 use mangadex_api_schema::Endpoint;
-use mangadex_api_schema::{v5::CoverResponse, Limited};
+use mangadex_api_schema::Limited;
 use reqwest::multipart::{Form, Part};
 use serde::Serialize;
 use uuid::Uuid;
