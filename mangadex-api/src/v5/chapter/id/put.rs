@@ -43,7 +43,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ChapterResponse;
+use mangadex_api_schema::v5::ChapterData;
 use mangadex_api_types::Language;
 
 #[cfg_attr(
@@ -102,7 +102,7 @@ pub struct UpdateChapter {
 endpoint! {
     PUT ("/chapter/{}", chapter_id),
     #[body auth] UpdateChapter,
-    #[flatten_result] ChapterResponse
+    #[rate_limited] ChapterData
 }
 
 #[cfg(test)]
@@ -169,7 +169,13 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -235,7 +241,13 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -270,7 +282,7 @@ mod tests {
         let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
 
         let expected_body = json!({
-            "title": null,
+            //"title": null,
             "version": 2
         });
         let response_body = json!({
@@ -301,7 +313,13 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -368,7 +386,13 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
