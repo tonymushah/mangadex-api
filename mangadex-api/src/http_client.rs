@@ -8,9 +8,9 @@ use std::sync::Arc;
 use derive_builder::Builder;
 #[cfg(feature = "multi-thread")]
 use futures::lock::Mutex;
-use mangadex_api_schema::{Endpoint, FromResponse, Limited, UrlSerdeQS};
+use mangadex_api_schema::{ApiResult, Endpoint, FromResponse, Limited, UrlSerdeQS};
 use mangadex_api_types::error::Error;
-use reqwest::Client;
+use reqwest::{Client, Response};
 use serde::de::DeserializeOwned;
 #[cfg(feature = "tokio-multi-thread")]
 use tokio::sync::Mutex;
@@ -136,6 +136,13 @@ impl HttpClient {
         Ok(res)
     }
 
+    async fn handle_result<T>(&self, res: Response) -> Result<T>
+    where
+        T: DeserializeOwned,
+    {
+        Ok(res.json::<ApiResult<T>>().await?.into_result()?)
+    }
+
     /// Send the request to the endpoint and deserialize the response body.
     pub(crate) async fn send_request<E>(&self, endpoint: &E) -> Result<E::Response>
     where
@@ -166,8 +173,8 @@ impl HttpClient {
 
         let rate_limit: RateLimit = TryFrom::try_from(&resp)?;
 
-        let res = resp
-            .json::<<E::Response as FromResponse>::Response>()
+        let res = self
+            .handle_result::<<E::Response as FromResponse>::Response>(resp)
             .await?;
 
         Ok(Limited {
@@ -193,8 +200,8 @@ impl HttpClient {
 
         let rate_limit: RateLimit = TryFrom::try_from(&resp)?;
 
-        let res = resp
-            .json::<<E::Response as FromResponse>::Response>()
+        let res = self
+            .handle_result::<<E::Response as FromResponse>::Response>(resp)
             .await?;
 
         Ok(Limited {
