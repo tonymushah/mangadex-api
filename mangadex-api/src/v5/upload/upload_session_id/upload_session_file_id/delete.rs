@@ -44,7 +44,6 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_types::error::Result;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -74,7 +73,7 @@ pub struct DeleteImage {
 endpoint! {
     DELETE ("/upload/{}/{}", session_id, session_file_id),
     #[no_data auth] DeleteImage,
-    #[discard_result] Result<NoData>
+    #[rate_limited] NoData
 }
 
 #[cfg(test)]
@@ -109,7 +108,13 @@ mod tests {
         Mock::given(method("DELETE"))
             .and(path_regex(r"/upload/[0-9a-fA-F-]+/[0-9a-fA-F-]+"))
             .and(header("Authorization", "Bearer sessiontoken"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
