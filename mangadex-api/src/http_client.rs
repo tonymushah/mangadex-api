@@ -307,6 +307,7 @@ impl HttpClient {
 /// - `flatten_result`: If `Output = Result<T>`, the return type will be simplified to `Result<T>`.
 /// - `discard_result`: If `Output = Result<T>`, discard `T`, and return `Result<()>`.
 /// - `no_send`: Do not implement a `send()` function.
+/// - `rate_limited`: `send()` will return `Result<Limited<Output>>`
 ///
 /// # Examples
 ///
