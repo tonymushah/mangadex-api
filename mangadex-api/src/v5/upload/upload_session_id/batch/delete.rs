@@ -41,7 +41,7 @@
 use std::borrow::Cow;
 
 use derive_builder::Builder;
-use mangadex_api_schema::{Endpoint, NoData};
+use mangadex_api_schema::{Endpoint, Limited, NoData};
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -77,7 +77,7 @@ pub struct DeleteImages {
 impl Endpoint for DeleteImages {
     type Query = ();
     type Body = Vec<Uuid>;
-    type Response = Result<NoData>;
+    type Response = NoData;
 
     fn path(&self) -> Cow<str> {
         Cow::Owned(format!("/upload/{}/batch", self.session_id))
@@ -97,14 +97,21 @@ impl Endpoint for DeleteImages {
 }
 
 impl DeleteImages {
-    pub async fn send(&self) -> Result<NoData> {
+    pub async fn send(&self) -> Result<Limited<NoData>> {
         #[cfg(not(feature = "multi-thread"))]
         {
-            self.http_client.try_borrow()?.send_request(self).await?
+            self.http_client
+                .try_borrow()?
+                .send_request_with_rate_limit(self)
+                .await
         }
         #[cfg(feature = "multi-thread")]
         {
-            self.http_client.lock().await.send_request(self).await?
+            self.http_client
+                .lock()
+                .await
+                .send_request_with_rate_limit(self)
+                .await
         }
     }
 }
@@ -143,7 +150,13 @@ mod tests {
             .and(path_regex(r"/upload/[0-9a-fA-F-]+/batch"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
