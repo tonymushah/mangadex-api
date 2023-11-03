@@ -161,10 +161,18 @@ impl<A, T> FromResponse for ApiObjectNoRelationships<A, T> {
 ///     #[discard_result] Result<NoData> // `Result<()>` results in a deserialization error despite discarding the result.
 /// }
 #[derive(Debug, Default, Deserialize, Clone, Hash, PartialEq, Eq)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct NoData {
     #[serde(default)]
     result: ResultType,
+}
+
+impl FromResponse for NoData {
+    type Response = Self;
+    fn from_response(res: Self::Response) -> Self {
+        res
+    }
 }
 
 impl<T> FromResponse for Result<T, Error> {
