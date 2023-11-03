@@ -28,7 +28,7 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UserReportsListResponse;
+use mangadex_api_schema::v5::UserReportsCollection;
 use mangadex_api_types::{
     ReferenceExpansionResource, ReportCategory, ReportSortOrder, ReportStatus,
 };
@@ -64,7 +64,7 @@ pub struct ListReportsByUser {
 endpoint! {
     GET "/report",
     #[query auth] ListReportsByUser,
-    #[flatten_result] UserReportsListResponse
+    #[rate_limited] UserReportsCollection
 }
 
 #[cfg(test)]
@@ -118,7 +118,13 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path("/report"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
