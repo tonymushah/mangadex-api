@@ -26,7 +26,6 @@ pub use super::statistics::manga::MangaStatisticsObject;
 pub use super::tag::TagAttributes;
 pub use super::types::error::schema::MangaDexErrorResponse;
 use super::types::error::Result;
-pub use super::upload_session::UploadSessionResponse;
 pub use super::upload_session_file::{UploadSessionFileAttributes, UploadSessionFileData};
 pub use super::user::UserAttributes;
 pub use super::user_report::UserReportAttributes;
