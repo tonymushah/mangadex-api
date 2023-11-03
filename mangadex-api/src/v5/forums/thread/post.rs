@@ -1,6 +1,6 @@
 use crate::HttpClientRef;
 use derive_builder::Builder;
-use mangadex_api_schema::v5::ForumThreadResponse;
+use mangadex_api_schema::v5::ForumThreadResponseData;
 use mangadex_api_types::ForumThreadType;
 use serde::Serialize;
 use uuid::Uuid;
@@ -32,7 +32,7 @@ pub struct CreateForumThread {
 endpoint! {
     POST "/forums/thread",
     #[body auth] CreateForumThread,
-    #[flatten_result] ForumThreadResponse
+    #[rate_limited] ForumThreadResponseData
 }
 
 #[cfg(test)]
@@ -80,7 +80,13 @@ mod tests {
                 "type": "manga",
                 "id": body_id
             })))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -131,7 +137,13 @@ mod tests {
                 "type": "manga",
                 "id": body_id
             })))
-            .respond_with(ResponseTemplate::new(403).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(403)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -183,7 +195,13 @@ mod tests {
                 "type": "manga",
                 "id": body_id
             })))
-            .respond_with(ResponseTemplate::new(404).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(404)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
