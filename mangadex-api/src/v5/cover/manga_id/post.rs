@@ -40,14 +40,15 @@
 use std::borrow::Cow;
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::CoverResponse;
+use mangadex_api_schema::v5::CoverData;
 use mangadex_api_schema::Endpoint;
+use mangadex_api_schema::{v5::CoverResponse, Limited};
 use reqwest::multipart::{Form, Part};
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_types::Language;
+use mangadex_api_types::{error::Result, Language};
 
 /// Upload a new cover for a manga.
 ///
@@ -96,7 +97,7 @@ pub struct UploadCover {
 impl Endpoint for UploadCover {
     type Query = ();
     type Body = ();
-    type Response = CoverResponse;
+    type Response = CoverData;
 
     fn path(&self) -> Cow<str> {
         Cow::Owned(format!("/cover/{}", self.manga_id))
@@ -128,14 +129,21 @@ impl Endpoint for UploadCover {
 }
 
 impl UploadCover {
-    pub async fn send(&self) -> CoverResponse {
+    pub async fn send(&self) -> Result<Limited<<Self as Endpoint>::Response>> {
         #[cfg(not(feature = "multi-thread"))]
         {
-            self.http_client.try_borrow()?.send_request(self).await?
+            self.http_client
+                .try_borrow()?
+                .send_request_with_rate_limit(self)
+                .await
         }
         #[cfg(feature = "multi-thread")]
         {
-            self.http_client.lock().await.send_request(self).await?
+            self.http_client
+                .lock()
+                .await
+                .send_request_with_rate_limit(self)
+                .await
         }
     }
 }
@@ -198,7 +206,13 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             // The "multipart/form-data; boundary=[boundary]" Content-Type value is dynamic and can't easily be validated.
             .and(header_exists("Content-Type"))
-            .respond_with(ResponseTemplate::new(201).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(201)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
