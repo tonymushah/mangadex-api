@@ -41,7 +41,7 @@
 //! # }
 //! ```
 
-use mangadex_api_schema::v5::ChapterObject;
+use mangadex_api_schema::v5::ChapterData;
 use serde::Serialize;
 use url::Url;
 use uuid::Uuid;
@@ -237,7 +237,7 @@ impl CommitUploadSessionBuilder {
 endpoint! {
     PUT ("/upload/{}/commit", session_id),
     #[body auth] CommitUploadSession,
-    ChapterObject
+    #[rate_limited] ChapterData
 }
 
 #[cfg(test)]
@@ -288,22 +288,27 @@ mod tests {
             ]
         });
         let response_body = json!({
-            "id": chapter_id,
-            "type": "chapter",
-            "attributes": {
-                "title": chapter_title,
-                "volume": "1",
-                "chapter": "2.5",
-                "pages": 4,
-                "translatedLanguage": "en",
-                "uploader": uploader_id,
-                "version": 1,
-                "createdAt": datetime.to_string(),
-                "updatedAt": datetime.to_string(),
-                "publishAt": datetime.to_string(),
-                "readableAt": datetime.to_string(),
-            },
-            "relationships": [],
+            "result": "ok",
+            "response": "entity",
+            "data": {
+                "id": chapter_id,
+                "type": "chapter",
+                "attributes": {
+                    "title": chapter_title,
+                    "volume": "1",
+                    "chapter": "2.5",
+                    "pages": 4,
+                    "translatedLanguage": "en",
+                    "uploader": uploader_id,
+                    "version": 1,
+                    "createdAt": datetime.to_string(),
+                    "updatedAt": datetime.to_string(),
+                    "publishAt": datetime.to_string(),
+                    "readableAt": datetime.to_string(),
+                },
+                "relationships": [],
+            }
+
         });
 
         Mock::given(method("PUT"))
@@ -312,7 +317,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -330,6 +341,8 @@ mod tests {
             .build()?
             .send()
             .await?;
+
+        let res = &res.data;
 
         assert_eq!(res.id, chapter_id);
         assert_eq!(res.type_, RelationshipType::Chapter);
