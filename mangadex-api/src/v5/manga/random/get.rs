@@ -23,7 +23,7 @@
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::MangaResponse;
+use mangadex_api_schema::v5::MangaData;
 use mangadex_api_types::{ContentRating, ReferenceExpansionResource, TagSearchMode};
 use serde::Serialize;
 use uuid::Uuid;
@@ -50,6 +50,7 @@ pub struct GetRandomManga {
     pub(crate) http_client: HttpClientRef,
 
     #[builder(setter(each = "include"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub includes: Vec<ReferenceExpansionResource>,
 
     /// Ensure the returned Manga is one of the given content ratings.
@@ -59,19 +60,30 @@ pub struct GetRandomManga {
     ///     - suggestive
     ///     - erotica
     #[builder(setter(each = "add_content_rating"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub content_rating: Vec<ContentRating>,
-    #[builder(setter(each = "include_tag"))]
+
+    #[builder(setter(each = "include_tag"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub included_tags: Vec<Uuid>,
+
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub included_tags_mode: Option<TagSearchMode>,
-    #[builder(setter(each = "exclude_tag"))]
+
+    #[builder(setter(each = "exclude_tag"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub excluded_tags: Vec<Uuid>,
+
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub excluded_tags_mode: Option<TagSearchMode>,
 }
 
 endpoint! {
     GET ("/manga/random"),
     #[query] GetRandomManga,
-    #[flatten_result] MangaResponse
+    #[rate_limited] MangaData
 }
 
 #[cfg(test)]
@@ -134,7 +146,13 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path(r"/manga/random"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -197,7 +215,13 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path(r"/manga/random"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -273,7 +297,13 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path(r"/manga/random"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -286,8 +316,8 @@ mod tests {
             .send()
             .await?;
 
-        if let Some(links) = res.data.attributes.links {
-            assert_eq!(links.book_walker.unwrap().0, "1".to_string());
+        if let Some(links) = &res.data.attributes.links {
+            assert_eq!(links.book_walker.clone().unwrap().0, "1".to_string());
             assert_eq!(links.manga_updates, None);
         } else {
             panic!("error deserializing 'links' field");
@@ -306,7 +336,12 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path(r"/manga/random"))
-            .respond_with(ResponseTemplate::new(503))
+            .respond_with(
+                ResponseTemplate::new(503)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39"),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
