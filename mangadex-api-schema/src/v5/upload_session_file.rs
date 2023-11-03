@@ -1,9 +1,9 @@
 //! Upload session file information from a response body.
 
-use mangadex_api_types::UploadSource;
+use mangadex_api_types::{ResultType, UploadSource};
 use serde::Deserialize;
 
-use crate::v5::error::MangaDexError;
+use crate::{v5::error::MangaDexError, FromResponse};
 
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -23,6 +23,15 @@ pub struct UploadSessionFileAttributes {
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct UploadSessionFileData<A> {
+    #[serde(default)]
+    pub result: ResultType,
     pub errors: Vec<MangaDexError>,
     pub data: Vec<A>,
+}
+
+impl<A> FromResponse for UploadSessionFileData<A> {
+    type Response = Self;
+    fn from_response(res: Self::Response) -> Self {
+        res
+    }
 }
