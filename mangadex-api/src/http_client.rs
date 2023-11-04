@@ -6,7 +6,7 @@ use std::rc::Rc;
 use std::sync::Arc;
 
 use derive_builder::Builder;
-#[cfg(feature = "multi-thread")]
+#[cfg(all(feature = "multi-thread", not(feature = "tokio-multi-thread")))]
 use futures::lock::Mutex;
 use mangadex_api_schema::{ApiResult, Endpoint, FromResponse, Limited, UrlSerdeQS};
 use mangadex_api_types::error::Error;

@@ -22,7 +22,7 @@ pub mod statistics;
 pub mod upload;
 pub mod user;
 
-#[cfg(feature = "multi-thread")]
+#[cfg(all(feature = "multi-thread", not(feature = "tokio-multi-thread")))]
 use futures::lock::Mutex;
 pub use mangadex_api_schema::v5 as schema;
 pub(crate) use mangadex_api_schema::v5::AuthTokens;
