@@ -37,7 +37,7 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::RefreshTokenResponse;
+use mangadex_api_schema::{v5::RefreshTokenResponse, Limited};
 use mangadex_api_types::error::{Error, Result};
 
 /// Get a new session and refresh token.
@@ -71,12 +71,12 @@ pub struct RefreshToken {
 }
 
 impl RefreshToken {
-    pub async fn send(&mut self) -> Result<RefreshTokenResponse> {
+    pub async fn send(&mut self) -> Result<Limited<RefreshTokenResponse>> {
         // Attempt to get the authenticated user's refresh token, otherwise return an error.
         if self.refresh_token.trim().is_empty() {
-            #[cfg(not(feature = "multi-thread"))]
+            #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
             let http_client = &self.http_client.try_borrow()?;
-            #[cfg(feature = "multi-thread")]
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             let http_client = &self.http_client.lock().await;
 
             let refresh_token = &http_client
@@ -86,21 +86,33 @@ impl RefreshToken {
             self.refresh_token = refresh_token.clone();
         }
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
         {
-            let res = self.http_client.try_borrow()?.send_request(self).await??;
+            let res = self
+                .http_client
+                .try_borrow()?
+                .send_request_with_rate_limit(self)
+                .await?;
 
             self.http_client
                 .try_borrow_mut()?
-                .set_auth_tokens(&res.token);
+                .set_auth_tokens(&res.body.token);
 
             Ok(res)
         }
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         {
-            let res = self.http_client.lock().await.send_request(self).await??;
+            let res = self
+                .http_client
+                .lock()
+                .await
+                .send_request_with_rate_limit(self)
+                .await?;
 
-            self.http_client.lock().await.set_auth_tokens(&res.token);
+            self.http_client
+                .lock()
+                .await
+                .set_auth_tokens(&res.body.token);
 
             Ok(res)
         }
@@ -110,7 +122,7 @@ impl RefreshToken {
 endpoint! {
     POST "/auth/refresh",
     #[body] RefreshToken,
-    #[no_send] Result<RefreshTokenResponse>
+    #[no_send] RefreshTokenResponse
 }
 
 #[cfg(test)]
@@ -152,7 +164,13 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -165,7 +183,7 @@ mod tests {
             .send()
             .await?;
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
         assert_eq!(
             mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
@@ -173,7 +191,7 @@ mod tests {
                 refresh: "newrefreshtoken".to_string(),
             })
         );
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(
             mangadex_client.http_client.lock().await.get_tokens(),
             Some(&AuthTokens {
@@ -215,7 +233,13 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(400).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(400)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -229,7 +253,7 @@ mod tests {
             .await
             .expect_err("expected error");
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
         assert_eq!(
             mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
@@ -237,7 +261,7 @@ mod tests {
                 refresh: "".to_string(),
             })
         );
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(
             mangadex_client.http_client.lock().await.get_tokens(),
             Some(&AuthTokens {
@@ -290,7 +314,13 @@ mod tests {
             .and(path(r"/auth/refresh"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(401).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(401)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -304,7 +334,7 @@ mod tests {
             .await
             .expect_err("expected error");
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
         assert_eq!(
             mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
@@ -312,7 +342,7 @@ mod tests {
                 refresh: "invalidtoken".to_string(),
             })
         );
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(
             mangadex_client.http_client.lock().await.get_tokens(),
             Some(&AuthTokens {
@@ -365,7 +395,13 @@ mod tests {
             .and(path(r"/auth/refresh"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(403).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(403)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -379,7 +415,7 @@ mod tests {
             .await
             .expect_err("expected error");
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
         assert_eq!(
             mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
@@ -387,7 +423,7 @@ mod tests {
                 refresh: "expiredtoken".to_string(),
             })
         );
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(
             mangadex_client.http_client.lock().await.get_tokens(),
             Some(&AuthTokens {

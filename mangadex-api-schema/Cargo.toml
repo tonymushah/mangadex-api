@@ -67,8 +67,33 @@ package = "mangadex-api-types-rust"
 version = "0.5"
 path = "../mangadex-api-types"
 
+[[test]]
+name = "author"
+required-features = ["serialize"]
+
+[[test]]
+name = "chapter"
+required-features = ["serialize"]
+
+[[test]]
+name = "cover"
+required-features = ["serialize"]
+
+[[test]]
+name = "groups"
+required-features = ["serialize"]
+
+[[test]]
+name = "manga"
+required-features = ["serialize"]
+
+[[test]]
+name = "user"
+required-features = ["serialize"]
+
+
 [features]
 non_exhaustive = []
 specta = ["dep:specta", "mangadex-api-types/specta"]
 serialize = []
-default = ["non_exhaustive", "serialize"]
+default = ["non_exhaustive"]

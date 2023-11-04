@@ -43,6 +43,7 @@ use uuid::Uuid;
 use types::{Language, MangaRelation, RelationshipType, ResponseType, ResultType};
 
 pub(crate) use crate::ApiObject;
+use crate::FromResponse;
 
 // TODO: Find a way to reduce the boilerplate for this.
 // `struct-variant` (https://docs.rs/struct-variant) is a potential candidate for this.
@@ -106,6 +107,13 @@ pub struct Results<T> {
     pub limit: u32,
     pub offset: u32,
     pub total: u32,
+}
+
+impl<T> FromResponse for Results<T> {
+    type Response = Self;
+    fn from_response(res: Self::Response) -> Self {
+        res
+    }
 }
 
 pub type LocalizedString = HashMap<Language, String>;

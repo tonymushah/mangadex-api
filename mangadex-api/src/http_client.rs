@@ -1,16 +1,16 @@
-#[cfg(not(feature = "multi-thread"))]
+#[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
 use std::cell::RefCell;
-#[cfg(not(feature = "multi-thread"))]
+#[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
 use std::rc::Rc;
-#[cfg(feature = "multi-thread")]
+#[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
 use std::sync::Arc;
 
 use derive_builder::Builder;
-#[cfg(feature = "multi-thread")]
+#[cfg(all(feature = "multi-thread", not(feature = "tokio-multi-thread")))]
 use futures::lock::Mutex;
-use mangadex_api_schema::{Endpoint, FromResponse, UrlSerdeQS};
+use mangadex_api_schema::{ApiResult, Endpoint, FromResponse, Limited, UrlSerdeQS};
 use mangadex_api_types::error::Error;
-use reqwest::Client;
+use reqwest::{Client, Response};
 use serde::de::DeserializeOwned;
 #[cfg(feature = "tokio-multi-thread")]
 use tokio::sync::Mutex;
@@ -20,7 +20,7 @@ use crate::v5::AuthTokens;
 use crate::{API_DEV_URL, API_URL};
 use mangadex_api_types::error::Result;
 
-#[cfg(not(feature = "multi-thread"))]
+#[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
 pub type HttpClientRef = Rc<RefCell<HttpClient>>;
 #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
 pub type HttpClientRef = Arc<Mutex<HttpClient>>;
@@ -118,25 +118,98 @@ impl HttpClient {
         Ok(req.send().await?)
     }
 
+    async fn send_request_with_checks<E>(&self, endpoint: &E) -> Result<reqwest::Response>
+    where
+        E: Endpoint,
+    {
+        let res = self.send_request_without_deserializing(endpoint).await?;
+
+        let status_code = res.status();
+
+        if status_code.as_u16() == 429 {
+            return Err(Error::RateLimitExcedeed);
+        }
+
+        if status_code.is_server_error() {
+            return Err(Error::ServerError(status_code.as_u16(), res.text().await?));
+        }
+        Ok(res)
+    }
+
+    async fn handle_result<T>(&self, res: Response) -> Result<T>
+    where
+        T: DeserializeOwned,
+    {
+        Ok(res.json::<ApiResult<T>>().await?.into_result()?)
+    }
+
     /// Send the request to the endpoint and deserialize the response body.
     pub(crate) async fn send_request<E>(&self, endpoint: &E) -> Result<E::Response>
     where
         E: Endpoint,
         <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
     {
-        let res = self.send_request_without_deserializing(endpoint).await?;
-
-        let status_code = res.status();
-
-        if status_code.is_server_error() {
-            return Err(Error::ServerError(status_code.as_u16(), res.text().await?));
-        }
+        let res = self.send_request_with_checks(endpoint).await?;
 
         let res = res
             .json::<<E::Response as FromResponse>::Response>()
             .await?;
 
         Ok(FromResponse::from_response(res))
+    }
+
+    /// Send the request to the endpoint and deserialize the response body.
+    #[cfg(not(feature = "serialize"))]
+    pub(crate) async fn send_request_with_rate_limit<E>(
+        &self,
+        endpoint: &E,
+    ) -> Result<Limited<E::Response>>
+    where
+        E: Endpoint,
+        <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
+        <E as mangadex_api_schema::Endpoint>::Response: Clone,
+    {
+        use mangadex_api_types::rate_limit::RateLimit;
+
+        let resp = self.send_request_with_checks(endpoint).await?;
+
+        let rate_limit: RateLimit = TryFrom::try_from(&resp)?;
+
+        let res = self
+            .handle_result::<<E::Response as FromResponse>::Response>(resp)
+            .await?;
+
+        Ok(Limited {
+            rate_limit,
+            body: FromResponse::from_response(res),
+        })
+    }
+
+    /// Send the request to the endpoint and deserialize the response body.
+    #[cfg(feature = "serialize")]
+    pub(crate) async fn send_request_with_rate_limit<E>(
+        &self,
+        endpoint: &E,
+    ) -> Result<Limited<E::Response>>
+    where
+        E: Endpoint,
+        <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
+        <E as mangadex_api_schema::Endpoint>::Response: serde::Serialize + Clone,
+    {
+        use mangadex_api_types::rate_limit::RateLimit;
+
+        let resp = self.send_request_with_checks(endpoint).await?;
+
+        let rate_limit: RateLimit = TryFrom::try_from(&resp)?;
+
+        let res = self
+            .handle_result::<<E::Response as FromResponse>::Response>(resp)
+            .await?;
+
+        Ok(Limited {
+            rate_limit,
+            body: FromResponse::from_response(res),
+        })
     }
 
     /// Get the authentication tokens stored in the client.
@@ -236,6 +309,7 @@ impl HttpClient {
 /// - `flatten_result`: If `Output = Result<T>`, the return type will be simplified to `Result<T>`.
 /// - `discard_result`: If `Output = Result<T>`, discard `T`, and return `Result<()>`.
 /// - `no_send`: Do not implement a `send()` function.
+/// - `rate_limited`: `send()` will return `Result<Limited<Output>>`
 ///
 /// # Examples
 ///
@@ -322,13 +396,30 @@ macro_rules! endpoint {
         impl $typ {
             /// Send the request.
             pub async fn send(&self) -> mangadex_api_types::error::Result<$out> {
-                #[cfg(not(feature = "multi-thread"))]
+                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
                 {
                     self.http_client.try_borrow()?.send_request(self).await
                 }
-                #[cfg(feature = "multi-thread")]
+                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
                 {
                     self.http_client.lock().await.send_request(self).await
+                }
+            }
+        }
+
+    };
+    // Return the response as a `Result`.
+    { @send:rate_limited, $typ:ty, $out:ty } => {
+        impl $typ {
+            /// Send the request.
+            pub async fn send(&self) -> mangadex_api_types::error::Result<mangadex_api_schema::Limited<$out>> {
+                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+                {
+                    self.http_client.try_borrow()?.send_request_with_rate_limit(self).await
+                }
+                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+                {
+                    self.http_client.lock().await.send_request_with_rate_limit(self).await
                 }
             }
         }
@@ -340,11 +431,11 @@ macro_rules! endpoint {
             /// Send the request.
             #[allow(dead_code)]
             pub async fn send(&self) -> $out {
-                #[cfg(not(feature = "multi-thread"))]
+                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
                 {
                     self.http_client.try_borrow()?.send_request(self).await?
                 }
-                #[cfg(feature = "multi-thread")]
+                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
                 {
                     self.http_client.lock().await.send_request(self).await?
                 }
@@ -359,9 +450,9 @@ macro_rules! endpoint {
             /// Send the request.
             #[allow(dead_code)]
             pub async fn send(&self) -> mangadex_api_types::error::Result<()> {
-                #[cfg(not(feature = "multi-thread"))]
+                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
                 self.http_client.try_borrow()?.send_request(self).await??;
-                #[cfg(feature = "multi-thread")]
+                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
                 self.http_client.lock().await.send_request(self).await??;
 
                 Ok(())

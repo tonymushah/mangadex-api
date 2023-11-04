@@ -63,6 +63,12 @@ pub enum Error {
     Io(#[from] std::io::Error),
 
     #[error(transparent)]
+    RateLimitParseError(#[from] crate::rate_limit::RateLimitParseError),
+
+    #[error("Rate Limit Excedeed")]
+    RateLimitExcedeed,
+
+    #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
 }
 
@@ -97,6 +103,8 @@ impl serde::Serialize for Error {
             Error::UninitializedFieldError(e) => serializer.serialize_str(
                 format!("the field {} must be initialized", e.field_name()).as_str(),
             ),
+            Error::RateLimitParseError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::RateLimitExcedeed => serializer.serialize_str("Rate Limit Excedeed"),
         }
     }
 }

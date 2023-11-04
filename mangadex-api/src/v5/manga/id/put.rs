@@ -48,7 +48,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::{LocalizedString, MangaResponse};
+use mangadex_api_schema::v5::{LocalizedString, MangaData};
 use mangadex_api_types::{ContentRating, Demographic, Language, MangaLinks, MangaStatus};
 
 /// Update a manga's information.
@@ -132,7 +132,7 @@ pub struct UpdateManga {
 endpoint! {
     PUT ("/manga/{}", manga_id),
     #[body auth] UpdateManga,
-    #[flatten_result] MangaResponse
+    #[rate_limited] MangaData
 }
 
 #[cfg(test)]
@@ -228,7 +228,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -326,7 +332,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -430,7 +442,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -535,7 +553,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;

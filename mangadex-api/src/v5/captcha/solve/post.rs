@@ -36,7 +36,6 @@ use serde::Serialize;
 
 use crate::HttpClientRef;
 use mangadex_api_schema::NoData;
-use mangadex_api_types::error::Result;
 
 /// Mark a chapter as read for the current user.
 ///
@@ -65,7 +64,7 @@ pub struct SolveCaptcha {
 endpoint! {
     POST "/captcha/solve",
     #[body] SolveCaptcha,
-    #[discard_result] Result<NoData>
+    #[rate_limited] NoData
 }
 
 #[cfg(test)]
@@ -95,7 +94,13 @@ mod tests {
             .and(path(r"/captcha/solve"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -132,7 +137,13 @@ mod tests {
             .and(path(r"/captcha/solve"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(400).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(400)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;

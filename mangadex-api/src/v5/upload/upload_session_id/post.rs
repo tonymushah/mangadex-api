@@ -43,8 +43,9 @@
 use std::borrow::Cow;
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::UploadSessionFileResponse;
 use mangadex_api_schema::Endpoint;
+use mangadex_api_schema::{v5::UploadSessionFileDataObject, Limited};
+use mangadex_api_types::error::Result;
 use reqwest::multipart::{Form, Part};
 use serde::Serialize;
 use uuid::Uuid;
@@ -87,7 +88,7 @@ pub struct UploadImages {
 impl Endpoint for UploadImages {
     type Query = ();
     type Body = ();
-    type Response = UploadSessionFileResponse;
+    type Response = UploadSessionFileDataObject;
 
     fn path(&self) -> Cow<str> {
         Cow::Owned(format!("/upload/{}", self.session_id))
@@ -114,13 +115,22 @@ impl Endpoint for UploadImages {
 }
 
 impl UploadImages {
-    pub async fn send(&self) -> UploadSessionFileResponse {
-        #[cfg(not(feature = "multi-thread"))]
-        let res = self.http_client.try_borrow()?.send_request(self).await?;
-        #[cfg(feature = "multi-thread")]
-        let res = self.http_client.lock().await.send_request(self).await?;
+    pub async fn send(&self) -> Result<Limited<UploadSessionFileDataObject>> {
+        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+        let res = self
+            .http_client
+            .try_borrow()?
+            .send_request_with_rate_limit(self)
+            .await?;
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+        let res = self
+            .http_client
+            .lock()
+            .await
+            .send_request_with_rate_limit(self)
+            .await?;
 
-        res
+        Ok(res)
     }
 }
 
@@ -177,7 +187,13 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             // The "multipart/form-data; boundary=[boundary]" Content-Type value is dynamic and can't easily be validated.
             .and(header_exists("Content-Type"))
-            .respond_with(ResponseTemplate::new(201).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(201)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;

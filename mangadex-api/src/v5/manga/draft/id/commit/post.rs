@@ -46,7 +46,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaResponse;
+use mangadex_api_schema::v5::MangaData;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -76,7 +76,7 @@ pub struct SubmitMangaDraft {
 endpoint! {
     POST ("/manga/draft/{}/commit/", manga_id),
     #[body auth] SubmitMangaDraft,
-    #[flatten_result] MangaResponse
+    #[rate_limited] MangaData
 }
 
 #[cfg(test)]
@@ -169,7 +169,13 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(201).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(201)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -251,7 +257,13 @@ mod tests {
         Mock::given(method("POST"))
             .and(path_regex(r"/manga/draft/[0-9a-fA-F-]+/commit"))
             .and(header("Content-Type", "application/json"))
-            .respond_with(ResponseTemplate::new(403).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(403)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(0)
             .mount(&mock_server)
             .await;

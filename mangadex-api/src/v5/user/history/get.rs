@@ -87,7 +87,7 @@ mod tests {
             "Entry 0 not found",
         ))?;
         assert_eq!(rating.chapter_id, chapid);
-        assert_eq!(rating.read_date, date);
+        assert_eq!(rating.read_date.to_string(), date.to_string());
 
         Ok(())
     }

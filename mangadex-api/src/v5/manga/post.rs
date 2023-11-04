@@ -39,7 +39,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::{LocalizedString, MangaResponse};
+use mangadex_api_schema::v5::{LocalizedString, MangaData};
 use mangadex_api_types::{ContentRating, Demographic, Language, MangaLinks, MangaStatus, Tag};
 
 /// Create a new manga.
@@ -115,7 +115,7 @@ pub struct CreateManga {
 endpoint! {
     POST "/manga",
     #[body auth] CreateManga,
-    #[flatten_result] MangaResponse
+    #[rate_limited] MangaData
 }
 
 #[cfg(test)]
@@ -215,7 +215,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(201).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(201)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -233,7 +239,7 @@ mod tests {
             .build()?
             .send()
             .await?;
-
+        let res = res.body;
         assert_eq!(res.response, ResponseType::Entity);
         assert_eq!(res.data.id, manga_id);
         assert_eq!(
@@ -365,7 +371,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(201).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(201)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -382,6 +394,8 @@ mod tests {
             .build()?
             .send()
             .await?;
+
+        let res = res.body;
 
         assert_eq!(res.data.attributes.last_volume, None);
 
@@ -471,7 +485,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(201).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(201)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -488,6 +508,8 @@ mod tests {
             .build()?
             .send()
             .await?;
+
+        let res = res.body;
 
         assert_eq!(res.data.attributes.last_volume, None);
 
@@ -577,7 +599,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(201).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(201)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -595,6 +623,8 @@ mod tests {
             .build()?
             .send()
             .await?;
+
+        let res = res.body;
 
         assert_eq!(res.data.attributes.last_volume, Some("1".to_string()));
 

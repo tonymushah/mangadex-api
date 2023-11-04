@@ -3,9 +3,11 @@
 mod bind;
 pub mod v5;
 use std::borrow::Cow;
+use std::ops::Deref;
 
 use mangadex_api_types::error::schema::MangaDexErrorResponse;
 use mangadex_api_types::error::Error;
+use mangadex_api_types::rate_limit::RateLimit;
 use mangadex_api_types::{RelationshipType, ResponseType, ResultType};
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Deserializer, Serialize};
@@ -92,6 +94,17 @@ pub struct ApiData<T> {
     pub data: T,
 }
 
+impl<T> FromResponse for ApiData<T>
+where
+    T: DeserializeOwned,
+{
+    type Response = Self;
+
+    fn from_response(value: Self::Response) -> Self {
+        value
+    }
+}
+
 #[derive(Debug, Default, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -149,10 +162,18 @@ impl<A, T> FromResponse for ApiObjectNoRelationships<A, T> {
 ///     #[discard_result] Result<NoData> // `Result<()>` results in a deserialization error despite discarding the result.
 /// }
 #[derive(Debug, Default, Deserialize, Clone, Hash, PartialEq, Eq)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct NoData {
     #[serde(default)]
     result: ResultType,
+}
+
+impl FromResponse for NoData {
+    type Response = Self;
+    fn from_response(res: Self::Response) -> Self {
+        res
+    }
 }
 
 impl<T> FromResponse for Result<T, Error> {
@@ -181,4 +202,49 @@ where
 {
     let opt = Option::deserialize(deserializer)?;
     Ok(opt.unwrap_or_default())
+}
+
+/// This struct is used for rate limited endpoint
+/// `rate_limit` is for the rate limit metadata
+/// `body` is the response data
+#[cfg(feature = "serialize")]
+#[derive(Debug, Serialize, Clone)]
+pub struct Limited<T>
+where
+    T: Serialize + Clone,
+{
+    pub rate_limit: RateLimit,
+    pub body: T,
+}
+
+#[cfg(not(feature = "serialize"))]
+#[derive(Debug, Clone)]
+pub struct Limited<T>
+where
+    T: Clone,
+{
+    pub rate_limit: RateLimit,
+    pub body: T,
+}
+
+#[cfg(not(feature = "serialize"))]
+impl<T> Deref for Limited<T>
+where
+    T: Clone,
+{
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.body
+    }
+}
+
+#[cfg(feature = "serialize")]
+impl<T> Deref for Limited<T>
+where
+    T: Clone + serde::Serialize,
+{
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.body
+    }
 }

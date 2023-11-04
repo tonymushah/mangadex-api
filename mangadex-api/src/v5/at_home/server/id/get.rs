@@ -32,7 +32,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::AtHomeServerResponse;
+use mangadex_api_schema::v5::AtHomeServer;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -70,13 +70,14 @@ pub struct GetAtHomeServer {
 endpoint! {
     GET ("/at-home/server/{}", chapter_id),
     #[query] GetAtHomeServer,
-    #[flatten_result] AtHomeServerResponse
+    #[rate_limited] AtHomeServer
 }
 
 #[cfg(test)]
 mod tests {
     use fake::faker::internet::en::Password;
     use fake::Fake;
+    use mangadex_api_types::error::Error;
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
@@ -112,20 +113,34 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path_regex(r"/at-home/server/[0-9a-fA-F-]+"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
+        let resp = mangadex_client
             .at_home()
             .server()
+            .id(chapter_id)
             .get()
-            .chapter_id(chapter_id)
             .force_port_443(true)
             .build()?
             .send()
             .await?;
+
+        let rate_limit = resp.rate_limit;
+
+        assert_eq!(rate_limit.limit, 40);
+        assert_eq!(rate_limit.remaining, 39);
+        println!("{}", rate_limit.retry_after);
+
+        let res = resp.body;
 
         assert_eq!(res.base_url, Url::parse("https://example.org")?);
         assert_eq!(res.chapter.hash, hash);
@@ -133,5 +148,54 @@ mod tests {
         assert_eq!(res.chapter.data_saver, vec!["1.jpg"]);
 
         Ok(())
+    }
+
+    #[tokio::test]
+    async fn handle_missing_header() -> anyhow::Result<()> {
+        let mock_server = MockServer::start().await;
+        let http_client = HttpClient::builder()
+            .base_url(Url::parse(&mock_server.uri())?)
+            .build()?;
+        let mangadex_client = MangaDexClient::new_with_http_client(http_client);
+
+        let chapter_id = Uuid::new_v4();
+        let hash: String = Password(16..24).fake();
+
+        let response_body = json!({
+            "result": "ok",
+            "baseUrl": "https://example.org",
+            "chapter": {
+                "hash": hash,
+                "data": [
+                    "1.jpg"
+                ],
+                "dataSaver": [
+                    "1.jpg"
+                ],
+            }
+        });
+
+        Mock::given(method("GET"))
+            .and(path_regex(r"/at-home/server/[0-9a-fA-F-]+"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let resp = mangadex_client
+            .at_home()
+            .server()
+            .id(chapter_id)
+            .get()
+            .force_port_443(true)
+            .build()?
+            .send()
+            .await
+            .unwrap_err();
+        if let Error::RateLimitParseError(_) = resp {
+            Ok(())
+        } else {
+            panic!("Invalid Error Received")
+        }
     }
 }

@@ -59,16 +59,17 @@ impl ChapterDownload {
             match client
                 .at_home()
                 .server()
+                .id(self.id)
                 .get()
                 .force_port_443(self.force_port_443)
-                .chapter_id(self.id)
                 .build()
             {
                 Ok(d) => d,
                 Err(d) => return Result::Err(Error::RequestBuilderError(d.to_string())),
             }
             .send()
-            .await?,
+            .await?
+            .body,
         );
         let http_client = Arc::new(get_reqwest_client(&client).await);
         let page_filenames = match match self.mode.clone() {

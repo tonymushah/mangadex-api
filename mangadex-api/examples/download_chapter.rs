@@ -165,16 +165,16 @@ async fn run(args: Args) -> anyhow::Result<()> {
     let at_home = client
         .at_home()
         .server()
+        .id(args.chapter_id)
         .get()
-        .chapter_id(args.chapter_id)
         .build()?
         .send()
         .await?;
 
     let page_filenames = if !args.data_saver {
-        at_home.chapter.data
+        at_home.body.chapter.data
     } else {
-        at_home.chapter.data_saver
+        at_home.body.chapter.data_saver
     };
 
     for (i, server_filename) in page_filenames.iter().enumerate() {
@@ -188,6 +188,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let filename = format!("{:03}{}", i + 1, ext);
 
         let page_url = at_home
+            .body
             .base_url
             .join(&format!(
                 "/{quality_mode}/{chapter_hash}/{page_filename}",
@@ -196,7 +197,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
                 } else {
                     "data"
                 },
-                chapter_hash = at_home.chapter.hash,
+                chapter_hash = at_home.body.chapter.hash,
                 page_filename = server_filename
             ))
             .unwrap();

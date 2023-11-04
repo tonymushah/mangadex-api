@@ -35,7 +35,7 @@
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::UploadSessionResponse;
+use mangadex_api_schema::v5::UploadSessionData;
 use serde::Serialize;
 
 use crate::HttpClientRef;
@@ -62,12 +62,13 @@ pub struct GetUploadSession {
 
 endpoint! {
     GET "/upload",
-    #[no_data] GetUploadSession,
-    UploadSessionResponse
+    #[no_data auth] GetUploadSession,
+    #[rate_limited] UploadSessionData
 }
 
 #[cfg(test)]
 mod tests {
+    use mangadex_api_schema::v5::AuthTokens;
     use serde_json::json;
     use time::OffsetDateTime;
     use url::Url;
@@ -82,27 +83,42 @@ mod tests {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
+            .auth_tokens(AuthTokens {
+                session: "sessiontoken".to_string(),
+                refresh: "refreshtoken".to_string(),
+            })
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
         let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
 
         let response_body = json!({
-            "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-            "type": "upload_session",
-            "attributes": {
-                "isCommitted": true,
-                "isProcessed": true,
-                "isDeleted": true,
-                "version": 1,
-                "createdAt": datetime.to_string(),
-                "updatedAt": datetime.to_string(),
+            "result": "ok",
+            "response": "entity",
+            "data" : {
+                "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+                "type": "upload_session",
+                "attributes": {
+                    "isCommitted": true,
+                    "isProcessed": true,
+                    "isDeleted": true,
+                    "version": 1,
+                    "createdAt": datetime.to_string(),
+                    "updatedAt": datetime.to_string(),
+                },
+                "relationships": []
             }
         });
 
         Mock::given(method("GET"))
             .and(path(r"/upload"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;

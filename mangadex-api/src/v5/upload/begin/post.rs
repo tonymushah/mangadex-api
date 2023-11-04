@@ -38,7 +38,7 @@
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::UploadSessionResponse;
+use mangadex_api_schema::v5::UploadSessionData;
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -68,6 +68,7 @@ pub struct StartUploadSession {
     pub(crate) http_client: HttpClientRef,
 
     #[builder(setter(each = "add_group_id"))]
+    #[builder(default)]
     pub groups: Vec<Uuid>,
     #[serde(rename = "manga")]
     pub manga_id: Uuid,
@@ -76,7 +77,7 @@ pub struct StartUploadSession {
 endpoint! {
     POST "/upload/begin",
     #[body auth] StartUploadSession,
-    UploadSessionResponse
+    #[rate_limited] UploadSessionData
 }
 
 #[cfg(test)]
@@ -117,16 +118,21 @@ mod tests {
             "manga": manga_id
         });
         let response_body = json!({
-            "id": session_id,
-            "type": "upload_session",
-            "attributes": {
-                "isCommitted": false,
-                "isProcessed": false,
-                "isDeleted": false,
-                "version": 1,
-                "createdAt": datetime.to_string(),
-                "updatedAt": datetime.to_string(),
-            },
+            "result": "ok",
+            "response": "entity",
+            "data": {
+                "id": session_id,
+                "type": "upload_session",
+                "attributes": {
+                    "isCommitted": false,
+                    "isProcessed": false,
+                    "isDeleted": false,
+                    "version": 1,
+                    "createdAt": datetime.to_string(),
+                    "updatedAt": datetime.to_string(),
+                },
+                "relationships": []
+            }
         });
 
         Mock::given(method("POST"))
@@ -135,7 +141,13 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
             // .and(body_json(expected_body))
-            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .respond_with(
+                ResponseTemplate::new(200)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
             .expect(1)
             .mount(&mock_server)
             .await;
@@ -150,6 +162,7 @@ mod tests {
             .send()
             .await?;
 
+        let res = &res.data;
         assert_eq!(res.id, session_id);
         assert_eq!(res.type_, RelationshipType::UploadSession);
         assert!(!res.attributes.is_committed);

@@ -60,13 +60,13 @@ endpoint! {
 
 impl Ping {
     pub async fn send(&self) -> Result<String> {
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
         let res = self
             .http_client
             .try_borrow()?
             .send_request_without_deserializing(self)
             .await?;
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         let res = self
             .http_client
             .lock()

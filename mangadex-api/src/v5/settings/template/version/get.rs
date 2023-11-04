@@ -73,7 +73,7 @@ pub struct GetSettingsTemplateByVersionId {
 
 endpoint! {
     GET ("/settings/template/{}", version),
-    #[no_data] GetSettingsTemplateByVersionId,
+    #[no_data auth] GetSettingsTemplateByVersionId,
     #[discard_result] Result<NoData>
 }
 
