@@ -139,7 +139,11 @@ async fn download_file(
     output: &Path,
     file_name: &str,
 ) -> anyhow::Result<()> {
-    #[cfg(not(feature = "multi-thread"))]
+    #[cfg(all(
+        not(feature = "multi-thread"),
+        not(feature = "tokio-multi-thread"),
+        not(feature = "rw-multi-thread")
+    ))]
     let image_bytes = http_client
         .try_borrow()?
         .client
@@ -148,9 +152,19 @@ async fn download_file(
         .await?
         .bytes()
         .await?;
-    #[cfg(feature = "multi-thread")]
+    #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
     let image_bytes = http_client
         .lock()
+        .await
+        .client
+        .get(url)
+        .send()
+        .await?
+        .bytes()
+        .await?;
+    #[cfg(feature = "rw-multi-thread")]
+    let image_bytes = http_client
+        .read()
         .await
         .client
         .get(url)

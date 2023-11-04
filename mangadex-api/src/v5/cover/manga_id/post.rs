@@ -130,7 +130,11 @@ impl Endpoint for UploadCover {
 
 impl UploadCover {
     pub async fn send(&self) -> Result<Limited<<Self as Endpoint>::Response>> {
-        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+        #[cfg(all(
+            not(feature = "multi-thread"),
+            not(feature = "tokio-multi-thread"),
+            not(feature = "rw-multi-thread")
+        ))]
         {
             self.http_client
                 .try_borrow()?
@@ -141,6 +145,14 @@ impl UploadCover {
         {
             self.http_client
                 .lock()
+                .await
+                .send_request_with_rate_limit(self)
+                .await
+        }
+        #[cfg(feature = "rw-multi-thread")]
+        {
+            self.http_client
+                .read()
                 .await
                 .send_request_with_rate_limit(self)
                 .await
