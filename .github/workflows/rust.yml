@@ -18,10 +18,8 @@ jobs:
     - name: Build
       run: cargo build --verbose
     - name: Run tests default
-      run: cargo test --all-targets --verbose && \
-        cargo test --all-targets -F utils --verbose
+      run: cargo test --all-targets --verbose && cargo test --all-targets -F utils --verbose
     - name: Run tests with `multi-thread`
-      run: cargo test --all-targets -F multi-thread --verbose && \
-        cargo test --all-targets -F multi-thread,utils --verbose
+      run: cargo test --all-targets -F multi-thread --verbose && cargo test --all-targets -F multi-thread,utils --verbose
     - name: Run tests with `tokio-multi-thread`
-      run: cargo test --all-targets -F tokio-multi-thread,utils --verbose
+      run: cargo test --all-targets -F tokio-multi-thread --verbose && cargo test --all-targets -F tokio-multi-thread,utils --verbose
