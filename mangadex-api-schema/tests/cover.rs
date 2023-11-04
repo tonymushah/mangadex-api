@@ -24,7 +24,7 @@ async fn cover_serializing_test() {
     let response_text = res.text().await.unwrap();
     let mangadata: CoverCollection = serde_json::from_str(response_text.as_str()).unwrap();
     let json_mangadata = serde_json::to_string(&mangadata).unwrap();
-    create_dir_all("test-output/cover").unwrap();
+    create_dir_all("test-output/cover_art").unwrap();
     let mut file1: File = File::create("test-output/cover_art/1.json").unwrap();
     let mut file2: File = File::create("test-output/cover_art/2.json").unwrap();
     file1.write_all(json_mangadata.as_bytes()).unwrap();
