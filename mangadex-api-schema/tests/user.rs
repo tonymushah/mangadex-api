@@ -4,16 +4,22 @@ use std::{
     io::{Read, Write},
 };
 
-use reqwest::Client;
+use reqwest::{
+    header::{HeaderValue, USER_AGENT},
+    Client,
+};
 use url::Url;
 
-#[tokio::test]
 async fn user_serializing_test() {
     let client = Client::new();
     let res = client
         .get(
             Url::parse("https://api.mangadex.org/user/59333f44-7b8a-48b2-8c98-90593c2d781d")
                 .unwrap(),
+        )
+        .header(
+            USER_AGENT,
+            HeaderValue::from_static("mangadex-api-schema-test 0.5"),
         )
         .send()
         .await
@@ -28,7 +34,6 @@ async fn user_serializing_test() {
     file2.write_all(response_text.as_bytes()).unwrap();
 }
 
-#[tokio::test]
 async fn compare_1_2() {
     create_dir_all("test-output/user").unwrap();
     let mut file1: File = File::open("test-output/user/1.json").unwrap();
@@ -40,7 +45,6 @@ async fn compare_1_2() {
     assert_eq!(file1_data, file2_data);
 }
 
-#[tokio::test]
 async fn test_des_and_ser() {
     create_dir_all("test-output/user").unwrap();
     let mut file1: File = File::open("test-output/user/1.json").unwrap();
@@ -48,4 +52,11 @@ async fn test_des_and_ser() {
     file1.read_to_string(&mut file1_data).unwrap();
     let mangadata: UserData = serde_json::from_str(file1_data.as_str()).unwrap();
     assert_eq!(serde_json::to_string(&mangadata).unwrap(), file1_data);
+}
+
+#[tokio::test]
+async fn user() {
+    user_serializing_test().await;
+    compare_1_2().await;
+    test_des_and_ser().await;
 }
