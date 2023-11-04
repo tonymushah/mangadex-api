@@ -1,6 +1,6 @@
 use mangadex_api_schema_rust::v5::ChapterCollection;
 use std::{
-    fs::File,
+    fs::{create_dir_all, File},
     io::{Read, Write},
 };
 
@@ -16,6 +16,7 @@ async fn chapter_serializing_test() {
         .await
         .unwrap();
     let response_text = res.text().await.unwrap();
+    create_dir_all("test-output/chapter").unwrap();
     let mangadata: ChapterCollection = serde_json::from_str(response_text.as_str()).unwrap();
     let json_mangadata = serde_json::to_string(&mangadata).unwrap();
     let mut file1: File = File::create("test-output/chapter/1.json").unwrap();
@@ -26,6 +27,7 @@ async fn chapter_serializing_test() {
 
 #[tokio::test]
 async fn compare_1_2() {
+    create_dir_all("test-output/chapter").unwrap();
     let mut file1: File = File::open("test-output/chapter/1.json").unwrap();
     let mut file2: File = File::open("test-output/chapter/2.json").unwrap();
     let mut file1_data = String::default();
@@ -37,6 +39,7 @@ async fn compare_1_2() {
 
 #[tokio::test]
 async fn test_des_and_ser() {
+    create_dir_all("test-output/chapter").unwrap();
     let mut file1: File = File::open("test-output/chapter/1.json").unwrap();
     let mut file1_data = String::default();
     file1.read_to_string(&mut file1_data).unwrap();

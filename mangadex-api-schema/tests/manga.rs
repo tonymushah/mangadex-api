@@ -1,5 +1,5 @@
 use std::{
-    fs::File,
+    fs::{create_dir_all, File},
     io::{Read, Write},
 };
 
@@ -24,6 +24,7 @@ async fn test_manga_serialization() {
     let response_text = res.text().await.unwrap();
     let mangadata: MangaData = serde_json::from_str(response_text.as_str()).unwrap();
     let json_mangadata = serde_json::to_string(&mangadata).unwrap();
+    create_dir_all("test-output/manga").unwrap();
     let mut file1: File = File::create("test-output/manga/1.json").unwrap();
     let mut file2: File = File::create("test-output/manga/2.json").unwrap();
     file1.write_all(json_mangadata.as_bytes()).unwrap();
@@ -32,6 +33,7 @@ async fn test_manga_serialization() {
 
 #[tokio::test]
 async fn compare_1_2() {
+    create_dir_all("test-output/manga").unwrap();
     let mut file1: File = File::open("test-output/manga/1.json").unwrap();
     let mut file2: File = File::open("test-output/manga/2.json").unwrap();
     let mut file1_data = String::default();
@@ -43,6 +45,7 @@ async fn compare_1_2() {
 
 #[tokio::test]
 async fn test_des_and_ser() {
+    create_dir_all("test-output/manga").unwrap();
     let mut file1: File = File::open("test-output/manga/1.json").unwrap();
     let mut file1_data = String::default();
     file1.read_to_string(&mut file1_data).unwrap();
