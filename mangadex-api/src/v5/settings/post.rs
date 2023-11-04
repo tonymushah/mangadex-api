@@ -66,7 +66,9 @@ pub struct CreateOrUpdateUserSettings {
     pub(crate) http_client: HttpClientRef,
 
     // TODO: Flesh out body.
+    #[builder(default)]
     pub settings: HashMap<String, String>,
+    #[builder(default)]
     pub updated_at: MangaDexDateTime,
 }
 

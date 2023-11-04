@@ -238,13 +238,16 @@ impl CoverDownload {
 mod tests {
     use crate::MangaDexClient;
     use anyhow::Result;
-    use std::{fs::File, io::Write};
+    use std::{
+        fs::{create_dir_all, File},
+        io::Write,
+    };
     use uuid::Uuid;
 
     /// Download the volume 2 cover of [Lycoris Recoil](https://mangadex.org/title/9c21fbcd-e22e-4e6d-8258-7d580df9fc45/lycoris-recoil)
     #[tokio::test]
     pub async fn via_cover_id() -> Result<()> {
-        let cover_id: Uuid = Uuid::parse_str("0bc12ff4-3cec-4244-8582-965b8be496ea")?;
+        let cover_id: Uuid = Uuid::parse_str("b5040c5d-7fd3-4b17-af5f-c96805c83aa4")?;
         let client: MangaDexClient = MangaDexClient::default();
         let (filename, bytes) = client
             .download()
@@ -252,6 +255,7 @@ mod tests {
             .build()?
             .via_cover_id(cover_id)
             .await?;
+        create_dir_all("test-outputs/covers")?;
         let mut file = File::create(format!("{}/{}", "test-outputs/covers", filename))?;
         file.write_all(&bytes.unwrap())?;
         Ok(())
@@ -270,6 +274,7 @@ mod tests {
             .build()?
             .via_manga_id(manga_id)
             .await?;
+        create_dir_all("test-outputs/covers")?;
         let mut file = File::create(format!("{}/{}", "test-outputs/covers", filename))?;
         file.write_all(&bytes.unwrap())?;
         Ok(())

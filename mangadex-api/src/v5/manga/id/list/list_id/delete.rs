@@ -119,7 +119,7 @@ mod tests {
             .id(manga_id)
             .list()
             .list_id(list_id)
-            .post()
+            .delete()
             .build()?
             .send()
             .await?;
