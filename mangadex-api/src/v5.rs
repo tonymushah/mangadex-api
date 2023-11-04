@@ -26,13 +26,18 @@ pub mod user;
 use futures::lock::Mutex;
 pub use mangadex_api_schema::v5 as schema;
 pub(crate) use mangadex_api_schema::v5::AuthTokens;
+use reqwest::header::HeaderMap;
+use reqwest::header::HeaderValue;
+use reqwest::header::USER_AGENT;
 use reqwest::Client;
-#[cfg(not(feature = "multi-thread"))]
+#[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
 use std::cell::RefCell;
-#[cfg(not(feature = "multi-thread"))]
+#[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
 use std::rc::Rc;
 #[cfg(feature = "multi-thread")]
 use std::sync::Arc;
+#[cfg(feature = "tokio-multi-thread")]
+use tokio::sync::Mutex;
 
 #[cfg(feature = "legacy-account")]
 use crate::v5::account::AccountBuilder;
@@ -88,8 +93,15 @@ impl Default for MangaDexClient {
     /// # }
     /// ```
     fn default() -> Self {
+        let mut headers = HeaderMap::new();
+        headers.append(
+            USER_AGENT,
+            HeaderValue::from_static("mangadex-api-rs 3.0.0-alpha.1"),
+        );
         Self {
-            http_client: create_ref_counted_http_client(HttpClient::default()),
+            http_client: create_ref_counted_http_client(HttpClient::new(
+                Client::builder().default_headers(headers).build().unwrap(),
+            )),
         }
     }
 }
@@ -329,11 +341,11 @@ impl MangaDexClient {
 
 /// Create a new reference counted `HttpClient`.
 fn create_ref_counted_http_client(http_client: HttpClient) -> HttpClientRef {
-    #[cfg(not(feature = "multi-thread"))]
+    #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
     {
         Rc::new(RefCell::new(http_client))
     }
-    #[cfg(feature = "multi-thread")]
+    #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
     {
         Arc::new(Mutex::new(http_client))
     }

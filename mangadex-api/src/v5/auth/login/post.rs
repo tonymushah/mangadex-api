@@ -71,7 +71,7 @@ pub struct Login {
 
 impl Login {
     pub async fn send(&self) -> Result<Limited<LoginResponse>> {
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
         let res = {
             let res = self
                 .http_client
@@ -85,7 +85,7 @@ impl Login {
 
             res
         };
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         let res = {
             let res = self
                 .http_client
@@ -174,7 +174,7 @@ mod tests {
             .send()
             .await?;
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
         assert_eq!(
             mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
@@ -182,7 +182,7 @@ mod tests {
                 refresh: "refreshtoken".to_string(),
             })
         );
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(
             mangadex_client.http_client.lock().await.get_tokens(),
             Some(&AuthTokens {
@@ -238,9 +238,9 @@ mod tests {
             .await
             .expect_err("expected error");
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
         assert_eq!(mangadex_client.http_client.try_borrow()?.get_tokens(), None);
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(mangadex_client.http_client.lock().await.get_tokens(), None);
 
         if let Error::Api(errors) = res {
@@ -289,9 +289,9 @@ mod tests {
             .await
             .expect_err("expected error");
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
         assert_eq!(mangadex_client.http_client.try_borrow()?.get_tokens(), None);
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(mangadex_client.http_client.lock().await.get_tokens(), None);
 
         match res {
@@ -341,9 +341,9 @@ mod tests {
             .await
             .expect_err("expected error");
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
         assert_eq!(mangadex_client.http_client.try_borrow()?.get_tokens(), None);
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(mangadex_client.http_client.lock().await.get_tokens(), None);
 
         match res {

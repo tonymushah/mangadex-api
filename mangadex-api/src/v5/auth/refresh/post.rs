@@ -74,9 +74,9 @@ impl RefreshToken {
     pub async fn send(&mut self) -> Result<Limited<RefreshTokenResponse>> {
         // Attempt to get the authenticated user's refresh token, otherwise return an error.
         if self.refresh_token.trim().is_empty() {
-            #[cfg(not(feature = "multi-thread"))]
+            #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
             let http_client = &self.http_client.try_borrow()?;
-            #[cfg(feature = "multi-thread")]
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             let http_client = &self.http_client.lock().await;
 
             let refresh_token = &http_client
@@ -86,7 +86,7 @@ impl RefreshToken {
             self.refresh_token = refresh_token.clone();
         }
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
         {
             let res = self
                 .http_client
@@ -100,7 +100,7 @@ impl RefreshToken {
 
             Ok(res)
         }
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         {
             let res = self
                 .http_client
@@ -183,7 +183,7 @@ mod tests {
             .send()
             .await?;
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
         assert_eq!(
             mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
@@ -191,7 +191,7 @@ mod tests {
                 refresh: "newrefreshtoken".to_string(),
             })
         );
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(
             mangadex_client.http_client.lock().await.get_tokens(),
             Some(&AuthTokens {
@@ -253,7 +253,7 @@ mod tests {
             .await
             .expect_err("expected error");
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
         assert_eq!(
             mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
@@ -261,7 +261,7 @@ mod tests {
                 refresh: "".to_string(),
             })
         );
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(
             mangadex_client.http_client.lock().await.get_tokens(),
             Some(&AuthTokens {
@@ -334,7 +334,7 @@ mod tests {
             .await
             .expect_err("expected error");
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
         assert_eq!(
             mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
@@ -342,7 +342,7 @@ mod tests {
                 refresh: "invalidtoken".to_string(),
             })
         );
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(
             mangadex_client.http_client.lock().await.get_tokens(),
             Some(&AuthTokens {
@@ -415,7 +415,7 @@ mod tests {
             .await
             .expect_err("expected error");
 
-        #[cfg(not(feature = "multi-thread"))]
+        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
         assert_eq!(
             mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
@@ -423,7 +423,7 @@ mod tests {
                 refresh: "expiredtoken".to_string(),
             })
         );
-        #[cfg(feature = "multi-thread")]
+        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(
             mangadex_client.http_client.lock().await.get_tokens(),
             Some(&AuthTokens {

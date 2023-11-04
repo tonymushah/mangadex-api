@@ -1,7 +1,7 @@
 #![doc = include_str!("../README.md")]
 #![forbid(unsafe_code)]
 #![cfg_attr(
-    not(feature = "multi-thread"),
+    not(any(feature = "multi-thread", feature = "tokio-multi-thread")),
     allow(clippy::await_holding_refcell_ref)
 )]
 
