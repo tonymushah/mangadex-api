@@ -169,6 +169,8 @@ impl HttpClient {
         <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
         <E as mangadex_api_schema::Endpoint>::Response: Clone,
     {
+        use mangadex_api_types::rate_limit::RateLimit;
+
         let resp = self.send_request_with_checks(endpoint).await?;
 
         let rate_limit: RateLimit = TryFrom::try_from(&resp)?;
@@ -433,7 +435,7 @@ macro_rules! endpoint {
                 {
                     self.http_client.try_borrow()?.send_request(self).await?
                 }
-                #[cfg(feature = "multi-thread")]
+                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
                 {
                     self.http_client.lock().await.send_request(self).await?
                 }
