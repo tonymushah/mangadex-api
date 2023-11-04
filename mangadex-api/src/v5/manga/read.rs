@@ -1,5 +1,3 @@
-
-
 use crate::HttpClientRef;
 
 pub mod get;
