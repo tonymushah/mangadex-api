@@ -98,7 +98,7 @@ impl Endpoint for DeleteImages {
 
 impl DeleteImages {
     pub async fn send(&self) -> Result<Limited<NoData>> {
-        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
+        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
         {
             self.http_client
                 .try_borrow()?

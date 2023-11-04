@@ -75,7 +75,7 @@ pub struct IsFollowingCustomList {
 
 impl IsFollowingCustomList {
     pub async fn send(&mut self) -> Result<IsFollowingResponse> {
-        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
+        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
         let res = self
             .http_client
             .try_borrow()?

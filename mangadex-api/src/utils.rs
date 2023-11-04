@@ -7,7 +7,7 @@ pub mod download;
 /// Gives you the `reqwest::Client` from the `MangaDexClient`
 /// Comes handy when you don't want to build a new `reqwest` Client
 pub async fn get_reqwest_client(client: &MangaDexClient) -> Client {
-    #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
+    #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
     {
         client.get_http_client().borrow().client.clone()
     }

@@ -30,11 +30,11 @@ use reqwest::header::HeaderMap;
 use reqwest::header::HeaderValue;
 use reqwest::header::USER_AGENT;
 use reqwest::Client;
-#[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
+#[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
 use std::cell::RefCell;
-#[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
+#[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
 use std::rc::Rc;
-#[cfg(feature = "multi-thread")]
+#[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
 use std::sync::Arc;
 #[cfg(feature = "tokio-multi-thread")]
 use tokio::sync::Mutex;
@@ -341,7 +341,7 @@ impl MangaDexClient {
 
 /// Create a new reference counted `HttpClient`.
 fn create_ref_counted_http_client(http_client: HttpClient) -> HttpClientRef {
-    #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
+    #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
     {
         Rc::new(RefCell::new(http_client))
     }

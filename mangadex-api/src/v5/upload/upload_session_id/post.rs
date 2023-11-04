@@ -116,7 +116,7 @@ impl Endpoint for UploadImages {
 
 impl UploadImages {
     pub async fn send(&self) -> Result<Limited<UploadSessionFileDataObject>> {
-        #[cfg(not(any(feature = "multi-thread", feature = "tokio-multi-thread")))]
+        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
         let res = self
             .http_client
             .try_borrow()?
