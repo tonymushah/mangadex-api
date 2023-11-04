@@ -10,6 +10,18 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  test-rw-multi-thread:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run tests default
+      run: cargo test --all-targets -F rw-multi-thread --verbose
+    - name: Run tests with utils
+      run: cargo test --all-targets -F rw-multi-thread,utils --verbose
+    - name: Run tests with legacy-account
+      run: cargo test --all-targets -F rw-multi-thread,legacy-account --verbose
+      
   test-mutli-thread:
     runs-on: ubuntu-latest
 
