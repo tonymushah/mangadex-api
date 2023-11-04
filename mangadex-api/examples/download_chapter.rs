@@ -239,7 +239,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
                 .get(page_url.clone())
                 .send()
                 .await?;
-            #[cfg(all(feature = "multi-thread", feature = "tokio-multi-thread"))]
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             let page_res = client
                 .get_http_client()
                 .lock()
@@ -288,7 +288,7 @@ async fn download_file(
         .await?
         .bytes()
         .await?;
-    #[cfg(all(feature = "multi-thread", feature = "tokio-multi-thread"))]
+    #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
     let image_bytes = http_client
         .lock()
         .await
