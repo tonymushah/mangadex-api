@@ -80,6 +80,12 @@ impl Logout {
 
             self.http_client.lock().await.clear_auth_tokens();
         }
+        #[cfg(feature = "rw-multi-thread")]
+        {
+            self.http_client.read().await.send_request(self).await??;
+
+            self.http_client.write().await.clear_auth_tokens();
+        }
 
         Ok(())
     }
