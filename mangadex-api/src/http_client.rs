@@ -1,8 +1,20 @@
-#[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+#[cfg(all(
+    not(feature = "multi-thread"),
+    not(feature = "tokio-multi-thread"),
+    not(feature = "rw-multi-thread")
+))]
 use std::cell::RefCell;
-#[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+#[cfg(all(
+    not(feature = "multi-thread"),
+    not(feature = "tokio-multi-thread"),
+    not(feature = "rw-multi-thread")
+))]
 use std::rc::Rc;
-#[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+#[cfg(any(
+    feature = "multi-thread",
+    feature = "tokio-multi-thread",
+    feature = "rw-multi-thread"
+))]
 use std::sync::Arc;
 
 use derive_builder::Builder;
@@ -14,16 +26,25 @@ use reqwest::{Client, Response};
 use serde::de::DeserializeOwned;
 #[cfg(feature = "tokio-multi-thread")]
 use tokio::sync::Mutex;
+#[cfg(feature = "rw-multi-thread")]
+use tokio::sync::RwLock;
 use url::Url;
 
 use crate::v5::AuthTokens;
 use crate::{API_DEV_URL, API_URL};
 use mangadex_api_types::error::Result;
 
-#[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+#[cfg(all(
+    not(feature = "multi-thread"),
+    not(feature = "tokio-multi-thread"),
+    not(feature = "rw-multi-thread")
+))]
 pub type HttpClientRef = Rc<RefCell<HttpClient>>;
 #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
 pub type HttpClientRef = Arc<Mutex<HttpClient>>;
+#[cfg(feature = "rw-multi-thread")]
+pub type HttpClientRef = Arc<RwLock<HttpClient>>;
+
 #[derive(Debug, Builder, Clone)]
 #[builder(
     setter(into, strip_option),
@@ -396,13 +417,17 @@ macro_rules! endpoint {
         impl $typ {
             /// Send the request.
             pub async fn send(&self) -> mangadex_api_types::error::Result<$out> {
-                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread"), not(feature = "rw-multi-thread")))]
                 {
                     self.http_client.try_borrow()?.send_request(self).await
                 }
                 #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
                 {
                     self.http_client.lock().await.send_request(self).await
+                }
+                #[cfg(feature = "rw-multi-thread")]
+                {
+                    self.http_client.read().await.send_request(self).await
                 }
             }
         }
@@ -413,13 +438,17 @@ macro_rules! endpoint {
         impl $typ {
             /// Send the request.
             pub async fn send(&self) -> mangadex_api_types::error::Result<mangadex_api_schema::Limited<$out>> {
-                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread"), not(feature = "rw-multi-thread")))]
                 {
                     self.http_client.try_borrow()?.send_request_with_rate_limit(self).await
                 }
                 #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
                 {
                     self.http_client.lock().await.send_request_with_rate_limit(self).await
+                }
+                #[cfg(feature = "rw-multi-thread")]
+                {
+                    self.http_client.read().await.send_request_with_rate_limit(self).await
                 }
             }
         }
@@ -431,13 +460,17 @@ macro_rules! endpoint {
             /// Send the request.
             #[allow(dead_code)]
             pub async fn send(&self) -> $out {
-                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread"), not(feature = "rw-multi-thread")))]
                 {
                     self.http_client.try_borrow()?.send_request(self).await?
                 }
                 #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
                 {
                     self.http_client.lock().await.send_request(self).await?
+                }
+                #[cfg(feature = "rw-multi-thread")]
+                {
+                    self.http_client.read().await.send_request(self).await?
                 }
             }
         }
@@ -450,10 +483,12 @@ macro_rules! endpoint {
             /// Send the request.
             #[allow(dead_code)]
             pub async fn send(&self) -> mangadex_api_types::error::Result<()> {
-                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread"), not(feature = "rw-multi-thread")))]
                 self.http_client.try_borrow()?.send_request(self).await??;
                 #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
                 self.http_client.lock().await.send_request(self).await??;
+                #[cfg(feature = "rw-multi-thread")]
+                self.http_client.read().await.send_request(self).await??;
 
                 Ok(())
             }

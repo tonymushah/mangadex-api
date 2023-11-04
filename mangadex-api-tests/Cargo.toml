@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-mangadex-api = { path = "../mangadex-api", features = ["multi-thread"]}
+mangadex-api = { path = "../mangadex-api" }
 mangadex-api-types-rust = { path = "../mangadex-api-types" }
 mangadex-api-schema-rust = { path = "../mangadex-api-schema" }
 tokio = { version = "1.33", features = ["full"] }

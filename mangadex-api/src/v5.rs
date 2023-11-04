@@ -30,14 +30,28 @@ use reqwest::header::HeaderMap;
 use reqwest::header::HeaderValue;
 use reqwest::header::USER_AGENT;
 use reqwest::Client;
-#[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+#[cfg(all(
+    not(feature = "multi-thread"),
+    not(feature = "tokio-multi-thread"),
+    not(feature = "rw-multi-thread")
+))]
 use std::cell::RefCell;
-#[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+#[cfg(all(
+    not(feature = "multi-thread"),
+    not(feature = "tokio-multi-thread"),
+    not(feature = "rw-multi-thread")
+))]
 use std::rc::Rc;
-#[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+#[cfg(any(
+    feature = "multi-thread",
+    feature = "tokio-multi-thread",
+    feature = "rw-multi-thread"
+))]
 use std::sync::Arc;
 #[cfg(feature = "tokio-multi-thread")]
 use tokio::sync::Mutex;
+#[cfg(feature = "rw-multi-thread")]
+use tokio::sync::RwLock;
 
 #[cfg(feature = "legacy-account")]
 use crate::v5::account::AccountBuilder;
@@ -341,12 +355,20 @@ impl MangaDexClient {
 
 /// Create a new reference counted `HttpClient`.
 fn create_ref_counted_http_client(http_client: HttpClient) -> HttpClientRef {
-    #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+    #[cfg(all(
+        not(feature = "multi-thread"),
+        not(feature = "tokio-multi-thread"),
+        not(feature = "rw-multi-thread")
+    ))]
     {
         Rc::new(RefCell::new(http_client))
     }
     #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
     {
         Arc::new(Mutex::new(http_client))
+    }
+    #[cfg(feature = "rw-multi-thread")]
+    {
+        Arc::new(RwLock::new(http_client))
     }
 }

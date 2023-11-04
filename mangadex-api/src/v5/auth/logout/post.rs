@@ -64,7 +64,11 @@ pub struct Logout {
 
 impl Logout {
     pub async fn send(&self) -> Result<()> {
-        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+        #[cfg(all(
+            not(feature = "multi-thread"),
+            not(feature = "tokio-multi-thread"),
+            not(feature = "rw-multi-thread")
+        ))]
         {
             self.http_client.try_borrow()?.send_request(self).await??;
 
@@ -129,7 +133,11 @@ mod tests {
             .send()
             .await?;
 
-        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+        #[cfg(all(
+            not(feature = "multi-thread"),
+            not(feature = "tokio-multi-thread"),
+            not(feature = "rw-multi-thread")
+        ))]
         assert_eq!(mangadex_client.http_client.borrow().get_tokens(), None);
         #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
         assert_eq!(mangadex_client.http_client.lock().await.get_tokens(), None);
@@ -179,7 +187,11 @@ mod tests {
             .expect_err("expected error");
 
         // The auth tokens should still be part of the client because the logout failed.
-        #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread")))]
+        #[cfg(all(
+            not(feature = "multi-thread"),
+            not(feature = "tokio-multi-thread"),
+            not(feature = "rw-multi-thread")
+        ))]
         assert_eq!(
             mangadex_client.http_client.try_borrow()?.get_tokens(),
             Some(&AuthTokens {
