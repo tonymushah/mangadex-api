@@ -116,6 +116,18 @@ pub struct ApiObject<A, T = RelationshipType> {
     pub relationships: Vec<Relationship>,
 }
 
+impl<A, T> ApiObject<A, T> {
+    pub fn find_relationships(&self, type_: RelationshipType) -> Vec<&Relationship> {
+        self.relationships
+            .iter()
+            .filter(|rel| rel.type_ == type_)
+            .collect()
+    }
+    pub fn find_first_relationships(&self, type_: RelationshipType) -> Option<&Relationship> {
+        self.relationships.iter().find(|rel| rel.type_ == type_)
+    }
+}
+
 impl<A, T> FromResponse for ApiObject<A, T> {
     type Response = Self;
 
