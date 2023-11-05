@@ -140,7 +140,7 @@ optional = true
 version = "0.5.21"
 
 [features]
-default = []
+default = ["legacy-account", "utils"]
 multi-thread = ["futures"]
 tokio-multi-thread = ["tokio/sync"]
 rw-multi-thread = ["tokio/sync"]

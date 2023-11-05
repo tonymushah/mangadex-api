@@ -135,7 +135,7 @@ endpoint! {
 
 builder_send! {
     #[builder] LoginBuilder,
-    #[out] Limited<LoginResponse>
+    Limited<LoginResponse>
 }
 
 #[cfg(test)]
