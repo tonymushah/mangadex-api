@@ -1,3 +1,44 @@
+//! Builder for the create client endpoint.
+//!
+//! <https://api.mangadex.org/docs/swagger.html#/ApiClient/post-create-apiclient>
+//! <https://api.mangadex.org/docs/redoc.html#tag/ApiClient/operation/post-create-apiclient>
+//!
+//! ```rust
+//!
+//! use mangadex_api::MangaDexClient;
+//! // use mangadex_api_types::{Password, Username};
+//! use mangadex_api_types::ApiClientProfile;
+//!
+//! # async fn run() -> anyhow::Result<()> {
+//! let client = MangaDexClient::default();
+//!
+//! /*
+//! Put your login script here
+//!  
+//! let _login_res = client
+//!     .auth()
+//!     .login()
+//!     .username(Username::parse("myusername")?)
+//!     .password(Password::parse("hunter23")?)
+//!     .build()?
+//!     .send()
+//!     .await?;
+//! */
+//!
+//! let manga_res = client
+//!     .client()
+//!     .post()
+//!     .name("My Client")
+//!     .profile(ApiClientProfile::Personal)
+//!     .description("It's my personal API Client for the mangadex-api :)")
+//!     .send()
+//!     .await?;
+//!
+//! println!("Manga creation: {:?}", manga_res);
+//! # Ok(())
+//! # }
+//! ```
+
 use derive_builder::Builder;
 use serde::Serialize;
 
@@ -36,14 +77,15 @@ pub struct CreateClient {
     #[builder(default)]
     pub profile: ApiClientProfile,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[builder(default)]
+    #[builder(default = "Some(1)")]
     pub version: Option<u32>,
 }
 
 endpoint! {
     POST "/client",
     #[body auth] CreateClient,
-    #[flatten_result] ApiClientResponse
+    #[flatten_result] ApiClientResponse,
+    CreateClientBuilder
 }
 
 #[cfg(test)]
@@ -134,7 +176,7 @@ mod tests {
             req.version(version);
         }
 
-        let res = req.build()?.send().await?;
+        let res = req.send().await?;
         let data = res.data;
         assert_eq!(data.id, client_id);
         assert_eq!(data.attributes.name, _expected_body.name);
