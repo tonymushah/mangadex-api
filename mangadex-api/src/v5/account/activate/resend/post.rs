@@ -1,6 +1,7 @@
 //! Builder for resending the account activation code.
 //!
-//! <https://api.mangadex.org/swagger.html#/Account/post-account-activate-resend>
+//! <https://api.mangadex.org/docs/swagger.html#/Account/post-account-activate-resend>
+//! <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-activate-resend>
 //!
 //! # Examples
 //!
@@ -12,9 +13,10 @@
 //!
 //! let account_resend_res = client
 //!     .account()
-//!     .resend_activation_code()
+//!     .activate()
+//!     .resend()
+//!     .post()
 //!     .email("test@example.com")
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -55,7 +57,8 @@ pub struct ResendActivationCode {
 endpoint! {
     POST "/account/activate/resend",
     #[body] ResendActivationCode,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    ResendActivationCodeBuilder
 }
 
 #[cfg(test)]
@@ -94,7 +97,6 @@ mod tests {
             .resend()
             .post()
             .email(email)
-            .build()?
             .send()
             .await?;
 
