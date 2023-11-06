@@ -1,4 +1,4 @@
-//! Builder for get client endpoint.
+//! Builder for getting client by its id.
 //!
 //! <https://api.mangadex.org/docs/swagger.html#/ApiClient/get-apiclient>
 //!
@@ -123,13 +123,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .client()
-            .id(client_id)
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.client().id(client_id).get().send().await?;
 
         assert_eq!(res.data.type_, RelationshipType::ApiClient);
 
