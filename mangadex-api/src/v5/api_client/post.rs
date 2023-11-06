@@ -25,7 +25,7 @@
 //!     .await?;
 //! */
 //!
-//! let manga_res = client
+//! let client_res = client
 //!     .client()
 //!     .post()
 //!     .name("My Client")
@@ -34,7 +34,7 @@
 //!     .send()
 //!     .await?;
 //!
-//! println!("Manga creation: {:?}", manga_res);
+//! println!("Client creation: {:?}", client_res);
 //! # Ok(())
 //! # }
 //! ```

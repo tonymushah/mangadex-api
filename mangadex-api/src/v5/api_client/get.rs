@@ -17,7 +17,7 @@
 //!     .send()
 //!     .await?;
 //!
-//! println!("manga: {:?}", client_res);
+//! println!("Clients : {:?}", client_res);
 //! # Ok(())
 //! # }
 //! ```
