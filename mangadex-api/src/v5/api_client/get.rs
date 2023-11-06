@@ -1,26 +1,23 @@
-//! Builder for the manga list endpoint.
+//! Builder for the client list endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-search-manga>
+//! <https://api.mangadex.org/docs/swagger.html#/ApiClient/get-list-apiclients>
+//! <https://api.mangadex.org/docs/redoc.html#tag/ApiClient/operation/get-list-apiclients>
 //!
 //! # Examples
 //!
 //! ```rust
-//! use mangadex_api_types::MangaStatus;
 //! use mangadex_api::v5::MangaDexClient;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let manga_res = client
-//!     .manga()
-//!     .list()
-//!     .title("full metal")
-//!     .add_status(MangaStatus::Completed)
-//!     .build()?
+//! let client_res = client
+//!     .client()
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
-//! println!("manga: {:?}", manga_res);
+//! println!("manga: {:?}", client_res);
 //! # Ok(())
 //! # }
 //! ```
@@ -32,6 +29,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::ApiClientListResponse;
 use mangadex_api_types::{ApiClientState, ReferenceExpansionResource};
 
+// Make a request to `GET /client`
 #[cfg_attr(
     feature = "deserializable-endpoint",
     derive(serde::Deserialize, getset::Getters, getset::Setters)
@@ -41,7 +39,6 @@ use mangadex_api_types::{ApiClientState, ReferenceExpansionResource};
 #[builder(
     setter(into, strip_option),
     default,
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -71,7 +68,8 @@ pub struct ListClients {
 endpoint! {
     GET "/client",
     #[query auth] ListClients,
-    #[flatten_result] ApiClientListResponse
+    #[flatten_result] ApiClientListResponse,
+    ListClientsBuilder
 }
 
 #[cfg(test)]
@@ -142,13 +140,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .client()
-            .get()
-            .limit(1u32)
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.client().get().limit(1u32).send().await?;
 
         assert_eq!(res.response, ResponseType::Collection);
         let client: &mangadex_api_schema::ApiObject<mangadex_api_schema::v5::ApiClientAttributes> =
@@ -208,7 +200,6 @@ mod tests {
             .client()
             .get()
             .limit(0u32)
-            .build()?
             .send()
             .await
             .expect_err("expected error");
