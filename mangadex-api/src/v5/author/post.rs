@@ -42,7 +42,7 @@ use serde::Serialize;
 use url::Url;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::{AuthorData, AuthorResponse, LocalizedString};
+use mangadex_api_schema::v5::{AuthorData, LocalizedString};
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
