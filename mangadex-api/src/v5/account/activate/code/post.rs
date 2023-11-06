@@ -1,6 +1,7 @@
 //! Builder for the account-activation endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Account/get-account-activate-code>
+//! <https://api.mangadex.org/docs/swagger.html#/Account/get-account-activate-code>
+//! <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/get-account-activate-code>
 //!
 //! # Examples
 //!
@@ -14,8 +15,7 @@
 //!     .account()
 //!     .activate()
 //!     .code("abc123")
-//!     
-//!     .build()?
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
@@ -52,13 +52,15 @@ pub struct ActivateAccount {
     pub(crate) http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
+    #[builder(setter(into))]
     pub code: String,
 }
 
 endpoint! {
     POST ("/account/activate/{}", code),
     #[no_data] ActivateAccount,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    ActivateAccountBuilder
 }
 
 #[cfg(test)]
@@ -91,9 +93,8 @@ mod tests {
         mangadex_client
             .account()
             .activate()
-            .code(code.to_string())
+            .code(code)
             .post()
-            .build()?
             .send()
             .await?;
 

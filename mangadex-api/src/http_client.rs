@@ -396,6 +396,7 @@ macro_rules! endpoint {
         $method:ident $path:tt,
         #[$payload:ident $($auth:ident)?] $typ:ty,
         $(#[$out_res:ident])? $out:ty
+        $(,$builder_ty:ty)?
     } => {
         impl mangadex_api_schema::Endpoint for $typ {
             /// The response type.
@@ -412,7 +413,7 @@ macro_rules! endpoint {
             $(endpoint! { @$auth })?
         }
 
-        endpoint! { @send $(:$out_res)?, $typ, $out }
+        endpoint! { @send $(:$out_res)?, $typ, $out $(,$builder_ty)? }
 
     };
 
@@ -463,7 +464,7 @@ macro_rules! endpoint {
     };
 
     // Return the response as a `Result`.
-    { @send, $typ:ty, $out:ty } => {
+    { @send, $typ:ty, $out:ty $(,$builder_ty:ty)? } => {
         impl $typ {
             /// Send the request.
             pub async fn send(&self) -> mangadex_api_types::error::Result<$out> {
@@ -482,9 +483,15 @@ macro_rules! endpoint {
             }
         }
 
+        $(
+            builder_send! {
+                #[builder] $builder_ty,
+                $out
+            }
+        )?
     };
     // Return the response as a `Result`.
-    { @send:rate_limited, $typ:ty, $out:ty } => {
+    { @send:rate_limited, $typ:ty, $out:ty $(,$builder_ty:ty)? } => {
         impl $typ {
             /// Send the request.
             pub async fn send(&self) -> mangadex_api_types::error::Result<mangadex_api_schema::Limited<$out>> {
@@ -503,9 +510,15 @@ macro_rules! endpoint {
             }
         }
 
+        $(
+            builder_send! {
+                #[builder] $builder_ty,
+                #[rate_limited] $out
+            }
+        )?
     };
     // Return the `Result` variants, `Ok` or `Err`.
-    { @send:flatten_result, $typ:ty, $out:ty } => {
+    { @send:flatten_result, $typ:ty, $out:ty $(,$builder_ty:ty)? } => {
         impl $typ {
             /// Send the request.
             #[allow(dead_code)]
@@ -525,10 +538,15 @@ macro_rules! endpoint {
             }
         }
 
-
+        $(
+            builder_send! {
+                #[builder] $builder_ty,
+                #[flatten_result] $out
+            }
+        )?
     };
     // Don't return any data from the response.
-    { @send:discard_result, $typ:ty, $out:ty } => {
+    { @send:discard_result, $typ:ty, $out:ty $(,$builder_ty:ty)? } => {
         impl $typ {
             /// Send the request.
             #[allow(dead_code)]
@@ -543,9 +561,23 @@ macro_rules! endpoint {
                 Ok(())
             }
         }
+
+        $(
+            builder_send! {
+                #[builder] $builder_ty,
+                #[discard_result] $out
+            }
+        )?
     };
     // Don't implement `send()` and require manual implementation.
-    { @send:no_send, $typ:ty, $out:ty } => { };
+    { @send:no_send, $typ:ty, $out:ty $(,$builder_ty:ty)? } => {
+        $(
+            builder_send! {
+                #[builder] $builder_ty,
+                #[no_send] $out
+            }
+        )?
+    };
 
 }
 
