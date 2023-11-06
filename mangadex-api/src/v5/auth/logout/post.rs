@@ -1,6 +1,6 @@
 //! Builder for the auth logout endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Auth/post-auth-logout>
+//! <https://api.mangadex.org/docs/swagger.html#/Auth/post-auth-logout>
 //!
 //! # Examples
 //!
@@ -14,16 +14,16 @@
 //! let _login_res = client
 //!     .auth()
 //!     .login()
+//!     .post()
 //!     .username(Username::parse("myusername")?)
 //!     .password(Password::parse("hunter23")?)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
 //! client
 //!     .auth()
 //!     .logout()
-//!     .build()?
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
@@ -97,6 +97,11 @@ endpoint! {
     #[no_send] Result<NoData>
 }
 
+builder_send! {
+    #[builder] LogoutBuilder,
+    #[discard_result] Result<NoData>
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;
@@ -131,13 +136,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        mangadex_client
-            .auth()
-            .logout()
-            .post()
-            .build()?
-            .send()
-            .await?;
+        mangadex_client.auth().logout().post().send().await?;
 
         #[cfg(all(
             not(feature = "multi-thread"),
@@ -187,7 +186,6 @@ mod tests {
             .auth()
             .logout()
             .post()
-            .build()?
             .send()
             .await
             .expect_err("expected error");
