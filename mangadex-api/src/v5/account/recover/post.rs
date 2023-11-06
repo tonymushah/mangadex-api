@@ -1,6 +1,7 @@
 //! Builder for initiating the account recovery process.
 //!
-//! <https://api.mangadex.org/swagger.html#/Account/post-account-recover>
+//! <https://api.mangadex.org/docs/swagger.html#/Account/post-account-recover>
+//! <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-recover>
 //!
 //! # Examples
 //!
@@ -13,8 +14,8 @@
 //! let account_recover_res = client
 //!     .account()
 //!     .recover()
+//!     .post()
 //!     .email("test@example.com")
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -58,7 +59,8 @@ pub struct RecoverAccount {
 endpoint! {
     POST "/account/recover",
     #[body] RecoverAccount,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    RecoverAccountBuilder
 }
 
 #[cfg(test)]
@@ -96,7 +98,6 @@ mod tests {
             .recover()
             .post()
             .email(email)
-            .build()?
             .send()
             .await?;
 
