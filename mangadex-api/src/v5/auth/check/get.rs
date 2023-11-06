@@ -1,6 +1,6 @@
 //! Builder for the auth session check endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Auth/get-auth-check>
+//! <https://api.mangadex.org/docs/swagger.html#/Auth/get-auth-check>
 //!
 //! # Examples
 //!
@@ -14,16 +14,16 @@
 //! let _login_res = client
 //!     .auth()
 //!     .login()
+//!     .post()
 //!     .username(Username::parse("myusername")?)
 //!     .password(Password::parse("hunter23")?)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
 //! let auth_check_res = client
 //!     .auth()
-//!     .check_token()
-//!     .build()?
+//!     .check()
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -65,7 +65,8 @@ pub struct CheckToken {
 endpoint! {
     GET "/auth/check",
     #[no_data auth] CheckToken,
-    #[flatten_result] Result<CheckTokenResponse>
+    #[flatten_result] Result<CheckTokenResponse>,
+    CheckTokenBuilder
 }
 
 #[cfg(test)]
@@ -123,7 +124,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client.auth().check().get().build()?.send().await?;
+        let _ = mangadex_client.auth().check().get().send().await?;
 
         Ok(())
     }
