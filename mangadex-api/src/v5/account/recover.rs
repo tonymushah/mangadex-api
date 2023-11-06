@@ -23,7 +23,7 @@ impl RecoverEndpoint {
         RecoverAccountBuilder::default().http_client(self.http_client.clone())
     }
 
-    pub fn code(&self, code: String) -> CodeEndpoint {
-        CodeEndpoint::new(self.http_client.clone(), code)
+    pub fn code(&self, code: impl Into<String>) -> CodeEndpoint {
+        CodeEndpoint::new(self.http_client.clone(), code.into())
     }
 }

@@ -1,6 +1,7 @@
 //! Builder for completing the account recovery process.
 //!
-//! <https://api.mangadex.org/swagger.html#/Account/post-account-recover-code>
+//! <https://api.mangadex.org/docs/swagger.html#/Account/post-account-recover-code>
+//! <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-recover-code>
 //!
 //! # Examples
 //!
@@ -13,10 +14,10 @@
 //!
 //! let account_complete_recovery_res = client
 //!     .account()
-//!     .complete_recovery()
+//!     .recover()
 //!     .code("abc123")
+//!     .post()
 //!     .new_password(Password::parse("hunter23")?)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -69,7 +70,8 @@ pub struct CompleteAccountRecovery {
 endpoint! {
     POST ("/account/recover/{}", code),
     #[body] CompleteAccountRecovery,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    CompleteAccountRecoveryBuilder
 }
 
 #[cfg(test)]
@@ -112,7 +114,6 @@ mod tests {
             .code(code.to_string())
             .post()
             .new_password(MDPassword::parse(&new_password)?)
-            .build()?
             .send()
             .await?;
 
