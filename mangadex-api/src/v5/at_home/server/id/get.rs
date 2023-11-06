@@ -1,6 +1,6 @@
 //! Builder for the MangaDex@Home node URL endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/AtHome/get-at-home-server-chapterId>
+//! <https://api.mangadex.org/docs/swagger.html#/AtHome/get-at-home-server-chapterId>
 //!
 //! # Examples
 //!
@@ -16,7 +16,8 @@
 //! let node_url_res = client
 //!     .at_home()
 //!     .server()
-//!     .chapter_id(&chapter_id)
+//!     .id(chapter_id)
+//!     .get()
 //!     .force_port_443(true)
 //!     .build()?
 //!     .send()
@@ -42,7 +43,6 @@ use mangadex_api_schema::v5::AtHomeServer;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetAtHomeServer {
@@ -70,7 +70,8 @@ pub struct GetAtHomeServer {
 endpoint! {
     GET ("/at-home/server/{}", chapter_id),
     #[query] GetAtHomeServer,
-    #[rate_limited] AtHomeServer
+    #[rate_limited] AtHomeServer,
+    GetAtHomeServerBuilder
 }
 
 #[cfg(test)]

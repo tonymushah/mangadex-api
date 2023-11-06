@@ -316,7 +316,8 @@ macro_rules! builder_send {
     };
     { @send:rate_limited, $typ:ty, $out_type:ty } => {
         impl $typ {
-            pub async fn send(&self) -> mangadex_api_types::error::Result<Limited<$out_type>>{
+
+            pub async fn send(&self) -> mangadex_api_types::error::Result<mangadex_api_schema::Limited<$out_type>>{
                 self.build()?.send().await
             }
         }
