@@ -1,6 +1,7 @@
 //! Builder for the account-creation endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Account/post-account-create>
+//! <https://api.mangadex.org/docs/swagger.html#/Account/post-account-create>
+//! <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/post-account-create>
 //!
 //! # Examples
 //!
@@ -14,10 +15,10 @@
 //! let account_create_res = client
 //!     .account()
 //!     .create()
+//!     .post()
 //!     .username(Username::parse("myusername")?)
 //!     .password(Password::parse("hunter2")?)
 //!     .email("test@example.com")
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -76,7 +77,8 @@ pub struct CreateAccount {
 endpoint! {
     POST "/account/create",
     #[body] CreateAccount,
-    #[flatten_result] UserResponse
+    #[flatten_result] UserResponse,
+    CreateAccountBuilder
 }
 
 #[cfg(test)]
@@ -151,7 +153,6 @@ mod tests {
             .username(Username::parse(&username)?)
             .password(MDPassword::parse(&password)?)
             .email(email)
-            .build()?
             .send()
             .await?;
 

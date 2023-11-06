@@ -310,7 +310,7 @@ macro_rules! builder_send {
     { @send:flatten_result, $typ:ty, $out_type:ty } => {
         impl $typ {
             pub async fn send(&self) -> $out_type{
-                self.build()?.send().await?
+                self.build()?.send().await
             }
         }
     };
