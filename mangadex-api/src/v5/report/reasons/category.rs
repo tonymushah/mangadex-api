@@ -1,4 +1,5 @@
 pub mod get;
+
 use mangadex_api_types::ReportCategory;
 
 use crate::HttpClientRef;
@@ -21,7 +22,7 @@ impl CategoryEndpoint {
     }
     pub fn get(&self) -> ListReasonsBuilder {
         ListReasonsBuilder::default()
-            .http_client(self.http_client.clone())
             .category(self.category)
+            .http_client(self.http_client.clone())
     }
 }
