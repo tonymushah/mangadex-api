@@ -13,10 +13,10 @@
 //!
 //! let id_mappings_res = client
 //!     .legacy()
-//!     .id_mapping()
+//!     .mapping()
+//!     .post()
 //!     .map_type(LegacyMappingType::Manga)
 //!     .ids(vec![1, 2])
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -40,7 +40,6 @@ use mangadex_api_types::LegacyMappingType;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct LegacyIdMapping {
@@ -61,7 +60,8 @@ pub struct LegacyIdMapping {
 endpoint! {
     POST "/legacy/mapping",
     #[body] LegacyIdMapping,
-    #[flatten_result] IdMappingListResponse
+    #[flatten_result] IdMappingListResponse,
+    LegacyIdMappingBuilder
 }
 
 #[cfg(test)]
@@ -126,7 +126,6 @@ mod tests {
             .post()
             .map_type(LegacyMappingType::Manga)
             .add_id(1)
-            .build()?
             .send()
             .await?;
 
@@ -180,7 +179,6 @@ mod tests {
             .post()
             .map_type(LegacyMappingType::Group)
             .add_id(0)
-            .build()?
             .send()
             .await
             .expect_err("expected error");
