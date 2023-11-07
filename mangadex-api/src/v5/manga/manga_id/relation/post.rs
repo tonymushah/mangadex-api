@@ -2,7 +2,7 @@
 //!
 //! This endpoint requires authentication.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/post-manga-relation>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/post-manga-relation>
 //!
 //! # Examples
 //!
@@ -11,29 +11,32 @@
 //!
 //! use mangadex_api_types::MangaRelation;
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let manga_id = Uuid::new_v4();
 //! let target_manga_id = Uuid::new_v4();
 //! let res = client
 //!     .manga()
-//!     .create_relation()
-//!     .manga_id(&manga_id)
-//!     .target_manga(&target_manga_id)
-//!     .relation(&MangaRelation::SpinOff)
-//!     .build()?
+//!     .manga_id(manga_id)
+//!     .relation()
+//!     .post()
+//!     .target_manga(target_manga_id)
+//!     .relation(MangaRelation::SpinOff)
 //!     .send()
 //!     .await?;
 //!
@@ -77,7 +80,8 @@ pub struct CreateMangaRelation {
 endpoint! {
     POST ("/manga/{}/relation", manga_id),
     #[body auth] CreateMangaRelation,
-    #[flatten_result] MangaRelationListResponse
+    #[flatten_result] MangaRelationListResponse,
+    CreateMangaRelationBuilder
 }
 
 #[cfg(test)]
@@ -209,7 +213,6 @@ mod tests {
             .post()
             .target_manga(target_manga_id)
             .relation(MangaRelation::SpinOff)
-            .build()?
             .send()
             .await?;
 
@@ -261,7 +264,6 @@ mod tests {
             .post()
             .target_manga(target_manga_id)
             .relation(MangaRelation::Sequel)
-            .build()?
             .send()
             .await
             .expect_err("expected error");
