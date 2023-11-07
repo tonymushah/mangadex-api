@@ -1,6 +1,6 @@
 //! Settings endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/Settings>
+//! <https://api.mangadex.org/docs/swagger.html#/Settings>
 
 pub mod get;
 pub mod post;

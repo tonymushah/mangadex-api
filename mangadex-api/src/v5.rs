@@ -313,8 +313,7 @@ impl MangaDexClient {
     ///
     /// <https://api.mangadex.org/swagger.html#/Settings>
     // Not public yet as the settings endpoints are not stable as of MangaDex API v5.4.9.
-    #[allow(unused)]
-    fn settings(&self) -> SettingsBuilder {
+    pub fn settings(&self) -> SettingsBuilder {
         SettingsBuilder::new(self.http_client.clone())
     }
 
