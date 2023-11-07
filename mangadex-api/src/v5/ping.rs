@@ -1,6 +1,6 @@
 //! Infrastructure endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/Infrastructure>
+//! <https://api.mangadex.org/docs/swagger.html#/Infrastructure>
 
 pub mod get;
 
@@ -22,7 +22,7 @@ impl PingEndpointBuilder {
 
     /// Ping the server.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Infrastructure/get_ping>
+    /// <https://api.mangadex.org/docs/swagger.html#/Infrastructure/get_ping>
     pub fn get(self) -> PingBuilder {
         PingBuilder::default().http_client(self.http_client)
     }
