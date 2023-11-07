@@ -1,6 +1,6 @@
 //! Builder for creating a new report.
 //!
-//! <https://api.mangadex.org/swagger.html#/Report/post-report>
+//! <https://api.mangadex.org/docs/swagger.html#/Report/post-report>
 //!
 //! # Examples
 //!
@@ -9,30 +9,34 @@
 //!
 //! use mangadex_api_types::ReportCategory;
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
+//!
 //!
 //! let reason_id = Uuid::new_v4();
 //! let manga_id = Uuid::new_v4();
 //!
 //! let res = client
 //!     .report()
-//!     .create()
+//!     .post()
 //!     .category(ReportCategory::Manga)
-//!     .reason(&reason_id)
-//!     .object_id(&manga_id)
-//!     .build()?
+//!     .reason(reason_id)
+//!     .object_id(manga_id)
 //!     .send()
 //!     .await?;
 //!
@@ -57,7 +61,6 @@ use mangadex_api_types::ReportCategory;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct CreateReport {
@@ -85,7 +88,8 @@ pub struct CreateReport {
 endpoint! {
     POST "/report",
     #[body auth] CreateReport,
-    #[rate_limited] NoData
+    #[rate_limited] NoData,
+    CreateReportBuilder
 }
 
 #[cfg(test)]
@@ -146,7 +150,6 @@ mod tests {
             .category(ReportCategory::Manga)
             .reason(reason_id)
             .object_id(manga_id)
-            .build()?
             .send()
             .await?;
 
