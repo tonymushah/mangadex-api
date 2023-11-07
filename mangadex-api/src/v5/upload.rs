@@ -33,8 +33,8 @@ impl UploadBuilder {
     /// <https://api.mangadex.org/swagger.html#/Upload/upload-cover>
     pub fn cover(&self, manga_id: Uuid) -> UploadCoverBuilder {
         UploadCoverBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(manga_id)
+            .http_client(self.http_client.clone())
     }
 
     pub fn get(&self) -> GetUploadSessionBuilder {

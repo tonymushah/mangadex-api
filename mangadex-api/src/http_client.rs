@@ -104,14 +104,15 @@ impl HttpClient {
     ///
     /// This is useful to handle things such as response header data for more control over areas
     /// such as rate limiting.
-    pub(crate) async fn send_request_without_deserializing<E>(
+    pub(crate) async fn send_request_without_deserializing_with_other_base_url<E>(
         &self,
         endpoint: &E,
+        base_url: &url::Url,
     ) -> Result<reqwest::Response>
     where
         E: Endpoint,
     {
-        let mut endpoint_url = self.base_url.join(&endpoint.path())?;
+        let mut endpoint_url = base_url.join(&endpoint.path())?;
         if let Some(query) = endpoint.query() {
             endpoint_url = endpoint_url.query_qs(query);
         }
@@ -137,6 +138,21 @@ impl HttpClient {
         }
 
         Ok(req.send().await?)
+    }
+
+    /// Send the request to the endpoint but don't deserialize the response.
+    ///
+    /// This is useful to handle things such as response header data for more control over areas
+    /// such as rate limiting.
+    pub(crate) async fn send_request_without_deserializing<E>(
+        &self,
+        endpoint: &E,
+    ) -> Result<reqwest::Response>
+    where
+        E: Endpoint,
+    {
+        self.send_request_without_deserializing_with_other_base_url(endpoint, &self.base_url)
+            .await
     }
 
     async fn send_request_with_checks<E>(&self, endpoint: &E) -> Result<reqwest::Response>
