@@ -1,6 +1,6 @@
 //! Builder for the chapter delete endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Chapter/delete-chapter-id>
+//! <https://api.mangadex.org/docs/swagger.html#/Chapter/delete-chapter-id>
 //!
 //! # Examples
 //!
@@ -8,26 +8,28 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
+//! /*
+//!     // Put your login script here
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .build()?
+//!         .send()
+//!         .await?;
+//!  */
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
 //!
 //! let chapter_id = Uuid::new_v4();
 //! let res = client
 //!     .chapter()
+//!     .id(chapter_id)
 //!     .delete()
-//!     .chapter_id(&chapter_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -51,7 +53,6 @@ use mangadex_api_schema::NoData;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct DeleteChapter {
@@ -69,7 +70,8 @@ pub struct DeleteChapter {
 endpoint! {
     DELETE ("/chapter/{}", chapter_id),
     #[no_data auth] DeleteChapter,
-    #[rate_limited] NoData
+    #[rate_limited] NoData,
+    DeleteChapterBuilder
 }
 
 #[cfg(test)]
@@ -118,7 +120,6 @@ mod tests {
             .chapter()
             .id(chapter_id)
             .delete()
-            .build()?
             .send()
             .await?;
 
