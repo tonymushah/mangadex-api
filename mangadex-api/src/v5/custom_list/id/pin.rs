@@ -19,7 +19,7 @@ impl PinEndpoint {
     }
     pub fn post(&self) -> PinCustomListBuilder {
         PinCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

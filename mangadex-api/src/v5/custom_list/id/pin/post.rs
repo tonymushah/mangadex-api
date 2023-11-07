@@ -1,3 +1,44 @@
+//! Builder for pinning a CustomList
+//!
+//! NOTICE: This endpoint is not deployed yet on <https://mangadex.org>.
+//! We'll notice you if it'll be deployed
+//!
+//! # Examples
+//!
+//! ```rust
+//! use uuid::Uuid;
+//!
+//! use mangadex_api::v5::MangaDexClient;
+//! // use mangadex_api_types::{Password, Username};
+//!
+//! # async fn run() -> anyhow::Result<()> {
+//! let client = MangaDexClient::default();
+//!
+//! /*
+//!     
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!  */
+//!
+//!
+//! let list_id = Uuid::new_v4();
+//! let _ = client
+//!     .custom_list()
+//!     .id(list_id)
+//!     .pin()
+//!     .post()
+//!     .send()
+//!     .await?;
+//!
+//! # Ok(())
+//! # }
+//! ```
+//!
 use derive_builder::Builder;
 use mangadex_api_schema::NoData;
 use serde::Serialize;
@@ -14,7 +55,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -34,7 +74,8 @@ pub struct PinCustomList {
 endpoint! {
     POST ("/list/{}/pin", list_id),
     #[body auth] PinCustomList,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    PinCustomListBuilder
 }
 
 #[cfg(test)]
@@ -79,7 +120,6 @@ mod tests {
             .id(custom_list_id)
             .pin()
             .post()
-            .build()?
             .send()
             .await?;
 
