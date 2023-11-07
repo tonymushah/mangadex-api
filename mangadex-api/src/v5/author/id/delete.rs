@@ -1,6 +1,6 @@
 //! Builder for the author delete endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Author/delete-author-id>
+//! <https://api.mangadex.org/docs/swagger.html#/Author/delete-author-id>
 //!
 //! # Examples
 //!
@@ -13,21 +13,25 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     Put your logging script here
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .build()?
+//!         .send()
+//!         .await?;
+//!  */
+//!
 //!
 //! let author_id = Uuid::new_v4();
 //! let res = client
 //!     .author()
+//!     .id(&author_id)
 //!     .delete()
-//!     .author_id(&author_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -51,7 +55,6 @@ use mangadex_api_schema::NoData;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct DeleteAuthor {
@@ -70,7 +73,8 @@ pub struct DeleteAuthor {
 endpoint! {
     DELETE ("/author/{}", author_id),
     #[no_data auth] DeleteAuthor,
-    #[rate_limited] NoData
+    #[rate_limited] NoData,
+    DeleteAuthorBuilder
 }
 
 #[cfg(test)]
@@ -119,7 +123,6 @@ mod tests {
             .author()
             .id(author_id)
             .delete()
-            .build()?
             .send()
             .await?;
 
