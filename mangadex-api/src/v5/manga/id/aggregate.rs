@@ -19,7 +19,7 @@ impl AggregateEndpoint {
     }
     pub fn get(&self) -> GetMangaAggregateBuilder {
         GetMangaAggregateBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

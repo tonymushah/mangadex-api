@@ -1,6 +1,6 @@
 //! Builder for the manga aggregate endpoint to get volumes and chapters.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get_manga__id__aggregate>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get_manga__id__aggregate>
 //!
 //! # Examples
 //!
@@ -15,9 +15,8 @@
 //! let manga_id = Uuid::new_v4();
 //! let manga_res = client
 //!     .manga()
+//!     .id(manga_id)
 //!     .aggregate()
-//!     .manga_id(&manga_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +41,6 @@ use mangadex_api_types::Language;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -66,7 +64,8 @@ pub struct GetMangaAggregate {
 endpoint! {
     GET ("/manga/{}/aggregate", manga_id),
     #[query] GetMangaAggregate,
-    #[flatten_result] MangaAggregateResponse
+    #[flatten_result] MangaAggregateResponse,
+    GetMangaAggregateBuilder
 }
 
 #[cfg(test)]
@@ -119,7 +118,6 @@ mod tests {
             .id(manga_id)
             .aggregate()
             .get()
-            .build()?
             .send()
             .await?;
 
@@ -164,7 +162,6 @@ mod tests {
             .id(manga_id)
             .aggregate()
             .get()
-            .build()?
             .send()
             .await?;
 
@@ -246,7 +243,6 @@ mod tests {
             .id(manga_id)
             .aggregate()
             .get()
-            .build()?
             .send()
             .await?;
 
