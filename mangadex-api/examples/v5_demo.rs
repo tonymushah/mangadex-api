@@ -215,7 +215,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
         let mut scanlation_group_list_builder = scanlation_group_builder.get();
         if !name.is_empty() {
-            scanlation_group_list_builder = scanlation_group_list_builder.name(name.as_str());
+            scanlation_group_list_builder.name(name.as_str());
         }
         let scanlation_group_results = scanlation_group_list_builder.build()?.send().await?;
 
