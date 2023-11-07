@@ -130,7 +130,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
         let mut author_list_builder = author_builder.get();
         if !name.is_empty() {
-            author_list_builder = author_list_builder.name(name.as_str());
+            author_list_builder.name(name.as_str());
         }
         let author_results = author_list_builder.build()?.send().await?;
 
