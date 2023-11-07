@@ -1,37 +1,45 @@
 //! Builder for the follow scanlation group endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/post-group-id-follow>
+//! NOTICE : This endpoint is not deployed yet on [MangaDex](https://mangadex.org)
+//! We'll notice you if this endpoint is deployed :>
 //!
+//! use [`mangadex-api::v5::id::follow::post::FollowGroup`] instead
+//!
+//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/post-group-id-follow>
 //! # Examples
 //!
 //! ```rust
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let group_id = Uuid::new_v4();
 //! let res = client
 //!     .scanlation_group()
-//!     .follow()
-//!     .group_id(&group_id)
-//!     .build()?
+//!     .id(group_id)
+//!     .bookmark()
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
-//! println!("follow group: {:?}", res);
+//! println!("unfollow group: {:?}", res);
 //! # Ok(())
 //! # }
 //! ```
@@ -52,7 +60,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct BookmarkGroup {
@@ -70,7 +77,8 @@ pub struct BookmarkGroup {
 endpoint! {
     POST ("/group/{}/bookmark", group_id),
     #[no_data auth] BookmarkGroup,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    BookmarkGroupBuilder
 }
 
 #[cfg(test)]
@@ -114,7 +122,6 @@ mod tests {
             .id(group_id)
             .bookmark()
             .post()
-            .build()?
             .send()
             .await?;
 
