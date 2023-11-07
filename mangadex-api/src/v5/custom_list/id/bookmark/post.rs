@@ -1,4 +1,9 @@
-//! Builder for the follow CustomList endpoint.
+//! Builder for following CustomList endpoint.
+//!
+//! NOTICE : This endpoint is not deploy yet on <https://mangadex.org>
+//! We'll notice you if it will be deployed
+//!
+//! Please use [`mangadex_api::v5::custom_list::id::follow::post::FollowCustomList`] instead
 //!
 //! <https://api.mangadex.org/swagger.html#/CustomList/follow-list-id>
 //!
@@ -8,26 +13,27 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//! */
 //!
 //! let list_id = Uuid::new_v4();
 //! let _ = client
 //!     .custom_list()
-//!     .follow()
-//!     .list_id(list_id)
-//!     .build()?
+//!     .id(list_id)
+//!     .bookmark()
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
@@ -51,7 +57,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -71,7 +76,8 @@ pub struct BookMarkCustomList {
 endpoint! {
     POST ("/list/{}/bookmark", list_id),
     #[body auth] BookMarkCustomList,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    BookMarkCustomListBuilder
 }
 
 #[cfg(test)]
@@ -116,7 +122,6 @@ mod tests {
             .id(custom_list_id)
             .bookmark()
             .post()
-            .build()?
             .send()
             .await?;
 

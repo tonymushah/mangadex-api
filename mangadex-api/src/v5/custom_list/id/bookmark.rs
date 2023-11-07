@@ -21,8 +21,8 @@ impl BookMarkEndpoint {
     }
     pub fn post(&self) -> BookMarkCustomListBuilder {
         BookMarkCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn delete(&self) -> UnBookMarkCustomListBuilder {
         UnBookMarkCustomListBuilder::default()
