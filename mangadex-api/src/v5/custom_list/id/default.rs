@@ -19,7 +19,7 @@ impl DefaultEndpoint {
     }
     pub fn post(&self) -> SetDefaultCustomListBuilder {
         SetDefaultCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }
