@@ -5,7 +5,7 @@
 //! This endpoint is largely identical to the Manga Get endpoint except that this fetches Manga
 //! that is not in the "published" state.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-manga-id-draft>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get-manga-id-draft>
 //!
 //! # Examples
 //!
@@ -18,21 +18,24 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     // Put your login script here
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!  */
 //!
 //! let manga_id = Uuid::new_v4();
 //! let manga_res = client
 //!     .manga()
-//!     .get_draft()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .draft()
+//!     .id(manga_id)
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -57,7 +60,6 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetMangaDraft {
@@ -78,7 +80,8 @@ pub struct GetMangaDraft {
 endpoint! {
     GET ("/manga/draft/{}", manga_id),
     #[query auth] GetMangaDraft,
-    #[flatten_result] MangaResponse
+    #[flatten_result] MangaResponse,
+    GetMangaDraftBuilder
 }
 
 #[cfg(test)]
@@ -267,7 +270,6 @@ mod tests {
             .id(manga_id)
             .get()
             .include(ReferenceExpansionResource::Author)
-            .build()?
             .send()
             .await?;
 
@@ -313,7 +315,6 @@ mod tests {
             .draft()
             .id(manga_id)
             .get()
-            .build()?
             .send()
             .await
             .expect_err("expected error");
