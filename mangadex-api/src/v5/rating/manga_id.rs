@@ -24,12 +24,12 @@ impl MangaIdEndpoint {
     }
     pub fn delete(&self) -> DeleteMangaRatingBuilder {
         DeleteMangaRatingBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.manga_id)
+            .http_client(self.http_client.clone())
     }
     pub fn post(&self) -> CreateUpdateMangaRatingBuilder {
         CreateUpdateMangaRatingBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.manga_id)
+            .http_client(self.http_client.clone())
     }
 }
