@@ -1,6 +1,6 @@
 //! Builder for the CustomList creation endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/CustomList/post-list>
+//! <https://api.mangadex.org/docs/swagger.html#/CustomList/post-list>
 //!
 //! # Examples
 //!
@@ -8,28 +8,28 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     let _login_res = client
+//!      .auth()
+//!      .login()
+//!      .username(Username::parse("myusername")?)
+//!      .password(Password::parse("hunter23")?)
+//!      .send()
+//!      .await?;
+//! */
 //!
 //! let manga_id = Uuid::new_v4();
 //! let res = client
 //!     .custom_list()
-//!     .create()
+//!     .post()
 //!     .name("My Custom List")
 //!     .add_manga_id(manga_id)
 //!     .version(1_u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -54,7 +54,6 @@ use mangadex_api_types::CustomListVisibility;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -81,7 +80,8 @@ pub struct CreateCustomList {
 endpoint! {
     POST ("/list"),
     #[body auth] CreateCustomList,
-    #[flatten_result] CustomListResponse
+    #[flatten_result] CustomListResponse,
+    CreateCustomListBuilder
 }
 
 #[cfg(test)]
@@ -146,7 +146,6 @@ mod tests {
             .post()
             .name(custom_list_name.as_str())
             .version(1u32)
-            .build()?
             .send()
             .await?;
 
