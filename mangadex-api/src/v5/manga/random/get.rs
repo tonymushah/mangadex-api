@@ -1,6 +1,6 @@
 //! Builder for the random manga endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-manga-random>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get-manga-random>
 //!
 //! # Examples
 //!
@@ -13,7 +13,7 @@
 //! let manga_res = client
 //!     .manga()
 //!     .random()
-//!     .build()?
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -38,7 +38,6 @@ use crate::HttpClientRef;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetRandomManga {
@@ -83,7 +82,8 @@ pub struct GetRandomManga {
 endpoint! {
     GET ("/manga/random"),
     #[query] GetRandomManga,
-    #[rate_limited] MangaData
+    #[rate_limited] MangaData,
+    GetRandomMangaBuilder
 }
 
 #[cfg(test)]
@@ -157,13 +157,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
-            .manga()
-            .random()
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let _ = mangadex_client.manga().random().get().send().await?;
 
         Ok(())
     }
@@ -226,13 +220,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .manga()
-            .random()
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.manga().random().get().send().await?;
 
         assert!(res.data.attributes.links.is_none());
 
@@ -308,13 +296,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .manga()
-            .random()
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.manga().random().get().send().await?;
 
         if let Some(links) = &res.data.attributes.links {
             assert_eq!(links.book_walker.clone().unwrap().0, "1".to_string());
@@ -346,7 +328,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        match mangadex_client.manga().random().get().build()?.send().await {
+        match mangadex_client.manga().random().get().send().await {
             Err(Error::ServerError(..)) => {}
             _ => panic!("expected server error"),
         }
