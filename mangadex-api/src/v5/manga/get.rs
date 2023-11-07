@@ -1,6 +1,6 @@
 //! Builder for the manga list endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-search-manga>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get-search-manga>
 //!
 //! # Examples
 //!
@@ -13,10 +13,9 @@
 //!
 //! let manga_res = client
 //!     .manga()
-//!     .list()
+//!     .get()
 //!     .title("full metal")
 //!     .add_status(MangaStatus::Completed)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -45,7 +44,6 @@ use mangadex_api_types::{
 #[builder(
     setter(into, strip_option),
     default,
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -56,57 +54,80 @@ pub struct ListManga {
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub author_or_artist: Option<Uuid>,
     #[builder(setter(each = "add_author"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub authors: Vec<Uuid>,
     #[builder(setter(each = "add_artist"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub artists: Vec<Uuid>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub year: Option<u16>,
     #[builder(setter(each = "include_tag"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub included_tags: Vec<Uuid>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub included_tags_mode: Option<TagSearchMode>,
     #[builder(setter(each = "exclude_tag"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub excluded_tags: Vec<Uuid>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub excluded_tags_mode: Option<TagSearchMode>,
     #[builder(setter(each = "add_status"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub status: Vec<MangaStatus>,
     /// Languages the manga results are originally published in.
     #[builder(setter(each = "add_original_language"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub original_language: Vec<Language>,
     /// A list of original languages to exclude.
     #[builder(setter(each = "exclude_original_language"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub excluded_original_language: Vec<Language>,
     /// A list of languages that the manga is translated into.
     #[builder(setter(each = "add_available_translated_language"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub available_translated_language: Vec<Language>,
     #[builder(setter(each = "add_publication_demographic"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub publication_demographic: Vec<Demographic>,
     #[builder(setter(each = "add_manga_id"))]
     #[serde(rename = "ids")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub manga_ids: Vec<Uuid>,
     #[builder(setter(each = "add_content_rating"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub content_rating: Vec<ContentRating>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at_since: Option<MangaDexDateTime>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at_since: Option<MangaDexDateTime>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<MangaSortOrder>,
     #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub has_available_chapters: Option<bool>,
     /// Scanlation group ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub group: Option<Uuid>,
 }
 
 endpoint! {
     GET "/manga",
     #[query] ListManga,
-    #[flatten_result] MangaListResponse
+    #[flatten_result] MangaListResponse,
+    ListMangaBuilder
 }
 
 #[cfg(test)]
@@ -183,13 +204,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .manga()
-            .get()
-            .limit(1u32)
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.manga().get().limit(1u32).send().await?;
 
         assert_eq!(res.response, ResponseType::Collection);
         let manga = &res.data[0];
@@ -261,7 +276,6 @@ mod tests {
             .manga()
             .get()
             .limit(0u32)
-            .build()?
             .send()
             .await
             .expect_err("expected error");
