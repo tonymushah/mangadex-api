@@ -26,14 +26,14 @@ impl ListIdEndpoint {
     }
     pub fn delete(&self) -> RemoveMangaFromCustomListBuilder {
         RemoveMangaFromCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
             .list_id(self.list_id)
+            .http_client(self.http_client.clone())
     }
     pub fn post(&self) -> AddMangaToCustomListBuilder {
         AddMangaToCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
             .list_id(self.list_id)
+            .http_client(self.http_client.clone())
     }
 }
