@@ -8,11 +8,12 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
+//! /*
 //! let _login_res = client
 //!     .auth()
 //!     .login()
@@ -21,13 +22,14 @@
 //!     .build()?
 //!     .send()
 //!     .await?;
+//! */
 //!
 //! let list_id = Uuid::new_v4();
 //! let _ = client
 //!     .custom_list()
+//!     .id(list_id)
 //!     .follow()
-//!     .list_id(list_id)
-//!     .build()?
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
@@ -51,7 +53,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -71,7 +72,8 @@ pub struct FollowCustomList {
 endpoint! {
     POST ("/list/{}/follow", list_id),
     #[body auth] FollowCustomList,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    FollowCustomListBuilder
 }
 
 #[cfg(test)]
@@ -116,7 +118,6 @@ mod tests {
             .id(custom_list_id)
             .follow()
             .post()
-            .build()?
             .send()
             .await?;
 
