@@ -12,27 +12,31 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     // Put your login script here
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .build()?
+//!         .send()
+//!         .await?;
+//!  */
 //!
 //! let manga_id = Uuid::new_v4();
 //! let res = client
 //!     .manga()
-//!     .submit_draft()
-//!     .manga_id(&manga_id)
+//!     .draft()
+//!     .id(manga_id)
+//!     .commit()
+//!     .post()
 //!     .version(1_u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -76,7 +80,8 @@ pub struct SubmitMangaDraft {
 endpoint! {
     POST ("/manga/draft/{}/commit/", manga_id),
     #[body auth] SubmitMangaDraft,
-    #[rate_limited] MangaData
+    #[rate_limited] MangaData,
+    SubmitMangaDraftBuilder
 }
 
 #[cfg(test)]
@@ -187,7 +192,6 @@ mod tests {
             .commit()
             .post()
             .version(1_u32)
-            .build()?
             .send()
             .await?;
 
@@ -275,7 +279,6 @@ mod tests {
             .commit()
             .post()
             .version(1_u32)
-            .build()?
             .send()
             .await
             .expect_err("expected error");
