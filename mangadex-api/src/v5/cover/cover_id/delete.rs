@@ -27,7 +27,7 @@
 //! let cover_id = Uuid::new_v4();
 //! let res = client
 //!     .cover()
-//!     .id(cover_id)
+//!     .cover_id(cover_id)
 //!     .delete()
 //!     .send()
 //!     .await?;
