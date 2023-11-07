@@ -1,6 +1,6 @@
 //! Builder for the follow manga endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/post-manga-id-follow>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/post-manga-id-follow>
 //!
 //! # Examples
 //!
@@ -8,26 +8,31 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     // Put your login script here
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
+//!
 //!
 //! let manga_id = Uuid::new_v4();
 //! let res = client
 //!     .manga()
+//!     .id(manga_id)
 //!     .follow()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
@@ -52,7 +57,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[deprecated(
@@ -74,7 +78,8 @@ pub struct FollowManga {
 endpoint! {
     POST ("/manga/{}/follow", manga_id),
     #[no_data auth] FollowManga,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    FollowMangaBuilder
 }
 
 #[cfg(test)]
@@ -118,7 +123,6 @@ mod tests {
             .id(manga_id)
             .follow()
             .post()
-            .build()?
             .send()
             .await?;
 
