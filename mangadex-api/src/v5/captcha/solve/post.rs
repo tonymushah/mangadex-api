@@ -1,6 +1,6 @@
 //! Builder for the CAPTCHA solve endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Captcha/post-captcha-solve>
+//! <https://api.mangadex.org/docs/swagger.html#/Captcha/post-captcha-solve>
 //!
 //! Captchas can be solved explicitly through this endpoint, another way is to add a
 //! `X-Captcha-Result` header to any request.
@@ -21,8 +21,8 @@
 //! let captcha_res = client
 //!     .captcha()
 //!     .solve()
+//!     .post()
 //!     .captcha_challenge("specialchallengetoken")
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -64,7 +64,8 @@ pub struct SolveCaptcha {
 endpoint! {
     POST "/captcha/solve",
     #[body] SolveCaptcha,
-    #[rate_limited] NoData
+    #[rate_limited] NoData,
+    SolveCaptchaBuilder
 }
 
 #[cfg(test)]
@@ -110,7 +111,6 @@ mod tests {
             .solve()
             .post()
             .captcha_challenge("solution")
-            .build()?
             .send()
             .await?;
 
@@ -153,7 +153,6 @@ mod tests {
             .solve()
             .post()
             .captcha_challenge("solution")
-            .build()?
             .send()
             .await
             .expect_err("expected error");

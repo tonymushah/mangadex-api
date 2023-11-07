@@ -1,4 +1,5 @@
 pub mod post;
+
 use crate::HttpClientRef;
 use post::SolveCaptchaBuilder;
 
