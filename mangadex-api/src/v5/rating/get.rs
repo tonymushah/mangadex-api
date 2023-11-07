@@ -2,35 +2,38 @@
 //!
 //! This endpoint requires authentication.
 //!
-//! <https://api.mangadex.org/swagger.html#/Rating/get-rating>
+//! <https://api.mangadex.org/docs/swagger.html#/Rating/get-rating>
 //!
 //! # Examples
 //!
 //! ```rust
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //! use mangadex_api::v5::MangaDexClient;
 //! use uuid::Uuid;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
+//! /*
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter2")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter2")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
+//!
 //!
 //! // Official Test Manga ID.
 //! let manga_id = Uuid::parse_str("f9c33607-9180-4ba6-b85c-e4b5faee7192")?;
 //!
 //! let res = client
 //!     .rating()
-//!     .get_your_manga_ratings()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .get()
+//!     .manga_id(manga_id)
 //!     .send()
 //!     .await?;
 //!
@@ -55,7 +58,6 @@ use mangadex_api_schema::v5::RatingsResponse;
 #[builder(
     setter(into, strip_option),
     default,
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetYourMangaRatings {
@@ -73,7 +75,8 @@ pub struct GetYourMangaRatings {
 endpoint! {
     GET "/rating",
     #[query auth] GetYourMangaRatings,
-    #[flatten_result] RatingsResponse
+    #[flatten_result] RatingsResponse,
+    GetYourMangaRatingsBuilder
 }
 
 #[cfg(test)]
@@ -118,7 +121,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client.rating().get().build()?.send().await?;
+        let res = mangadex_client.rating().get().send().await?;
 
         assert_eq!(res.ratings.get(&manga_id).unwrap().rating, 7);
 
@@ -154,7 +157,6 @@ mod tests {
         let res = mangadex_client
             .rating()
             .get()
-            .build()?
             .send()
             .await
             .expect_err("expected error");

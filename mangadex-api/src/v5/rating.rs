@@ -1,6 +1,6 @@
 //! Rating endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/Rating/Rating>
+//! <https://api.mangadex.org/docs/swagger.html#/Rating/Rating>
 pub mod get;
 pub mod manga_id;
 
