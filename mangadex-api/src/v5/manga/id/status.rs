@@ -21,12 +21,12 @@ impl StatusEndpoint {
     }
     pub fn get(&self) -> MangaReadingStatusBuilder {
         MangaReadingStatusBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn post(&self) -> UpdateMangaReadingStatusBuilder {
         UpdateMangaReadingStatusBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }
