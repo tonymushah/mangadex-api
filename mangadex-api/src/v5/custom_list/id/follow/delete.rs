@@ -1,6 +1,6 @@
-//! Builder for the CustomList delete endpoint.
+//! Builder for the unfollow CustomList endpoint.
 //!
-//! <https://api.mangadex.org/docs/swagger.html#/CustomList/delete-list-id>
+//! <https://api.mangadex.org/swagger.html#/CustomList/unfollow-list-id>
 //!
 //! # Examples
 //!
@@ -13,36 +13,34 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! /*
-//!     // Put your login code here
-//!     let _login_res = client
-//!         .auth()
-//!         .login()
-//!         .post()
-//!         .username(Username::parse("myusername")?)
-//!         .password(Password::parse("hunter23")?)
-//!         .send()
-//!         .await?;
-//! */
-//! let list_id = Uuid::new_v4();
-//! let res = client
-//!     .custom_list()
-//!     .id(list_id)
-//!     .delete()
+//! let _login_res = client
+//!     .auth()
+//!     .login()
+//!     .username(Username::parse("myusername")?)
+//!     .password(Password::parse("hunter23")?)
+//!     .build()?
 //!     .send()
 //!     .await?;
 //!
-//! println!("delete: {:?}", res);
+//! let list_id = Uuid::new_v4();
+//! let _ = client
+//!     .custom_list()
+//!     .unfollow()
+//!     .list_id(list_id)
+//!     .build()?
+//!     .send()
+//!     .await?;
+//!
 //! # Ok(())
 //! # }
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::NoData;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::NoData;
 use mangadex_api_types::error::Result;
 
 #[cfg_attr(
@@ -55,7 +53,8 @@ use mangadex_api_types::error::Result;
     setter(into, strip_option),
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
-pub struct DeleteCustomList {
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+pub struct UnFollowCustomList {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -63,15 +62,15 @@ pub struct DeleteCustomList {
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
+    /// CustomList ID.
     #[serde(skip_serializing)]
     pub list_id: Uuid,
 }
 
 endpoint! {
-    DELETE ("/list/{}", list_id),
-    #[no_data auth] DeleteCustomList,
-    #[discard_result] Result<NoData>,
-    DeleteCustomListBuilder
+    DELETE ("/list/{}/follow", list_id),
+    #[body auth] UnFollowCustomList,
+    #[discard_result] Result<NoData>
 }
 
 #[cfg(test)]
@@ -86,7 +85,7 @@ mod tests {
     use crate::{HttpClient, MangaDexClient};
 
     #[tokio::test]
-    async fn delete_custom_list_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn follow_custom_list_fires_a_request_to_base_url() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
@@ -97,13 +96,13 @@ mod tests {
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
-        let list_id = Uuid::new_v4();
+        let custom_list_id = Uuid::new_v4();
         let response_body = json!({
-            "result": "ok",
+            "result": "ok"
         });
 
         Mock::given(method("DELETE"))
-            .and(path_regex(r"/list/[0-9a-fA-F-]+"))
+            .and(path_regex(r"/list/[0-9a-fA-F-]+/follow"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
@@ -112,8 +111,10 @@ mod tests {
 
         mangadex_client
             .custom_list()
-            .id(list_id)
+            .id(custom_list_id)
+            .follow()
             .delete()
+            .build()?
             .send()
             .await?;
 
