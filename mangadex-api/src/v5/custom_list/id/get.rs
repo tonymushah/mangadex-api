@@ -1,6 +1,6 @@
 //! Builder for the custom list view endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/CustomList/get-list-id>
+//! <https://api.mangadex.org/docs/swagger.html#/CustomList/get-list-id>
 //!
 //! # Examples
 //!
@@ -15,9 +15,8 @@
 //! let list_id = Uuid::new_v4();
 //! let res = client
 //!     .custom_list()
+//!     .id(list_id)
 //!     .get()
-//!     .list_id(&list_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -41,7 +40,6 @@ use mangadex_api_schema::v5::CustomListResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetCustomList {
@@ -59,7 +57,8 @@ pub struct GetCustomList {
 endpoint! {
     GET ("/list/{}", list_id),
     #[query] GetCustomList,
-    #[flatten_result] CustomListResponse
+    #[flatten_result] CustomListResponse,
+    GetCustomListBuilder
 }
 
 #[cfg(test)]
@@ -112,7 +111,6 @@ mod tests {
             .custom_list()
             .id(list_id)
             .get()
-            .build()?
             .send()
             .await?;
 
@@ -159,7 +157,6 @@ mod tests {
             .custom_list()
             .id(list_id)
             .get()
-            .build()?
             .send()
             .await
             .expect_err("expected error");

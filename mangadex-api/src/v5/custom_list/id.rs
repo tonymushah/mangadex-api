@@ -53,8 +53,8 @@ impl IdEnpoint {
     }
     pub fn get(&self) -> GetCustomListBuilder {
         GetCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn pin(&self) -> PinEndpoint {
         PinEndpoint::new(self.http_client.clone(), self.id)
@@ -69,8 +69,8 @@ impl IdEnpoint {
     }
     pub fn put(&self) -> UpdateCustomListBuilder {
         UpdateCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
     /// Pretty much the same as `.bookmark()`
     #[deprecated(since = "3.0.0-alpha.1", note = "Use `.bookmark()` instead")]
