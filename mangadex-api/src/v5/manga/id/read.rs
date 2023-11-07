@@ -21,13 +21,12 @@ impl ReadEndpoint {
     }
     pub fn get(&self) -> GetMangaReadChaptersBuilder {
         GetMangaReadChaptersBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn post(&self) -> MarkChapterBatchBuilder {
         MarkChapterBatchBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
-            .clone()
+            .http_client(self.http_client.clone())
     }
 }
