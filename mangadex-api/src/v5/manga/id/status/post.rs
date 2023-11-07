@@ -1,6 +1,6 @@
 //! Builder for the update manga reading status endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/post-manga-id-status>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/post-manga-id-status>
 //!
 //! # Examples
 //!
@@ -16,10 +16,10 @@
 //! let manga_id = Uuid::new_v4();
 //! let res = client
 //!     .manga()
-//!     .update_reading_status()
-//!     .manga_id(&manga_id)
+//!     .id(manga_id)
+//!     .status()
+//!     .post()
 //!     .status(Some(ReadingStatus::Reading))
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -45,7 +45,6 @@ use mangadex_api_types::ReadingStatus;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[deprecated(
@@ -70,7 +69,8 @@ pub struct UpdateMangaReadingStatus {
 endpoint! {
     POST ("/manga/{}/status", manga_id),
     #[body auth] UpdateMangaReadingStatus,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    UpdateMangaReadingStatusBuilder
 }
 
 #[cfg(test)]
@@ -121,7 +121,6 @@ mod tests {
             .status()
             .post()
             .status(Some(ReadingStatus::Reading))
-            .build()?
             .send()
             .await?;
 
@@ -164,7 +163,6 @@ mod tests {
             .status()
             .post()
             .status(None)
-            .build()?
             .send()
             .await?;
 
