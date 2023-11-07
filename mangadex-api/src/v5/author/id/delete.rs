@@ -30,7 +30,7 @@
 //! let author_id = Uuid::new_v4();
 //! let res = client
 //!     .author()
-//!     .id(&author_id)
+//!     .id(author_id)
 //!     .delete()
 //!     .send()
 //!     .await?;
