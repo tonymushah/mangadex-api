@@ -1,6 +1,6 @@
 //! Builder for the unfollow CustomList endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/CustomList/unfollow-list-id>
+//! <https://api.mangadex.org/docs/swagger.html#/CustomList/unfollow-list-id>
 //!
 //! # Examples
 //!
@@ -13,20 +13,24 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!  */
+//!
 //!
 //! let list_id = Uuid::new_v4();
 //! let _ = client
 //!     .custom_list()
-//!     .unfollow()
-//!     .list_id(list_id)
+//!     .id(list_id)
+//!     .follow()
+//!     .delete()
 //!     .build()?
 //!     .send()
 //!     .await?;
