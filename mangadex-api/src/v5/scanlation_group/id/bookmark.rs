@@ -21,12 +21,12 @@ impl BookMarkEndpoint {
     }
     pub fn post(&self) -> BookmarkGroupBuilder {
         BookmarkGroupBuilder::default()
-            .http_client(self.http_client.clone())
             .group_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn delete(&self) -> UnBookMarkGroupBuilder {
         UnBookMarkGroupBuilder::default()
-            .http_client(self.http_client.clone())
             .group_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }
