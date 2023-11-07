@@ -17,6 +17,7 @@
 //!     .manga()
 //!     .id(manga_id)
 //!     .aggregate()
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
