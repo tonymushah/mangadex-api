@@ -1,6 +1,6 @@
 //! Chapter endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/Chapter>
+//! <https://api.mangadex.org/docs/swagger.html#/Chapter>
 
 pub mod get;
 pub mod id;
