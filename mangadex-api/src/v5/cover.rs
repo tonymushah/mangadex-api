@@ -1,6 +1,6 @@
 //! Cover art endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/Cover>
+//! <https://api.mangadex.org/docs/swagger.html#/Cover>
 
 pub mod cover_id;
 pub mod get;

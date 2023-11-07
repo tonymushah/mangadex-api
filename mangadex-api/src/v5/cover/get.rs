@@ -1,6 +1,6 @@
 //! Builder for the cover art list endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Cover/get-cover>
+//! <https://api.mangadex.org/docs/swagger.html#/Cover/get-cover>
 //!
 //! # Examples
 //!
@@ -15,9 +15,8 @@
 //! let cover_id = Uuid::new_v4();
 //! let cover_res = client
 //!     .cover()
-//!     .list()
+//!     .get()
 //!     .add_cover_id(&cover_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -44,7 +43,6 @@ use mangadex_api_types::{CoverSortOrder, Language, ReferenceExpansionResource};
 #[builder(
     setter(into, strip_option),
     default,
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -77,7 +75,8 @@ pub struct ListCover {
 endpoint! {
     GET "/cover",
     #[query] ListCover,
-    #[flatten_result] CoverListResponse
+    #[flatten_result] CoverListResponse,
+    ListCoverBuilder
 }
 
 #[cfg(test)]
@@ -140,13 +139,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .cover()
-            .get()
-            .limit(1u32)
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.cover().get().limit(1u32).send().await?;
 
         assert_eq!(res.response, ResponseType::Collection);
         let cover = &res.data[0];
@@ -199,7 +192,6 @@ mod tests {
             .cover()
             .get()
             .limit(0u32)
-            .build()?
             .send()
             .await
             .expect_err("expected error");
