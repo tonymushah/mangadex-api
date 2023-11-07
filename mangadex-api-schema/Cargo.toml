@@ -34,7 +34,7 @@ features = [
 ]
 
 [dependencies.serde]
-version = "1.0.190"
+version = "1.0.192"
 features = ["derive"]
 
 [dependencies.serde_qs]
