@@ -26,7 +26,7 @@ impl BookMarkEndpoint {
     }
     pub fn delete(&self) -> UnBookMarkCustomListBuilder {
         UnBookMarkCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }
