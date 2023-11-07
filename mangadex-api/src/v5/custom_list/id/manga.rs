@@ -1,5 +1,6 @@
 use crate::HttpClientRef;
 use uuid::Uuid;
+
 pub mod get;
 
 use get::GetCustomListMangaBuilder;
@@ -17,7 +18,7 @@ impl MangaEndpoint {
     }
     pub fn get(&self) -> GetCustomListMangaBuilder {
         GetCustomListMangaBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }
