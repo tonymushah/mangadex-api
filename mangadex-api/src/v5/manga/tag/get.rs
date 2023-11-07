@@ -14,8 +14,8 @@
 //!
 //! let res = client
 //!     .manga()
-//!     .list_tags()
-//!     .build()?
+//!     .tag()
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -38,7 +38,6 @@ use mangadex_api_schema::v5::TagListResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct ListTags {
@@ -53,7 +52,8 @@ pub struct ListTags {
 endpoint! {
     GET "/manga/tag",
     #[no_data] ListTags,
-    #[flatten_result] TagListResponse
+    #[flatten_result] TagListResponse,
+    ListTagsBuilder
 }
 
 #[cfg(test)]
@@ -120,7 +120,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client.manga().tag().get().build()?.send().await?;
+        let res = mangadex_client.manga().tag().get().send().await?;
 
         assert_eq!(res.response, ResponseType::Collection);
         let oneshot = &res.data[0];
