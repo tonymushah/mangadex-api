@@ -19,7 +19,7 @@ impl FeedEndPoint {
     }
     pub fn get(&self) -> CustomListMangaFeedBuilder {
         CustomListMangaFeedBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }
