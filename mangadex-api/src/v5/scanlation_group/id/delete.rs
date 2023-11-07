@@ -1,6 +1,6 @@
 //! Builder for the scanlation group delete endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/delete-group-id>
+//! <https://api.mangadex.org/docs/swagger.html#/ScanlationGroup/delete-group-id>
 //!
 //! # Examples
 //!
@@ -8,26 +8,30 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post().build()?
+//!     
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let group_id = Uuid::new_v4();
 //! let res = client
 //!     .scanlation_group()
+//!     .id(group_id)
 //!     .delete()
-//!     .group_id(&group_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -51,7 +55,6 @@ use mangadex_api_schema::NoData;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct DeleteGroup {
@@ -69,7 +72,8 @@ pub struct DeleteGroup {
 endpoint! {
     DELETE ("/group/{}", group_id),
     #[no_data auth] DeleteGroup,
-    #[rate_limited] NoData
+    #[rate_limited] NoData,
+    DeleteGroupBuilder
 }
 
 #[cfg(test)]
@@ -118,7 +122,6 @@ mod tests {
             .scanlation_group()
             .id(group_id)
             .delete()
-            .build()?
             .send()
             .await?;
 

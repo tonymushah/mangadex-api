@@ -34,17 +34,17 @@ impl IdEndpoint {
     }
     pub fn get(&self) -> GetGroupBuilder {
         GetGroupBuilder::default()
-            .http_client(self.http_client.clone())
             .group_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn delete(&self) -> DeleteGroupBuilder {
         DeleteGroupBuilder::default()
-            .http_client(self.http_client.clone())
             .group_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn put(&self) -> UpdateGroupBuilder {
         UpdateGroupBuilder::default()
-            .http_client(self.http_client.clone())
             .group_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }
