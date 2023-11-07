@@ -1,6 +1,6 @@
 //! Builder for the follow scanlation group endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/post-group-id-follow>
+//! <https://api.mangadex.org/docs/swagger.html#/ScanlationGroup/post-group-id-follow>
 //!
 //! # Examples
 //!
@@ -8,10 +8,12 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
+//!
+//! /*
 //!
 //! let _login_res = client
 //!     .auth()
@@ -22,12 +24,14 @@
 //!     .send()
 //!     .await?;
 //!
+//!  */
+//!
 //! let group_id = Uuid::new_v4();
 //! let res = client
 //!     .scanlation_group()
+//!     .id(group_id)
 //!     .follow()
-//!     .group_id(&group_id)
-//!     .build()?
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
@@ -52,7 +56,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[deprecated(
@@ -74,7 +77,8 @@ pub struct FollowGroup {
 endpoint! {
     POST ("/group/{}/follow", group_id),
     #[no_data auth] FollowGroup,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    FollowGroupBuilder
 }
 
 #[cfg(test)]
@@ -118,7 +122,6 @@ mod tests {
             .id(group_id)
             .follow()
             .post()
-            .build()?
             .send()
             .await?;
 
