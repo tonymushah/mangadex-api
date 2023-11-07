@@ -1,6 +1,6 @@
 //! Builder for the manga read markers endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-manga-chapter-readmarkers-2>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get-manga-chapter-readmarkers-2>
 //!
 //! # Examples
 //!
@@ -15,10 +15,10 @@
 //! let manga_id = Uuid::new_v4();
 //! let res = client
 //!     .manga()
-//!     .get_read_chapters()
+//!     .read()
+//!     .get()
 //!     .add_manga_id(&manga_id)
 //!     .grouped(false)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +42,6 @@ use mangadex_api_schema::v5::MangaReadMarkersResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetReadChapters {
@@ -68,7 +67,8 @@ pub struct GetReadChapters {
 endpoint! {
     GET "/manga/read",
     #[query auth] GetReadChapters,
-    #[flatten_result] MangaReadMarkersResponse
+    #[flatten_result] MangaReadMarkersResponse,
+    GetReadChaptersBuilder
 }
 
 #[cfg(test)]
@@ -119,7 +119,6 @@ mod tests {
             .read()
             .get()
             .add_manga_id(manga_id)
-            .build()?
             .send()
             .await?;
 
@@ -169,7 +168,6 @@ mod tests {
             .get()
             .add_manga_id(manga_id)
             .grouped(true)
-            .build()?
             .send()
             .await?;
 
