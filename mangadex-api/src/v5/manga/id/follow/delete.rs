@@ -1,6 +1,6 @@
 //! Builder for the unfollow manga endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/delete-manga-id-follow>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/delete-manga-id-follow>
 //!
 //! # Examples
 //!
@@ -8,26 +8,29 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!  */
+//!
 //!
 //! let manga_id = Uuid::new_v4();
 //! let res = client
 //!     .manga()
-//!     .unfollow()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .id(manga_id)
+//!     .follow()
+//!     .delete()
 //!     .send()
 //!     .await?;
 //!
@@ -52,7 +55,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[deprecated(
@@ -74,7 +76,8 @@ pub struct UnfollowManga {
 endpoint! {
     DELETE ("/manga/{}/follow", manga_id),
     #[no_data auth] UnfollowManga,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    UnfollowMangaBuilder
 }
 
 #[cfg(test)]
@@ -118,7 +121,6 @@ mod tests {
             .id(manga_id)
             .follow()
             .delete()
-            .build()?
             .send()
             .await?;
 
