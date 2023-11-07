@@ -1,6 +1,6 @@
 //! Builder for the manga reading status endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-manga-status>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get-manga-status>
 //!
 //! # Examples
 //!
@@ -13,9 +13,9 @@
 //!
 //! let res = client
 //!     .manga()
-//!     .reading_statuses()
+//!     .status()
+//!     .get()
 //!     .status(ReadingStatus::Reading)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -39,7 +39,6 @@ use mangadex_api_types::ReadingStatus;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     default,
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
@@ -55,13 +54,15 @@ pub struct MangaReadingStatuses {
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ReadingStatus>,
 }
 
 endpoint! {
     GET "/manga/status",
     #[query auth] MangaReadingStatuses,
-    #[flatten_result] MangaReadingStatusesResponse
+    #[flatten_result] MangaReadingStatusesResponse,
+    MangaReadingStatusesBuilder
 }
 
 #[cfg(test)]
@@ -102,13 +103,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
-            .manga()
-            .status()
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let _ = mangadex_client.manga().status().get().send().await?;
 
         Ok(())
     }
