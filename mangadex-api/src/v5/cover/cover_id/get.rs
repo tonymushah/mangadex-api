@@ -1,6 +1,6 @@
 //! Builder for the cover view endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Cover/get-cover-id>
+//! <https://api.mangadex.org/docs/swagger.html#/Cover/get-cover-id>
 //!
 //! # Examples
 //!

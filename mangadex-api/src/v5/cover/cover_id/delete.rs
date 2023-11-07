@@ -1,6 +1,6 @@
 //! Builder for the cover delete endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Cover/delete-cover>
+//! <https://api.mangadex.org/docs/swagger.html#/Cover/delete-cover>
 //!
 //! # Examples
 //!

@@ -1,6 +1,6 @@
 //! Builder for the edit cover endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Cover/edit-cover>
+//! <https://api.mangadex.org/docs/swagger.html#/Cover/edit-cover>
 //!
 //! # Examples
 //!
@@ -8,28 +8,27 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
-//!
+//! /*
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//! */
 //! let cover_id = Uuid::new_v4();
 //! let res = client
 //!     .cover()
-//!     .edit()
-//!     .cover_id(&cover_id)
+//!     .cover_id(cover_id)
+//!     .put()
 //!     .volume(Some("1"))
 //!     .version(2_u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -54,7 +53,6 @@ use mangadex_api_types::Language;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -86,7 +84,8 @@ pub struct EditCover {
 endpoint! {
     PUT ("/cover/{}", cover_id),
     #[body auth] EditCover,
-    #[rate_limited] CoverData
+    #[rate_limited] CoverData,
+    EditCoverBuilder
 }
 
 #[cfg(test)]
@@ -168,7 +167,6 @@ mod tests {
             .put()
             .volume(Some("1".to_string()))
             .version(2_u32)
-            .build()?
             .send()
             .await?;
 
