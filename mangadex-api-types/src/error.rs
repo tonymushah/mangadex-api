@@ -69,6 +69,9 @@ pub enum Error {
     RateLimitExcedeed,
 
     #[error(transparent)]
+    ForumThreadTypeParseError(#[from] crate::forum_thread::ForumThreadTypeParseError),
+
+    #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
 }
 
@@ -105,6 +108,7 @@ impl serde::Serialize for Error {
             ),
             Error::RateLimitParseError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::RateLimitExcedeed => serializer.serialize_str("Rate Limit Excedeed"),
+            Error::ForumThreadTypeParseError(e) => serializer.serialize_str(e.to_string().as_str()),
         }
     }
 }

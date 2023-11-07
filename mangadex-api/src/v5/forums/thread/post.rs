@@ -1,3 +1,44 @@
+//! Builder for the Forum Thread creation endpoint.
+//!
+//! <https://api.mangadex.org/docs/swagger.html#/Forums/forums-thread-create>
+//!
+//! # Examples
+//!
+//! ```rust
+//! use uuid::Uuid;
+//!
+//! use mangadex_api::v5::MangaDexClient;
+//! use mangadex_api_types::ForumThreadType;
+//! // use mangadex_api_types::{Password, Username};
+//!
+//! # async fn run() -> anyhow::Result<()> {
+//! let client = MangaDexClient::default();
+//!
+//! /*
+//!     let _login_res = client
+//!      .auth()
+//!      .login()
+//!      .username(Username::parse("myusername")?)
+//!      .password(Password::parse("hunter23")?)
+//!      .send()
+//!      .await?;
+//! */
+//!
+//! let manga_id = Uuid::new_v4();
+//! let res = client
+//!     .forums()
+//!     .thread()
+//!     .post()
+//!     .id(manga_id)
+//!     .type_(ForumThreadType::Manga)
+//!     .send()
+//!     .await?;
+//!
+//! println!("custom list create: {:?}", res);
+//! # Ok(())
+//! # }
+//! ```
+
 use crate::HttpClientRef;
 use derive_builder::Builder;
 use mangadex_api_schema::v5::ForumThreadResponseData;
@@ -13,7 +54,6 @@ use uuid::Uuid;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -32,7 +72,8 @@ pub struct CreateForumThread {
 endpoint! {
     POST "/forums/thread",
     #[body auth] CreateForumThread,
-    #[rate_limited] ForumThreadResponseData
+    #[rate_limited] ForumThreadResponseData,
+    CreateForumThreadBuilder
 }
 
 #[cfg(test)]
@@ -97,7 +138,6 @@ mod tests {
             .post()
             .id(body_id)
             .type_(ForumThreadType::Manga)
-            .build()?
             .send()
             .await?;
 
@@ -154,7 +194,6 @@ mod tests {
             .post()
             .id(body_id)
             .type_(ForumThreadType::Manga)
-            .build()?
             .send()
             .await
             .expect_err("an error should be received");
@@ -212,7 +251,6 @@ mod tests {
             .post()
             .id(body_id)
             .type_(ForumThreadType::Manga)
-            .build()?
             .send()
             .await
             .expect_err("an error should be received");
