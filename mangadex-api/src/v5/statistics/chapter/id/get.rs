@@ -1,4 +1,4 @@
-//! Builder for getting a given Manga's statistics.
+//! Builder for getting a given chapter's statistics.
 //!
 //! <https://api.mangadex.org/docs/swagger.html#/Statistics/get-statistics-chapter-uuid>
 //!

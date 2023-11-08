@@ -1,4 +1,4 @@
-//! Builder for finding Manga statistics.
+//! Builder for finding Group statistics.
 //!
 //! <https://api.mangadex.org/docs/swagger.html#/Statistics/get-statistics-groups>
 //!
