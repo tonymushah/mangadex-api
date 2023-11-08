@@ -29,8 +29,8 @@ impl UploadSessionFileEndpoint {
     }
     pub fn delete(&self) -> DeleteImageBuilder {
         DeleteImageBuilder::default()
-            .http_client(self.http_client.clone())
             .session_id(self.upload_session_id)
             .session_file_id(self.upload_session_file_id)
+            .http_client(self.http_client.clone())
     }
 }
