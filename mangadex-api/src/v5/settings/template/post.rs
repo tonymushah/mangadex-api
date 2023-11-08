@@ -1,27 +1,31 @@
 //! Builder for creating a Settings template.
 //!
-//! <https://api.mangadex.org/swagger.html#/Settings/post-settings-template>
+//! <https://api.mangadex.org/docs/swagger.html#/Settings/post-settings-template>
 //!
-//! ```ignore
+//! ```rust
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let res = client
 //!     .settings()
-//!     .create_template()
-//!     .build()?
+//!     .template()
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
@@ -63,12 +67,17 @@ pub struct CreateSettingsTemplate {
     #[allow(unused)]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
+
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
 }
 
 endpoint! {
     POST "/settings/template",
     #[body auth] CreateSettingsTemplate,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    CreateSettingsTemplateBuilder
 }
 
 #[cfg(test)]
@@ -113,7 +122,6 @@ mod tests {
             .settings()
             .template()
             .post()
-            .build()?
             .send()
             .await
             .expect_err("expected error");
