@@ -1,6 +1,6 @@
 //! Builder for uploading images to the upload session.
 //!
-//! <https://api.mangadex.org/swagger.html#/Upload/put-upload-session-file>
+//! <https://api.mangadex.org/docs/swagger.html#/Upload/put-upload-session-file>
 //!
 //! Currently, there is a maximum of 10 files per request.
 //!
@@ -8,30 +8,33 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let session_id = Uuid::new_v4();
 //! let file1_bytes = vec![0];
 //! let file2_bytes = vec![1];
 //! let res = client
 //!     .upload()
-//!     .upload_images()
-//!     .session_id(&session_id)
+//!     .upload_session_id(session_id)
+//!     .post()
 //!     .add_file(file1_bytes.into())
 //!     .add_file(file2_bytes.into())
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -65,7 +68,6 @@ use crate::HttpClientRef;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct UploadImages {
@@ -81,7 +83,7 @@ pub struct UploadImages {
 
     /// Image bytes.
     #[builder(setter(each = "add_file"))]
-    pub files: Vec<Cow<'static, [u8]>>,
+    pub files: Vec<Vec<u8>>,
 }
 
 // TODO: Come up with a way to generalize multipart form data for the `Endpoint` trait.
@@ -143,6 +145,11 @@ impl UploadImages {
 
         Ok(res)
     }
+}
+
+builder_send! {
+    #[builder] UploadImagesBuilder,
+    #[rate_limited] UploadSessionFileDataObject
 }
 
 #[cfg(test)]
@@ -213,8 +220,7 @@ mod tests {
             .upload()
             .upload_session_id(session_id)
             .post()
-            .add_file(file_bytes.into())
-            .build()?
+            .add_file(file_bytes)
             .send()
             .await?;
 
