@@ -1,33 +1,39 @@
-//! Builder for checking if the logged-in user follows a custom list.
+//! Builder for checking if the logged-in user follows a user.
 //!
-//! <https://api.mangadex.org/swagger.html#/Follows/get-user-follows-list-id>
+//! NOTICE: This endpoint is not deployed yet on [Mangadex](https://mangadex.org)
+//! We'll notice you when it's deployed
 //!
 //! # Examples
 //!
 //! ```rust
 //! use uuid::Uuid;
 //!
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //! use mangadex_api::MangaDexClient;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let custom_list_id = Uuid::new_v4();
+//!
 //! let res = client
 //!     .user()
-//!     .is_following_custom_list()
-//!     .list_id(&custom_list_id)
-//!     .build()?
+//!     .bookmarks()
+//!     .user()    
+//!     .id(custom_list_id)
 //!     .send()
 //!     .await?;
 //!
@@ -118,6 +124,11 @@ endpoint! {
     GET ("/user/bookmarks/user/{}", user_id),
     #[no_data auth] HaveBookMarkedUser,
     #[no_send] Result<IsFollowingResponse>
+}
+
+builder_send! {
+    #[builder] HaveBookMarkedUserBuilder,
+    IsFollowingResponse
 }
 
 #[cfg(test)]
