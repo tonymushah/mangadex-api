@@ -1,33 +1,38 @@
-//! Builder for checking if the logged-in user follows a custom list.
+//! Builder for checking if the logged-in user suscribed to a custom list.
 //!
-//! <https://api.mangadex.org/swagger.html#/Follows/get-user-follows-list-id>
+//! NOTICE: This endpoint is not deployed yet on [Mangadex](https://mangadex.org)
+//! We'll notice you when it's deployed
 //!
 //! # Examples
 //!
 //! ```rust
 //! use uuid::Uuid;
 //!
-//! use mangadex_api_types::{Password, Username};
+//! //  use mangadex_api_types::{Password, Username};
 //! use mangadex_api::MangaDexClient;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .get()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let custom_list_id = Uuid::new_v4();
 //! let res = client
 //!     .user()
-//!     .is_following_custom_list()
-//!     .list_id(&custom_list_id)
-//!     .build()?
+//!     .subscription()
+//!     .id(custom_list_id)
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -120,6 +125,11 @@ endpoint! {
     #[no_send] Result<IsFollowingResponse>
 }
 
+builder_send! {
+    #[builder] IsSubscribedToCustomListBuilder,
+    IsFollowingResponse
+}
+
 #[cfg(test)]
 mod tests {
     use mangadex_api_types::error::Error;
@@ -162,7 +172,6 @@ mod tests {
             .subscription()
             .id(list_id)
             .get()
-            .build()?
             .send()
             .await?;
 
@@ -201,7 +210,6 @@ mod tests {
             .subscription()
             .id(list_id)
             .get()
-            .build()?
             .send()
             .await?;
 
@@ -247,7 +255,6 @@ mod tests {
             .subscription()
             .id(list_id)
             .get()
-            .build()?
             .send()
             .await
             .unwrap_err();
