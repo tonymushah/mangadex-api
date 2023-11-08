@@ -1,3 +1,40 @@
+//! Builder for getting the logged-in user history.
+//!
+//! <https://api.mangadex.org/docs/swagger.html#/ReadMarker/get-reading-history>
+//!
+//! # Examples
+//!
+//! ```rust
+//! use mangadex_api::MangaDexClient;
+//! // use mangadex_api_types::{Password, Username};
+//!
+//! # async fn run() -> anyhow::Result<()> {
+//! let client = MangaDexClient::default();
+//!
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
+//!
+//! let res = client
+//!     .user()
+//!     .history()
+//!     .get()
+//!     .send()
+//!     .await?;
+//!
+//! println!("check: {:?}", res);
+//! # Ok(())
+//! # }
+//! ```
 use derive_builder::Builder;
 use serde::Serialize;
 
@@ -12,7 +49,6 @@ use mangadex_api_schema::v5::UserHistoryResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     default,
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
@@ -28,7 +64,8 @@ pub struct GetUserHistory {
 endpoint! {
     GET "/user/history",
     #[query auth] GetUserHistory,
-    #[flatten_result] UserHistoryResponse
+    #[flatten_result] UserHistoryResponse,
+    GetUserHistoryBuilder
 }
 
 #[cfg(test)]
@@ -75,13 +112,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res: UserHistory = mangadex_client
-            .user()
-            .history()
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let res: UserHistory = mangadex_client.user().history().get().send().await?;
         let rating = res.ratings.first().ok_or(std::io::Error::new(
             std::io::ErrorKind::NotFound,
             "Entry 0 not found",
