@@ -1,6 +1,6 @@
 //! Builder for getting a given Manga's statistics.
 //!
-//! <https://api.mangadex.org/swagger.html#/Statistics/get-statistics-manga-uuid>
+//! <https://api.mangadex.org/docs/swagger.html#/Statistics/get-statistics-chapter-uuid>
 //!
 //! This only gets statistics for a single Manga.
 //!
@@ -14,18 +14,18 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! // Official Test Manga ID.
-//! let manga_id = Uuid::parse_str("f9c33607-9180-4ba6-b85c-e4b5faee7192")?;
+//! // Cool Tsuma no Saa-chan chapter 25
+//! let chapter_id = Uuid::parse_str("1c3a8585-8df6-46d1-af98-fa777666abf2")?;
 //!
-//! let manga_stats = client
+//! let chapter_stats = client
 //!     .statistics()
-//!     .get_manga()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .chapter()
+//!     .id(chapter_id)
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
-//! println!("Response: {:?}", manga_stats);
+//! println!("Response: {:?}", chapter_stats);
 //! # Ok(())
 //! # }
 //! ```
@@ -45,7 +45,6 @@ use mangadex_api_schema::v5::ChapterStatisticsResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -64,7 +63,8 @@ endpoint! {
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is
     // available to guests.
     #[no_data] GetChapterStatistics,
-    #[flatten_result] ChapterStatisticsResponse
+    #[flatten_result] ChapterStatisticsResponse,
+    GetChapterStatisticsBuilder
 }
 
 #[cfg(test)]
@@ -114,7 +114,6 @@ mod tests {
             .chapter()
             .id(manga_id)
             .get()
-            .build()?
             .send()
             .await?;
         let ctt = res.statistics.get(&manga_id).ok_or(std::io::Error::new(
