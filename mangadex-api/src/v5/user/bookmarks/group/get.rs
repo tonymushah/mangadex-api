@@ -1,6 +1,7 @@
 //! Builder for the bookmarked scanlation groups endpoint.
 //!
-//! <https://api.mangadex.org/docs/swagger.html#/Follows/get-user-follows-group>
+//! NOTICE: This endpoint is not deployed yet on [Mangadex](https://mangadex.org)
+//! We'll notice you when it's deployed
 //!
 //! # Examples
 //!
