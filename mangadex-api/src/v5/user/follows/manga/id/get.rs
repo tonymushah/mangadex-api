@@ -1,6 +1,6 @@
 //! Builder for checking if the logged-in user follows a manga.
 //!
-//! <https://api.mangadex.org/swagger.html#/Follows/get-user-follows-manga-id>
+//! <https://api.mangadex.org/docs/swagger.html#/Follows/get-user-follows-manga-id>
 //!
 //! # Examples
 //!
@@ -8,26 +8,31 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let manga_id = Uuid::new_v4();
 //! let res = client
 //!     .user()
-//!     .is_following_manga()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .follows()
+//!     .manga()
+//!     .id(manga_id)
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -124,6 +129,11 @@ endpoint! {
     #[no_send] Result<IsFollowingResponse>
 }
 
+builder_send! {
+    #[builder] IsFollowingMangaBuilder,
+    IsFollowingResponse
+}
+
 #[cfg(test)]
 mod tests {
     use mangadex_api_types::error::Error;
@@ -167,7 +177,6 @@ mod tests {
             .manga()
             .id(manga_id)
             .get()
-            .build()?
             .send()
             .await?;
 
@@ -207,7 +216,6 @@ mod tests {
             .manga()
             .id(manga_id)
             .get()
-            .build()?
             .send()
             .await?;
 
@@ -254,7 +262,6 @@ mod tests {
             .manga()
             .id(manga_id)
             .get()
-            .build()?
             .send()
             .await
             .unwrap_err();
