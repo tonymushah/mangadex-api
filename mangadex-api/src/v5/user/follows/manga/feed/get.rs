@@ -6,25 +6,31 @@
 //!
 //! ```rust
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let res = client
 //!     .user()
-//!     .followed_manga_feed()
+//!     .follows()
+//!     .manga()
+//!     .feed()
+//!     .get()
 //!     .limit(1u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -53,7 +59,6 @@ use mangadex_api_types::{
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     default,
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
@@ -84,16 +89,20 @@ pub struct GetFollowedMangaFeed {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub excluded_original_language: Vec<Language>,
     #[builder(setter(each = "add_content_rating"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub content_rating: Vec<ContentRating>,
     /// Groups to exclude from the results.
     #[builder(setter(each = "excluded_group"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub excluded_groups: Vec<Uuid>,
     /// Uploaders to exclude from the results.
     #[builder(setter(each = "excluded_uploader"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub excluded_uploaders: Vec<Uuid>,
     /// Flag to include future chapter updates in the results.
     ///
     /// Default: `IncludeFutureUpdates::Include` (1)
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub include_future_updates: Option<IncludeFutureUpdates>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -107,19 +116,24 @@ pub struct GetFollowedMangaFeed {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<MangaFeedSortOrder>,
     #[builder(setter(each = "include"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub includes: Vec<ReferenceExpansionResource>,
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub include_empty_pages: Option<IncludeFuturePages>,
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub include_future_publish_at: Option<IncludeFuturePublishAt>,
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub include_external_url: Option<IncludeExternalUrl>,
 }
 
 endpoint! {
     GET "/user/follows/manga/feed",
     #[query auth] GetFollowedMangaFeed,
-    #[flatten_result] ChapterListResponse
+    #[flatten_result] ChapterListResponse,
+    GetFollowedMangaFeedBuilder
 }
 
 #[cfg(test)]
@@ -198,7 +212,6 @@ mod tests {
             .feed()
             .get()
             .limit(1u32)
-            .build()?
             .send()
             .await?;
 
