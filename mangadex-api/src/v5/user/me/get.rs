@@ -6,24 +6,28 @@
 //!
 //! ```rust
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .get()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!  */
+//!
 //!
 //! let res = client
 //!     .user()
 //!     .me()
-//!     .build()?
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -46,7 +50,6 @@ use mangadex_api_schema::v5::UserResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetMyUserDetails {
@@ -61,7 +64,8 @@ pub struct GetMyUserDetails {
 endpoint! {
     GET "/user/me",
     #[query] GetMyUserDetails,
-    #[flatten_result] UserResponse
+    #[flatten_result] UserResponse,
+    GetMyUserDetailsBuilder
 }
 
 #[cfg(test)]
@@ -114,7 +118,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client.user().me().get().build()?.send().await?;
+        let _ = mangadex_client.user().me().get().send().await?;
 
         Ok(())
     }
