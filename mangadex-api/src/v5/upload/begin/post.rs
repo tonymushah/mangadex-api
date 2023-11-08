@@ -1,34 +1,38 @@
 //! Builder for starting an upload session.
 //!
-//! <https://api.mangadex.org/swagger.html#/Upload/begin-upload-session>
+//! <https://api.mangadex.org/docs/swagger.html#/Upload/begin-upload-session>
 //!
 //! ```rust
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //! use mangadex_api_types::Language;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let group_id = Uuid::new_v4();
 //! let manga_id = Uuid::new_v4();
 //! let res = client
 //!     .upload()
-//!     .start_session()
+//!     .begin()
+//!     .post()
 //!     .add_group_id(&group_id)
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .manga_id(manga_id)
 //!     .send()
 //!     .await?;
 //!
@@ -77,7 +81,8 @@ pub struct StartUploadSession {
 endpoint! {
     POST "/upload/begin",
     #[body auth] StartUploadSession,
-    #[rate_limited] UploadSessionData
+    #[rate_limited] UploadSessionData,
+    StartUploadSessionBuilder
 }
 
 #[cfg(test)]
@@ -158,7 +163,6 @@ mod tests {
             .post()
             .add_group_id(group_id)
             .manga_id(manga_id)
-            .build()?
             .send()
             .await?;
 
