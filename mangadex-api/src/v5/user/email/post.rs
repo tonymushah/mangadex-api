@@ -1,30 +1,34 @@
 //! Builder for updating a user email endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/User/post-user-email>
+//! <https://api.mangadex.org/docs/swagger.html#/User/post-user-email>
 //!
 //! # Examples
 //!
 //! ```rust
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let res = client
 //!     .user()
-//!     .update_email()
+//!     .email()
+//!     .post()
 //!     .email("test@example.com")
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -67,7 +71,8 @@ pub struct UpdateUserEmail {
 endpoint! {
     POST "/user/email",
     #[body auth] UpdateUserEmail,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    UpdateUserEmailBuilder
 }
 
 #[cfg(test)]
@@ -116,7 +121,6 @@ mod tests {
             .email()
             .post()
             .email(email.as_str())
-            .build()?
             .send()
             .await?;
 

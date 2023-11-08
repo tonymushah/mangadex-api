@@ -1,3 +1,32 @@
+//! Builder for editing client by its id.
+//!
+//! <https://api.mangadex.org/docs/swagger.html#/ApiClient/post-edit-apiclient>
+//!
+//! # Examples
+//!
+//! ```rust
+//! use mangadex_api::v5::MangaDexClient;
+//! use uuid::Uuid;
+//!
+//! # async fn run() -> anyhow::Result<()> {
+//! let client = MangaDexClient::default();
+//!
+//! let client_res = client
+//!     .client()
+//!     .id(Uuid::new_v4())
+//!     .post()
+//!     .description("My API for testing")
+//!     // Normally you don't need this `as u32`
+//!     // but for some reason, it need this to compile :(
+//!     .version(2 as u32)
+//!     .send()
+//!     .await?;
+//!
+//! println!("client: {:?}", client_res);
+//! # Ok(())
+//! # }
+//! ```
+//!
 use derive_builder::Builder;
 use serde::Serialize;
 
@@ -41,7 +70,8 @@ pub struct EditClient {
 endpoint! {
     POST ("/client/{}", client_id),
     #[body auth] EditClient,
-    #[flatten_result] ApiClientResponse
+    #[flatten_result] ApiClientResponse,
+    EditClientBuilder
 }
 
 #[cfg(test)]
@@ -125,7 +155,6 @@ mod tests {
             .post()
             .description(_expected_body.description.clone().unwrap())
             .version(_expected_body.version)
-            .build()?
             .send()
             .await?;
 

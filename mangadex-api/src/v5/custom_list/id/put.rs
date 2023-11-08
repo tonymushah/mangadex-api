@@ -1,6 +1,6 @@
 //! Builder for the CustomList update endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/CustomList/put-list-id>
+//! <https://api.mangadex.org/docs/swagger.html#/CustomList/put-list-id>
 //!
 //! # Examples
 //!
@@ -8,28 +8,30 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     // Put your login script here
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .build()?
+//!         .send()
+//!         .await?;
+//! */
 //!
 //! let list_id = Uuid::new_v4();
 //! let res = client
 //!     .custom_list()
-//!     .update()
-//!     .list_id(&list_id)
+//!     .id(list_id)
+//!     .put()
 //!     .name("Updated List Name")
 //!     .version(2u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -54,7 +56,6 @@ use mangadex_api_types::CustomListVisibility;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -87,7 +88,8 @@ pub struct UpdateCustomList {
 endpoint! {
     PUT ("/list/{}", list_id),
     #[body auth] UpdateCustomList,
-    #[flatten_result] CustomListResponse
+    #[flatten_result] CustomListResponse,
+    UpdateCustomListBuilder
 }
 
 #[cfg(test)]
@@ -150,7 +152,6 @@ mod tests {
             .id(list_id)
             .put()
             .version(2u32)
-            .build()?
             .send()
             .await?;
 

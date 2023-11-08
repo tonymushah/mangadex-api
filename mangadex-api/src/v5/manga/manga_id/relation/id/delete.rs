@@ -4,7 +4,7 @@
 //!
 //! This removes the relationship between Manga.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/delete-manga-relation-id>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/delete-manga-relation-id>
 //!
 //! # Examples
 //!
@@ -13,28 +13,32 @@
 //!
 //! use mangadex_api_types::MangaRelation;
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
+//! /*
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
+//!
 //!
 //! let manga_id = Uuid::new_v4();
 //! let target_manga_id = Uuid::new_v4();
 //! let res = client
 //!     .manga()
-//!     .delete_relation()
-//!     .manga_id(&manga_id)
-//!     .relation_id(&target_manga_id)
-//!     .build()?
+//!     .manga_id(manga_id)
+//!     .relation()
+//!     .id(target_manga_id)
+//!     .delete()
 //!     .send()
 //!     .await?;
 //!
@@ -78,7 +82,8 @@ pub struct DeleteMangaRelation {
 endpoint! {
     DELETE ("/manga/{}/relation/{}", manga_id, relation_id),
     #[no_data auth] DeleteMangaRelation,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    DeleteMangaRelationBuilder
 }
 
 #[cfg(test)]
@@ -125,7 +130,6 @@ mod tests {
             .relation()
             .id(relation_id)
             .delete()
-            .build()?
             .send()
             .await;
 
@@ -168,7 +172,6 @@ mod tests {
             .relation()
             .id(relation_id)
             .delete()
-            .build()?
             .send()
             .await
             .expect_err("expected error");

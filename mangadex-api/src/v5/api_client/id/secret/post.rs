@@ -1,3 +1,31 @@
+//! Builder for getting client secret by its id.
+//!
+//! <https://api.mangadex.org/docs/swagger.html#/ApiClient/get-apiclient>
+//!
+//! # Examples
+//!
+//! ```rust
+//! use mangadex_api::v5::MangaDexClient;
+//! use uuid::Uuid;
+//!
+//! # async fn run() -> anyhow::Result<()> {
+//! let client = MangaDexClient::default();
+//!
+//! // NOTE This endpoint require auth
+//!
+//! let client_res = client
+//!     .client()
+//!     .id(Uuid::new_v4())
+//!     .secret()
+//!     .post()
+//!     .send()
+//!     .await?;
+//!
+//! println!("client: {:?}", client_res);
+//! # Ok(())
+//! # }
+//! ```
+//!
 use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
@@ -30,7 +58,8 @@ pub struct RegenerateClientSecret {
 endpoint! {
     POST ("/client/{}/secret", client_id),
     #[body auth] RegenerateClientSecret,
-    #[flatten_result] ApiClientSecretResponse
+    #[flatten_result] ApiClientSecretResponse,
+    RegenerateClientSecretBuilder
 }
 
 #[cfg(test)]
@@ -87,7 +116,6 @@ mod tests {
             .id(client_id)
             .secret()
             .post()
-            .build()?
             .send()
             .await?;
 

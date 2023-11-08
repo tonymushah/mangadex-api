@@ -25,17 +25,17 @@ impl CoverIdEndpoint {
     }
     pub fn delete(&self) -> DeleteCoverBuilder {
         DeleteCoverBuilder::default()
-            .http_client(self.http_client.clone())
             .cover_id(self.cover_id)
+            .http_client(self.http_client.clone())
     }
     pub fn get(&self) -> GetCoverBuilder {
         GetCoverBuilder::default()
-            .http_client(self.http_client.clone())
             .cover_id(self.cover_id)
+            .http_client(self.http_client.clone())
     }
     pub fn put(&self) -> EditCoverBuilder {
         EditCoverBuilder::default()
-            .http_client(self.http_client.clone())
             .cover_id(self.cover_id)
+            .http_client(self.http_client.clone())
     }
 }

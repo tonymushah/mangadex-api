@@ -1,6 +1,6 @@
 //! Builder for the author list endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Author/get-author>
+//! <https://api.mangadex.org/docs/swagger.html#/Author/get-author>
 //!
 //! # Examples
 //!
@@ -12,9 +12,8 @@
 //!
 //! let author_res = client
 //!     .author()
-//!     .list()
+//!     .get()
 //!     .name("carlo zen")
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -40,7 +39,6 @@ use mangadex_api_types::{AuthorSortOrder, ReferenceExpansionResource};
 #[builder(
     setter(into, strip_option),
     default,
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -66,7 +64,8 @@ pub struct ListAuthor {
 endpoint! {
     GET "/author",
     #[query] ListAuthor,
-    #[flatten_result] AuthorListResponse
+    #[flatten_result] AuthorListResponse,
+    ListAuthorBuilder
 }
 
 #[cfg(test)]
@@ -144,13 +143,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .author()
-            .get()
-            .limit(1u32)
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.author().get().limit(1u32).send().await?;
 
         assert_eq!(res.response, ResponseType::Collection);
         let author = &res.data[0];
@@ -205,7 +198,6 @@ mod tests {
             .author()
             .get()
             .limit(0u32)
-            .build()?
             .send()
             .await
             .expect_err("expected error");

@@ -1,6 +1,7 @@
 //! Builder for the username availability endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Account/get-account-available>
+//! <https://api.mangadex.org/docs/swagger.html#/Account/get-account-available>
+//! <https://api.mangadex.org/docs/redoc.html#tag/Account/operation/get-account-available>
 //!
 //! # Examples
 //!
@@ -12,9 +13,9 @@
 //!
 //! let res = client
 //!     .account()
-//!     .check_username_available()
+//!     .available()
+//!     .get()
 //!     .username("myusername")
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -56,7 +57,8 @@ pub struct CheckUsernameAvailable {
 endpoint! {
     GET "/account/available",
     #[query] CheckUsernameAvailable,
-    CheckUsernameAvailableResponse
+    CheckUsernameAvailableResponse,
+    CheckUsernameAvailableBuilder
 }
 
 #[cfg(test)]
@@ -92,7 +94,6 @@ mod tests {
             .available()
             .get()
             .username("myusername")
-            .build()?
             .send()
             .await?;
 

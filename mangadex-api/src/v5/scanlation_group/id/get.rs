@@ -1,6 +1,6 @@
 //! Builder for the scanlation group view endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/get-group-id>
+//! <https://api.mangadex.org/docs/swagger.html#/ScanlationGroup/get-group-id>
 //!
 //! # Examples
 //!
@@ -13,11 +13,11 @@
 //! let client = MangaDexClient::default();
 //!
 //! let group_id = Uuid::new_v4();
+//!
 //! let group_res = client
 //!     .scanlation_group()
-//!     .view()
-//!     .group_id(&group_id)
-//!     .build()?
+//!     .id(group_id)
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +42,6 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetGroup {
@@ -63,7 +62,8 @@ pub struct GetGroup {
 endpoint! {
     GET ("/group/{}", group_id),
     #[query] GetGroup,
-    #[flatten_result] GroupResponse
+    #[flatten_result] GroupResponse,
+    GetGroupBuilder
 }
 
 #[cfg(test)]
@@ -135,7 +135,6 @@ mod tests {
             .scanlation_group()
             .id(group_id)
             .get()
-            .build()?
             .send()
             .await?;
 

@@ -1,6 +1,7 @@
-//! Builder for the follow scanlation group endpoint.
+//! Builder for bookmarking an user.
 //!
-//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/post-group-id-follow>
+//! NOTICE: This endpoint is not deployed yet on [Mangadex](https://mangadex.org)
+//! We'll notice you when it's deployed
 //!
 //! # Examples
 //!
@@ -13,29 +14,32 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
 //!
-//! let group_id = Uuid::new_v4();
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
+//!
+//! let user_id = Uuid::new_v4();
 //! let res = client
-//!     .scanlation_group()
-//!     .follow()
-//!     .group_id(&group_id)
-//!     .build()?
+//!     .user()
+//!     .id(user_id)
+//!     .bookmark()
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
-//! println!("follow group: {:?}", res);
+//! println!("unfollow group: {:?}", res);
 //! # Ok(())
 //! # }
 //! ```
-
 use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
@@ -52,7 +56,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct BookmarkUser {
@@ -70,7 +73,8 @@ pub struct BookmarkUser {
 endpoint! {
     POST ("/user/{}/bookmark", user_id),
     #[no_data auth] BookmarkUser,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    BookmarkUserBuilder
 }
 
 #[cfg(test)]
@@ -114,7 +118,6 @@ mod tests {
             .id(user_id)
             .bookmark()
             .post()
-            .build()?
             .send()
             .await?;
 

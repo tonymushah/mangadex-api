@@ -3,6 +3,7 @@ pub mod bookmark;
 pub mod default;
 pub mod delete;
 pub mod feed;
+pub mod follow;
 pub mod get;
 pub mod manga;
 pub mod pin;
@@ -14,6 +15,7 @@ use bookmark::BookMarkEndpoint;
 use default::DefaultEndpoint;
 use delete::DeleteCustomListBuilder;
 use feed::FeedEndPoint;
+use follow::FollowEndpoint;
 use get::GetCustomListBuilder;
 use manga::MangaEndpoint;
 use pin::PinEndpoint;
@@ -51,8 +53,8 @@ impl IdEnpoint {
     }
     pub fn get(&self) -> GetCustomListBuilder {
         GetCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn pin(&self) -> PinEndpoint {
         PinEndpoint::new(self.http_client.clone(), self.id)
@@ -62,17 +64,17 @@ impl IdEnpoint {
     }
     pub fn delete(&self) -> DeleteCustomListBuilder {
         DeleteCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn put(&self) -> UpdateCustomListBuilder {
         UpdateCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
-    /// Same as `.bookmark()`
+    /// Pretty much the same as `.bookmark()`
     #[deprecated(since = "3.0.0-alpha.1", note = "Use `.bookmark()` instead")]
-    pub fn follow(&self) -> BookMarkEndpoint {
-        self.bookmark()
+    pub fn follow(&self) -> FollowEndpoint {
+        FollowEndpoint::new(self.http_client.to_owned(), self.id)
     }
 }

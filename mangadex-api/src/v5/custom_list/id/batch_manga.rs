@@ -20,12 +20,12 @@ impl BatchMangaEndpoint {
     }
     pub fn post(&self) -> AddMangaBatchViaCustomListBuilder {
         AddMangaBatchViaCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn delete(&self) -> DeleteMangaBatchViaCustomListBuilder {
         DeleteMangaBatchViaCustomListBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

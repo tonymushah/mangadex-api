@@ -1,6 +1,6 @@
 //! Builder for the ping endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Infrastructure/get_ping>
+//! <https://api.mangadex.org/docs/swagger.html#/Infrastructure/get_ping>
 //!
 //! # Examples
 //!
@@ -11,9 +11,8 @@
 //! let client = MangaDexClient::default();
 //!
 //! let res = client
-//!     .infrastructure()
 //!     .ping()
-//!     .build()?
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -40,7 +39,6 @@ use mangadex_api_types::error::{Error, Result};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct Ping {
@@ -55,7 +53,8 @@ pub struct Ping {
 endpoint! {
     GET "/ping",
     #[no_data] Ping,
-    #[no_send] Result<String>
+    #[no_send] Result<String>,
+    PingBuilder
 }
 
 impl Ping {
@@ -119,7 +118,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client.ping().get().build()?.send().await?;
+        let res = mangadex_client.ping().get().send().await?;
 
         assert_eq!(res, "pong".to_string());
 

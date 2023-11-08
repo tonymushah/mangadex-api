@@ -5,27 +5,27 @@ use crate::HttpClientRef;
 pub mod delete;
 pub mod post;
 
-use delete::UnBookMarkCustomListBuilder;
-use post::BookMarkCustomListBuilder;
+use delete::UnFollowCustomListBuilder;
+use post::FollowCustomListBuilder;
 
 #[derive(Debug, Clone)]
-pub struct BookMarkEndpoint {
+pub struct FollowEndpoint {
     http_client: HttpClientRef,
     id: Uuid,
 }
 
-impl BookMarkEndpoint {
+impl FollowEndpoint {
     #[doc(hidden)]
     pub fn new(http_client: HttpClientRef, id: Uuid) -> Self {
         Self { http_client, id }
     }
-    pub fn post(&self) -> BookMarkCustomListBuilder {
-        BookMarkCustomListBuilder::default()
+    pub fn post(&self) -> FollowCustomListBuilder {
+        FollowCustomListBuilder::default()
             .list_id(self.id)
             .http_client(self.http_client.clone())
     }
-    pub fn delete(&self) -> UnBookMarkCustomListBuilder {
-        UnBookMarkCustomListBuilder::default()
+    pub fn delete(&self) -> UnFollowCustomListBuilder {
+        UnFollowCustomListBuilder::default()
             .list_id(self.id)
             .http_client(self.http_client.clone())
     }

@@ -38,8 +38,8 @@ impl IdEndpoint {
     }
     pub fn delete(&self) -> DeleteMangaBuilder {
         DeleteMangaBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn feed(&self) -> FeedEndpoint {
         FeedEndpoint::new(self.http_client.clone(), self.id)
@@ -49,17 +49,16 @@ impl IdEndpoint {
     }
     pub fn get(&self) -> GetMangaBuilder {
         GetMangaBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn list(&self) -> ListEndpoint {
         ListEndpoint::new(self.http_client.clone(), self.id)
     }
     pub fn put(&self) -> UpdateMangaBuilder {
         UpdateMangaBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
-            .clone()
+            .http_client(self.http_client.clone())
     }
     pub fn read(&self) -> ReadEndpoint {
         ReadEndpoint::new(self.http_client.clone(), self.id)

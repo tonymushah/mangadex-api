@@ -1,31 +1,35 @@
 //! Builder for the scanlation group creation endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/post-group>
+//! <https://api.mangadex.org/docs/swagger.html#/ScanlationGroup/post-group>
 //!
 //! # Examples
 //!
 //! ```rust
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
+//!
 //!
 //! let res = client
 //!     .scanlation_group()
-//!     .create()
+//!     .post()
 //!     .name("My Group Name")
 //!     .description("This is a short description about this group...")
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -50,7 +54,6 @@ use mangadex_api_types::MangaDexDuration;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -109,7 +112,8 @@ pub struct CreateGroup {
 endpoint! {
     POST ("/group"),
     #[body auth] CreateGroup,
-    #[rate_limited] GroupData
+    #[rate_limited] GroupData,
+    CreateGroupBuilder
 }
 
 #[cfg(test)]
@@ -202,7 +206,6 @@ mod tests {
             .post()
             .name(group_name.as_str())
             .description(group_description.as_str())
-            .build()?
             .send()
             .await?;
 

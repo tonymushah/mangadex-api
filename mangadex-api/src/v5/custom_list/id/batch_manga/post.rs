@@ -1,3 +1,34 @@
+//! Builder for adding a batch of manga from a custom list.
+//!
+//! NOTICE : This endpoint is not currenlty deployed yet on mangadex.org
+//! We will give more information when it will be deployed
+//!
+//! # Examples
+//!
+//! ```rust
+//! use uuid::Uuid;
+//!
+//! use mangadex_api::v5::MangaDexClient;
+//!
+//! # async fn run() -> anyhow::Result<()> {
+//! let client = MangaDexClient::default();
+//!
+//! let list_id = Uuid::new_v4();
+//! let res = client
+//!     .custom_list()
+//!     .id(list_id)
+//!     .batch_manga()
+//!     .post()
+//!     .manga_id(Uuid::new_v4())
+//!     .manga_id(Uuid::new_v4())
+//!     .manga_id(Uuid::new_v4())
+//!     .send()
+//!     .await?;
+//!
+//! println!("custom list: {:?}", res);
+//! # Ok(())
+//! # }
+//! ```
 use derive_builder::Builder;
 use mangadex_api_schema::NoData;
 use serde::Serialize;
@@ -14,7 +45,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -38,7 +68,8 @@ pub struct AddMangaBatchViaCustomList {
 endpoint! {
     POST ("/list/{}/batch-manga", list_id),
     #[body auth] AddMangaBatchViaCustomList,
-    #[flatten_result] Result<NoData>
+    #[flatten_result] Result<NoData>,
+    AddMangaBatchViaCustomListBuilder
 }
 
 #[cfg(test)]
@@ -82,7 +113,6 @@ mod tests {
             .id(custom_list_id)
             .batch_manga()
             .post()
-            .build()?
             .send()
             .await?;
 

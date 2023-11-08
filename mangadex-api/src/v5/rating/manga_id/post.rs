@@ -2,36 +2,39 @@
 //!
 //! This endpoint requires authentication.
 //!
-//! <https://api.mangadex.org/swagger.html#/Rating/post-rating-manga-id>
+//! <https://api.mangadex.org/docs/swagger.html#/Rating/post-rating-manga-id>
 //!
 //! # Examples
 //!
 //! ```rust
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //! use mangadex_api::v5::MangaDexClient;
 //! use uuid::Uuid;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter2")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter2")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! // Official Test Manga ID.
 //! let manga_id = Uuid::parse_str("f9c33607-9180-4ba6-b85c-e4b5faee7192")?;
 //!
 //! let res = client
 //!     .rating()
-//!     .upsert_for_manga()
-//!     .manga_id(&manga_id)
+//!     .manga_id(manga_id)
+//!     .post()
 //!     .rating(9)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -56,7 +59,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct CreateUpdateMangaRating {
@@ -106,6 +108,11 @@ endpoint! {
     #[no_send] Result<NoData>
 }
 
+builder_send! {
+    #[builder] CreateUpdateMangaRatingBuilder,
+    NoData
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;
@@ -153,7 +160,6 @@ mod tests {
             .manga_id(manga_id)
             .post()
             .rating(9)
-            .build()?
             .send()
             .await?;
 
@@ -195,7 +201,6 @@ mod tests {
             .manga_id(manga_id)
             .post()
             .rating(0)
-            .build()?
             .send()
             .await?;
 
@@ -237,7 +242,6 @@ mod tests {
             .manga_id(manga_id)
             .post()
             .rating(11)
-            .build()?
             .send()
             .await?;
 
@@ -277,7 +281,6 @@ mod tests {
             .manga_id(manga_id)
             .post()
             .rating(7)
-            .build()?
             .send()
             .await
             .expect_err("expected error");

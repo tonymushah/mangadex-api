@@ -1,6 +1,6 @@
-//! Builder for deleting an uploaded image from an upload session.
+//! Builder for the follow CustomList endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Upload/delete-uploaded-session-file>
+//! <https://api.mangadex.org/swagger.html#/CustomList/follow-list-id>
 //!
 //! # Examples
 //!
@@ -14,29 +14,25 @@
 //! let client = MangaDexClient::default();
 //!
 //! /*
+//! let _login_res = client
+//!     .auth()
+//!     .login()
+//!     .username(Username::parse("myusername")?)
+//!     .password(Password::parse("hunter23")?)
+//!     .build()?
+//!     .send()
+//!     .await?;
+//! */
 //!
-//!     let _login_res = client
-//!         .auth()
-//!         .login()
-//!         .post()
-//!         .username(Username::parse("myusername")?)
-//!         .password(Password::parse("hunter23")?)
-//!         .send()
-//!         .await?;
-//!
-//!  */
-//!
-//! let session_id = Uuid::new_v4();
-//! let session_file_id = Uuid::new_v4();
-//! let res = client
-//!     .upload()
-//!     .upload_session_id(session_id)
-//!     .upload_session_file_id(session_file_id)
-//!     .delete()
+//! let list_id = Uuid::new_v4();
+//! let _ = client
+//!     .custom_list()
+//!     .id(list_id)
+//!     .follow()
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
-//! println!("delete image: {:?}", res);
 //! # Ok(())
 //! # }
 //! ```
@@ -47,6 +43,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
+use mangadex_api_types::error::Result;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -58,7 +55,8 @@ use crate::HttpClientRef;
     setter(into, strip_option),
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
-pub struct DeleteImage {
+#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+pub struct FollowCustomList {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
@@ -66,17 +64,16 @@ pub struct DeleteImage {
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub(crate) http_client: HttpClientRef,
 
+    /// CustomList ID.
     #[serde(skip_serializing)]
-    pub session_id: Uuid,
-    #[serde(skip_serializing)]
-    pub session_file_id: Uuid,
+    pub list_id: Uuid,
 }
 
 endpoint! {
-    DELETE ("/upload/{}/{}", session_id, session_file_id),
-    #[no_data auth] DeleteImage,
-    #[rate_limited] NoData,
-    DeleteImageBuilder
+    POST ("/list/{}/follow", list_id),
+    #[body auth] FollowCustomList,
+    #[discard_result] Result<NoData>,
+    FollowCustomListBuilder
 }
 
 #[cfg(test)]
@@ -91,7 +88,7 @@ mod tests {
     use crate::{HttpClient, MangaDexClient};
 
     #[tokio::test]
-    async fn delete_image_fires_a_request_to_base_url() -> anyhow::Result<()> {
+    async fn follow_custom_list_fires_a_request_to_base_url() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
@@ -102,31 +99,25 @@ mod tests {
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
-        let session_id = Uuid::new_v4();
-        let session_file_id = Uuid::new_v4();
+        let custom_list_id = Uuid::new_v4();
         let response_body = json!({
-            "result": "ok",
+            "result": "ok"
         });
 
-        Mock::given(method("DELETE"))
-            .and(path_regex(r"/upload/[0-9a-fA-F-]+/[0-9a-fA-F-]+"))
+        Mock::given(method("POST"))
+            .and(path_regex(r"/list/[0-9a-fA-F-]+/follow"))
             .and(header("Authorization", "Bearer sessiontoken"))
-            .respond_with(
-                ResponseTemplate::new(200)
-                    .insert_header("x-ratelimit-retry-after", "1698723860")
-                    .insert_header("x-ratelimit-limit", "40")
-                    .insert_header("x-ratelimit-remaining", "39")
-                    .set_body_json(response_body),
-            )
+            .and(header("Content-Type", "application/json"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
             .await;
 
         mangadex_client
-            .upload()
-            .upload_session_id(session_id)
-            .upload_session_file_id(session_file_id)
-            .delete()
+            .custom_list()
+            .id(custom_list_id)
+            .follow()
+            .post()
             .send()
             .await?;
 

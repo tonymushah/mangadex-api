@@ -1,6 +1,6 @@
 //! Builder for the author creation endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Author/post-author>
+//! <https://api.mangadex.org/docs/swagger.html#/Author/post-author>
 //!
 //! # Examples
 //!
@@ -13,22 +13,24 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     Put your login code here
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!  */
+//!
 //!
 //! let author_id = Uuid::new_v4();
 //! let res = client
 //!     .author()
-//!     .create()
+//!     .post()
 //!     .name("Author Name")
-//!     .version(1u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +44,7 @@ use serde::Serialize;
 use url::Url;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::{AuthorData, AuthorResponse, LocalizedString};
+use mangadex_api_schema::v5::{AuthorData, LocalizedString};
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -52,7 +54,6 @@ use mangadex_api_schema::v5::{AuthorData, AuthorResponse, LocalizedString};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -165,7 +166,8 @@ pub struct CreateAuthor {
 endpoint! {
     POST ("/author"),
     #[body auth] CreateAuthor,
-    #[rate_limited] AuthorData
+    #[rate_limited] AuthorData,
+    CreateAuthorBuilder
 }
 
 #[cfg(test)]
@@ -261,7 +263,6 @@ mod tests {
             .author()
             .post()
             .name(author_name.as_str())
-            .build()?
             .send()
             .await?;
 

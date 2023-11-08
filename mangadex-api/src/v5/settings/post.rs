@@ -1,27 +1,30 @@
 //! Builder for creating or updating a user's Settings.
 //!
-//! <https://api.mangadex.org/swagger.html#/Settings/post-settings>
+//! <https://api.mangadex.org/docs/swagger.html#/Settings/post-settings>
 //!
-//! ```ignore
+//! ```rust
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let res = client
 //!     .settings()
-//!     .create_or_update_user_settings()
-//!     .build()?
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
@@ -75,7 +78,8 @@ pub struct CreateOrUpdateUserSettings {
 endpoint! {
     POST "/settings",
     #[body auth] CreateOrUpdateUserSettings,
-    #[flatten_result] mangadex_api_schema::v5::UserSettingsResponse
+    #[flatten_result] mangadex_api_schema::v5::UserSettingsResponse,
+    CreateOrUpdateUserSettingsBuilder
 }
 
 #[cfg(test)]
@@ -119,7 +123,6 @@ mod tests {
         let res = mangadex_client
             .settings()
             .post()
-            .build()?
             .send()
             .await
             .expect_err("expected error");

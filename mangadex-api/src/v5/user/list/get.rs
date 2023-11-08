@@ -1,6 +1,6 @@
 //! Builder for fetching the logged-in user's custom lists.
 //!
-//! <https://api.mangadex.org/swagger.html#/CustomList/get-user-list>
+//! <https://api.mangadex.org/docs/swagger.html#/CustomList/get-user-list>
 //!
 //! # Examples
 //!
@@ -8,25 +8,29 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let res = client
 //!     .user()
-//!     .my_custom_lists()
+//!     .list()
+//!     .get()
 //!     .limit(1_u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -49,7 +53,6 @@ use mangadex_api_schema::v5::CustomListListResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     default,
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
@@ -70,7 +73,8 @@ pub struct MyCustomLists {
 endpoint! {
     GET "/user/list",
     #[query auth] MyCustomLists,
-    #[flatten_result] CustomListListResponse
+    #[flatten_result] CustomListListResponse,
+    MyCustomListsBuilder
 }
 
 #[cfg(test)]
@@ -133,7 +137,6 @@ mod tests {
             .list()
             .get()
             .limit(1_u32)
-            .build()?
             .send()
             .await?;
 

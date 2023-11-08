@@ -1,31 +1,35 @@
 //! Builder for getting a Settings template by version ID.
 //!
-//! <https://api.mangadex.org/swagger.html#/Settings/get-settings-template-version>
+//! <https://api.mangadex.org/docs/swagger.html#/Settings/get-settings-template-version>
 //!
-//! ```ignore
+//! ```rust
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //! use uuid::Uuid;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let version_id = Uuid::new_v4();
 //!
 //! let res = client
 //!     .settings()
-//!     .get_template_by_version_id()
-//!     .version(&version_id)
-//!     .build()?
+//!     .template()
+//!     .version(version_id)
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -74,7 +78,8 @@ pub struct GetSettingsTemplateByVersionId {
 endpoint! {
     GET ("/settings/template/{}", version),
     #[no_data auth] GetSettingsTemplateByVersionId,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    GetSettingsTemplateByVersionIdBuilder
 }
 
 #[cfg(test)]
@@ -120,7 +125,6 @@ mod tests {
             .template()
             .version(version_id)
             .get()
-            .build()?
             .send()
             .await
             .expect_err("expected error");

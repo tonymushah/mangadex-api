@@ -1,27 +1,30 @@
 //! Builder for getting a user's Settings.
 //!
-//! <https://api.mangadex.org/swagger.html#/Settings/get-settings>
+//! <https://api.mangadex.org/docs/swagger.html#/Settings/get-settings>
 //!
-//! ```ignore
+//! ```rust
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let res = client
 //!     .settings()
-//!     .get_user_settings()
-//!     .build()?
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -65,7 +68,8 @@ pub struct GetUserSettings {
 endpoint! {
     GET "/settings",
     #[no_data auth] GetUserSettings,
-    #[flatten_result] UserSettingsResponse
+    #[flatten_result] UserSettingsResponse,
+    GetUserSettingsBuilder
 }
 
 #[cfg(test)]
@@ -108,7 +112,6 @@ mod tests {
         let res = mangadex_client
             .settings()
             .get()
-            .build()?
             .send()
             .await
             .expect_err("expected error");

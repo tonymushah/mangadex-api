@@ -1,6 +1,6 @@
 //! Builder for the report reasons list endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Report/get-report-reasons-by-category>
+//! <https://api.mangadex.org/docs/swagger.html#/Report/get-report-reasons-by-category>
 //!
 //! # Examples
 //!
@@ -16,9 +16,9 @@
 //!
 //! let res = client
 //!     .report()
-//!     .list()
+//!     .reasons()
 //!     .category(ReportCategory::Manga)
-//!     .build()?
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +42,6 @@ use mangadex_api_types::ReportCategory;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct ListReasons {
@@ -60,7 +59,8 @@ endpoint! {
     GET ("/report/reasons/{}", category),
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is available to guests.
     #[no_data] ListReasons,
-    #[flatten_result] ReportReasonListResponse
+    #[flatten_result] ReportReasonListResponse,
+    ListReasonsBuilder
 }
 
 #[cfg(test)]
@@ -120,7 +120,6 @@ mod tests {
             .reasons()
             .category(ReportCategory::Manga)
             .get()
-            .build()?
             .send()
             .await?;
 

@@ -69,7 +69,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
         let mut manga_list_builder = manga_builder.get();
         if !title.is_empty() {
-            manga_list_builder = manga_list_builder.title(title.as_str());
+            manga_list_builder.title(title.as_str());
         }
         let manga_list_builder = manga_list_builder.build()?;
         let manga_results = manga_list_builder.send().await?;
@@ -130,7 +130,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
         let mut author_list_builder = author_builder.get();
         if !name.is_empty() {
-            author_list_builder = author_list_builder.name(name.as_str());
+            author_list_builder.name(name.as_str());
         }
         let author_results = author_list_builder.build()?.send().await?;
 
@@ -215,7 +215,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
         let mut scanlation_group_list_builder = scanlation_group_builder.get();
         if !name.is_empty() {
-            scanlation_group_list_builder = scanlation_group_list_builder.name(name.as_str());
+            scanlation_group_list_builder.name(name.as_str());
         }
         let scanlation_group_results = scanlation_group_list_builder.build()?.send().await?;
 

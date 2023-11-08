@@ -1,6 +1,6 @@
 //! Builder for deleting a set of uploaded images from an upload session.
 //!
-//! <https://api.mangadex.org/swagger.html#/Upload/delete-uploaded-session-files>
+//! <https://api.mangadex.org/docs/swagger.html#/Upload/delete-uploaded-session-files>
 //!
 //! # Examples
 //!
@@ -8,28 +8,32 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
+//! /*
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let session_id = Uuid::new_v4();
 //! let session_file_id = Uuid::new_v4();
+//!
 //! let res = client
 //!     .upload()
-//!     .delete_images()
-//!     .session_id(&session_id)
+//!     .upload_session_id(session_id)
+//!     .batch()
+//!     .delete()
 //!     .add_session_file_id(session_file_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -56,7 +60,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct DeleteImages {
@@ -128,6 +131,11 @@ impl DeleteImages {
     }
 }
 
+builder_send! {
+    #[builder] DeleteImagesBuilder,
+    #[rate_limited] NoData
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;
@@ -179,7 +187,6 @@ mod tests {
             .batch()
             .delete()
             .add_session_file_id(session_file_id)
-            .build()?
             .send()
             .await?;
 

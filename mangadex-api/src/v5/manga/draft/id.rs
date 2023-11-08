@@ -20,8 +20,8 @@ impl IdEndpoint {
     }
     pub fn get(&self) -> GetMangaDraftBuilder {
         GetMangaDraftBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn commit(&self) -> CommitEndpoint {
         CommitEndpoint::new(self.http_client.clone(), self.id)

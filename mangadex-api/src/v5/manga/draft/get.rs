@@ -2,32 +2,34 @@
 //!
 //! This endpoint requires authentication.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-manga-drafts>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get-manga-drafts>
 //!
 //! # Examples
 //!
 //! ```rust
 //! use mangadex_api_types::{MangaState, MangaStatus};
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
-//!
+//! /*
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()    
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .build()?
+//!         .send()
+//!         .await?;
+//! */
 //! let manga_res = client
 //!     .manga()
-//!     .search_drafts()
-//!     .state(&MangaState::Draft)
-//!     .build()?
+//!     .draft()
+//!     .get()
+//!     .state(MangaState::Draft)
 //!     .send()
 //!     .await?;
 //!
@@ -53,7 +55,6 @@ use mangadex_api_types::{MangaDraftsSortOrder, MangaState, ReferenceExpansionRes
 #[builder(
     setter(into, strip_option),
     default,
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -69,13 +70,19 @@ pub struct ListMangaDrafts {
     /// Maximum: 100
     ///
     /// Default: 10 (if not specified)
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u32>,
     /// >= 0
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<u32>,
     #[deprecated(since = "1.2.1", note = "MangaDex removed this in 5.4.9 of their API")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<Uuid>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<MangaState>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<MangaDraftsSortOrder>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
@@ -83,7 +90,8 @@ pub struct ListMangaDrafts {
 endpoint! {
     GET "/manga/draft",
     #[query auth] ListMangaDrafts,
-    #[flatten_result] MangaListResponse
+    #[flatten_result] MangaListResponse,
+    ListMangaDraftsBuilder
 }
 
 #[cfg(test)]
@@ -170,7 +178,6 @@ mod tests {
             .draft()
             .get()
             .limit(1u32)
-            .build()?
             .send()
             .await?;
 
@@ -249,7 +256,6 @@ mod tests {
             .draft()
             .get()
             .limit(0u32)
-            .build()?
             .send()
             .await
             .expect_err("expected error");
@@ -301,7 +307,6 @@ mod tests {
             .draft()
             .get()
             .limit(0u32)
-            .build()?
             .send()
             .await
             .expect_err("expected error");

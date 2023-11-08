@@ -1,6 +1,6 @@
 //! Scanlation group endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/ScanlationGroup>
+//! <https://api.mangadex.org/docs/swagger.html#/ScanlationGroup>
 
 pub mod get;
 pub mod id;

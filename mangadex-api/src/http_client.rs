@@ -104,14 +104,15 @@ impl HttpClient {
     ///
     /// This is useful to handle things such as response header data for more control over areas
     /// such as rate limiting.
-    pub(crate) async fn send_request_without_deserializing<E>(
+    pub(crate) async fn send_request_without_deserializing_with_other_base_url<E>(
         &self,
         endpoint: &E,
+        base_url: &url::Url,
     ) -> Result<reqwest::Response>
     where
         E: Endpoint,
     {
-        let mut endpoint_url = self.base_url.join(&endpoint.path())?;
+        let mut endpoint_url = base_url.join(&endpoint.path())?;
         if let Some(query) = endpoint.query() {
             endpoint_url = endpoint_url.query_qs(query);
         }
@@ -137,6 +138,21 @@ impl HttpClient {
         }
 
         Ok(req.send().await?)
+    }
+
+    /// Send the request to the endpoint but don't deserialize the response.
+    ///
+    /// This is useful to handle things such as response header data for more control over areas
+    /// such as rate limiting.
+    pub(crate) async fn send_request_without_deserializing<E>(
+        &self,
+        endpoint: &E,
+    ) -> Result<reqwest::Response>
+    where
+        E: Endpoint,
+    {
+        self.send_request_without_deserializing_with_other_base_url(endpoint, &self.base_url)
+            .await
     }
 
     async fn send_request_with_checks<E>(&self, endpoint: &E) -> Result<reqwest::Response>
@@ -280,6 +296,57 @@ impl HttpClient {
     }
 }
 
+/// Helper macros for implementing the send function on the builder
+///
+/// Introduced in v3.0.0-alpha.1
+///
+///
+macro_rules! builder_send {
+    {
+        #[$builder:ident] $typ:ty,
+        $(#[$out_res:ident])? $out_type:ty
+    } => {
+        builder_send! { @send $(:$out_res)?, $typ, $out_type }
+    };
+    { @send, $typ:ty, $out_type:ty } => {
+        impl $typ {
+            pub async fn send(&self) -> mangadex_api_types::error::Result<$out_type>{
+                self.build()?.send().await
+            }
+        }
+    };
+    { @send:discard_result, $typ:ty, $out_type:ty } => {
+        impl $typ {
+            pub async fn send(&self) -> mangadex_api_types::error::Result<()>{
+                self.build()?.send().await?;
+                Ok(())
+            }
+        }
+    };
+    { @send:flatten_result, $typ:ty, $out_type:ty } => {
+        impl $typ {
+            pub async fn send(&self) -> $out_type{
+                self.build()?.send().await
+            }
+        }
+    };
+    { @send:rate_limited, $typ:ty, $out_type:ty } => {
+        impl $typ {
+
+            pub async fn send(&self) -> mangadex_api_types::error::Result<mangadex_api_schema::Limited<$out_type>>{
+                self.build()?.send().await
+            }
+        }
+    };
+    { @send:no_send, $typ:ty, $out_type:ty } => {
+        impl $typ {
+            pub async fn send(&self) -> $out_type{
+                self.build()?.send().await
+            }
+        }
+    };
+}
+
 /// Helper macro to quickly implement the `Endpoint` trait,
 /// and optionally a `send()` method for the input struct.
 ///
@@ -346,6 +413,7 @@ macro_rules! endpoint {
         $method:ident $path:tt,
         #[$payload:ident $($auth:ident)?] $typ:ty,
         $(#[$out_res:ident])? $out:ty
+        $(,$builder_ty:ty)?
     } => {
         impl mangadex_api_schema::Endpoint for $typ {
             /// The response type.
@@ -362,7 +430,7 @@ macro_rules! endpoint {
             $(endpoint! { @$auth })?
         }
 
-        endpoint! { @send $(:$out_res)?, $typ, $out }
+        endpoint! { @send $(:$out_res)?, $typ, $out $(,$builder_ty)? }
 
     };
 
@@ -413,7 +481,7 @@ macro_rules! endpoint {
     };
 
     // Return the response as a `Result`.
-    { @send, $typ:ty, $out:ty } => {
+    { @send, $typ:ty, $out:ty $(,$builder_ty:ty)? } => {
         impl $typ {
             /// Send the request.
             pub async fn send(&self) -> mangadex_api_types::error::Result<$out> {
@@ -432,9 +500,15 @@ macro_rules! endpoint {
             }
         }
 
+        $(
+            builder_send! {
+                #[builder] $builder_ty,
+                $out
+            }
+        )?
     };
     // Return the response as a `Result`.
-    { @send:rate_limited, $typ:ty, $out:ty } => {
+    { @send:rate_limited, $typ:ty, $out:ty $(,$builder_ty:ty)? } => {
         impl $typ {
             /// Send the request.
             pub async fn send(&self) -> mangadex_api_types::error::Result<mangadex_api_schema::Limited<$out>> {
@@ -453,9 +527,15 @@ macro_rules! endpoint {
             }
         }
 
+        $(
+            builder_send! {
+                #[builder] $builder_ty,
+                #[rate_limited] $out
+            }
+        )?
     };
     // Return the `Result` variants, `Ok` or `Err`.
-    { @send:flatten_result, $typ:ty, $out:ty } => {
+    { @send:flatten_result, $typ:ty, $out:ty $(,$builder_ty:ty)? } => {
         impl $typ {
             /// Send the request.
             #[allow(dead_code)]
@@ -475,10 +555,15 @@ macro_rules! endpoint {
             }
         }
 
-
+        $(
+            builder_send! {
+                #[builder] $builder_ty,
+                #[flatten_result] $out
+            }
+        )?
     };
     // Don't return any data from the response.
-    { @send:discard_result, $typ:ty, $out:ty } => {
+    { @send:discard_result, $typ:ty, $out:ty $(,$builder_ty:ty)? } => {
         impl $typ {
             /// Send the request.
             #[allow(dead_code)]
@@ -493,45 +578,24 @@ macro_rules! endpoint {
                 Ok(())
             }
         }
+
+        $(
+            builder_send! {
+                #[builder] $builder_ty,
+                #[discard_result] $out
+            }
+        )?
     };
     // Don't implement `send()` and require manual implementation.
-    { @send:no_send, $typ:ty, $out:ty } => { };
+    { @send:no_send, $typ:ty, $out:ty $(,$builder_ty:ty)? } => {
+        $(
+            builder_send! {
+                #[builder] $builder_ty,
+                #[no_send] $out
+            }
+        )?
+    };
 
-}
-/// Helper macros for implementing the send function on the builder
-///
-/// Introduced in v3.0.0-alpha.1
-///
-///
-macro_rules! builder_send {
-    {
-        #[$builder:ident] $typ:ty,
-        $(#[$out_res:ident])? $out_type:ty
-    } => {
-        builder_send! { @send $(:$out_res)?, $typ, $out_type }
-    };
-    { @send:out, $typ:ty, $out_type:ty } => {
-        impl $typ {
-            pub async fn send(&self) -> mangadex_api_types::error::Result<$out_type>{
-                self.build()?.send().await
-            }
-        }
-    };
-    { @send:discard_result, $typ:ty, $out_type:ty } => {
-        impl $typ {
-            pub async fn send(&self) -> mangadex_api_types::error::Result<()>{
-                self.build()?.send().await?;
-                Ok(())
-            }
-        }
-    };
-    { @send:flatten_result, $typ:ty, $out_type:ty } => {
-        impl $typ {
-            pub async fn send(&self) -> $out_type{
-                self.build()?.send().await?
-            }
-        }
-    }
 }
 
 macro_rules! create_endpoint_node {

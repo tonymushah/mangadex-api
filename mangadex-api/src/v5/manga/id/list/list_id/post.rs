@@ -8,28 +8,33 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
+//!
 //!
 //! let manga_id = Uuid::new_v4();
 //! let list_id = Uuid::new_v4();
 //! let res = client
 //!     .manga()
-//!     .add_to_custom_list()
-//!     .manga_id(&manga_id)
-//!     .list_id(&list_id)
-//!     .build()?
+//!     .id(manga_id)
+//!     .list()
+//!     .list_id(list_id)
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
@@ -54,7 +59,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct AddMangaToCustomList {
@@ -74,7 +78,8 @@ pub struct AddMangaToCustomList {
 endpoint! {
     POST ("/manga/{}/list/{}", manga_id, list_id),
     #[no_data auth] AddMangaToCustomList,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    AddMangaToCustomListBuilder
 }
 
 #[cfg(test)]
@@ -120,7 +125,6 @@ mod tests {
             .list()
             .list_id(list_id)
             .post()
-            .build()?
             .send()
             .await?;
 

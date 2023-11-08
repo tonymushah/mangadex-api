@@ -25,12 +25,12 @@ impl FollowEndpoint {
     }
     pub fn post(&self) -> FollowGroupBuilder {
         FollowGroupBuilder::default()
-            .http_client(self.http_client.clone())
             .group_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn delete(&self) -> UnfollowGroupBuilder {
         UnfollowGroupBuilder::default()
-            .http_client(self.http_client.clone())
             .group_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

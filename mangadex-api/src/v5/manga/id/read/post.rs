@@ -1,6 +1,6 @@
 //! Mark multiple chapters for one manga as read and/or unread.
 //!
-//! <https://api.mangadex.org/swagger.html#/Chapter/post-manga-chapter-readmarkers>
+//! <https://api.mangadex.org/docs/swagger.html#/Chapter/post-manga-chapter-readmarkers>
 //!
 //! # Examples
 //!
@@ -8,30 +8,34 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     // Put your login script here
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .build()?
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let manga_id = Uuid::new_v4();
 //! let read_chapter_id = Uuid::new_v4();
 //! let unread_chapter_id = Uuid::new_v4();
 //! let res = client
-//!     .chapter()
-//!     .mark_batch()
-//!     .manga_id(&manga_id)
-//!     .mark_chapter_read(&read_chapter_id)
-//!     .mark_chapter_unread(&unread_chapter_id)
-//!     .build()?
+//!     .manga()
+//!     .id(manga_id)
+//!     .read()
+//!     .post()
+//!     .mark_chapter_read(read_chapter_id)
+//!     .mark_chapter_unread(unread_chapter_id)
 //!     .send()
 //!     .await?;
 //!
@@ -83,7 +87,8 @@ pub struct MarkChapterBatch {
 endpoint! {
     POST ("/manga/{}/read?updateHistory={}", manga_id, update_history),
     #[body auth] MarkChapterBatch,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    MarkChapterBatchBuilder
 }
 
 #[cfg(test)]
@@ -135,7 +140,6 @@ mod tests {
             .post()
             .mark_chapter_read(read_chapter_id)
             .mark_chapter_unread(unread_chapter_id)
-            .build()?
             .send()
             .await?;
 

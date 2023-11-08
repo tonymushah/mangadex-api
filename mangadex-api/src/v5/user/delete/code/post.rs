@@ -1,6 +1,6 @@
 //! Builder for the account-activation endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/User/get-account-activate-code>
+//! <https://api.mangadex.org/docs/swagger.html#/User/get-account-activate-code>
 //!
 //! # Examples
 //!
@@ -15,9 +15,9 @@
 //! let code = Uuid::new_v4();
 //! let res = client
 //!     .user()
-//!     .approve_deletion()
-//!     .code(&code)
-//!     .build()?
+//!     .delete()
+//!     .code(code)
+//!     .post()
 //!     .send()
 //!     .await?;
 //!
@@ -64,7 +64,8 @@ pub struct ApproveUserDeletion {
 endpoint! {
     POST ("/user/delete/{}", code),
     #[no_data] ApproveUserDeletion,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    ApproveUserDeletionBuilder
 }
 
 #[cfg(test)]
@@ -102,7 +103,6 @@ mod tests {
             .delete()
             .code(code)
             .post()
-            .build()?
             .send()
             .await?;
 

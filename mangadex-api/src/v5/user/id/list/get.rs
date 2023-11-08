@@ -1,6 +1,6 @@
 //! Builder for fetching a user's custom lists endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/User/get-user-id-list>
+//! <https://api.mangadex.org/docs/swagger.html#/User/get-user-id-list>
 //!
 //! # Examples
 //!
@@ -13,12 +13,13 @@
 //! let client = MangaDexClient::default();
 //!
 //! let user_id = Uuid::new_v4();
+//!
 //! let res = client
 //!     .user()
-//!     .custom_lists()
-//!     .user_id(&user_id)
+//!     .id(user_id)
+//!     .list()
+//!     .get()
 //!     .limit(1_u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +43,6 @@ use mangadex_api_schema::v5::CustomListListResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct UserCustomLists {
@@ -67,7 +67,8 @@ pub struct UserCustomLists {
 endpoint! {
     GET ("/user/{}/list", user_id),
     #[query] UserCustomLists,
-    #[flatten_result] CustomListListResponse
+    #[flatten_result] CustomListListResponse,
+    UserCustomListsBuilder
 }
 
 #[cfg(test)]
@@ -126,7 +127,6 @@ mod tests {
             .list()
             .get()
             .limit(1_u32)
-            .build()?
             .send()
             .await?;
 

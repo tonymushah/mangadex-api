@@ -1,28 +1,32 @@
 //! Builder for getting the latest Settings template.
 //!
-//! <https://api.mangadex.org/swagger.html#/Settings/get-settings-template>
+//! <https://api.mangadex.org/docs/swagger.html#/Settings/get-settings-template>
 //!
-//! ```ignore
+//! ```rust
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //! use uuid::Uuid;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let res = client
 //!     .settings()
-//!     .get_latest_template()
-//!     .build()?
+//!     .template()
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -67,7 +71,8 @@ pub struct GetLatestSettingsTemplate {
 endpoint! {
     GET "/settings/template",
     #[no_data auth] GetLatestSettingsTemplate,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    GetLatestSettingsTemplateBuilder
 }
 
 #[cfg(test)]
@@ -111,7 +116,6 @@ mod tests {
             .settings()
             .template()
             .get()
-            .build()?
             .send()
             .await
             .expect_err("expected error");

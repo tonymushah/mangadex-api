@@ -20,12 +20,12 @@ impl FollowEndpoint {
     }
     pub fn post(&self) -> FollowMangaBuilder {
         FollowMangaBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn delete(&self) -> UnfollowMangaBuilder {
         UnfollowMangaBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

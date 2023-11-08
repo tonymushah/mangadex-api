@@ -1,6 +1,6 @@
 //! Builder for finding Manga statistics.
 //!
-//! <https://api.mangadex.org/swagger.html#/Statistics/get-statistics-manga>
+//! <https://api.mangadex.org/docs/swagger.html#/Statistics/get-statistics-manga>
 //!
 //! This allows querying for multiple Manga.
 //!
@@ -19,9 +19,9 @@
 //!
 //! let manga_stats = client
 //!     .statistics()
-//!     .find_manga()
+//!     .manga()
+//!     .get()
 //!     .manga_id(&manga_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -46,8 +46,7 @@ use mangadex_api_schema::v5::MangaStatisticsResponse;
 #[builder(
     setter(into, strip_option),
     build_fn(error = "mangadex_api_types::error::BuilderError"),
-    default,
-    pattern = "owned"
+    default
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct FindMangaStatistics {
@@ -66,7 +65,8 @@ endpoint! {
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is
     // available to guests.
     #[query] FindMangaStatistics,
-    #[flatten_result] MangaStatisticsResponse
+    #[flatten_result] MangaStatisticsResponse,
+    FindMangaStatisticsBuilder
 }
 
 #[cfg(test)]
@@ -113,7 +113,6 @@ mod tests {
             .manga()
             .get()
             .manga_id(&manga_id)
-            .build()?
             .send()
             .await?;
 

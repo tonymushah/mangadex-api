@@ -2,32 +2,36 @@
 //!
 //! Authentication is required. This can be done by logging in.
 //!
-//! <https://api.mangadex.org/swagger.html#/User/get-user>
+//! <https://api.mangadex.org/docs/swagger.html#/User/get-user>
 //!
 //! # Examples
 //!
 //! ```rust
 //! use mangadex_api_types::MangaStatus;
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
+//!
 //!
 //! let users_res = client
 //!     .user()
-//!     .list()
+//!     .get()
 //!     .username("holo")
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -53,7 +57,6 @@ use mangadex_api_types::UserSortOrder;
 #[builder(
     setter(into, strip_option),
     default,
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -80,7 +83,8 @@ pub struct ListUser {
 endpoint! {
     GET "/user",
     #[query auth] ListUser,
-    #[flatten_result] UserListResponse
+    #[flatten_result] UserListResponse,
+    ListUserBuilder
 }
 
 #[cfg(test)]
@@ -146,13 +150,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .user()
-            .get()
-            .limit(1u32)
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.user().get().limit(1u32).send().await?;
 
         assert_eq!(res.response, ResponseType::Collection);
         let user = &res.data[0];
@@ -198,7 +196,6 @@ mod tests {
             .user()
             .get()
             .limit(0u32)
-            .build()?
             .send()
             .await
             .expect_err("expected error");

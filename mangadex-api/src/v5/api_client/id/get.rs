@@ -1,3 +1,28 @@
+//! Builder for getting client by its id.
+//!
+//! <https://api.mangadex.org/docs/swagger.html#/ApiClient/get-apiclient>
+//!
+//! # Examples
+//!
+//! ```rust
+//! use mangadex_api::v5::MangaDexClient;
+//! use uuid::Uuid;
+//!
+//! # async fn run() -> anyhow::Result<()> {
+//! let client = MangaDexClient::default();
+//!
+//! let client_res = client
+//!     .client()
+//!     .id(Uuid::new_v4())
+//!     .get()
+//!     .send()
+//!     .await?;
+//!
+//! println!("client: {:?}", client_res);
+//! # Ok(())
+//! # }
+//! ```
+//!
 use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
@@ -14,7 +39,6 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetClient {
@@ -35,7 +59,8 @@ pub struct GetClient {
 endpoint! {
     GET ("/client/{}", client_id),
     #[query auth] GetClient,
-    #[flatten_result] ApiClientResponse
+    #[flatten_result] ApiClientResponse,
+    GetClientBuilder
 }
 
 #[cfg(test)]
@@ -98,13 +123,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .client()
-            .id(client_id)
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.client().id(client_id).get().send().await?;
 
         assert_eq!(res.data.type_, RelationshipType::ApiClient);
 
@@ -171,7 +190,6 @@ mod tests {
             .id(client_id)
             .get()
             .include(&ReferenceExpansionResource::Creator)
-            .build()?
             .send()
             .await?;
 

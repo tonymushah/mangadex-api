@@ -20,7 +20,7 @@ impl MangaIdEndpoint {
     }
     pub fn post(&self) -> UploadCoverBuilder {
         UploadCoverBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.manga_id)
+            .http_client(self.http_client.clone())
     }
 }

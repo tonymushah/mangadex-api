@@ -1,9 +1,10 @@
 //! CustomList endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/CustomList>
+//! <https://api.mangadex.org/docs/swagger.html#/CustomList>
 
 pub mod id;
 pub mod post;
+
 use uuid::Uuid;
 
 use crate::v5::custom_list::post::CreateCustomListBuilder;

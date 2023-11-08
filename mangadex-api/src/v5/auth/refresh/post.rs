@@ -15,15 +15,16 @@
 //! let _login_res = client
 //!     .auth()
 //!     .login()
+//!     .post()
 //!     .username(Username::parse("myusername")?)
 //!     .password(Password::parse("hunter23")?)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
 //! let refresh_res = client
 //!     .auth()
-//!     .refresh_token()
+//!     .refresh()
+//!     .post()
 //!     .build()?
 //!     .send()
 //!     .await?;
@@ -151,6 +152,11 @@ endpoint! {
     #[no_send] RefreshTokenResponse
 }
 
+builder_send! {
+    #[builder] RefreshTokenBuilder,
+    #[rate_limited] RefreshTokenResponse
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;
@@ -201,13 +207,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
-            .auth()
-            .refresh()
-            .post()
-            .build()?
-            .send()
-            .await?;
+        let _ = mangadex_client.auth().refresh().post().send().await?;
 
         #[cfg(all(
             not(feature = "multi-thread"),
@@ -286,7 +286,6 @@ mod tests {
             .auth()
             .refresh()
             .post()
-            .build()?
             .send()
             .await
             .expect_err("expected error");
@@ -379,7 +378,6 @@ mod tests {
             .auth()
             .refresh()
             .post()
-            .build()?
             .send()
             .await
             .expect_err("expected error");
@@ -472,7 +470,6 @@ mod tests {
             .auth()
             .refresh()
             .post()
-            .build()?
             .send()
             .await
             .expect_err("expected error");

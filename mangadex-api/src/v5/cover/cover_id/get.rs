@@ -1,6 +1,6 @@
 //! Builder for the cover view endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Cover/get-cover-id>
+//! <https://api.mangadex.org/docs/swagger.html#/Cover/get-cover-id>
 //!
 //! # Examples
 //!
@@ -15,9 +15,8 @@
 //! let cover_id = Uuid::new_v4();
 //! let cover_res = client
 //!     .cover()
+//!     .cover_id(cover_id)
 //!     .get()
-//!     .cover_id(&cover_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +41,6 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetCover {
@@ -64,7 +62,8 @@ pub struct GetCover {
 endpoint! {
     GET ("/cover/{}", cover_id),
     #[query] GetCover,
-    #[flatten_result] CoverResponse
+    #[flatten_result] CoverResponse,
+    GetCoverBuilder
 }
 
 #[cfg(test)]
@@ -126,7 +125,6 @@ mod tests {
             .cover()
             .cover_id(cover_id)
             .get()
-            .build()?
             .send()
             .await?;
 
@@ -180,7 +178,6 @@ mod tests {
             .cover()
             .cover_id(cover_id)
             .get()
-            .build()?
             .send()
             .await
             .expect_err("expected error");

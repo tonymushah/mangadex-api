@@ -1,6 +1,6 @@
 //! Report endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/Report>
+//! <https://api.mangadex.org/docs/swagger.html#/Report>
 
 pub mod get;
 pub mod post;

@@ -1,6 +1,6 @@
 //! Builder for the report reasons list endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Report/get-report-reasons-by-category>
+//! <https://api.mangadex.org/docs/swagger.html#/Report/get-report-reasons-by-category>
 //!
 //! # Examples
 //!
@@ -13,9 +13,8 @@
 //!
 //! let res = client
 //!     .report()
-//!     .list_reports_by_user()
+//!     .get()
 //!     .category(ReportCategory::Manga)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +41,6 @@ use mangadex_api_types::{
 #[builder(
     setter(into, strip_option),
     default,
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct ListReportsByUser {
@@ -64,7 +62,8 @@ pub struct ListReportsByUser {
 endpoint! {
     GET "/report",
     #[query auth] ListReportsByUser,
-    #[rate_limited] UserReportsCollection
+    #[rate_limited] UserReportsCollection,
+    ListReportsByUserBuilder
 }
 
 #[cfg(test)]
@@ -133,7 +132,6 @@ mod tests {
             .report()
             .get()
             .category(ReportCategory::Manga)
-            .build()?
             .send()
             .await?;
 

@@ -1,5 +1,45 @@
-// NOTE output Results<Manga>
-
+//! Builder for getting the customList manga.
+//! Can be useful if you have a customlist with 100 or 200 titles on it. :)
+//!
+//! NOTICE: This endpoint is not deployed yet on <https://mangadex.org>.
+//! We'll notice you if it'll be deployed
+//!
+//! # Examples
+//!
+//! ```rust
+//! use uuid::Uuid;
+//!
+//! use mangadex_api::v5::MangaDexClient;
+//! // use mangadex_api_types::{Password, Username};
+//!
+//! # async fn run() -> anyhow::Result<()> {
+//! let client = MangaDexClient::default();
+//!
+//! /*
+//!     
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!  */
+//!
+//!
+//! let list_id = Uuid::new_v4();
+//! let _ = client
+//!     .custom_list()
+//!     .id(list_id)
+//!     .manga()
+//!     .get()
+//!     .send()
+//!     .await?;
+//!
+//! # Ok(())
+//! # }
+//! ```
+//!
 use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
@@ -15,7 +55,6 @@ use mangadex_api_types::{ContentRating, ReferenceExpansionResource};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -48,7 +87,8 @@ pub struct GetCustomListManga {
 endpoint! {
     GET ("/list/{}/manga", list_id),
     #[query] GetCustomListManga,
-    #[flatten_result] MangaListResponse
+    #[flatten_result] MangaListResponse,
+    GetCustomListMangaBuilder
 }
 
 #[cfg(test)]
@@ -131,7 +171,6 @@ mod tests {
             .manga()
             .get()
             .limit(1u32)
-            .build()?
             .send()
             .await?;
 
@@ -206,7 +245,6 @@ mod tests {
             .id(Uuid::new_v4())
             .manga()
             .get()
-            .build()?
             .send()
             .await
             .expect_err("expected error");

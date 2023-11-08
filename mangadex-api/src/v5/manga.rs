@@ -1,6 +1,6 @@
 //! Manga endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga>
 
 use crate::HttpClientRef;
 

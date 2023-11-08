@@ -15,10 +15,10 @@
 //! let list_id = Uuid::new_v4();
 //! let res = client
 //!     .custom_list()
-//!     .manga_feed()
-//!     .list_id(&list_id)
+//!     .id(list_id)
+//!     .feed()
+//!     .get()
 //!     .limit(1_u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -46,7 +46,6 @@ use mangadex_api_types::{
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -68,43 +67,56 @@ pub struct CustomListMangaFeed {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     pub offset: Option<u32>,
     #[builder(setter(each = "add_translated_language"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub translated_language: Vec<Language>,
     #[builder(setter(each = "add_original_language"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub original_language: Vec<Language>,
     #[builder(setter(each = "exclude_original_language"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub excluded_original_language: Vec<Language>,
     #[builder(setter(each = "add_content_rating"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub content_rating: Vec<ContentRating>,
     /// Groups to exclude from the results.
     #[builder(setter(each = "excluded_group"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub excluded_groups: Vec<Uuid>,
     /// Uploaders to exclude from the results.
     #[builder(setter(each = "excluded_uploader"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub excluded_uploaders: Vec<Uuid>,
     /// Flag to include future chapter updates in the results.
     ///
     /// Default: `IncludeFutureUpdates::Include` (1)
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub include_future_updates: Option<IncludeFutureUpdates>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at_since: Option<MangaDexDateTime>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at_since: Option<MangaDexDateTime>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub publish_at_since: Option<MangaDexDateTime>,
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<MangaFeedSortOrder>,
     #[builder(setter(each = "include"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 
 endpoint! {
     GET ("/list/{}/feed", list_id),
     #[query] CustomListMangaFeed,
-    #[flatten_result] ChapterListResponse
+    #[flatten_result] ChapterListResponse,
+    CustomListMangaFeedBuilder
 }
 
 #[cfg(test)]
@@ -187,7 +199,6 @@ mod tests {
             .feed()
             .get()
             .limit(1u32)
-            .build()?
             .send()
             .await?;
 

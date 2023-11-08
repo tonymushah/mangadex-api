@@ -23,7 +23,7 @@ impl ListEndpoint {
     }
     pub fn get(&self) -> GetMangaCustomListsBuilder {
         GetMangaCustomListsBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

@@ -1,31 +1,32 @@
 //! Builder for the create manga endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/post-manga>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/post-manga>
 //!
 //! ```rust
 //! use std::collections::HashMap;
 //!
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //! use mangadex_api_types::Language;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
-//!
+//! /*
+//!     Put your login script here   
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .build()?
+//!         .send()
+//!         .await?;
+//! */
 //! let manga_res = client
 //!     .manga()
-//!     .create()
+//!     .post()
 //!     .add_title((Language::English, "My New Manga Title".to_string()))
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -115,7 +116,8 @@ pub struct CreateManga {
 endpoint! {
     POST "/manga",
     #[body auth] CreateManga,
-    #[rate_limited] MangaData
+    #[rate_limited] MangaData,
+    CreateMangaBuilder
 }
 
 #[cfg(test)]
@@ -236,7 +238,6 @@ mod tests {
             .content_rating(ContentRating::Safe)
             .tags(vec![Tag::Action])
             .version(1_u32)
-            .build()?
             .send()
             .await?;
         let res = res.body;
@@ -391,7 +392,6 @@ mod tests {
             .content_rating(ContentRating::Safe)
             .tags(vec![Tag::Action])
             .version(1_u32)
-            .build()?
             .send()
             .await?;
 
@@ -505,7 +505,6 @@ mod tests {
             .content_rating(ContentRating::Safe)
             .tags(vec![Tag::Action])
             .version(1_u32)
-            .build()?
             .send()
             .await?;
 
@@ -620,7 +619,6 @@ mod tests {
             .content_rating(ContentRating::Safe)
             .tags(vec![Tag::Action])
             .version(1_u32)
-            .build()?
             .send()
             .await?;
 

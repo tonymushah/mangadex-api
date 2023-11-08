@@ -1,6 +1,6 @@
 //! User endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/User>
+//! <https://api.mangadex.org/docs/swagger.html#/User>
 
 pub mod bookmarks;
 #[cfg(feature = "legacy-account")]

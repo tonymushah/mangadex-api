@@ -1,6 +1,6 @@
 //! Builder for the chapter view endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Chapter/get-chapter-id>
+//! <https://api.mangadex.org/docs/swagger.html#/Chapter/get-chapter-id>
 //!
 //! # Examples
 //!
@@ -15,9 +15,8 @@
 //! let chapter_id = Uuid::new_v4();
 //! let chapter_res = client
 //!     .chapter()
+//!     .id(chapter_id)
 //!     .get()
-//!     .chapter_id(&chapter_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +41,6 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetChapter {
@@ -63,7 +61,8 @@ pub struct GetChapter {
 endpoint! {
     GET ("/chapter/{}", chapter_id),
     #[query] GetChapter,
-    #[flatten_result] ChapterResponse
+    #[flatten_result] ChapterResponse,
+    GetChapterBuilder
 }
 
 #[cfg(test)]

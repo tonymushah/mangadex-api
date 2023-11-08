@@ -1,6 +1,6 @@
 //! Author endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/Author>
+//! <https://api.mangadex.org/docs/swagger.html#/Author>
 
 pub mod get;
 pub mod id;

@@ -87,7 +87,7 @@ impl FeedBuilder {
     /// ```
     pub fn custom_list_manga(&self, list_id: Uuid) -> CustomListMangaFeedBuilder {
         CustomListMangaFeedBuilder::default()
-            .http_client(self.http_client.clone())
             .list_id(list_id)
+            .http_client(self.http_client.clone())
     }
 }

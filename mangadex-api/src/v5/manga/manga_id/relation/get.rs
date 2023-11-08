@@ -2,7 +2,7 @@
 //!
 //! This fetches the related Manga for the specified Manga such as spin-offs, doujinshis, and more.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-manga-relation>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get-manga-relation>
 //!
 //! # Examples
 //!
@@ -17,9 +17,9 @@
 //! let manga_id = Uuid::new_v4();
 //! let res = client
 //!     .manga()
-//!     .list_relations()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .manga_id(manga_id)
+//!     .relation()
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -44,7 +44,6 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct ListMangaRelations {
@@ -65,7 +64,8 @@ pub struct ListMangaRelations {
 endpoint! {
     GET ("/manga/{}/relation", manga_id),
     #[query] ListMangaRelations,
-    #[flatten_result] MangaRelationListResponse
+    #[flatten_result] MangaRelationListResponse,
+    ListMangaRelationsBuilder
 }
 
 #[cfg(test)]
@@ -180,7 +180,6 @@ mod tests {
             .manga_id(manga_id)
             .relation()
             .get()
-            .build()?
             .send()
             .await?;
 

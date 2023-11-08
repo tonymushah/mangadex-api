@@ -1,6 +1,6 @@
 //! Builder for the author view endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Author/get-author-id>
+//! <https://api.mangadex.org/docs/swagger.html#/Author/get-author-id>
 //!
 //! # Examples
 //!
@@ -15,9 +15,8 @@
 //! let author_id = Uuid::new_v4();
 //! let res = client
 //!     .author()
+//!     .id(author_id)
 //!     .get()
-//!     .author_id(&author_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +41,6 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetAuthor {
@@ -64,7 +62,8 @@ pub struct GetAuthor {
 endpoint! {
     GET ("/author/{}", author_id),
     #[query] GetAuthor,
-    #[flatten_result] AuthorResponse
+    #[flatten_result] AuthorResponse,
+    GetAuthorBuilder
 }
 
 #[cfg(test)]
@@ -136,13 +135,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        mangadex_client
-            .author()
-            .id(author_id)
-            .get()
-            .build()?
-            .send()
-            .await?;
+        mangadex_client.author().id(author_id).get().send().await?;
 
         Ok(())
     }

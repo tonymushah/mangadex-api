@@ -13,22 +13,24 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
+//! /*
+//!     Put your login script here
 //! let _login_res = client
 //!     .auth()
 //!     .login()
+//!     .post()
 //!     .username(Username::parse("myusername")?)
 //!     .password(Password::parse("hunter23")?)
-//!     .build()?
 //!     .send()
 //!     .await?;
+//!  */
 //!
 //! let author_id = Uuid::new_v4();
 //! let res = client
 //!     .author()
-//!     .update()
-//!     .author_id(&author_id)
+//!     .id(author_id)
+//!     .put()
 //!     .version(2u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -53,7 +55,6 @@ use mangadex_api_schema::v5::{AuthorData, LocalizedString};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -160,7 +161,8 @@ pub struct UpdateAuthor {
 endpoint! {
     PUT ("/author/{}", author_id),
     #[body auth] UpdateAuthor,
-    #[rate_limited] AuthorData
+    #[rate_limited] AuthorData,
+    UpdateAuthorBuilder
 }
 
 #[cfg(test)]
@@ -257,7 +259,6 @@ mod tests {
             .put()
             .website(Some(Url::parse("https://example.org").unwrap()))
             .version(2u32)
-            .build()?
             .send()
             .await?;
 

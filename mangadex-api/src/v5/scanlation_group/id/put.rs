@@ -1,6 +1,6 @@
 //! Builder for the scanlation group update endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/put-group-id>
+//! <https://api.mangadex.org/docs/swagger.html#/ScanlationGroup/put-group-id>
 //!
 //! # Examples
 //!
@@ -8,27 +8,30 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let group_id = Uuid::new_v4();
 //! let res = client
 //!     .scanlation_group()
-//!     .update()
-//!     .group_id(&group_id)
+//!     .id(group_id)
+//!     .put()
 //!     .version(2_u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -54,7 +57,6 @@ use mangadex_api_types::{Language, MangaDexDuration};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -131,7 +133,8 @@ pub struct UpdateGroup {
 endpoint! {
     PUT ("/group/{}", group_id),
     #[body auth] UpdateGroup,
-    #[rate_limited] GroupData
+    #[rate_limited] GroupData,
+    UpdateGroupBuilder
 }
 
 #[cfg(test)]
@@ -217,7 +220,6 @@ mod tests {
             .id(group_id)
             .put()
             .version(2_u32)
-            .build()?
             .send()
             .await?;
 

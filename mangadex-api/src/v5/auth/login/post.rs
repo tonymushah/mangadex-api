@@ -2,7 +2,7 @@
 //!
 //! This does not support 2-factor authentication currently.
 //!
-//! <https://api.mangadex.org/swagger.html#/Auth/post-auth-login>
+//! <https://api.mangadex.org/docs/swagger.html#/Auth/post-auth-login>
 //!
 //! # Examples
 //!
@@ -16,9 +16,9 @@
 //! let login_res = client
 //!     .auth()
 //!     .login()
+//!     .post()
 //!     .username(Username::parse("myusername")?)
 //!     .password(Password::parse("hunter2")?)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -135,7 +135,7 @@ endpoint! {
 
 builder_send! {
     #[builder] LoginBuilder,
-    #[out] Limited<LoginResponse>
+    Limited<LoginResponse>
 }
 
 #[cfg(test)]
@@ -266,7 +266,6 @@ mod tests {
             .post()
             .username(Username::parse("myusername")?)
             .password(Password::parse("mypassword")?)
-            .build()?
             .send()
             .await
             .expect_err("expected error");
@@ -323,7 +322,6 @@ mod tests {
             .post()
             .username(Username::parse("myusername")?)
             .password(Password::parse("mypassword")?)
-            .build()?
             .send()
             .await
             .expect_err("expected error");
@@ -381,7 +379,6 @@ mod tests {
             .post()
             .username(Username::parse("myusername")?)
             .password(Password::parse("mypassword")?)
-            .build()?
             .send()
             .await
             .expect_err("expected error");

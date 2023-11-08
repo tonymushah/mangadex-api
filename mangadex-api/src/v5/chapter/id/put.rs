@@ -8,28 +8,29 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
+//! /*
 //! let _login_res = client
 //!     .auth()
 //!     .login()
+//!     .post()
 //!     .username(Username::parse("myusername")?)
 //!     .password(Password::parse("hunter23")?)
-//!     .build()?
 //!     .send()
 //!     .await?;
+//! */
 //!
 //! let chapter_id = Uuid::new_v4();
 //! let res = client
 //!     .chapter()
-//!     .update()
-//!     .chapter_id(&chapter_id)
+//!     .id(chapter_id)
+//!     .put()
 //!     .title("Updated Chapter Title")
 //!     .version(2u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -54,7 +55,6 @@ use mangadex_api_types::Language;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -102,7 +102,8 @@ pub struct UpdateChapter {
 endpoint! {
     PUT ("/chapter/{}", chapter_id),
     #[body auth] UpdateChapter,
-    #[rate_limited] ChapterData
+    #[rate_limited] ChapterData,
+    UpdateChapterBuilder
 }
 
 #[cfg(test)]
@@ -185,7 +186,6 @@ mod tests {
             .id(chapter_id)
             .put()
             .version(2_u32)
-            .build()?
             .send()
             .await?;
 
@@ -257,7 +257,6 @@ mod tests {
             .id(chapter_id)
             .put()
             .version(2_u32)
-            .build()?
             .send()
             .await?;
 
@@ -329,7 +328,6 @@ mod tests {
             .id(chapter_id)
             .put()
             .version(2_u32)
-            .build()?
             .send()
             .await?;
 
@@ -403,7 +401,6 @@ mod tests {
             .put()
             .title(chapter_title.as_str())
             .version(2_u32)
-            .build()?
             .send()
             .await?;
 

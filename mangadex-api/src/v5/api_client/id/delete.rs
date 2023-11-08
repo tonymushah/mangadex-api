@@ -8,26 +8,28 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     // Putting your login script
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!  */
 //!
-//! let manga_id = Uuid::new_v4();
+//!
+//! let client_id = Uuid::new_v4();
 //! let res = client
-//!     .manga()
+//!     .client()
+//!     .id(client_id)
 //!     .delete()
-//!     .manga_id(&manga_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -51,8 +53,6 @@ use mangadex_api_types::error::Result;
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(
-    setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct DeleteClient {
@@ -73,7 +73,8 @@ pub struct DeleteClient {
 endpoint! {
     DELETE ("/client/{}", client_id),
     #[query auth] DeleteClient,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    DeleteClientBuilder
 }
 
 #[cfg(test)]
@@ -116,7 +117,6 @@ mod tests {
             .client()
             .id(client_id)
             .delete()
-            .build()?
             .send()
             .await?;
 

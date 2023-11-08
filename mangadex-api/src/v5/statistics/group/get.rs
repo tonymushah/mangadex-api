@@ -1,6 +1,6 @@
-//! Builder for finding Manga statistics.
+//! Builder for finding Group statistics.
 //!
-//! <https://api.mangadex.org/swagger.html#/Statistics/get-statistics-manga>
+//! <https://api.mangadex.org/docs/swagger.html#/Statistics/get-statistics-groups>
 //!
 //! This allows querying for multiple Manga.
 //!
@@ -14,18 +14,18 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! // Official Test Manga ID.
-//! let manga_id = Uuid::parse_str("f9c33607-9180-4ba6-b85c-e4b5faee7192")?;
+//! // Galaxy Degen Scans
+//! let group_id = Uuid::parse_str("ab24085f-b16c-4029-8c05-38fe16592a85")?;
 //!
-//! let manga_stats = client
+//! let group_stats = client
 //!     .statistics()
-//!     .find_manga()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .group()
+//!     .get()
+//!     .group_id(&group_id)
 //!     .send()
 //!     .await?;
 //!
-//! println!("Response: {:?}", manga_stats);
+//! println!("Response: {:?}", group_stats);
 //! # Ok(())
 //! # }
 //! ```
@@ -46,8 +46,7 @@ use mangadex_api_schema::v5::GroupStatisticsResponse;
 #[builder(
     setter(into, strip_option),
     build_fn(error = "mangadex_api_types::error::BuilderError"),
-    default,
-    pattern = "owned"
+    default
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct FindGroupStatistics {
@@ -66,7 +65,8 @@ endpoint! {
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is
     // available to guests.
     #[query] FindGroupStatistics,
-    #[flatten_result] GroupStatisticsResponse
+    #[flatten_result] GroupStatisticsResponse,
+    FindGroupStatisticsBuilder
 }
 
 #[cfg(test)]
@@ -116,7 +116,6 @@ mod tests {
             .group()
             .get()
             .group_id(&manga_id)
-            .build()?
             .send()
             .await?;
         let ctt = res.statistics.get(&manga_id).ok_or(std::io::Error::new(

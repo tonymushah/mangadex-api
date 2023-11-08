@@ -6,29 +6,30 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Language, Password, Username};
+//! use mangadex_api_types::{Language, /*Password, Username*/};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .build()?
+//!         .send()
+//!         .await?;
+//! */
 //!
 //! let manga_id = Uuid::new_v4();
 //! let file_bytes = vec![0];
 //! let res = client
 //!     .cover()
-//!     .upload()
-//!     .manga_id(&manga_id)
+//!     .manga_id(manga_id)
+//!     .post()
 //!     .file(file_bytes)
 //!     .locale(Language::English)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -63,7 +64,6 @@ use mangadex_api_types::{error::Result, Language};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -160,6 +160,11 @@ impl UploadCover {
     }
 }
 
+builder_send! {
+    #[builder] UploadCoverBuilder,
+    #[rate_limited] CoverData
+}
+
 #[cfg(test)]
 mod tests {
     use fake::faker::lorem::en::Sentence;
@@ -234,7 +239,6 @@ mod tests {
             .cover(manga_id)
             .file(file_bytes)
             .locale(Language::English)
-            .build()?
             .send()
             .await?;
 

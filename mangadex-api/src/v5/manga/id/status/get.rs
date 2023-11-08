@@ -1,6 +1,6 @@
 //! Builder for the manga reading status endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-manga-id-status>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get-manga-id-status>
 //!
 //! # Examples
 //!
@@ -15,9 +15,9 @@
 //! let manga_id = Uuid::new_v4();
 //! let res = client
 //!     .manga()
-//!     .reading_status()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .id(manga_id)
+//!     .status()    
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -41,7 +41,6 @@ use mangadex_api_schema::v5::MangaReadingStatusResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[deprecated(
@@ -63,7 +62,8 @@ pub struct MangaReadingStatus {
 endpoint! {
     GET ("/manga/{}/status", manga_id),
     #[no_data auth] MangaReadingStatus,
-    #[flatten_result] MangaReadingStatusResponse
+    #[flatten_result] MangaReadingStatusResponse,
+    MangaReadingStatusBuilder
 }
 
 #[cfg(test)]
@@ -108,7 +108,6 @@ mod tests {
             .id(manga_id)
             .status()
             .get()
-            .build()?
             .send()
             .await?;
 

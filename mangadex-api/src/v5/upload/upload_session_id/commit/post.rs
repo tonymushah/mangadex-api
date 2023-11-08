@@ -1,6 +1,6 @@
 //! Builder for committing an active upload session.
 //!
-//! <https://api.mangadex.org/swagger.html#/Upload/commit-upload-session>
+//! <https://api.mangadex.org/docs/swagger.html#/Upload/commit-upload-session>
 //!
 //! # Examples
 //!
@@ -9,30 +9,34 @@
 //!
 //! use mangadex_api_types::Language;
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let session_id = Uuid::new_v4();
 //! let res = client
 //!     .upload()
-//!     .commit_session()
-//!     .session_id(&session_id)
-//!     .volume(Some("1"))
-//!     .chapter(Some("1"))
-//!     .title(Some("Chapter Title"))
+//!     .upload_session_id(session_id)
+//!     .commit()
+//!     .post()
+//!     .volume(Some("1".to_string()))
+//!     .chapter(Some("1".to_string()))
+//!     .title(Some("Chapter Title".to_string()))
 //!     .translated_language(Language::English)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -209,7 +213,7 @@ impl CommitUploadSessionBuilder {
     }
 
     /// Finalize the changes to the request struct and return the new struct.
-    pub fn build(self) -> Result<CommitUploadSession> {
+    pub fn build(&self) -> Result<CommitUploadSession> {
         if let Err(error) = self.validate() {
             return Err(Error::RequestBuilderError(error));
         }
@@ -218,18 +222,18 @@ impl CommitUploadSessionBuilder {
         let translated_language = self.translated_language.unwrap();
 
         Ok(CommitUploadSession {
-            http_client: self.http_client,
+            http_client: self.http_client.to_owned(),
 
             session_id,
             chapter_draft: ChapterDraft {
-                volume: self.volume,
-                chapter: self.chapter,
-                title: self.title,
+                volume: self.volume.to_owned(),
+                chapter: self.chapter.to_owned(),
+                title: self.title.to_owned(),
                 translated_language,
-                external_url: self.external_url,
+                external_url: self.external_url.to_owned(),
                 publish_at: self.publish_at,
             },
-            page_order: self.page_order,
+            page_order: self.page_order.to_owned(),
         })
     }
 }
@@ -237,7 +241,8 @@ impl CommitUploadSessionBuilder {
 endpoint! {
     PUT ("/upload/{}/commit", session_id),
     #[body auth] CommitUploadSession,
-    #[rate_limited] ChapterData
+    #[rate_limited] ChapterData,
+    CommitUploadSessionBuilder
 }
 
 #[cfg(test)]
@@ -338,7 +343,6 @@ mod tests {
             .title(Some(chapter_title.clone()))
             .translated_language(Language::English)
             .page_order(vec![session_file_id])
-            .build()?
             .send()
             .await?;
 

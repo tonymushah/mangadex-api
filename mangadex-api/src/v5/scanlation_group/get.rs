@@ -1,6 +1,6 @@
 //! Builder for the scanlation group list endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/ScanlationGroup/get-search-group>
+//! <https://api.mangadex.org/docs/swagger.html#/ScanlationGroup/get-search-group>
 //!
 //! # Examples
 //!
@@ -13,9 +13,8 @@
 //!
 //! let group_res = client
 //!     .scanlation_group()
-//!     .list()
+//!     .get()
 //!     .name("mangadex")
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -41,7 +40,6 @@ use mangadex_api_types::{GroupSortOrder, Language, ReferenceExpansionResource};
 #[builder(
     setter(into, strip_option),
     default,
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -69,7 +67,8 @@ pub struct ListGroup {
 endpoint! {
     GET "/group",
     #[query] ListGroup,
-    #[flatten_result] GroupListResponse
+    #[flatten_result] GroupListResponse,
+    ListGroupBuilder
 }
 
 #[cfg(test)]
@@ -147,7 +146,6 @@ mod tests {
             .scanlation_group()
             .get()
             .limit(1u32)
-            .build()?
             .send()
             .await?;
 
@@ -210,7 +208,6 @@ mod tests {
             .scanlation_group()
             .get()
             .limit(0u32)
-            .build()?
             .send()
             .await
             .expect_err("expected error");

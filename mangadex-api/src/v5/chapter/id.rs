@@ -22,17 +22,17 @@ impl IdEndpoint {
     }
     pub fn get(&self) -> GetChapterBuilder {
         GetChapterBuilder::default()
-            .http_client(self.http_client.clone())
             .chapter_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn put(&self) -> UpdateChapterBuilder {
         UpdateChapterBuilder::default()
-            .http_client(self.http_client.clone())
             .chapter_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn delete(&self) -> DeleteChapterBuilder {
         DeleteChapterBuilder::default()
-            .http_client(self.http_client.clone())
             .chapter_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

@@ -1,6 +1,6 @@
 //! Builder for the manga view endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-manga-id>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get-manga-id>
 //!
 //! # Examples
 //!
@@ -15,9 +15,8 @@
 //! let manga_id = Uuid::new_v4();
 //! let manga_res = client
 //!     .manga()
+//!     .id(manga_id)
 //!     .get()
-//!     .manga_id(&manga_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -42,7 +41,6 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetManga {
@@ -63,7 +61,8 @@ pub struct GetManga {
 endpoint! {
     GET ("/manga/{}", manga_id),
     #[query] GetManga,
-    #[flatten_result] MangaResponse
+    #[flatten_result] MangaResponse,
+    GetMangaBuilder
 }
 
 #[cfg(test)]
@@ -139,13 +138,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .manga()
-            .id(manga_id)
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.manga().id(manga_id).get().send().await?;
 
         assert_eq!(res.data.relationships[0].type_, RelationshipType::Manga);
         assert_eq!(
@@ -238,7 +231,6 @@ mod tests {
             .id(manga_id)
             .get()
             .include(&ReferenceExpansionResource::Author)
-            .build()?
             .send()
             .await?;
 
@@ -488,13 +480,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client
-            .manga()
-            .id(manga_id)
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let res = mangadex_client.manga().id(manga_id).get().send().await?;
 
         // `null` should not be included in the sequence.
         assert_eq!(res.data.attributes.available_translated_languages.len(), 18);

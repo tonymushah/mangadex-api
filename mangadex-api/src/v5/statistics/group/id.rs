@@ -2,8 +2,9 @@ use crate::HttpClientRef;
 
 use uuid::Uuid;
 
-use self::get::GetGroupStatisticsBuilder;
 pub mod get;
+
+use self::get::GetGroupStatisticsBuilder;
 
 /// Statistics endpoint handler builder.
 #[derive(Clone, Debug)]
@@ -19,7 +20,7 @@ impl IdEndpoint {
     }
     pub fn get(&self) -> GetGroupStatisticsBuilder {
         GetGroupStatisticsBuilder::default()
-            .http_client(self.http_client.clone())
             .group_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

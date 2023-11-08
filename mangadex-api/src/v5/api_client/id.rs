@@ -28,8 +28,8 @@ create_endpoint_node! {
 impl IdEndpointMethods for IdEndpoint {
     fn get(&self) -> GetClientBuilder {
         GetClientBuilder::default()
-            .http_client(<&Self as Into<HttpClientRef>>::into(self))
             .client_id(<&Self as Into<Uuid>>::into(self))
+            .http_client(<&Self as Into<HttpClientRef>>::into(self))
     }
 
     fn post(&self) -> EditClientBuilder {

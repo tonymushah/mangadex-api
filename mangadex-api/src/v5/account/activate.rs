@@ -17,8 +17,8 @@ impl ActivateEndpoint {
         Self { http_client }
     }
 
-    pub fn code(&self, code: String) -> CodeEndpoint {
-        CodeEndpoint::new(self.http_client.clone(), code)
+    pub fn code(&self, code: impl Into<String>) -> CodeEndpoint {
+        CodeEndpoint::new(self.http_client.clone(), code.into())
     }
     pub fn resend(&self) -> ResendEndpoint {
         ResendEndpoint::new(self.http_client.clone())

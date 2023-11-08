@@ -1,5 +1,31 @@
-// TODO add endpoint
-
+//! Builder for getting the CustomLists where the manga is is.
+//!
+//! NOTICE: This endpoint is not deployed yet on <https://mangadex.org>
+//! We'll notice if it's deployed
+//!
+//! # Examples
+//!
+//! ```rust
+//! use uuid::Uuid;
+//!
+//! use mangadex_api::v5::MangaDexClient;
+//!
+//! # async fn run() -> anyhow::Result<()> {
+//! let client = MangaDexClient::default();
+//!
+//! let manga_id = Uuid::new_v4();
+//! let manga_res = client
+//!     .manga()
+//!     .id(manga_id)
+//!     .list()
+//!     .get()
+//!     .send()
+//!     .await?;
+//!
+//! println!("manga view: {:?}", manga_res);
+//! # Ok(())
+//! # }
+//! ```
 use derive_builder::Builder;
 use serde::Serialize;
 use uuid::Uuid;
@@ -15,7 +41,6 @@ use mangadex_api_schema::v5::CustomListListResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetMangaCustomLists {
@@ -40,7 +65,8 @@ pub struct GetMangaCustomLists {
 endpoint! {
     GET ("/manga/{}/list", manga_id),
     #[query] GetMangaCustomLists,
-    #[flatten_result] CustomListListResponse
+    #[flatten_result] CustomListListResponse,
+    GetMangaCustomListsBuilder
 }
 
 #[cfg(test)]
@@ -99,7 +125,6 @@ mod tests {
             .list()
             .get()
             .limit(1_u32)
-            .build()?
             .send()
             .await?;
 

@@ -1,6 +1,6 @@
 //! Builder for the manga feed endpoint to get a list of new chapters for a manga.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/get-manga-id-feed>
+//! <https://api.mangadex.org/docs/swagger.html#/Manga/get-manga-id-feed>
 //!
 //! # Examples
 //!
@@ -15,9 +15,9 @@
 //! let manga_id = Uuid::new_v4();
 //! let manga_res = client
 //!     .manga()
+//!     .id(manga_id)
 //!     .feed()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -46,7 +46,6 @@ use mangadex_api_types::{
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -109,7 +108,8 @@ pub struct GetMangaFeed {
 endpoint! {
     GET ("/manga/{}/feed", manga_id),
     #[query] GetMangaFeed,
-    ChapterListResponse
+    #[flatten_result] ChapterListResponse,
+    GetMangaFeedBuilder
 }
 
 #[cfg(test)]
@@ -186,7 +186,6 @@ mod tests {
             .feed()
             .get()
             .limit(1u32)
-            .build()?
             .send()
             .await?;
 

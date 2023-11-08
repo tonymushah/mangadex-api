@@ -7,27 +7,33 @@
 //! ```rust
 //! use uuid::Uuid;
 //!
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //! use mangadex_api::MangaDexClient;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let custom_list_id = Uuid::new_v4();
+//!
 //! let res = client
 //!     .user()
-//!     .is_following_custom_list()
-//!     .list_id(&custom_list_id)
-//!     .build()?
+//!     .follows()
+//!     .list()
+//!     .id(custom_list_id)
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -124,6 +130,11 @@ endpoint! {
     #[no_send] Result<IsFollowingResponse>
 }
 
+builder_send! {
+    #[builder] IsFollowingCustomListBuilder,
+    IsFollowingResponse
+}
+
 #[cfg(test)]
 mod tests {
     use mangadex_api_types::error::Error;
@@ -167,7 +178,6 @@ mod tests {
             .list()
             .id(list_id)
             .get()
-            .build()?
             .send()
             .await?;
 
@@ -207,7 +217,6 @@ mod tests {
             .list()
             .id(list_id)
             .get()
-            .build()?
             .send()
             .await?;
 
@@ -254,7 +263,6 @@ mod tests {
             .list()
             .id(list_id)
             .get()
-            .build()?
             .send()
             .await
             .unwrap_err();
