@@ -1,6 +1,6 @@
-//! Builder for the followed scanlation groups endpoint.
+//! Builder for the bookmarked scanlation groups endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Follows/get-user-follows-group>
+//! <https://api.mangadex.org/docs/swagger.html#/Follows/get-user-follows-group>
 //!
 //! # Examples
 //!
@@ -8,25 +8,31 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
+//!
 //!
 //! let res = client
 //!     .user()
-//!     .followed_groups()
+//!     .bookmarks()
+//!     .group()
+//!     .get()
 //!     .limit(1_u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -50,7 +56,6 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     default,
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
@@ -66,6 +71,7 @@ pub struct BookmarkedGroups {
     pub limit: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<u32>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
 }
@@ -73,7 +79,8 @@ pub struct BookmarkedGroups {
 endpoint! {
     GET "/user/bookmarks/group",
     #[query auth] BookmarkedGroups,
-    #[flatten_result] GroupListResponse
+    #[flatten_result] GroupListResponse,
+    BookmarkedGroupsBuilder
 }
 
 #[cfg(test)]
@@ -154,7 +161,6 @@ mod tests {
             .group()
             .get()
             .limit(1_u32)
-            .build()?
             .send()
             .await?;
 
