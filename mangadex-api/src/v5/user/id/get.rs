@@ -1,6 +1,6 @@
 //! Builder for the user view endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/User/get-user-id>
+//! <https://api.mangadex.org/docs/swagger.html#/User/get-user-id>
 //!
 //! # Examples
 //!
@@ -13,21 +13,12 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
-//!
 //! let user_id = Uuid::new_v4();
+//!
 //! let user_res = client
 //!     .user()
+//!     .id(user_id)
 //!     .get()
-//!     .user_id(&user_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -51,7 +42,6 @@ use mangadex_api_schema::v5::UserResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetUser {
@@ -69,7 +59,8 @@ pub struct GetUser {
 endpoint! {
     GET ("/user/{}", user_id),
     #[query] GetUser,
-    #[flatten_result] UserResponse
+    #[flatten_result] UserResponse,
+    GetUserBuilder
 }
 
 #[cfg(test)]
@@ -122,13 +113,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client
-            .user()
-            .id(user_id)
-            .get()
-            .build()?
-            .send()
-            .await?;
+        let _ = mangadex_client.user().id(user_id).get().send().await?;
 
         Ok(())
     }
