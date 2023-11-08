@@ -20,7 +20,7 @@ impl IdEndpoint {
     }
     pub fn get(&self) -> GetChapterStatisticsBuilder {
         GetChapterStatisticsBuilder::default()
-            .http_client(self.http_client.clone())
             .chapter_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

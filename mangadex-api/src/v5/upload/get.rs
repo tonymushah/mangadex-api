@@ -1,6 +1,6 @@
 //! Builder for getting the current user's upload session endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Upload/get-upload-session>
+//! <https://api.mangadex.org/docs/swagger.html#/Upload/get-upload-session>
 //!
 //! # Examples
 //!
@@ -8,24 +8,27 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let res = client
 //!     .upload()
-//!     .get_session()
-//!     .build()?
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -48,7 +51,6 @@ use crate::HttpClientRef;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 pub struct GetUploadSession {
@@ -63,7 +65,8 @@ pub struct GetUploadSession {
 endpoint! {
     GET "/upload",
     #[no_data auth] GetUploadSession,
-    #[rate_limited] UploadSessionData
+    #[rate_limited] UploadSessionData,
+    GetUploadSessionBuilder
 }
 
 #[cfg(test)]
@@ -123,7 +126,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let _ = mangadex_client.upload().get().build()?.send().await?;
+        let _ = mangadex_client.upload().get().send().await?;
 
         Ok(())
     }

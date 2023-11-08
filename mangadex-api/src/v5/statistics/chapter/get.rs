@@ -1,8 +1,8 @@
-//! Builder for finding Manga statistics.
+//! Builder for finding Chapter statistics.
 //!
-//! <https://api.mangadex.org/swagger.html#/Statistics/get-statistics-manga>
+//! <https://api.mangadex.org/docs/swagger.html#/Statistics/get-statistics-chapters>
 //!
-//! This allows querying for multiple Manga.
+//! This allows querying for multiple Chapter.
 //!
 //! # Examples
 //!
@@ -14,18 +14,18 @@
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! // Official Test Manga ID.
-//! let manga_id = Uuid::parse_str("f9c33607-9180-4ba6-b85c-e4b5faee7192")?;
+//! // Cool Tsuma no Saa-chan chapter 25
+//! let chapter_id = Uuid::parse_str("1c3a8585-8df6-46d1-af98-fa777666abf2")?;
 //!
-//! let manga_stats = client
+//! let chapter_stats = client
 //!     .statistics()
-//!     .find_manga()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .chapter()
+//!     .get()
+//!     .chapter_id(chapter_id)
 //!     .send()
 //!     .await?;
 //!
-//! println!("Response: {:?}", manga_stats);
+//! println!("Response: {:?}", chapter_stats);
 //! # Ok(())
 //! # }
 //! ```
@@ -46,8 +46,7 @@ use mangadex_api_schema::v5::ChapterStatisticsResponse;
 #[builder(
     setter(into, strip_option),
     build_fn(error = "mangadex_api_types::error::BuilderError"),
-    default,
-    pattern = "owned"
+    default
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct FindChapterStatistics {
@@ -66,7 +65,8 @@ endpoint! {
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is
     // available to guests.
     #[query] FindChapterStatistics,
-    #[flatten_result] ChapterStatisticsResponse
+    #[flatten_result] ChapterStatisticsResponse,
+    FindChapterStatisticsBuilder
 }
 
 #[cfg(test)]
@@ -116,7 +116,6 @@ mod tests {
             .chapter()
             .get()
             .chapter_id(&manga_id)
-            .build()?
             .send()
             .await?;
         let ctt = res.statistics.get(&manga_id).ok_or(std::io::Error::new(

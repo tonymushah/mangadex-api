@@ -1,6 +1,6 @@
 //! Upload endpoint handler.
 //!
-//! <https://api.mangadex.org/swagger.html#/Upload>
+//! <https://api.mangadex.org/docs/swagger.html#/Upload>
 
 use uuid::Uuid;
 

@@ -1,8 +1,9 @@
 use crate::HttpClientRef;
 
+pub mod get;
+
 use self::get::GetMangaStatisticsBuilder;
 use uuid::Uuid;
-pub mod get;
 
 /// Statistics endpoint handler builder.
 #[derive(Clone, Debug)]
@@ -18,7 +19,7 @@ impl IdEndpoint {
     }
     pub fn get(&self) -> GetMangaStatisticsBuilder {
         GetMangaStatisticsBuilder::default()
-            .http_client(self.http_client.clone())
             .manga_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

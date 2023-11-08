@@ -1,33 +1,37 @@
 //! Builder for starting an edit chapter session.
 //!
-//! <https://api.mangadex.org/swagger.html#/Upload/begin-edit-session>
+//! <https://api.mangadex.org/docs/swagger.html#/Upload/begin-edit-session>
 //!
 //! ```rust
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //! use mangadex_api_types::Language;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let chapter_id = Uuid::new_v4();
 //! let res = client
 //!     .upload()
-//!     .start_edit_chapter_session()
-//!     .chapter_id(&chapter_id)
+//!     .begin()
+//!     .chapter_id(chapter_id)
+//!     .post()
 //!     .version(2_u32)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -75,7 +79,8 @@ pub struct StartEditChapterSession {
 endpoint! {
     POST ("/upload/begin/{}", chapter_id),
     #[body auth] StartEditChapterSession,
-    #[rate_limited] UploadSessionData
+    #[rate_limited] UploadSessionData,
+    StartEditChapterSessionBuilder
 }
 
 #[cfg(test)]
@@ -151,7 +156,6 @@ mod tests {
             .chapter_id(chapter_id)
             .post()
             .version(2_u32)
-            .build()?
             .send()
             .await?;
 

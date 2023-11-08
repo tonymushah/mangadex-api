@@ -1,6 +1,6 @@
 //! Builder for getting a given Manga's statistics.
 //!
-//! <https://api.mangadex.org/swagger.html#/Statistics/get-statistics-manga-uuid>
+//! <https://api.mangadex.org/docs/swagger.html#/Statistics/get-statistics-manga-uuid>
 //!
 //! This only gets statistics for a single Manga.
 //!
@@ -19,9 +19,9 @@
 //!
 //! let manga_stats = client
 //!     .statistics()
-//!     .get_manga()
-//!     .manga_id(&manga_id)
-//!     .build()?
+//!     .manga()
+//!     .id(manga_id)
+//!     .get()
 //!     .send()
 //!     .await?;
 //!
@@ -45,7 +45,6 @@ use mangadex_api_schema::v5::MangaStatisticsResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -64,7 +63,8 @@ endpoint! {
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is
     // available to guests.
     #[no_data] GetMangaStatistics,
-    #[flatten_result] MangaStatisticsResponse
+    #[flatten_result] MangaStatisticsResponse,
+    GetMangaStatisticsBuilder
 }
 
 #[cfg(test)]
@@ -123,7 +123,6 @@ mod tests {
             .manga()
             .id(manga_id)
             .get()
-            .build()?
             .send()
             .await?;
 
