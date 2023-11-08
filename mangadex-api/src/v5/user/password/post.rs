@@ -1,31 +1,35 @@
 //! Builder for updating a user password endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/User/post-user-password>
+//! <https://api.mangadex.org/docs/swagger.html#/User/post-user-password>
 //!
 //! # Examples
 //!
 //! ```rust
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //! use mangadex_api::v5::MangaDexClient;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!   */
 //!
 //! let res = client
 //!     .user()
-//!     .update_password()
+//!     .password()
+//!     .post()
 //!     .old_password(&Password::parse("hunter23")?)
 //!     .new_password(&Password::parse("32retnuh")?)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -70,7 +74,8 @@ pub struct UpdateUserPassword {
 endpoint! {
     POST "/user/password",
     #[body auth] UpdateUserPassword,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    UpdateUserPasswordBuilder
 }
 
 #[cfg(test)]
@@ -125,7 +130,6 @@ mod tests {
             .post()
             .old_password(MdPassword::parse(&old_password)?)
             .new_password(MdPassword::parse(&new_password)?)
-            .build()?
             .send()
             .await?;
 
