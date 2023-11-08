@@ -1,6 +1,6 @@
 //! Builder for the user delete endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/User/delete-user-id>
+//! <https://api.mangadex.org/docs/swagger.html#/User/delete-user-id>
 //!
 //! # Examples
 //!
@@ -8,26 +8,29 @@
 //! use uuid::Uuid;
 //!
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_types::{Password, Username};
+//! // use mangadex_api_types::{Password, Username};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let client = MangaDexClient::default();
 //!
-//! let _login_res = client
-//!     .auth()
-//!     .login()
-//!     .username(Username::parse("myusername")?)
-//!     .password(Password::parse("hunter23")?)
-//!     .build()?
-//!     .send()
-//!     .await?;
+//! /*
+//!
+//!     let _login_res = client
+//!         .auth()
+//!         .login()
+//!         .post()
+//!         .username(Username::parse("myusername")?)
+//!         .password(Password::parse("hunter23")?)
+//!         .send()
+//!         .await?;
+//!
+//!  */
 //!
 //! let user_id = Uuid::new_v4();
 //! let res = client
 //!     .user()
+//!     .id(user_id)
 //!     .delete()
-//!     .user_id(&user_id)
-//!     .build()?
 //!     .send()
 //!     .await?;
 //!
@@ -52,7 +55,6 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    pattern = "owned",
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
@@ -72,7 +74,8 @@ pub struct DeleteUser {
 endpoint! {
     DELETE ("/user/{}", user_id),
     #[no_data auth] DeleteUser,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    DeleteUserBuilder
 }
 
 #[cfg(test)]
@@ -111,13 +114,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        mangadex_client
-            .user()
-            .id(user_id)
-            .delete()
-            .build()?
-            .send()
-            .await?;
+        mangadex_client.user().id(user_id).delete().send().await?;
 
         Ok(())
     }
