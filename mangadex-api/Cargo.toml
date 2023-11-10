@@ -154,3 +154,7 @@ non_exhaustive = ["mangadex-api-schema/non_exhaustive", "mangadex-api-types/non_
 deserializable-endpoint = ["dep:getset"]
 serialize = ["mangadex-api-schema/serialize"]
 oauth = []
+
+[[example]]
+name = "oauth_manga_feed"
+required-features = ["oauth"]
