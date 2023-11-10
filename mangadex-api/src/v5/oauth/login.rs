@@ -9,15 +9,15 @@
 //! ```rust
 //! use mangadex_api_types::{Password, Username};
 //! use mangadex_api::v5::MangaDexClient;
-//! use mangadex_api_schema::oauth::ClientInfo;
+//! use mangadex_api_schema::v5::oauth::ClientInfo;
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //!
 //! let mut client = MangaDexClient::default();
 //!
-//! client.set_client_info(ClientInfo {
-//!     client_id: "someClientId",
-//!     client_secret: "someClientSecret"
+//! client.set_client_info(&ClientInfo {
+//!     client_id: "someClientId".to_string(),
+//!     client_secret: "someClientSecret".to_string()
 //! }).await?;
 //!
 //! let login_res = client
@@ -116,7 +116,8 @@ impl RetriveTokens {
                 .client
                 .request(
                     Method::POST,
-                    client.base_url
+                    client
+                        .base_url
                         .join("/realms/mangadex/protocol/openid-connect/token")?,
                 )
                 .form(&params)
@@ -226,7 +227,7 @@ mod tests {
 
         Mock::given(method("POST"))
             .and(path(r"/realms/mangadex/protocol/openid-connect/token"))
-            .and(header("Content-Type", "application/json"))
+            .and(header("Content-Type", "application/x-www-form-urlencoded"))
             .and(body_string(expected_body))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
