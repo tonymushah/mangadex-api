@@ -5,7 +5,6 @@ use std::{
 
 use derive_builder::UninitializedFieldError;
 use schema::MangaDexErrorResponse;
-
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 #[derive(Debug, thiserror::Error)]
@@ -31,6 +30,12 @@ pub enum Error {
 
     #[error("missing auth tokens; please log in to MangaDex")]
     MissingTokens,
+
+    #[error("missing client info; please insert the client_id and client_secret")]
+    MissingClientInfo,
+
+    #[error("missing captcha; please insert it or solve a captcha")]
+    MissingCaptcha,
 
     #[error("not a valid username: {0}")]
     UsernameError(String),
@@ -109,12 +114,25 @@ impl serde::Serialize for Error {
             Error::RateLimitParseError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::RateLimitExcedeed => serializer.serialize_str("Rate Limit Excedeed"),
             Error::ForumThreadTypeParseError(e) => serializer.serialize_str(e.to_string().as_str()),
+            Error::MissingClientInfo => serializer.serialize_str(
+                "missing client info; please insert the client_id and client_secret",
+            ),
+            Error::MissingCaptcha => {
+                serializer.serialize_str("missing captcha; please insert it or solve a captcha")
+            }
         }
     }
 }
 
 #[cfg(feature = "specta")]
-impl specta::Type for Error {}
+impl specta::Type for Error {
+    fn inline(
+        _opts: specta::DefOpts,
+        _generics: &[specta::DataType],
+    ) -> std::result::Result<specta::DataType, specta::ExportError> {
+        Ok(specta::DataType::Primitive(specta::PrimitiveType::String))
+    }
+}
 
 pub mod schema {
     use std::collections::HashMap;

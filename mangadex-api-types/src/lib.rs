@@ -12,6 +12,7 @@ pub mod manga_link;
 pub mod manga_state;
 pub mod mangadex_datetime;
 pub mod mangadex_duration;
+pub mod oauth;
 pub mod order_direction;
 pub mod password;
 pub mod rate_limit;

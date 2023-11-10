@@ -93,7 +93,7 @@ required-features = ["serialize"]
 
 
 [features]
-non_exhaustive = []
+non_exhaustive = ["specta"]
 specta = ["dep:specta", "mangadex-api-types/specta"]
 serialize = []
 default = ["non_exhaustive"]
