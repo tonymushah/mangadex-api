@@ -157,4 +157,4 @@ oauth = []
 
 [[example]]
 name = "oauth_manga_feed"
-required-features = ["oauth"]
+required-features = ["oauth", "serialize"]
