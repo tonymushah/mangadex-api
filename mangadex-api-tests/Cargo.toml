@@ -9,7 +9,7 @@ edition = "2021"
 mangadex-api = { path = "../mangadex-api" }
 mangadex-api-types-rust = { path = "../mangadex-api-types" }
 mangadex-api-schema-rust = { path = "../mangadex-api-schema" }
-tokio = { version = "1.33", features = ["full"] }
+tokio = { version = "1.34", features = ["full"] }
 anyhow = { version = "1" }
 reqwest = "0.11"
 uuid = "1"
