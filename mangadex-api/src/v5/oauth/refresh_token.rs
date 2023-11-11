@@ -32,7 +32,7 @@
 //!
 //! println!("login: {:?}", login_res);
 //!
-//! // Wait until the access token will expire
+//! // Wait until the access token expires
 //! tokio::time::sleep(tokio::time::Duration::from_secs(<usize as TryInto<u64>>::try_into(login_res.expires_in)?)).await;
 //!
 //! let refresh_res = client
