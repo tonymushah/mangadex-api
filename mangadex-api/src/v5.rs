@@ -180,8 +180,7 @@ impl MangaDexClient {
         self.http_client.clone()
     }
 
-    pub async fn set_auth_tokens<A: Into<AuthTokens>>(&mut self, auth_tokens: A) -> Result<()> {
-        let auth_tokens: AuthTokens = auth_tokens.into();
+    pub async fn set_auth_tokens(&mut self, auth_tokens: &AuthTokens) -> Result<()> {
         let client = {
             #[cfg(all(
                 not(feature = "multi-thread"),
@@ -200,7 +199,7 @@ impl MangaDexClient {
                 &mut self.http_client.write().await
             }
         };
-        client.set_auth_tokens(&auth_tokens);
+        client.set_auth_tokens(auth_tokens);
         Ok(())
     }
     pub async fn clear_auth_tokens(&mut self) -> Result<()> {
