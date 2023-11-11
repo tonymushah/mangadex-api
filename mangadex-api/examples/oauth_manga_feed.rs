@@ -1,9 +1,9 @@
-use std::env::{var, VarError};
+use std::env::{set_var, var, VarError};
 
 use clap::Parser;
 
 use mangadex_api::MangaDexClient;
-use mangadex_api_schema::v5::oauth::ClientInfo;
+use mangadex_api_schema::v5::{oauth::ClientInfo, AuthTokens};
 use mangadex_api_types::{
     Language, MangaFeedSortOrder, Password, ReferenceExpansionResource, Username,
 };
@@ -11,6 +11,8 @@ use mangadex_api_types::{
 pub type VarResult<T, E = std::io::Error> = Result<T, E>;
 
 const CLIENT_ID: &str = "CLIENT_ID";
+
+const REFRESH_TOKEN: &str = "REFRESH_TOKEN";
 
 const CLIENT_SECRET: &str = "CLIENT_SECRET";
 
@@ -82,6 +84,16 @@ fn get_client_info_from_var() -> VarResult<ClientInfo> {
     })
 }
 
+fn get_refresh_token_from_var() -> VarResult<String> {
+    var(REFRESH_TOKEN).map_err(|e| match e {
+        VarError::NotPresent => std::io::Error::new(std::io::ErrorKind::NotFound, REFRESH_TOKEN),
+        VarError::NotUnicode(e) => std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            e.to_str().unwrap_or_default().to_string(),
+        ),
+    })
+}
+
 #[derive(Parser)]
 #[clap(name = "MangaDex User Feed", about = "Fetch the user chapter feed")]
 struct Args {
@@ -94,6 +106,9 @@ struct Args {
     /// Set the maximum number of results to return.
     #[clap(short, long, default_value = "10")]
     limit: u32,
+    // use the refresh token
+    #[clap(long)]
+    refresh_token: bool,
 }
 
 impl Args {
@@ -102,15 +117,15 @@ impl Args {
     }
 }
 
-async fn run(arg: Args) -> anyhow::Result<()> {
+async fn init_client() -> anyhow::Result<MangaDexClient> {
     let client_info = get_client_info_from_var()?;
-    //println!("client_info: {:?}", client_info);
-    let user_info: UserInfos = TryFrom::try_from(PreUserInfos::new()?)?;
-    //println!("user_info : {:?}", user_info);
-
     let mut client = MangaDexClient::default();
     client.set_client_info(&client_info).await?;
+    Ok(client)
+}
 
+async fn login(client: &MangaDexClient) -> anyhow::Result<()> {
+    let user_info: UserInfos = TryFrom::try_from(PreUserInfos::new()?)?;
     println!("Fetching your access token");
     let oauth_res = client
         .oauth()
@@ -123,7 +138,30 @@ async fn run(arg: Args) -> anyhow::Result<()> {
         "Your token will expire in {} minutes",
         (oauth_res.expires_in / 60)
     );
+    set_var(REFRESH_TOKEN, oauth_res.refresh_token);
+    println!("Your refresh token is now settled to the environment variable");
+    Ok(())
+}
 
+async fn refresh_token(client: &mut MangaDexClient, refresh_token: String) -> anyhow::Result<()> {
+    println!("Fetching your access token");
+    client
+        .set_auth_tokens(&AuthTokens {
+            session: Default::default(),
+            refresh: refresh_token,
+        })
+        .await?;
+    let oauth_res = client.oauth().refresh().send().await?;
+    println!(
+        "Your token will expire in {} minutes",
+        (oauth_res.expires_in / 60)
+    );
+    set_var(REFRESH_TOKEN, oauth_res.refresh_token);
+    println!("Your refresh token is now settled to the environment variable");
+    Ok(())
+}
+
+async fn fetching_manga_feed(arg: &Args, client: &MangaDexClient) -> anyhow::Result<()> {
     println!("Fetching your manga feed");
 
     let feed = client
@@ -134,7 +172,7 @@ async fn run(arg: Args) -> anyhow::Result<()> {
         .get()
         .limit(arg.limit)
         .offset(arg.offset())
-        .translated_language(arg.languages)
+        .translated_language(arg.languages.to_owned())
         .order(MangaFeedSortOrder::ReadableAt(
             mangadex_api_types::OrderDirection::Descending,
         ))
@@ -144,6 +182,37 @@ async fn run(arg: Args) -> anyhow::Result<()> {
     println!("Fetched");
     println!("{}", serde_json::to_string_pretty(&feed)?);
     Ok(())
+}
+
+async fn show_user_name(client: &MangaDexClient) -> anyhow::Result<()> {
+    let user_info = client.user().me().get().send().await?;
+    println!(
+        "Welcome User {}/{}!",
+        user_info.data.attributes.username, user_info.data.id
+    );
+    Ok(())
+}
+
+async fn run(arg: Args) -> anyhow::Result<()> {
+    let mut client = init_client().await?;
+    //println!("client_info: {:?}", client_info);
+
+    //println!("user_info : {:?}", user_info);
+    if arg.refresh_token {
+        if let Ok(refresh) = get_refresh_token_from_var() {
+            refresh_token(&mut client, refresh).await?;
+        } else {
+            println!("{} Not found", REFRESH_TOKEN);
+            println!("using login");
+            login(&client).await?;
+        }
+    } else {
+        login(&client).await?;
+    }
+
+    show_user_name(&client).await?;
+
+    fetching_manga_feed(&arg, &client).await
 }
 
 #[tokio::main]
