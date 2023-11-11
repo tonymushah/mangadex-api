@@ -20,6 +20,7 @@ use std::sync::Arc;
 use derive_builder::Builder;
 #[cfg(all(feature = "multi-thread", not(feature = "tokio-multi-thread")))]
 use futures::lock::Mutex;
+use mangadex_api_schema::v5::oauth::ClientInfo;
 use mangadex_api_schema::{ApiResult, Endpoint, FromResponse, Limited, UrlSerdeQS};
 use mangadex_api_types::error::Error;
 use reqwest::{Client, Response};
@@ -51,6 +52,7 @@ pub type HttpClientRef = Arc<RwLock<HttpClient>>;
     default,
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
+#[cfg(not(feature = "oauth"))]
 pub struct HttpClient {
     pub client: Client,
     pub base_url: Url,
@@ -58,10 +60,39 @@ pub struct HttpClient {
     captcha: Option<String>,
 }
 
+#[derive(Debug, Builder, Clone)]
+#[builder(
+    setter(into, strip_option),
+    default,
+    build_fn(error = "mangadex_api_types::error::BuilderError")
+)]
+#[cfg(feature = "oauth")]
+pub struct HttpClient {
+    pub client: Client,
+    pub base_url: Url,
+    auth_tokens: Option<AuthTokens>,
+    captcha: Option<String>,
+    client_info: Option<ClientInfo>,
+}
+
+#[cfg(feature = "oauth")]
 impl Default for HttpClient {
     fn default() -> Self {
         Self {
-            client: Client::new(),
+            client: crate::get_default_client_api(),
+            base_url: Url::parse(API_URL).expect("error parsing the base url"),
+            auth_tokens: None,
+            captcha: None,
+            client_info: None,
+        }
+    }
+}
+
+#[cfg(not(feature = "oauth"))]
+impl Default for HttpClient {
+    fn default() -> Self {
+        Self {
+            client: crate::get_default_client_api(),
             base_url: Url::parse(API_URL).expect("error parsing the base url"),
             auth_tokens: None,
             captcha: None,
@@ -74,6 +105,7 @@ impl HttpClient {
     pub fn new(client: Client) -> Self {
         Self {
             client,
+            base_url: Url::parse(API_URL).expect("error parsing the base url"),
             ..Default::default()
         }
     }
@@ -98,6 +130,9 @@ impl HttpClient {
     /// ```
     pub fn builder() -> HttpClientBuilder {
         HttpClientBuilder::default()
+            .client(crate::get_default_client_api())
+            .base_url(Url::parse(API_URL).expect("error parsing the base url"))
+            .clone()
     }
 
     /// Send the request to the endpoint but don't deserialize the response.
@@ -155,7 +190,10 @@ impl HttpClient {
             .await
     }
 
-    async fn send_request_with_checks<E>(&self, endpoint: &E) -> Result<reqwest::Response>
+    pub(crate) async fn send_request_with_checks<E>(
+        &self,
+        endpoint: &E,
+    ) -> Result<reqwest::Response>
     where
         E: Endpoint,
     {
@@ -173,7 +211,7 @@ impl HttpClient {
         Ok(res)
     }
 
-    async fn handle_result<T>(&self, res: Response) -> Result<T>
+    pub(crate) async fn handle_result<T>(&self, res: Response) -> Result<T>
     where
         T: DeserializeOwned,
     {
@@ -285,13 +323,40 @@ impl HttpClient {
     pub fn clear_captcha(&mut self) {
         self.captcha = None;
     }
+
+    #[cfg(feature = "oauth")]
+    pub fn set_client_info(&mut self, client_info: &ClientInfo) {
+        self.client_info = Some(client_info.clone());
+    }
+
+    #[cfg(feature = "oauth")]
+    pub fn get_client_info(&self) -> Option<&ClientInfo> {
+        self.client_info.as_ref()
+    }
+
+    #[cfg(feature = "oauth")]
+    pub fn clear_client_info(&mut self) {
+        self.client_info = None;
+    }
+
     /// Create a new client of api.mangadex.dev
+    #[cfg(not(feature = "oauth"))]
     pub fn api_dev_client() -> Self {
         Self {
             client: Client::new(),
             base_url: Url::parse(API_DEV_URL).expect("error parsing the base url"),
             auth_tokens: None,
             captcha: None,
+        }
+    }
+    #[cfg(feature = "oauth")]
+    pub fn api_dev_client() -> Self {
+        Self {
+            client: Client::new(),
+            base_url: Url::parse(API_DEV_URL).expect("error parsing the base url"),
+            auth_tokens: None,
+            captcha: None,
+            client_info: None,
         }
     }
 }

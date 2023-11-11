@@ -12,6 +12,8 @@ pub mod feed;
 pub mod forums;
 pub mod legacy;
 pub mod manga;
+#[cfg(feature = "oauth")]
+pub mod oauth;
 pub mod ping;
 pub mod rating;
 pub mod report;
@@ -25,10 +27,10 @@ pub mod user;
 #[cfg(all(feature = "multi-thread", not(feature = "tokio-multi-thread")))]
 use futures::lock::Mutex;
 pub use mangadex_api_schema::v5 as schema;
+use mangadex_api_schema::v5::oauth::ClientInfo;
 pub(crate) use mangadex_api_schema::v5::AuthTokens;
-use reqwest::header::HeaderMap;
-use reqwest::header::HeaderValue;
-use reqwest::header::USER_AGENT;
+use mangadex_api_types::error::Result;
+
 use reqwest::Client;
 #[cfg(all(
     not(feature = "multi-thread"),
@@ -53,14 +55,13 @@ use tokio::sync::Mutex;
 #[cfg(feature = "rw-multi-thread")]
 use tokio::sync::RwLock;
 
+#[cfg(feature = "utils")]
+use crate::utils::download::DownloadBuilder;
 #[cfg(feature = "legacy-account")]
 use crate::v5::account::AccountBuilder;
-
-use crate::v5::at_home::AtHomeBuilder;
-
-use crate::v5::auth::AuthBuilder;
-
 use crate::v5::api_client::ApiClientEndpoint;
+use crate::v5::at_home::AtHomeBuilder;
+use crate::v5::auth::AuthBuilder;
 use crate::v5::author::AuthorBuilder;
 use crate::v5::captcha::CaptchaBuilder;
 use crate::v5::chapter::ChapterBuilder;
@@ -70,6 +71,8 @@ use crate::v5::feed::FeedBuilder;
 use crate::v5::forums::ForumsEndpoint;
 use crate::v5::legacy::LegacyBuilder;
 use crate::v5::manga::MangaBuilder;
+#[cfg(feature = "oauth")]
+use crate::v5::oauth::OAuthBuider;
 use crate::v5::ping::PingEndpointBuilder;
 use crate::v5::rating::RatingBuilder;
 use crate::v5::report::ReportBuilder;
@@ -81,9 +84,6 @@ use crate::v5::upload::UploadBuilder;
 use crate::v5::user::UserBuilder;
 use crate::HttpClient;
 use crate::HttpClientRef;
-
-#[cfg(feature = "utils")]
-use crate::utils::download::DownloadBuilder;
 
 /// API client to make requests to the MangaDex v5 API.
 #[derive(Clone, Debug)]
@@ -107,16 +107,7 @@ impl Default for MangaDexClient {
     /// # }
     /// ```
     fn default() -> Self {
-        let mut headers = HeaderMap::new();
-        headers.append(
-            USER_AGENT,
-            HeaderValue::from_static("mangadex-api-rs 3.0.0-alpha.1"),
-        );
-        Self {
-            http_client: create_ref_counted_http_client(HttpClient::new(
-                Client::builder().default_headers(headers).build().unwrap(),
-            )),
-        }
+        Self::new_with_http_client(HttpClient::default())
     }
 }
 
@@ -187,6 +178,216 @@ impl MangaDexClient {
     /// Using this is generally not advised as it can provide mutable access to the [`HttpClient`](crate::HttpClient).
     pub fn get_http_client(&self) -> HttpClientRef {
         self.http_client.clone()
+    }
+
+    pub async fn set_auth_tokens(&mut self, auth_tokens: &AuthTokens) -> Result<()> {
+        let client = {
+            #[cfg(all(
+                not(feature = "multi-thread"),
+                not(feature = "tokio-multi-thread"),
+                not(feature = "rw-multi-thread")
+            ))]
+            {
+                &mut self.http_client.try_borrow_mut()?
+            }
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+            {
+                &mut self.http_client.lock().await
+            }
+            #[cfg(feature = "rw-multi-thread")]
+            {
+                &mut self.http_client.write().await
+            }
+        };
+        client.set_auth_tokens(auth_tokens);
+        Ok(())
+    }
+    pub async fn clear_auth_tokens(&mut self) -> Result<()> {
+        let client = {
+            #[cfg(all(
+                not(feature = "multi-thread"),
+                not(feature = "tokio-multi-thread"),
+                not(feature = "rw-multi-thread")
+            ))]
+            {
+                &mut self.http_client.try_borrow_mut()?
+            }
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+            {
+                &mut self.http_client.lock().await
+            }
+            #[cfg(feature = "rw-multi-thread")]
+            {
+                &mut self.http_client.write().await
+            }
+        };
+        client.clear_auth_tokens();
+        Ok(())
+    }
+    pub async fn get_auth_tokens(&self) -> Result<AuthTokens> {
+        let client = {
+            #[cfg(all(
+                not(feature = "multi-thread"),
+                not(feature = "tokio-multi-thread"),
+                not(feature = "rw-multi-thread")
+            ))]
+            {
+                &self.http_client.try_borrow()?
+            }
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+            {
+                &self.http_client.lock().await
+            }
+            #[cfg(feature = "rw-multi-thread")]
+            {
+                &self.http_client.read().await
+            }
+        };
+        client
+            .get_tokens()
+            .cloned()
+            .ok_or(mangadex_api_types::error::Error::MissingTokens)
+    }
+
+    pub async fn set_captcha<A: Into<String>>(&mut self, captcha: A) -> Result<()> {
+        let client = {
+            #[cfg(all(
+                not(feature = "multi-thread"),
+                not(feature = "tokio-multi-thread"),
+                not(feature = "rw-multi-thread")
+            ))]
+            {
+                &mut self.http_client.try_borrow_mut()?
+            }
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+            {
+                &mut self.http_client.lock().await
+            }
+            #[cfg(feature = "rw-multi-thread")]
+            {
+                &mut self.http_client.write().await
+            }
+        };
+        client.set_captcha(captcha);
+        Ok(())
+    }
+    pub async fn get_captcha(&self) -> Result<String> {
+        let client = {
+            #[cfg(all(
+                not(feature = "multi-thread"),
+                not(feature = "tokio-multi-thread"),
+                not(feature = "rw-multi-thread")
+            ))]
+            {
+                &self.http_client.try_borrow()?
+            }
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+            {
+                &self.http_client.lock().await
+            }
+            #[cfg(feature = "rw-multi-thread")]
+            {
+                &self.http_client.read().await
+            }
+        };
+        client
+            .get_captcha()
+            .cloned()
+            .ok_or(mangadex_api_types::error::Error::MissingCaptcha)
+    }
+    pub async fn clear_captcha(&mut self) -> Result<()> {
+        let client = {
+            #[cfg(all(
+                not(feature = "multi-thread"),
+                not(feature = "tokio-multi-thread"),
+                not(feature = "rw-multi-thread")
+            ))]
+            {
+                &mut self.http_client.try_borrow_mut()?
+            }
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+            {
+                &mut self.http_client.lock().await
+            }
+            #[cfg(feature = "rw-multi-thread")]
+            {
+                &mut self.http_client.write().await
+            }
+        };
+        client.clear_captcha();
+        Ok(())
+    }
+
+    #[cfg(feature = "oauth")]
+    pub async fn set_client_info(&mut self, client_info: &ClientInfo) -> Result<()> {
+        let client = {
+            #[cfg(all(
+                not(feature = "multi-thread"),
+                not(feature = "tokio-multi-thread"),
+                not(feature = "rw-multi-thread")
+            ))]
+            {
+                &mut self.http_client.try_borrow_mut()?
+            }
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+            {
+                &mut self.http_client.lock().await
+            }
+            #[cfg(feature = "rw-multi-thread")]
+            {
+                &mut self.http_client.write().await
+            }
+        };
+        client.set_client_info(&client_info);
+        Ok(())
+    }
+    #[cfg(feature = "oauth")]
+    pub async fn clear_client_info(&mut self) -> Result<()> {
+        let client = {
+            #[cfg(all(
+                not(feature = "multi-thread"),
+                not(feature = "tokio-multi-thread"),
+                not(feature = "rw-multi-thread")
+            ))]
+            {
+                &mut self.http_client.try_borrow_mut()?
+            }
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+            {
+                &mut self.http_client.lock().await
+            }
+            #[cfg(feature = "rw-multi-thread")]
+            {
+                &mut self.http_client.write().await
+            }
+        };
+        client.clear_client_info();
+        Ok(())
+    }
+    #[cfg(feature = "oauth")]
+    pub async fn get_client_info(&self) -> Result<ClientInfo> {
+        let client = {
+            #[cfg(all(
+                not(feature = "multi-thread"),
+                not(feature = "tokio-multi-thread"),
+                not(feature = "rw-multi-thread")
+            ))]
+            {
+                &self.http_client.try_borrow()?
+            }
+            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+            {
+                &self.http_client.lock().await
+            }
+            #[cfg(feature = "rw-multi-thread")]
+            {
+                &self.http_client.read().await
+            }
+        };
+        client
+            .get_client_info()
+            .cloned()
+            .ok_or(mangadex_api_types::error::Error::MissingClientInfo)
     }
 
     /// Get a builder for handling the account endpoints.
@@ -347,8 +548,14 @@ impl MangaDexClient {
     pub fn download(&self) -> DownloadBuilder {
         DownloadBuilder::new(self.http_client.clone())
     }
+
     pub fn forums(&self) -> ForumsEndpoint {
         ForumsEndpoint::new(self.http_client.clone())
+    }
+
+    #[cfg(feature = "oauth")]
+    pub fn oauth(&self) -> OAuthBuider {
+        OAuthBuider::new(self.http_client.clone())
     }
 }
 

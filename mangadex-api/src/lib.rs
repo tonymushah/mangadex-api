@@ -15,4 +15,17 @@ pub mod utils;
 
 pub use constants::*;
 pub use http_client::{HttpClient, HttpClientRef};
+use reqwest::{
+    header::{HeaderMap, HeaderValue, USER_AGENT},
+    Client,
+};
 pub use v5::MangaDexClient;
+
+pub(crate) fn get_default_client_api() -> Client {
+    let mut headers = HeaderMap::new();
+    headers.append(
+        USER_AGENT,
+        HeaderValue::from_static("mangadex-api-rs 3.0.0-alpha.1"),
+    );
+    Client::builder().default_headers(headers).build().unwrap()
+}

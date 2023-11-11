@@ -20,6 +20,7 @@ pub mod manga_read_markers;
 pub mod manga_reading_status;
 pub mod manga_reading_statuses;
 pub mod manga_relation;
+pub mod oauth;
 pub mod ratings;
 pub mod refresh_token_response;
 pub mod report;

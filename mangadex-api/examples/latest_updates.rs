@@ -82,7 +82,6 @@ async fn run(args: Args) -> anyhow::Result<()> {
         .limit(args.limit)
         .translated_languages(args.languages)
         .order(ChapterSortOrder::PublishAt(OrderDirection::Descending))
-        .build()?
         .send()
         .await?;
 
@@ -110,7 +109,6 @@ async fn run(args: Args) -> anyhow::Result<()> {
         .include(&ReferenceExpansionResource::CoverArt)
         .limit(manga_ids.len() as u32)
         .manga_ids(manga_ids)
-        .build()?
         .send()
         .await?;
 

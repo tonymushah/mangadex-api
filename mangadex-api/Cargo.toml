@@ -99,6 +99,9 @@ optional = true
 [dev-dependencies.anyhow]
 version = "1.0.75"
 
+[dev-dependencies.serde_urlencoded]
+version = "0.7"
+
 [dev-dependencies.clap]
 version = "4.4.8"
 features = ["derive"]
@@ -140,7 +143,7 @@ optional = true
 version = "0.5.21"
 
 [features]
-default = ["legacy-account", "utils"]
+default = ["oauth", "serialize"]
 multi-thread = ["futures"]
 tokio-multi-thread = ["tokio/sync"]
 rw-multi-thread = ["tokio/sync"]
@@ -150,3 +153,8 @@ utils = ["dep:bytes", "dep:tokio", "dep:anyhow", "dep:async-stream", "dep:tokio-
 non_exhaustive = ["mangadex-api-schema/non_exhaustive", "mangadex-api-types/non_exhaustive"]
 deserializable-endpoint = ["dep:getset"]
 serialize = ["mangadex-api-schema/serialize"]
+oauth = []
+
+[[example]]
+name = "oauth_manga_feed"
+required-features = ["oauth", "serialize"]
