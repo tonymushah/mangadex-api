@@ -138,6 +138,7 @@ async fn login(client: &MangaDexClient) -> anyhow::Result<()> {
         "Your token will expire in {} minutes",
         (oauth_res.expires_in / 60)
     );
+    println!("{}", oauth_res.refresh_token);
     set_var(REFRESH_TOKEN, oauth_res.refresh_token);
     println!("Your refresh token is now settled to the environment variable");
     Ok(())
