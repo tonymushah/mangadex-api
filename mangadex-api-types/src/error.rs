@@ -76,6 +76,9 @@ pub enum Error {
     #[error(transparent)]
     ForumThreadTypeParseError(#[from] crate::forum_thread::ForumThreadTypeParseError),
 
+    #[error("This file {0} was skipped")]
+    SkippedDownload(String),
+
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
 }
@@ -119,6 +122,9 @@ impl serde::Serialize for Error {
             ),
             Error::MissingCaptcha => {
                 serializer.serialize_str("missing captcha; please insert it or solve a captcha")
+            }
+            Error::SkippedDownload(e) => {
+                serializer.serialize_str(format!("This file {} was skipped", e).as_str())
             }
         }
     }

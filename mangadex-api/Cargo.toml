@@ -143,7 +143,7 @@ optional = true
 version = "0.5.21"
 
 [features]
-default = ["oauth", "serialize"]
+default = ["oauth", "serialize", "utils"]
 multi-thread = ["futures"]
 tokio-multi-thread = ["tokio/sync"]
 rw-multi-thread = ["tokio/sync"]

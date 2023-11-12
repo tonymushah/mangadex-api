@@ -57,25 +57,31 @@ impl AtHomePreDownloadImageData {
             Err(e) => Result::Err(Error::ParseUrlError(e)),
         }
     }
-    pub async fn download(&self) -> Result<DownloadElement> {
+    pub async fn download(&self) -> DownloadElement {
         self.download_with_checker(|_, _| false).await
     }
-    pub async fn download_with_checker<C>(&self, mut should_skip: C) -> Result<DownloadElement>
+    pub async fn download_with_checker<C>(&self, mut should_skip: C) -> DownloadElement
     where
         C: FnMut(&Self, &Response) -> bool,
     {
-        let page_url = self.build_page_url()?;
+        let page_url = match self.build_page_url() {
+            Ok(o) => o,
+            Err(e) => return (self.filename.clone(), Err(e)),
+        };
         let page_url_clone = page_url.clone();
         let start = tokio::time::Instant::now();
         let res: Response = match self.http_client.get(page_url).send().await {
             Ok(d) => d,
             Err(e) => {
                 self.report(start, page_url_clone, 0, false, false).await;
-                return Err(Error::RequestError(e));
+                return (self.filename.clone(), Err(Error::RequestError(e)));
             }
         };
         if should_skip(self, &res) {
-            return Ok((self.filename.clone(), None));
+            return (
+                self.filename.clone(),
+                Err(Error::SkippedDownload(self.filename.clone())),
+            );
         }
         let is_cache: bool = match res.headers().get("X-Cache") {
             None => false,
@@ -96,12 +102,12 @@ impl AtHomePreDownloadImageData {
                 Err(chunk_error) => {
                     self.report(start, page_url_clone, bytes.len(), false, is_cache)
                         .await;
-                    return Err(Error::RequestError(chunk_error));
+                    return (self.filename.clone(), Err(Error::RequestError(chunk_error)));
                 }
             }
         }
         self.report(start, page_url_clone, bytes.len(), true, is_cache)
             .await;
-        Ok((self.filename.clone(), Some(Bytes::from(bytes))))
+        (self.filename.clone(), Ok(Bytes::from(bytes)))
     }
 }
