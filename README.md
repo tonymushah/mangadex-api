@@ -1,5 +1,7 @@
 # mangadex-api
 
+[![Rust](https://github.com/tonymushah/mangadex-api/actions/workflows/rust.yml/badge.svg)](https://github.com/tonymushah/mangadex-api/actions/workflows/rust.yml)
+
 ## 3.0.0 developpement
 
 A lot of changes will occur in 3.0.0. Please refer to [#27](https://github.com/tonymushah/mangadex-api/issues/27)
@@ -27,6 +29,7 @@ Please note that as MangaDex is still in beta, this SDK will be subject to sudde
 # Table of Contents
 
 - [mangadex-api](#mangadex-api)
+  - [3.0.0 developpement](#300-developpement)
   - [Important](#important)
   - [Disclaimer](#disclaimer)
 - [Table of Contents](#table-of-contents)
