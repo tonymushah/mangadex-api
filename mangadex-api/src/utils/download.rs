@@ -11,7 +11,9 @@ use self::{
     cover::{CoverDownloadBuilder, CoverQuality},
 };
 
-pub type DownloadElement = (String, Option<Bytes>);
+use mangadex_api_types::error::Result;
+
+pub type DownloadElement = (String, Result<Bytes>);
 
 #[derive(Debug)]
 pub struct DownloadBuilder {

@@ -37,7 +37,7 @@ pub async fn download_cover(
     file_name: String,
     manga_id: Uuid,
     cover_quality: CoverQuality,
-) -> Result<DownloadElement> {
+) -> DownloadElement {
     let file_name = match cover_quality {
         CoverQuality::Default => file_name,
         CoverQuality::Size256 => {
@@ -49,24 +49,24 @@ pub async fn download_cover(
     };
     let cover_url = match Url::parse(&format!("{}/covers/{}/{}", CDN_URL, manga_id, file_name)) {
         Ok(d) => d,
-        Err(e) => return Err(Error::ParseError(e.to_string())),
+        Err(e) => return (file_name, Err(Error::ParseError(e.to_string()))),
     };
     let res = match client.get(cover_url).send().await {
-        Err(e) => return Err(Error::RequestError(e)),
+        Err(e) => return (file_name, Err(Error::RequestError(e))),
         Ok(d) => d,
     };
     let bytes = match res.bytes().await {
-        Err(e) => return Err(Error::RequestError(e)),
+        Err(e) => return (file_name, Err(Error::RequestError(e))),
         Ok(d) => d,
     };
-    Ok((file_name, Some(bytes)))
+    (file_name, Ok(bytes))
 }
 
 pub async fn download_via_cover_api_object(
     http_client: HttpClientRef,
     cover: ApiObject<CoverAttributes>,
     cover_quality: CoverQuality,
-) -> Result<DownloadElement> {
+) -> DownloadElement {
     let mangadex_api_client = MangaDexClient::new_with_http_client_ref(http_client);
     let file_name = cover.attributes.file_name;
     // Check if the manga id available in the relationship
@@ -77,10 +77,13 @@ pub async fn download_via_cover_api_object(
     {
         Some(manga) => manga.id,
         None => {
-            return Err(Error::UnexpectedError(anyhow::Error::msg(format!(
-                "Manga relationship not found in cover {} object",
-                cover.id
-            ))))
+            return (
+                file_name,
+                Err(Error::UnexpectedError(anyhow::Error::msg(format!(
+                    "Manga relationship not found in cover {} object",
+                    cover.id
+                )))),
+            )
         }
     };
     let client = get_reqwest_client(&mangadex_api_client).await;
@@ -99,7 +102,7 @@ pub async fn download_via_cover_id(
     }
     .send()
     .await?;
-    download_via_cover_api_object(http_client, cover.data, cover_quality).await
+    Ok(download_via_cover_api_object(http_client, cover.data, cover_quality).await)
 }
 
 pub async fn download_via_manga_api_object(
@@ -176,7 +179,7 @@ pub async fn download_via_manga_api_object(
         }
     };
     let client: Client = get_reqwest_client(&mangadex_api_client).await;
-    download_cover(&client, file_name, manga.id, cover_quality).await
+    Ok(download_cover(&client, file_name, manga.id, cover_quality).await)
 }
 
 pub async fn download_via_manga_id(
@@ -214,10 +217,7 @@ pub struct CoverDownload {
 }
 
 impl CoverDownload {
-    pub async fn via_cover_api_object(
-        &self,
-        cover: ApiObject<CoverAttributes>,
-    ) -> Result<DownloadElement> {
+    pub async fn via_cover_api_object(&self, cover: ApiObject<CoverAttributes>) -> DownloadElement {
         download_via_cover_api_object(self.http_client.clone(), cover, self.quality.clone()).await
     }
     pub async fn via_cover_id(&self, cover_id: Uuid) -> Result<DownloadElement> {
