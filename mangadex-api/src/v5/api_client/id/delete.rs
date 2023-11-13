@@ -52,16 +52,14 @@ use mangadex_api_types::error::Result;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(
-    build_fn(error = "mangadex_api_types::error::BuilderError")
-)]
+#[builder(build_fn(error = "mangadex_api_types::error::BuilderError"))]
 pub struct DeleteClient {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
     #[serde(skip)]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub(crate) http_client: HttpClientRef,
+    pub http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
     pub client_id: Uuid,

@@ -77,7 +77,7 @@ pub struct RefreshTokens {
     #[cfg_attr(feature = "deserializable-endpoint", serde(skip))]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub(crate) http_client: HttpClientRef,
+    pub http_client: HttpClientRef,
 }
 
 #[derive(Clone, Serialize)]

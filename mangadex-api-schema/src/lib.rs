@@ -109,14 +109,14 @@ where
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
-pub struct ApiObject<A, T = RelationshipType> {
+pub struct ApiObject<A> {
     pub id: Uuid,
-    pub type_: T,
+    pub type_: RelationshipType,
     pub attributes: A,
     pub relationships: Vec<Relationship>,
 }
 
-impl<A, T> ApiObject<A, T> {
+impl<A> ApiObject<A> {
     pub fn find_relationships(&self, type_: RelationshipType) -> Vec<&Relationship> {
         self.relationships
             .iter()
@@ -128,7 +128,7 @@ impl<A, T> ApiObject<A, T> {
     }
 }
 
-impl<A, T> FromResponse for ApiObject<A, T> {
+impl<A> FromResponse for ApiObject<A> {
     type Response = Self;
 
     fn from_response(value: Self::Response) -> Self {
@@ -146,13 +146,13 @@ impl<T> PartialEq for ApiObject<T> {
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
-pub struct ApiObjectNoRelationships<A, T = RelationshipType> {
+pub struct ApiObjectNoRelationships<A> {
     pub id: Uuid,
-    pub type_: T,
+    pub type_: RelationshipType,
     pub attributes: A,
 }
 
-impl<A, T> FromResponse for ApiObjectNoRelationships<A, T> {
+impl<A> FromResponse for ApiObjectNoRelationships<A> {
     type Response = Self;
 
     fn from_response(value: Self::Response) -> Self {

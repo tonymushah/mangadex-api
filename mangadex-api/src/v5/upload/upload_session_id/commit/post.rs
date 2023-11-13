@@ -64,7 +64,7 @@ pub struct CommitUploadSession {
     /// This should never be set manually as this is only for internal use.
     #[serde(skip)]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub(crate) http_client: HttpClientRef,
+    pub http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
     pub session_id: Uuid,
@@ -105,7 +105,7 @@ pub struct ChapterDraft {
 pub struct CommitUploadSessionBuilder {
     #[serde(skip)]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub(crate) http_client: HttpClientRef,
+    pub http_client: HttpClientRef,
 
     pub session_id: Option<Uuid>,
     /// Ordered list of Upload Session File IDs.

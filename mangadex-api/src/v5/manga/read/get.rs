@@ -50,7 +50,7 @@ pub struct GetReadChapters {
     #[serde(skip)]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub(crate) http_client: HttpClientRef,
+    pub http_client: HttpClientRef,
 
     #[builder(setter(each = "add_manga_id"))]
     pub manga_ids: Vec<Uuid>,

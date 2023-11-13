@@ -2085,7 +2085,7 @@ dependencies = [
 
 [[package]]
 name = "mangadex-api"
-version = "3.0.0-rc.1"
+version = "3.0.0-rc.2"
 dependencies = [
  "anyhow",
  "async-stream",
@@ -2113,7 +2113,7 @@ dependencies = [
 
 [[package]]
 name = "mangadex-api-schema-rust"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "color-print",
  "jsonxf",
@@ -3914,6 +3914,7 @@ dependencies = [
 name = "taurpc-mangadex-api"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
  "mangadex-api",
  "mangadex-api-schema-rust",
  "mangadex-api-types-rust",
@@ -3921,8 +3922,8 @@ dependencies = [
  "specta",
  "tauri",
  "taurpc",
- "thiserror",
  "tokio",
+ "uuid",
 ]
 
 [[package]]

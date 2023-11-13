@@ -1,4 +1,2 @@
 #[taurpc::procedures]
-async trait MangaProcedures{
-    
-}
+pub trait MangaProcedures {}
