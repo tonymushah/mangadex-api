@@ -17,6 +17,7 @@ authors = ["tonymushah <tonymushahdev06@yahoo.com>"]
 description = "Types for mangadex-api"
 license = "MIT OR Apache-2.0"
 resolver = "2"
+repository = "https://github.com/tonymushah/mangadex-api"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"]}

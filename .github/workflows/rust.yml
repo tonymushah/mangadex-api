@@ -63,5 +63,5 @@ jobs:
       run: cargo test --all-targets -F utils --verbose
     - name: Run tests with legacy-account
       run: cargo test --all-targets -F legacy-account --verbose
-    - name: Run tests with legacy-account
+    - name: Run tests with oauth
       run: cargo test --all-targets -F oauth --verbose

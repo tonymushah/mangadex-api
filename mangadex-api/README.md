@@ -1,5 +1,7 @@
 # mangadex-api
 
+[![Rust](https://github.com/tonymushah/mangadex-api/actions/workflows/rust.yml/badge.svg)](https://github.com/tonymushah/mangadex-api/actions/workflows/rust.yml)
+
 ## 3.0.0 developpement
 
 A lot of changes will occur in 3.0.0. Please refer to [#27](https://github.com/tonymushah/mangadex-api/issues/27)
@@ -18,52 +20,56 @@ It covers all public endpoints covered by [their documentation][mangadex-api-doc
 
 [Documentation (Project `main` branch)](https://gondolyr.gitlab.io/mangadex-api/mangadex_api)
 
-Please note that as MangaDex is still in beta, this SDK will be subject to sudden breaking changes.
+Please note that as MangaDex is still in beta, this SDK will be subject to sudden breaking changes (a lot).
 
 ## Disclaimer
 
 `mangadex-api` is not affiliated with [MangaDex][mangadex-homepage].
 
-# Table of Contents
+## Table of Contents
 
 - [mangadex-api](#mangadex-api)
+  - [3.0.0 developpement](#300-developpement)
   - [Important](#important)
   - [Disclaimer](#disclaimer)
-- [Table of Contents](#table-of-contents)
-- [Requirements](#requirements)
-- [How to install](#how-to-install)
-- [Dependency Justification](#dependency-justification)
-- [Features](#features)
-- [HTTP Client](#http-client)
-- [Response Structs](#response-structs)
-- [Getting Started](#getting-started)
-- [Using a custom reqwest Client](#using-a-custom-reqwest-client)
-- [Searching manga by title](#searching-manga-by-title)
-- [Searching manga by title with reference expansion](#searching-manga-by-title-with-reference-expansion)
-- [Downloading chapter pages](#downloading-chapter-pages)
+  - [Table of Contents](#table-of-contents)
+  - [Requirements](#requirements)
+  - [How to install](#how-to-install)
+  - [Dependency Justification](#dependency-justification)
+  - [Features](#features)
+  - [HTTP Client](#http-client)
+  - [Response Structs](#response-structs)
+  - [Getting Started](#getting-started)
+  - [Using a custom reqwest Client](#using-a-custom-reqwest-client)
+  - [Searching manga by title](#searching-manga-by-title)
+  - [Searching manga by title with reference expansion](#searching-manga-by-title-with-reference-expansion)
+  - [Downloading chapter pages](#downloading-chapter-pages)
   - [Using the old way](#using-the-old-way)
-  - [Using the `utils` feature](#using-the-utils-feature)
-    - [Via `(filename, bytes)` vector based :](#via-filename-bytes-vector-based-)
-    - [Via `tokio-stream` :](#via-tokio-stream-)
-      - [Without checker](#without-checker)
-      - [with checker](#with-checker)
-- [Downloading a manga's main cover image](#downloading-a-mangas-main-cover-image)
-  - [Use the legacy way](#use-the-legacy-way)
-  - [Using the `utils` feature](#using-the-utils-feature-1)
-    - [via a cover id](#via-a-cover-id)
-    - [via a manga id](#via-a-manga-id)
-- [Changelog](#changelog)
-- [License](#license)
-  - [Contribution](#contribution)
-- [Contributing](#contributing)
+    - [Using the `utils` feature](#using-the-utils-feature)
+      - [Via `(filename, Result<bytes>)` vector based](#via-filename-resultbytes-vector-based)
+      - [Via `tokio-stream`](#via-tokio-stream)
+        - [Without checker](#without-checker)
+        - [with checker](#with-checker)
+  - [Downloading a manga's main cover image](#downloading-a-mangas-main-cover-image)
+    - [Use the legacy way](#use-the-legacy-way)
+    - [Using the `utils` feature (recommended)](#using-the-utils-feature-recommended)
+      - [via a cover id](#via-a-cover-id)
+      - [via a manga id](#via-a-manga-id)
+  - [Authentification (via the `oauth` feature)](#authentification-via-the-oauth-feature)
+    - [Login](#login)
+    - [Resfresh your token](#resfresh-your-token)
+  - [Changelog](#changelog)
+  - [License](#license)
+    - [Contribution](#contribution)
+  - [Contributing](#contributing)
 
-# Requirements
+## Requirements
 
 [Back to top][readme-section-toc]
 
-- [Rust 1.56+][rust-homepage]
+- [Rust 1.60+][rust-homepage]
 
-# How to install
+## How to install
 
 [Back to top][readme-section-toc]
 
@@ -73,9 +79,9 @@ Add `mangadex-api` to your dependencies:
 [dependencies]
 # ...
 # Types and schemas are always required
-mangadex-api-types-rust = "0.3.3"
-mangadex-api-schema-rust = "0.3.2"
-mangadex-api = "2.2.0"
+mangadex-api-types-rust = "0.5"
+mangadex-api-schema-rust = "0.5"
+mangadex-api = "3.0.0-rc.1"
 ```
 
 If you are using [`cargo-edit`](https://github.com/killercup/cargo-edit), run
@@ -84,7 +90,7 @@ If you are using [`cargo-edit`](https://github.com/killercup/cargo-edit), run
 cargo add mangadex-api
 ```
 
-# Dependency Justification
+## Dependency Justification
 
 | Dependency                                         | Used for                                                                                                                                 | Included   |
 |:---------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|:-----------|
@@ -101,12 +107,12 @@ cargo add mangadex-api
 | [`serde_qs`][dependency-serde_qs-docs]             | Query string serialization for HTTP requests.                                                                                            | always     |
 | [`thiserror`][dependency-thiserror-docs]           | Customized error handling.                                                                                                               | always     |
 | [`time`][dependency-time-docs]                     | Convenience types for handing time fields.                                                                                               | always     |
-| [`tokio`][dependency-tokio-docs]                   | Async runtime to handle futures in __(only)__ examples and `utils` feature in chapter reporting                                                                      | dev builds + `utils` features |
+| [`tokio`][dependency-tokio-docs]                   | Async runtime to handle futures in __(only)__ examples and `utils` feature in chapter reporting, `tokio-mutli-thread`, and `rw-mutli-thread`                                                                      | dev builds + `utils` features |
 | [`url`][dependency-url-docs]                       | Convenient `Url` type for validating and containing URLs.                                                                                | always     |
 | [`uuid`][dependency-uuid-docs]                     | Convenient `Uuid` type for validating and containing UUIDs for requests and responses. Also used to randomly generate UUIDs for testing. | always     |
 | [`wiremock`][dependency-wiremock-docs]             | HTTP mocking to test the [MangaDex API][mangadex-api-url].                                                                               | dev builds |
 
-# Features
+## Features
 
 [Back to top][readme-section-toc]
 
@@ -116,38 +122,54 @@ All features are not included by default. To enable them, add any of the followi
 
   Enable the `MangaDexClient` to be thread-safe, at the cost of operations being slightly more expensive.
 
-- `legacy-auth`
+- `legacy-auth` *Deprecated*
 
   Enable the usage of the `< 5.9.0` login system in the SDK. Please visit the [Mangadex Discord](https://discord.com/invite/mangadex)  for more details
 
-- `legacy-account`
+- `legacy-account` *Deprecated*
 
-  Enable the usage of the `< 5.9.0` account management system in the SDK. Please visit the [Mangadex Discord](https://discord.com/invite/mangadex)  for more details
+  Enable the usage of the `< 5.9.0` account management system in the SDK. Please visit the [Mangadex Discord](https://discord.com/invite/mangadex) for more details
 
 - `utils`
 
   Enable the usage of the `MangaDexClient::download()`. Allows you to download chapters or covers image without tears and long code.
 
+- `tokio-multi-thread`
+
+  Enable the usage of [`tokio::sync::Mutex`](https://docs.rs/tokio/latest/tokio/sync/struct.Mutex.html), instead of [`futures::lock::Mutex`](https://docs.rs/futures/0.3.29/futures/lock/struct.Mutex.html)
+
+- `rw-mutli-thread`
+  
+  Enable the usage of [`tokio::sync::RwLock`](https://docs.rs/tokio/latest/tokio/sync/struct.RwLock.html), instead of [`futures::lock::Mutex`](https://docs.rs/futures/0.3.29/futures/lock/struct.Mutex.html) in the client.
+  It can be useful if you want a flexible concurent mutli-thread.
+
+- `oauth` (Enabled by default)
+  
+  Enable the use of the *brand* new OAuth 2.0 login introduced in MangaDex API 5.9.0.
+  
+  __Quick Note:__ This `oauth` feature use the [personal-client] approach which means that you need to register a personal client and wait that it'll be validated.
+  More details here [here](#authentification-via-the-oauth-feature)
+
 For example, to enable the `multi-thread` feature, add the following to your `Cargo.toml` file:
 
 ```toml
-mangadex-api = { version = "2.1.0", features = ["multi-thread"] }
+mangadex-api = { version = "3.0.0-rc.1", features = ["multi-thread"] }
 ```
 
-# HTTP Client
+## HTTP Client
 
 [Back to top][readme-section-toc]
 
 The [`mangadex_api::MangaDexClient`][library-client] is asynchronous, using
 [`reqwest`][reqwest] as the HTTP client.
 
-# Response Structs
+## Response Structs
 
 [Back to top][readme-section-toc]
 
-The response structs can be found in the [`schemas` module][library-schema-module] and contain the fields in a JSON response.
+The response structs can be found in the [`mangadex-api-schema-rust` crate][library-schema-module] and contain the fields in a JSON response.
 
-# Getting Started
+## Getting Started
 
 [Back to top][readme-section-toc]
 
@@ -163,7 +185,7 @@ async fn main() -> anyhow::Result<()> {
     let random_manga = client
         .manga()
         .random()
-        .build()?
+        .get()
         .send()
         .await?;
 
@@ -173,7 +195,7 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-# Using a custom reqwest Client
+## Using a custom reqwest Client
 
 [Back to top][readme-section-toc]
 
@@ -198,7 +220,7 @@ let client = MangaDexClient::new(reqwest_client);
 # }
 ```
 
-# Searching manga by title
+## Searching manga by title
 
 [Back to top][readme-section-toc]
 
@@ -207,23 +229,23 @@ Reference: <https://api.mangadex.org/swagger.html#/Manga/get-search-manga>
 ```rust
 use mangadex_api::v5::MangaDexClient;
 
-# async fn run() -> anyhow::Result<()> {
-let client = MangaDexClient::default();
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let client = MangaDexClient::default();
 
-let manga_results = client
-    .manga()
-    .search()
-    .title("full metal")
-    .build()?
-    .send()
-    .await?;
+    let manga_results = client
+        .manga()
+        .get()
+        .title("full metal")
+        .send()
+        .await?;
 
-println!("manga results = {:?}", manga_results);
-# Ok(())
-# }
+    println!("manga results = {:?}", manga_results);
+    Ok(())
+}
 ```
 
-# Searching manga by title with reference expansion
+## Searching manga by title with reference expansion
 
 [Back to top][readme-section-toc]
 
@@ -233,49 +255,47 @@ In the example below, any associated authors in the list of relationships will p
 
 References:
 
-- <https://api.mangadex.org/docs/reference-expansion/>
-- Endpoint: <https://api.mangadex.org/swagger.html#/Manga/get-search-manga>
-- Author object: <https://api.mangadex.org/swagger.html#/Author/get-author-id>
+- <https://api.mangadex.org/docs/01-concepts/reference-expansion/>
+- Endpoint: <https://api.mangadex.org/docs/swagger.html#/Manga/get-search-manga>
+- Author object: <https://api.mangadex.org/docs/swagger.html#/Author/get-author-id>
 
 ```rust
-use mangadex_api::types::{ReferenceExpansionResource, RelationshipType};
 use mangadex_api::v5::schema::RelatedAttributes;
 use mangadex_api::v5::MangaDexClient;
+// use mangadex_api_types_rust::{ReferenceExpansionResource, RelationshipType};
+use mangadex_api_types::{ReferenceExpansionResource, RelationshipType};
 
-# async fn run() -> anyhow::Result<()> {
-let client = MangaDexClient::default();
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let client = MangaDexClient::default();
 
-let manga_results = client
-    .manga()
-    .search()
-    .title("full metal")
-    .include(&ReferenceExpansionResource::Author)
-    .build()?
-    .send()
-    .await?;
+    let manga_results = client
+        .manga()
+        .get()
+        .title("full metal")
+        .include(&ReferenceExpansionResource::Author)
+        .send()
+        .await?;
 
-println!("manga results = {:?}", manga_results);
+    println!("manga results = {:?}", manga_results);
 
-let authors = manga_results.data.iter().filter_map(|manga| {
-    for rel in &manga.relationships {
-        if rel.type_ == RelationshipType::Author {
-            return Some(rel);
+    let authors = manga_results.data.iter().filter_map(|manga| {
+        manga
+            .relationships
+            .iter()
+            .find(|&rel| rel.type_ == RelationshipType::Author)
+    });
+
+    for author in authors {
+        if let Some(RelatedAttributes::Author(author_attributes)) = &author.attributes {
+            println!("{} - {}", author.id, author_attributes.name);
         }
     }
-
-    None
-});
-
-for author in authors {
-    if let Some(RelatedAttributes::Author(author_attributes)) = &author.attributes {
-        println!("{} - {}", author.id, author_attributes.name);
-    }
+    Ok(())
 }
-# Ok(())
-# }
 ```
 
-# Downloading chapter pages
+## Downloading chapter pages
 
 [Back to top][readme-section-toc]
 
@@ -289,64 +309,66 @@ Reference: <https://api.mangadex.org/docs/reading-chapter/>
 // use std::fs::File;
 // use std::io::Write;
 
-use reqwest::Url;
 use uuid::Uuid;
 
 use mangadex_api::v5::MangaDexClient;
 
-# async fn run() -> anyhow::Result<()> {
-let client = MangaDexClient::default();
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let client = MangaDexClient::default();
 
-let chapter_id = Uuid::new_v4();
+    // Yeah, i'm a [`100 girlfriend`](https://mangadex.org/title/efb4278c-a761-406b-9d69-19603c5e4c8b/the-100-girlfriends-who-really-really-really-really-really-love-you) simp and what! >:)
+    let chapter_id = Uuid::parse_str("f2a09509-3c09-4371-a810-ecb99242bd90")?;
 
-let at_home = client
-    .at_home()
-    .server()
-    .chapter_id(&chapter_id)
-    .build()?
-    .send()
-    .await?;
+    let at_home = client
+        .at_home()
+        .server()
+        .id(chapter_id)
+        .get()
+        .send()
+        .await?;
 
-let http_client = reqwest::Client::new();
+    let http_client = reqwest::Client::new();
 
-// Original quality. Use `.data.attributes.data_saver` for smaller, compressed images.
-let page_filenames = at_home.chapter.data;
-for filename in page_filenames {
-    // If using the data-saver option, use "/data-saver/" instead of "/data/" in the URL.
-    let page_url = at_home
-        .base_url
-        .join(&format!(
-            "/{quality_mode}/{chapter_hash}/{page_filename}",
-            quality_mode = "data",
-            chapter_hash = at_home.chapter.hash,
-            page_filename = filename
-        ))
-        .unwrap();
+    // Original quality. Use `.data.attributes.data_saver` for smaller, compressed images.
+    let page_filenames = &at_home.chapter.data;
+    for filename in page_filenames {
+        // If using the data-saver option, use "/data-saver/" instead of "/data/" in the URL.
+        let page_url = at_home
+            .base_url
+            .join(&format!(
+                "/{quality_mode}/{chapter_hash}/{page_filename}",
+                quality_mode = "data",
+                chapter_hash = at_home.chapter.hash,
+                page_filename = filename
+            ))
+            .unwrap();
 
-    let res = http_client.get(page_url).send().await?;
-    // The data should be streamed rather than downloading the data all at once.
-    let bytes = res.bytes().await?;
+        let res = http_client.get(page_url).send().await?;
+        // The data should be streamed rather than downloading the data all at once.
+        let bytes = res.bytes().await?;
 
-    // This is where you would download the file but for this example,
-    // we're just printing the raw data.
-    // let mut file = File::create(&filename)?;
-    // let _ = file.write_all(&bytes);
-    println!("Chunk: {:?}", bytes);
+        // This is where you would download the file but for this example,
+        // we're just printing the raw data.
+        // let mut file = File::create(&filename)?;
+        // let _ = file.write_all(&bytes);
+        println!("Chunk: {:?}", bytes);
+    }
+
+    Ok(())
 }
 
-# Ok(())
-# }
 ```
 
-## Using the `utils` feature
+### Using the `utils` feature
 
-### Via `(filename, bytes)` vector based :
+#### Via `(filename, Result<bytes>)` vector based
 
 Not recommended if you want to handle each response error
 
 ```rust
-use crate::{utils::download::chapter::DownloadMode, MangaDexClient};
-use anyhow::{Ok, Result};
+use anyhow::Result;
+use mangadex_api::{utils::download::chapter::DownloadMode, MangaDexClient};
 /// used for file exporting
 use std::{
     fs::{create_dir_all, File},
@@ -362,46 +384,48 @@ async fn main() -> Result<()> {
     let client = MangaDexClient::default();
     let chapter_id = uuid::Uuid::parse_str("32b229f6-e9bf-41a0-9694-63c11191704c")?;
     let chapter_files = client
-        /// We use the download builder
+        // We use the download builder
         .download()
-        /// Chapter id (accept uuid::Uuid)
+        // Chapter id (accept uuid::Uuid)
         .chapter(chapter_id)
-        /// You also use `DownloadMode::Normal` if you want some the original quality
-        /// 
-        /// Default : Normal
+        // You also use `DownloadMode::Normal` if you want some the original quality
+        //
+        // Default : Normal
         .mode(DownloadMode::DataSaver)
-        /// Enable the [`The MangaDex@Home report`](https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint) if true 
-        /// 
-        /// Default : false
+        // Enable the [`The MangaDex@Home report`](https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint) if true
+        //
+        // Default : false
         .report(true)
-        /// Something that i don`t really know about 
-        /// 
-        /// More details at : https://api.mangadex.org/docs/retrieving-chapter/#basics
+        // Something that i don`t really know about
+        //
+        // More details at : https://api.mangadex.org/docs/retrieving-chapter/#basics
         .force_port_443(false)
         .build()?
         .download_element_vec()
         .await?;
     create_dir_all(format!("{}{}", output_dir, chapter_id))?;
-    for (filename, bytes) in chapter_files {
-        if let Some(bytes) = bytes_ {
+    for (filename, bytes_) in chapter_files {
+        if let Ok(bytes) = bytes_ {
             let mut file: File =
                 File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
-            file.write_all(&bytes)?
-        };
+            file.write_all(&bytes)?;
+        } else if let Err(e) = bytes_ {
+            eprintln!("{}", e);
+        }
     }
     Ok(())
 }
 ```
 
-### Via `tokio-stream` :
+#### Via `tokio-stream`
 
 With [`tokio-stream`](https://docs.rs/tokio-stream/), you can handle each response result
 
-#### Without checker 
+##### Without checker
 
 ```rust
-use crate::{utils::download::chapter::DownloadMode, MangaDexClient};
-use anyhow::{Ok, Result};
+use anyhow::Result;
+use mangadex_api::{utils::download::chapter::DownloadMode, MangaDexClient};
 use std::{
     fs::{create_dir_all, File},
     io::Write,
@@ -414,45 +438,49 @@ use tokio_stream::StreamExt;
 /// [Chapter 13 English](https://mangadex.org/chapter/250f091f-4166-4831-9f45-89ff54bf433b) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
 #[tokio::main]
 async fn main() -> Result<()> {
-    let output_dir = "./test-outputs/";
+    let output_dir = "./test-outputs";
     let client = MangaDexClient::default();
     let chapter_id = uuid::Uuid::parse_str("250f091f-4166-4831-9f45-89ff54bf433b")?;
-    create_dir_all(format!("{}{}", output_dir, chapter_id))?;
+    create_dir_all(format!("{}/{}", output_dir, chapter_id))?;
     let download = client
-        /// We use the download builder
+        // We use the download builder
         .download()
-        /// Chapter id (accept uuid::Uuid)
+        // Chapter id (accept uuid::Uuid)
         .chapter(chapter_id)
-        /// You also use `DownloadMode::Normal` if you want some the original quality
-        /// 
-        /// Default : Normal
+        // You also use `DownloadMode::Normal` if you want some the original quality
+        //
+        // Default : Normal
         .mode(DownloadMode::DataSaver)
-        /// Enable the [`The MangaDex@Home report`](https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint) if true 
-        /// 
-        /// Default : false
+        // Enable the [`The MangaDex@Home report`](https://api.mangadex.org/docs/04-chapter/retrieving-chapter/) if true
+        //
+        // Default : false
         .report(true)
-        /// Something that i don`t really know about 
-        /// 
-        /// More details at : https://api.mangadex.org/docs/retrieving-chapter/#basics
+        // Something that i don`t really know about
+        //
+        // More details at : https://api.mangadex.org/docs/04-chapter/retrieving-chapter/
         .force_port_443(false)
         .build()?;
     let chapter_files = download.download_stream().await?;
-    /// `pin!` Required for iteration
-    pin!(chapter_files); 
-    while let Some((data, _, _)) = chapter_files.next().await {
-        let (filename, bytes_) = data?;
-        if let Some(bytes) = bytes_ {
+    // `pin!` Required for iteration
+    pin!(chapter_files);
+    while let Some((data, index, total)) = chapter_files.next().await {
+        let (filename, bytes_) = data;
+        // Prin the progression in the standart output
+        println!("{index} / {total} : {filename} ");
+        if let Ok(bytes) = bytes_ {
             let mut file: File =
-                File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
-            file.write_all(&bytes)?
-        };
+                File::create(format!("{}/{}/{}", output_dir, chapter_id, filename))?;
+            file.write_all(&bytes)?;
+            println!("downloaded");
+        } else if let Err(e) = bytes_ {
+            eprintln!("{e}");
+        }
     }
     Ok(())
 }
-
 ```
 
-#### with checker
+##### with checker
 
 The checker is a function called after the response fetching but before retreiving the byte content.
 Example :
@@ -479,8 +507,8 @@ Real example :
 The checker will check return `true` if a file with the response content length has been created
 
 ```rust
-use crate::{utils::download::chapter::DownloadMode, MangaDexClient};
-use anyhow::{Ok, Result};
+use anyhow::Result;
+use mangadex_api::{utils::download::chapter::DownloadMode, MangaDexClient};
 use std::{
     fs::{create_dir_all, File},
     io::Write,
@@ -493,77 +521,84 @@ use tokio_stream::StreamExt;
 /// [Chapter 13 English](https://mangadex.org/chapter/250f091f-4166-4831-9f45-89ff54bf433b) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
 #[tokio::main]
 async fn main() -> Result<()> {
-    let output_dir = "./test-outputs/";
+    let output_dir = "./test-outputs";
     let client = MangaDexClient::default();
     let chapter_id = uuid::Uuid::parse_str("250f091f-4166-4831-9f45-89ff54bf433b")?;
-    create_dir_all(format!("{}{}", output_dir, chapter_id))?;
+    create_dir_all(format!("{}/{}", output_dir, chapter_id))?;
     let download = client
+        // We use the download builder
         .download()
+        // Chapter id (accept uuid::Uuid)
         .chapter(chapter_id)
+        // You also use `DownloadMode::Normal` if you want some the original quality
+        //
+        // Default : Normal
         .mode(DownloadMode::DataSaver)
+        // Enable the [`The MangaDex@Home report`](https://api.mangadex.org/docs/04-chapter/retrieving-chapter/) if true
+        //
+        // Default : false
         .report(true)
+        // Something that i don`t really know about
+        //
+        // More details at : https://api.mangadex.org/docs/04-chapter/retrieving-chapter/
+        .force_port_443(false)
         .build()?;
     let chapter_files = download
         .download_stream_with_checker(move |filename, response| {
             let is_skip: bool = {
-                /// Get the response content length
+                // Get the response content length
                 let content_length = match response.content_length() {
                     None => return false,
                     Some(d) => d,
                 };
-                /// open the chapter image file
-                if let core::result::Result::Ok(pre_file) = File::open(format!(
-                    "{}{}/{}",
+                // open the chapter image file
+                File::open(format!(
+                    "{}/{}/{}",
                     output_dir,
                     chapter_id,
                     filename.filename.clone()
-                )) {
-                    if let core::result::Result::Ok(metadata) = pre_file.metadata() {
-                        /// compare the content length and the file length
-                        metadata.len() == content_length
-                    } else {
-                        false
-                    }
-                } else {
-                    false
-                }
+                ))
+                .map(|pre_file| {
+                    pre_file
+                        .metadata()
+                        .map(|metadata| metadata.len() == content_length)
+                        .unwrap_or(false)
+                })
+                .unwrap_or(false)
             };
             is_skip
         })
         .await?;
+    // `pin!` Required for iteration
     pin!(chapter_files);
-    while let Some((data, index, len)) = chapter_files.next().await {
-        print!("{index} - {len} : ");
-        if let core::result::Result::Ok(resp) = data {
-            let (filename, bytes_) = resp ;
-            // save the bytes if the `Option` hase Some value
-            if let Some(bytes) = bytes_ {
-                let mut file: File =
-                    File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
-                file.write_all(&bytes)?;
-                println!("Downloaded {filename}");
-            }else{
-                println!("Skipped {filename}");
-            }
-        } else if let core::result::Result::Err(resp) = data {
-            println!("{:#?}", resp);
+    while let Some((data, index, total)) = chapter_files.next().await {
+        let (filename, bytes_) = data;
+        // Prin the progression in the standart output
+        println!("{index} / {total} : {filename} ");
+        if let Ok(bytes) = bytes_ {
+            let mut file: File =
+                File::create(format!("{}/{}/{}", output_dir, chapter_id, filename))?;
+            file.write_all(&bytes)?;
+            println!("downloaded");
+        } else if let Err(e) = bytes_ {
+            eprintln!("{e}");
         }
     }
     Ok(())
 }
 ```
 
-# Downloading a manga's main cover image
+## Downloading a manga's main cover image
 
 [Back to top][readme-section-toc]
 
-## Use the legacy way
+### Use the legacy way
 
 While this example could directly get the cover information by passing in the cover ID,
 it is not often that one would have the ID off-hand, so the most common method would be from a
 manga result.
 
-If you want to get all of a manga's cover images, you will need to use the [cover list endpoint](https://api.mangadex.org/swagger.html#/Cover/get-cover)
+If you want to get all of a manga's cover images, you will need to use the [cover list endpoint](https://api.mangadex.org/docs/swagger.html#/Cover/get-cover)
 and use the `manga[]` query parameter.
 
 ```rust
@@ -575,67 +610,57 @@ and use the `manga[]` query parameter.
 use reqwest::Url;
 use uuid::Uuid;
 
-use mangadex_api::types::RelationshipType;
 use mangadex_api::v5::MangaDexClient;
 use mangadex_api::CDN_URL;
+// use mangadex_api_types_rust::RelationshipType;
+use mangadex_api_types::RelationshipType;
 
-# async fn run() -> anyhow::Result<()> {
-let client = MangaDexClient::default();
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let client = MangaDexClient::default();
 
-let manga_id = Uuid::new_v4();
-let manga = client
-    .manga()
-    .get()
-    .manga_id(&manga_id)
-    .build()?
-    .send()
-    .await?;
+    let manga_id = Uuid::new_v4();
+    let manga = client.manga().id(manga_id).get().send().await?;
 
-let cover_id = manga
-    .data
-    .relationships
-    .iter()
-    .find(|related| related.type_ == RelationshipType::CoverArt)
-    .expect("no cover art found for manga")
-    .id;
-let cover = client
-    .cover()
-    .get()
-    .cover_id(&cover_id)
-    .build()?
-    .send()
-    .await?;
+    let cover_id = manga
+        .data
+        .relationships
+        .iter()
+        .find(|related| related.type_ == RelationshipType::CoverArt)
+        .expect("no cover art found for manga")
+        .id;
+    let cover = client.cover().cover_id(cover_id).get().send().await?;
 
-// This uses the best quality image.
-// To use smaller, thumbnail-sized images, append any of the following:
-//
-// - .512.jpg
-// - .256.jpg
-//
-// For example, "https://uploads.mangadex.org/covers/8f3e1818-a015-491d-bd81-3addc4d7d56a/4113e972-d228-4172-a885-cb30baffff97.jpg.512.jpg"
-let cover_url = Url::parse(&format!(
+    // This uses the best quality image.
+    // To use smaller, thumbnail-sized images, append any of the following:
+    //
+    // - .512.jpg
+    // - .256.jpg
+    //
+    // For example, "https://uploads.mangadex.org/covers/8f3e1818-a015-491d-bd81-3addc4d7d56a/4113e972-d228-4172-a885-cb30baffff97.jpg.512.jpg"
+    let cover_url = Url::parse(&format!(
         "{}/covers/{}/{}",
         CDN_URL, manga_id, cover.data.attributes.file_name
     ))
     .unwrap();
 
-let http_client = reqwest::Client::new();
+    let http_client = reqwest::Client::new();
 
-let res = http_client.get(cover_url).send().await?;
-// The data should be streamed rather than downloading the data all at once.
-let bytes = res.bytes().await?;
+    let res = http_client.get(cover_url).send().await?;
+    // The data should be streamed rather than downloading the data all at once.
+    let bytes = res.bytes().await?;
 
-// This is where you would download the file but for this example, we're just printing the raw data.
-// let mut file = File::create(&filename)?;
-// let _ = file.write_all(&bytes);
-println!("Chunk: {:?}", bytes);
-# Ok(())
-# }
+    // This is where you would download the file but for this example, we're just printing the raw data.
+    // let mut file = File::create(&filename)?;
+    // let _ = file.write_all(&bytes);
+    println!("Chunk: {:?}", bytes);
+    Ok(())
+}
 ```
 
-## Using the `utils` feature
+### Using the `utils` feature (recommended)
 
-### via a cover id
+#### via a cover id
 
 ```rust
     use anyhow::Result;
@@ -655,42 +680,150 @@ println!("Chunk: {:?}", bytes);
     }
 ```
 
-### via a manga id
+#### via a manga id
 
 ```rust
-    use anyhow::Result;
-    use uuid::Uuid;
-    use crate::MangaDexClient;
-    use std::{io::Write, fs::File};
+use anyhow::Result;
+use mangadex_api::MangaDexClient;
+use std::{fs::File, io::Write};
+use uuid::Uuid;
 
-    /// Download the [Kimi tte Watashi no Koto Suki Nandesho?](https://mangadex.org/title/f75c2845-0241-4e69-87c7-b93575b532dd/kimi-tte-watashi-no-koto-suki-nandesho) cover
-    /// 
-    /// For test... of course :3
-    #[tokio::main]
-    async fn main() -> Result<()>{
-        let manga_id : Uuid = Uuid::parse_str("f75c2845-0241-4e69-87c7-b93575b532dd")?;
-        let client : MangaDexClient = MangaDexClient::default();
-        let (filename, bytes) = client
-            .download()
-            .cover()
-            /// you can use
-            /// 
-            /// ```rust
-            /// .quality(CoverQuality::Size512)
-            /// ``` for 512
-            /// or
-            /// ```rust
-            /// .quality(CoverQuality::Size256)
-            /// ``` for 256
-            .build()?.via_manga_id(manga_id).await?;
-        let mut file = File::create(format!("{}/{}", "test-outputs/covers", filename))?;
-        file.write_all(&bytes)?;
-        Ok(())
-    }
+/// Download the [Kimi tte Watashi no Koto Suki Nandesho?](https://mangadex.org/title/f75c2845-0241-4e69-87c7-b93575b532dd/kimi-tte-watashi-no-koto-suki-nandesho) cover
+///
+/// For test... of course :3
+#[tokio::main]
+async fn main() -> Result<()> {
+    let output_dir = String::from("test-outputs");
+    let manga_id: Uuid = Uuid::parse_str("f75c2845-0241-4e69-87c7-b93575b532dd")?;
+    let client: MangaDexClient = MangaDexClient::default();
+    let (filename, bytes) = client
+        .download()
+        .cover()
+        // you can use
+        //
+        // ```rust
+        // .quality(CoverQuality::Size512)
+        // ``` for 512
+        // or
+        // ```rust
+        // .quality(CoverQuality::Size256)
+        // ``` for 256
+        .build()?
+        .via_manga_id(manga_id)
+        .await?;
+    let bytes = bytes?;
+    let mut file = File::create(format!("{}/{}", output_dir, filename))?;
+    file.write_all(&bytes)?;
+    println!("donwloaded :3");
+    Ok(())
+}
 ```
 
+## Authentification (via the `oauth` feature)
 
-# Changelog
+Before ~~paste copying~~ *uhm*,... touching the example code below, I recommend that you read the [Mangadex Authentification Section](https://api.mangadex.org/docs/02-authentication/)
+
+First, register a personal client at [Mangadex Profile Settings][mangadex-settings], and wait until it's approved by staff. It can take 2 or 3 three days for now so just wait :>
+
+After a long time, you can now `login` via the `oauth` feature.
+
+### Login
+
+```rust
+use mangadex_api::MangaDexClient;
+use mangadex_api_schema::v5::oauth::ClientInfo;
+use mangadex_api_types::{Password, Username};
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let mut client = MangaDexClient::default();
+    client
+        .set_client_info(&ClientInfo {
+            client_id: String::from("<SET YOUR CLIENT ID HERE>"),
+            client_secret: String::from("<SET YOUR CLIENT INFO HERE>"),
+        })
+        .await?;
+    let response = client
+        .oauth()
+        .login()
+        .username(Username::parse("<YOUR USERNAME HERE>")?)
+        .password(Password::parse("<YOUR PASSWORD HERE>")?)
+        .send()
+        .await?;
+    /*
+       println!("Access Token: {}", response.access_token);
+    */
+    println!("Expires in {} minutes", response.expires_in / 60);
+    Ok(())
+}
+```
+
+### Resfresh your token
+
+You just call `mangadex_api::MangaDexClient::oauth().refresh()`
+
+```rust
+    ...
+    client
+        .oauth()
+        .refresh()
+        .send()
+        .await?;
+    ...
+```
+
+Example:
+
+```rust
+use mangadex_api::MangaDexClient;
+// use mangadex_api_schema_rust::v5::oauth::ClientInfo;
+// use mangadex_api_types_rust::{Password, Username};
+use mangadex_api_schema::v5::oauth::ClientInfo;
+use mangadex_api_types::{Password, Username};
+use tokio::time::{sleep, Duration};
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let mut client = MangaDexClient::default();
+
+    // Register your client info
+    client
+        .set_client_info(&ClientInfo {
+            client_id: String::from("<SET YOUR CLIENT ID HERE>"),
+            client_secret: String::from("<SET YOUR CLIENT INFO HERE>"),
+        })
+        .await?;
+
+    // Login to your account
+    let response = client
+        .oauth()
+        .login()
+        .username(Username::parse("<YOUR USERNAME HERE>")?)
+        .password(Password::parse("<YOUR PASSWORD HERE>")?)
+        .send()
+        .await?;
+    /*
+       println!("Access Token: {}", response.access_token);
+    */
+    println!("Expires in {} minutes", response.expires_in / 60);
+    // Wait until the token expires
+
+    sleep(Duration::from_secs(<u64 as TryFrom<usize>>::try_from(
+        response.expires_in,
+    )?))
+    .await;
+
+    // Refresh the session token
+    let response = client.oauth().refresh().send().await?;
+    /*
+       println!("Access Token: {}", response.access_token);
+    */
+    println!("Expires in {} minutes", response.expires_in / 60);
+    Ok(())
+}
+```
+
+## Changelog
 
 [Back to top][readme-section-toc]
 
@@ -698,7 +831,7 @@ The changelog can be found [here][changelog].
 
 Changes are added manually to keep the changelog human-readable with summaries of the changes from each version.
 
-# License
+## License
 
 [Back to top][readme-section-toc]
 
@@ -711,7 +844,7 @@ Licensed under either of
 
 at your option.
 
-## Contribution
+### Contribution
 
 [Back to top][readme-section-toc]
 
@@ -719,7 +852,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
 
-# Contributing
+## Contributing
 
 [Back to top][readme-section-toc]
 
@@ -754,8 +887,10 @@ We welcome contributions from everyone. There are many ways to contribute and th
 [changelog]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/CHANGELOG.md
 [contributing]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/CONTRIBUTING.md
 [library-client]: ./v5/struct.MangaDexClient.html
-[library-schema-module]: ./v5/schema/index.html
+[library-schema-module]: https://crates.io/crates/mangadex-api-schema-rust
 [license-apache]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/LICENSE-APACHE
 [license-mit]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/LICENSE-MIT
 
 [readme-section-toc]: #table-of-contents
+[personal-client]: https://api.mangadex.org/docs/02-authentication/personal-clients/
+[mangadex-settings]: https://mangadex.org/settings

@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api"
-version = "3.0.0-alpha.1"
+version = "3.0.0-rc.1"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
 description = "SDK for the MangaDex API"
 readme = "README.md"
@@ -143,7 +143,7 @@ optional = true
 version = "0.5.21"
 
 [features]
-default = ["oauth", "serialize", "utils"]
+default = ["oauth"]
 multi-thread = ["futures"]
 tokio-multi-thread = ["tokio/sync"]
 rw-multi-thread = ["tokio/sync"]
@@ -158,3 +158,31 @@ oauth = []
 [[example]]
 name = "oauth_manga_feed"
 required-features = ["oauth", "serialize"]
+
+[[example]]
+name = "download_chapter_via_utils_vecs"
+required-features = ["utils"]
+
+[[example]]
+name = "download_chapter_via_utils_stream"
+required-features = ["utils"]
+
+[[example]]
+name = "download_chapter_via_utils_stream_with_checker"
+required-features = ["utils"]
+
+[[example]]
+name = "download_cover_via_utils_manga_id"
+required-features = ["utils"]
+
+[[example]]
+name = "download_cover_via_utils"
+required-features = ["utils"]
+
+[[example]]
+name = "oauth_login"
+required-features = ["oauth"]
+
+[[example]]
+name = "oauth_login_refresh"
+required-features = ["oauth"]
