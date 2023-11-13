@@ -6,7 +6,7 @@ use std::sync::Arc;
 use async_stream::stream;
 use derive_builder::Builder;
 use mangadex_api_schema::v5::AtHomeServer;
-use mangadex_api_types::error::{Error, Result};
+use mangadex_api_types::error::Result;
 use reqwest::Response;
 use tokio::pin;
 use tokio_stream::Stream;
@@ -56,20 +56,15 @@ impl ChapterDownload {
     ) -> Result<impl Stream<Item = AtHomePreDownloadImageData> + '_> {
         let client = MangaDexClient::new_with_http_client_ref(self.http_client.clone());
         let at_home: Arc<AtHomeServer> = Arc::new(
-            match client
+            client
                 .at_home()
                 .server()
                 .id(self.id)
                 .get()
                 .force_port_443(self.force_port_443)
-                .build()
-            {
-                Ok(d) => d,
-                Err(d) => return Result::Err(Error::RequestBuilderError(d.to_string())),
-            }
-            .send()
-            .await?
-            .body,
+                .send()
+                .await?
+                .body,
         );
         let http_client = Arc::new(get_reqwest_client(&client).await);
         let page_filenames = match match self.mode.clone() {

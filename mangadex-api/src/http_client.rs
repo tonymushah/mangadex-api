@@ -248,14 +248,14 @@ impl HttpClient {
 
         let resp = self.send_request_with_checks(endpoint).await?;
 
-        let rate_limit: RateLimit = TryFrom::try_from(&resp)?;
+        let some_rate_limit = <RateLimit as TryFrom<&Response>>::try_from(&resp);
 
         let res = self
             .handle_result::<<E::Response as FromResponse>::Response>(resp)
             .await?;
 
         Ok(Limited {
-            rate_limit,
+            rate_limit: some_rate_limit?,
             body: FromResponse::from_response(res),
         })
     }

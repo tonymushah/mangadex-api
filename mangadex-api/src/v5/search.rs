@@ -37,7 +37,6 @@ impl SearchBuilder {
     ///     .search()
     ///     .author()
     ///     .name("carlo zen")
-    ///     .build()?
     ///     .send()
     ///     .await?;
     ///
@@ -65,7 +64,6 @@ impl SearchBuilder {
     ///     .search()
     ///     .chapter()
     ///     .title("summoning")
-    ///     .build()?
     ///     .send()
     ///     .await?;
     ///
@@ -92,7 +90,6 @@ impl SearchBuilder {
     /// let res = client
     ///     .search()
     ///     .cover()
-    ///     .build()?
     ///     .send()
     ///     .await?;
     ///
@@ -120,7 +117,6 @@ impl SearchBuilder {
     ///     .search()
     ///     .manga()
     ///     .title("official test manga")
-    ///     .build()?
     ///     .send()
     ///     .await?;
     ///
@@ -148,7 +144,6 @@ impl SearchBuilder {
     ///     .search()
     ///     .scanlation_group()
     ///     .name("mangadex")
-    ///     .build()?
     ///     .send()
     ///     .await?;
     ///

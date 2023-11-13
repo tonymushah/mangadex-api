@@ -338,7 +338,7 @@ impl MangaDexClient {
                 &mut self.http_client.write().await
             }
         };
-        client.set_client_info(&client_info);
+        client.set_client_info(client_info);
         Ok(())
     }
     #[cfg(feature = "oauth")]
