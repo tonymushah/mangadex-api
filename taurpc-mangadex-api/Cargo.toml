@@ -1,0 +1,40 @@
+[package]
+name = "taurpc-mangadex-api"
+version = "0.0.0"
+authors = [ "tonymushah" ]
+description = "Tauri Plugin for mangadex-api based on taurpc"
+edition = "2021"
+rust-version = "1.60"
+exclude = ["/examples", "/webview-dist", "/webview-src", "node_modules"]
+
+[dependencies]
+tauri = { version = "1.5.2" }
+serde = "1.0"
+thiserror = "1.0"
+taurpc = "0.2.3"
+specta = { version = "1.0.5", features = ["export"] }
+tokio = { version = "1", features = ["full"] }
+
+[dependencies.mangadex-api]
+optional = true
+path = "../mangadex-api"
+version = "3.0.0-rc.1"
+features = ["rw-multi-thread", "serialize"]
+
+[dependencies.mangadex-api-schema]
+package = "mangadex-api-schema-rust"
+version = "0.5"
+path = "../mangadex-api-schema"
+default-features = false
+features = ["specta", "serialize"]
+
+[dependencies.mangadex-api-types]
+package = "mangadex-api-types-rust"
+version = "0.5"
+path = "../mangadex-api-types"
+default-features = false
+features = ["specta"]
+
+[features]
+default = ["mangadex-api-resolver"]
+mangadex-api-resolver = ["dep:mangadex-api"]
