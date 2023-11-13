@@ -243,7 +243,7 @@ where
 #[derive(Debug, Clone)]
 pub struct Limited<T>
 where
-    T: Clone + Deserialize,
+    T: Clone,
 {
     pub rate_limit: RateLimit,
     pub body: T,
@@ -252,7 +252,7 @@ where
 #[cfg(not(feature = "serialize"))]
 impl<T> Deref for Limited<T>
 where
-    T: Clone + Deserialize,
+    T: Clone,
 {
     type Target = T;
     fn deref(&self) -> &Self::Target {

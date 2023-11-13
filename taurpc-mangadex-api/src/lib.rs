@@ -1,6 +1,7 @@
 pub mod api_client;
 pub mod at_home;
 pub mod auth;
+pub mod author;
 pub mod manga;
 pub mod oauth;
 
@@ -9,6 +10,7 @@ use std::fmt::Display;
 pub use api_client::*;
 pub use at_home::*;
 pub use auth::*;
+pub use author::*;
 pub use manga::*;
 pub use oauth::*;
 

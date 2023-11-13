@@ -1,7 +1,9 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use time::{format_description, OffsetDateTime};
 
-pub(crate) const MANGADEX_DATETIME_FORMAT: &str =
+pub(crate) const MANGADEX_DATETIME_FORMAT: &str = "[year]-[month]-[day]T[hour]:[minute]:[second]";
+
+pub(crate) const MANGADEX_DATETIME_FORMAT_DESER: &str =
     "[year]-[month]-[day]T[hour]:[minute]:[second][offset_hour sign:mandatory]:[offset_minute]";
 
 /// Newtype struct for handling datetime fields in MangaDex.
@@ -45,7 +47,7 @@ impl<'de> Deserialize<'de> for MangaDexDateTime {
     {
         let s: String = Deserialize::deserialize(deserializer)?;
 
-        let format = format_description::parse(MANGADEX_DATETIME_FORMAT).unwrap();
+        let format = format_description::parse(MANGADEX_DATETIME_FORMAT_DESER).unwrap();
 
         let datetime = OffsetDateTime::parse(&s, &format).unwrap();
 
