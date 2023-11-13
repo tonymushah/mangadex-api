@@ -1,20 +1,24 @@
 pub mod api_client;
+pub mod at_home;
 pub mod manga;
 
 use std::fmt::Display;
 
 pub use api_client::*;
 pub use manga::*;
+
 use mangadex_api_types::ResultType;
 
 #[taurpc::ipc_type]
 #[derive(Debug)]
-pub struct Error {
+pub struct TauRPCMAngadexAPIError {
     pub result: ResultType,
     #[serde(rename = "type")]
     pub type_: String,
     pub message: String,
 }
+
+pub(crate) type Error = TauRPCMAngadexAPIError;
 
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

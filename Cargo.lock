@@ -2102,6 +2102,7 @@ dependencies = [
  "serde_json",
  "serde_qs 0.12.0",
  "serde_urlencoded",
+ "specta",
  "thiserror",
  "time",
  "tokio",
@@ -2144,7 +2145,7 @@ dependencies = [
 
 [[package]]
 name = "mangadex-api-types-rust"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "anyhow",
  "derive_builder",

@@ -219,11 +219,21 @@ where
 /// This struct is used for rate limited endpoint
 /// `rate_limit` is for the rate limit metadata
 /// `body` is the response data
-#[cfg(feature = "serialize")]
+#[cfg(all(feature = "serialize", not(feature = "specta")))]
 #[derive(Debug, Serialize, Clone)]
 pub struct Limited<T>
 where
-    T: Serialize + Clone,
+    T: Serialize + Clone + Deserialize,
+{
+    pub rate_limit: RateLimit,
+    pub body: T,
+}
+
+#[cfg(all(feature = "serialize", feature = "specta"))]
+#[derive(Debug, Serialize, Clone, specta::Type)]
+pub struct Limited<T>
+where
+    T: Serialize + Clone + specta::Type,
 {
     pub rate_limit: RateLimit,
     pub body: T,
@@ -233,7 +243,7 @@ where
 #[derive(Debug, Clone)]
 pub struct Limited<T>
 where
-    T: Clone,
+    T: Clone + Deserialize,
 {
     pub rate_limit: RateLimit,
     pub body: T,
@@ -242,7 +252,7 @@ where
 #[cfg(not(feature = "serialize"))]
 impl<T> Deref for Limited<T>
 where
-    T: Clone,
+    T: Clone + Deserialize,
 {
     type Target = T;
     fn deref(&self) -> &Self::Target {
@@ -250,10 +260,21 @@ where
     }
 }
 
-#[cfg(feature = "serialize")]
+#[cfg(all(feature = "serialize", not(feature = "specta")))]
 impl<T> Deref for Limited<T>
 where
     T: Clone + serde::Serialize,
+{
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.body
+    }
+}
+
+#[cfg(all(feature = "serialize", feature = "specta"))]
+impl<T> Deref for Limited<T>
+where
+    T: Clone + serde::Serialize + specta::Type,
 {
     type Target = T;
     fn deref(&self) -> &Self::Target {

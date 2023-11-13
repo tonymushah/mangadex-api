@@ -36,6 +36,7 @@ pub const RETRY_AFTER: &str = "x-ratelimit-retry-after";
 ///
 #[derive(Serialize, Debug, Clone)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct RateLimit {
     /// value from `x-ratelimit-limit` header
     pub limit: u32,
