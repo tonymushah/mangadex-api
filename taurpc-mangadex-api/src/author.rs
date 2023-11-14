@@ -27,7 +27,7 @@ use mangadex_api::{
 
 use crate::Result;
 
-#[taurpc::procedures(path = "mangadex.author")]
+#[taurpc::procedures(path = "mangadex.author", export_to = "../src/lib/bindings.ts")]
 pub trait Author {
     async fn list<R: Runtime>(
         params: AuthorListParams,

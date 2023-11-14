@@ -9,7 +9,7 @@ use mangadex_api::{v5::at_home::server::id::get::GetAtHomeServerBuilder, MangaDe
 
 use crate::Result;
 
-#[taurpc::procedures(path = "mangadex.at_home")]
+#[taurpc::procedures(path = "mangadex.at_home", export_to = "../src/lib/bindings.ts")]
 pub trait AtHome {
     async fn server<R: Runtime>(
         params: AtHomeServerParams,

@@ -3,7 +3,7 @@
 use mangadex_api_types::{ResultType, UploadSource};
 use serde::Deserialize;
 
-use crate::{v5::error::MangaDexError, FromResponse};
+use crate::{v5::error::MangaDexError_, FromResponse};
 
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -13,7 +13,7 @@ use crate::{v5::error::MangaDexError, FromResponse};
 pub struct UploadSessionFileAttributes {
     pub original_file_name: String,
     pub file_hash: String,
-    pub file_size: u64,
+    pub file_size: u32,
     pub mime_type: String,
     pub source: UploadSource,
     pub version: u32,
@@ -25,7 +25,7 @@ pub struct UploadSessionFileAttributes {
 pub struct UploadSessionFileData<A> {
     #[serde(default)]
     pub result: ResultType,
-    pub errors: Vec<MangaDexError>,
+    pub errors: Vec<MangaDexError_>,
     pub data: Vec<A>,
 }
 

@@ -2,12 +2,15 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use mangadex_api::MangaDexClient;
-use taurpc_mangadex_api::init_router;
+use taurpc_mangadex_api::{init_router, Author};
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let mangadex_client = MangaDexClient::default();
     tauri::Builder::default()
-        .invoke_handler(init_router(&mangadex_client).into_handler())
+        .invoke_handler(taurpc::create_ipc_handler(
+            <MangaDexClient as Author>::into_handler(mangadex_client),
+        ))
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

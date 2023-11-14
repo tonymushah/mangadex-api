@@ -37,6 +37,7 @@
 		"@svelteuidev/motion": "^0.15.3",
 		"@svelteuidev/preprocessors": "^0.15.3",
 		"@svelteuidev/prism": "^0.15.3",
+		"@tauri-apps/api": "^1.5.1",
 		"dayjs": "^1.11.10",
 		"taurpc": "^1.4.2"
 	}

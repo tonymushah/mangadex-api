@@ -12,6 +12,7 @@ pub struct AuthorListParams {
     pub offset: Option<u32>,
     #[serde(default)]
     pub author_ids: Vec<Uuid>,
+    #[serde(default)]
     pub name: Option<String>,
     #[serde(default)]
     pub order: Option<AuthorSortOrder>,

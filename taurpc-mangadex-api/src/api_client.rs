@@ -27,7 +27,7 @@ use mangadex_api::v5::api_client::{
 
 use uuid::Uuid;
 
-#[taurpc::procedures(path = "mangadex.api_client")]
+#[taurpc::procedures(path = "mangadex.api_client", export_to = "../src/lib/bindings.ts")]
 pub trait ApiClient {
     async fn list<R: Runtime>(
         params: ApiClientListParam,

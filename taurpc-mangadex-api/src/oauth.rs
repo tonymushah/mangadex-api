@@ -9,7 +9,7 @@ use tauri::{Runtime, Window};
 
 use crate::Result;
 
-#[taurpc::procedures(path = "mangadex.oauth")]
+#[taurpc::procedures(path = "mangadex.oauth", export_to = "../src/lib/bindings.ts")]
 pub trait OAuth {
     async fn login<R: Runtime>(
         params: OAuthLoginParams,

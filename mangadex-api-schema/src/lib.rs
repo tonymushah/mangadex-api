@@ -5,7 +5,7 @@ pub mod v5;
 use std::borrow::Cow;
 use std::ops::Deref;
 
-use mangadex_api_types::error::schema::MangaDexErrorResponse;
+use mangadex_api_types::error::schema::MangaDexErrorResponse_ as MangaDexErrorResponse;
 use mangadex_api_types::error::Error;
 use mangadex_api_types::rate_limit::RateLimit;
 use mangadex_api_types::{RelationshipType, ResponseType, ResultType};

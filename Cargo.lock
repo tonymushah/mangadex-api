@@ -2114,7 +2114,7 @@ dependencies = [
 
 [[package]]
 name = "mangadex-api-schema-rust"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "color-print",
  "jsonxf",
@@ -2145,7 +2145,7 @@ dependencies = [
 
 [[package]]
 name = "mangadex-api-types-rust"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "anyhow",
  "derive_builder",

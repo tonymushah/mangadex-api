@@ -24,7 +24,7 @@ pub use super::report::ReportReasonAttributes;
 pub use super::scanlation_group::ScanlationGroupAttributes;
 pub use super::statistics::manga::MangaStatisticsObject;
 pub use super::tag::TagAttributes;
-pub use super::types::error::schema::MangaDexErrorResponse;
+pub use super::types::error::schema::MangaDexErrorResponse_ as MangaDexErrorResponse;
 use super::types::error::Result;
 pub use super::upload_session_file::{UploadSessionFileAttributes, UploadSessionFileData};
 pub use super::user::UserAttributes;

@@ -69,7 +69,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         .send()
         .await?;
 
-    let ids: Vec<(u64, Uuid)> = mapped_ids
+    let ids: Vec<(u32, Uuid)> = mapped_ids
         .data
         .iter()
         .map(|id_map| (id_map.attributes.legacy_id, id_map.attributes.new_id))

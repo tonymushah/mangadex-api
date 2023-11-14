@@ -6,5 +6,5 @@ members = [
     "mangadex-api",
     "mangadex-api-tests",
     "taurpc-mangadex-api",
-    "./taurpc-mangadex-api/examples/taurpc-mangadex-api-example/src-tauri"
+    "./taurpc-mangadex-api-example/src-tauri"
 ]

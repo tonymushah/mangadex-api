@@ -5,7 +5,7 @@ use tauri::{Runtime, Window};
 
 use crate::Result;
 
-#[taurpc::procedures(path = "mangadex.auth")]
+#[taurpc::procedures(path = "mangadex.auth", export_to = "../src/lib/bindings.ts")]
 pub trait Auth {
     async fn check<R: Runtime>(window: Window<R>) -> Result<CheckTokenResponse>;
 }
