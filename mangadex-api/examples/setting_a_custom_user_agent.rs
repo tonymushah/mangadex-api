@@ -1,43 +1,38 @@
-use mangadex_api::MangaDexClient;
 use mangadex_api_schema::v5::RelatedAttributes;
-use mangadex_api_types::{
-    Language, MangaDexDateTime, MangaSortOrder, OrderDirection, ReferenceExpansionResource,
-};
-use time::{Duration, OffsetDateTime};
+use mangadex_api_types::{Language, ReferenceExpansionResource};
+use std::time::Duration;
 use url::Url;
-use uuid::Uuid;
+
+use mangadex_api::MangaDexClient;
+use reqwest::{
+    header::{HeaderMap, HeaderValue, USER_AGENT},
+    Client,
+};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let client = MangaDexClient::default();
+    let mut default_header = HeaderMap::new();
+    // We set your default header
+    default_header.insert(USER_AGENT, HeaderValue::from_str("myApp v0")?);
 
-    // Take the local date and put substract it with 30 days
-    let created_at_since = OffsetDateTime::now_utc()
-        .checked_sub(Duration::days(30))
-        .unwrap();
+    let reqwest_client = Client::builder()
+        .default_headers(default_header)
+        // I set some timeout here
+        .timeout(Duration::from_secs(15))
+        .build()?;
+    let client = MangaDexClient::new(reqwest_client);
 
-    let created_at_since = MangaDexDateTime::new(&created_at_since);
+    // Do stuff your client :3
+    // I keep pretty much the same code as the previous example
 
     let res = client
         .manga()
         .get()
-        // We pick up all manga that has been created during these last 30 days
-        .created_at_since(created_at_since)
-        // Mangadex Popular Titles is ordered by followedCount descending
-        .order(MangaSortOrder::FollowedCount(OrderDirection::Descending))
+        .title("Konsei ga")
         // We include the author data
         .include(ReferenceExpansionResource::Author)
         // We include the arstits data
         .include(ReferenceExpansionResource::Artist)
-        .send()
-        .await?;
-
-    // Fetch the manga statistics
-    let stats = client
-        .statistics()
-        .manga()
-        .get()
-        .manga(res.data.iter().map(|d| d.id).collect::<Vec<Uuid>>())
         .send()
         .await?;
 
@@ -84,12 +79,6 @@ async fn main() -> anyhow::Result<()> {
             println!("\tArtist: {artist}");
         }
 
-        if let Some(stat) = stats.statistics.get(&manga.id) {
-            if let Some(average) = stat.rating.average {
-                println!("\tAverage: {average}");
-            }
-        }
-
         // We generate the link that goes to the Mangadex page
         let title_link =
             Url::parse("https://mangadex.org/title/")?.join(manga.id.to_string().as_str())?;
@@ -98,8 +87,6 @@ async fn main() -> anyhow::Result<()> {
         println!();
         index += 1;
     }
-
-    println!("Done :3");
 
     Ok(())
 }

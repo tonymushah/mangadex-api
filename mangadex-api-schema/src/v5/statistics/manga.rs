@@ -43,7 +43,10 @@ pub struct MangaRating {
     /// Ratings values with no votes are not included in the calculation.
     ///
     /// Will be `None` if no ratings calculations have been done.
+    #[serde(default)]
     pub average: Option<f32>,
+    #[serde(default)]
+    pub bayesian: Option<f32>,
     /// Ordered distribution of ratings from 1 to 10.
     ///
     /// Array indices correspond to the rating value.
