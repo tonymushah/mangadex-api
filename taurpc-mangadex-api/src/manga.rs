@@ -1,2 +1,2 @@
 #[taurpc::procedures]
-pub trait MangaProcedures {}
+pub trait Manga {}

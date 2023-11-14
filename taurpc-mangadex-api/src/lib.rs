@@ -7,14 +7,29 @@ pub mod oauth;
 
 use std::fmt::Display;
 
-pub use api_client::*;
-pub use at_home::*;
-pub use auth::*;
-pub use author::*;
-pub use manga::*;
-pub use oauth::*;
+pub use api_client::ApiClient;
+pub use at_home::AtHome;
+pub use auth::Auth;
+pub use author::Author;
+pub use manga::Manga;
+pub use oauth::OAuth;
 
 use mangadex_api_types::ResultType;
+
+#[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::MangaDexClient;
+#[cfg(feature = "mangadex-api-resolver")]
+use taurpc::Router;
+
+#[cfg(feature = "mangadex-api-resolver")]
+pub fn init_router(client: &MangaDexClient) -> Router {
+    Router::new()
+        .merge(<MangaDexClient as ApiClient>::into_handler(client.clone()))
+        .merge(<MangaDexClient as AtHome>::into_handler(client.clone()))
+        .merge(<MangaDexClient as Auth>::into_handler(client.clone()))
+        .merge(<MangaDexClient as Author>::into_handler(client.clone()))
+        .merge(<MangaDexClient as OAuth>::into_handler(client.clone()))
+}
 
 #[taurpc::ipc_type]
 #[derive(Debug)]

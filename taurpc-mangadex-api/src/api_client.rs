@@ -28,7 +28,7 @@ use mangadex_api::v5::api_client::{
 use uuid::Uuid;
 
 #[taurpc::procedures(path = "mangadex.api_client")]
-pub trait ApiClientProcedures {
+pub trait ApiClient {
     async fn list<R: Runtime>(
         params: ApiClientListParam,
         window: Window<R>,
@@ -52,7 +52,7 @@ pub trait ApiClientProcedures {
 
 #[cfg(feature = "mangadex-api-resolver")]
 #[taurpc::resolvers]
-impl ApiClientProcedures for mangadex_api::MangaDexClient {
+impl ApiClient for mangadex_api::MangaDexClient {
     async fn list<R: Runtime>(
         self,
         params: ApiClientListParam,
