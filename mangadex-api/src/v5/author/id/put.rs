@@ -67,7 +67,6 @@ pub struct UpdateAuthor {
     pub http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    #[builder(pattern = "immutable")]
     pub author_id: Uuid,
 
     #[serde(skip_serializing_if = "Option::is_none")]

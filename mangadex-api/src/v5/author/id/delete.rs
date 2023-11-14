@@ -66,7 +66,6 @@ pub struct DeleteAuthor {
     pub http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
-    #[builder(pattern = "immutable")]
     pub author_id: Uuid,
 }
 

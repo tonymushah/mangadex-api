@@ -24,17 +24,17 @@ impl IdEndpoint {
 
     pub fn get(&self) -> GetAuthorBuilder {
         GetAuthorBuilder::default()
-            .http_client(self.http_client.clone())
             .author_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn delete(&self) -> DeleteAuthorBuilder {
         DeleteAuthorBuilder::default()
-            .http_client(self.http_client.clone())
             .author_id(self.id)
+            .http_client(self.http_client.clone())
     }
     pub fn put(&self) -> UpdateAuthorBuilder {
         UpdateAuthorBuilder::default()
-            .http_client(self.http_client.clone())
             .author_id(self.id)
+            .http_client(self.http_client.clone())
     }
 }

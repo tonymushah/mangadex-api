@@ -50,14 +50,26 @@ pub struct ListAuthor {
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub http_client: HttpClientRef,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default)]
     pub limit: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[builder(default)]
     pub offset: Option<u32>,
     #[serde(rename = "ids")]
+    #[builder(default)]
     #[builder(setter(each = "add_author"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub author_ids: Vec<Uuid>,
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<AuthorSortOrder>,
+    #[builder(default)]
     #[builder(setter(each = "include"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 
