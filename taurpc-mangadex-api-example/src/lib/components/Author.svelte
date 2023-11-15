@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { ApiData, ApiObject, AuthorAttributes } from "$lib/bindings";
+    import type { ApiData, ApiObject, AuthorAttributes } from "$lib/mangadex_7";
     type Author = ApiObject<AuthorAttributes>;
     export let author: Author;
     let name = author.attributes.name;

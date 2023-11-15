@@ -9,7 +9,7 @@ use tauri::{Runtime, Window};
 
 use crate::Result;
 
-#[taurpc::procedures(path = "mangadex.oauth", export_to = "../src/lib/bindings.ts")]
+#[taurpc::procedures(path = "mangadex_oauth")]
 pub trait OAuth {
     async fn login<R: Runtime>(
         params: OAuthLoginParams,
@@ -39,5 +39,24 @@ impl OAuth for MangaDexClient {
             .send()
             .await
             .map_err(<crate::Error as From<mangadex_api_types::error::Error>>::from)
+    }
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+#[derive(Debug, Clone)]
+pub struct OAuthReslover(pub MangaDexClient);
+
+#[cfg(feature = "mangadex-api-resolver")]
+#[taurpc::resolvers]
+impl OAuth for OAuthReslover {
+    async fn login<R: Runtime>(
+        self,
+        params: OAuthLoginParams,
+        _window: Window<R>,
+    ) -> Result<OAuthTokenResponse> {
+        self.0.login(params, _window).await
+    }
+    async fn refresh<R: Runtime>(self, _window: Window<R>) -> Result<OAuthTokenResponse> {
+        self.0.refresh(_window).await
     }
 }

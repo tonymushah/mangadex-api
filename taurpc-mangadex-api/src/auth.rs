@@ -5,7 +5,7 @@ use tauri::{Runtime, Window};
 
 use crate::Result;
 
-#[taurpc::procedures(path = "mangadex.auth", export_to = "../src/lib/bindings.ts")]
+#[taurpc::procedures(path = "mangadex_auth")]
 pub trait Auth {
     async fn check<R: Runtime>(window: Window<R>) -> Result<CheckTokenResponse>;
 }
@@ -20,5 +20,17 @@ impl Auth for MangaDexClient {
             .send()
             .await
             .map_err(<crate::Error as From<mangadex_api_types::error::Error>>::from)
+    }
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+#[derive(Clone, Debug)]
+pub struct AuthResolver(pub MangaDexClient);
+
+#[cfg(feature = "mangadex-api-resolver")]
+#[taurpc::resolvers]
+impl Auth for AuthResolver {
+    async fn check<R: Runtime>(self, window: Window<R>) -> Result<CheckTokenResponse> {
+        self.0.check(window).await
     }
 }

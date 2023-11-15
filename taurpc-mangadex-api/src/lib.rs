@@ -14,6 +14,17 @@ pub use author::Author;
 pub use manga::Manga;
 pub use oauth::OAuth;
 
+#[cfg(feature = "mangadex-api-resolver")]
+pub use api_client::ApiClientResolver;
+#[cfg(feature = "mangadex-api-resolver")]
+pub use at_home::AtHomeResolver;
+#[cfg(feature = "mangadex-api-resolver")]
+pub use auth::AuthResolver;
+#[cfg(feature = "mangadex-api-resolver")]
+pub use author::AuthorResolver;
+#[cfg(feature = "mangadex-api-resolver")]
+pub use oauth::OAuthReslover;
+
 use mangadex_api_types::ResultType;
 
 #[cfg(feature = "mangadex-api-resolver")]
@@ -24,11 +35,10 @@ use taurpc::Router;
 #[cfg(feature = "mangadex-api-resolver")]
 pub fn init_router(client: &MangaDexClient) -> Router {
     Router::new()
-        .merge(<MangaDexClient as ApiClient>::into_handler(client.clone()))
-        .merge(<MangaDexClient as AtHome>::into_handler(client.clone()))
-        .merge(<MangaDexClient as Auth>::into_handler(client.clone()))
-        .merge(<MangaDexClient as Author>::into_handler(client.clone()))
-        .merge(<MangaDexClient as OAuth>::into_handler(client.clone()))
+        .merge(ApiClientResolver(client.clone()).into_handler())
+        .merge(AtHomeResolver(client.clone()).into_handler())
+        .merge(AuthResolver(client.clone()).into_handler())
+        .merge(AuthorResolver(client.clone()).into_handler())
 }
 
 #[taurpc::ipc_type]

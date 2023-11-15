@@ -9,7 +9,7 @@ use mangadex_api::{v5::at_home::server::id::get::GetAtHomeServerBuilder, MangaDe
 
 use crate::Result;
 
-#[taurpc::procedures(path = "mangadex.at_home", export_to = "../src/lib/bindings.ts")]
+#[taurpc::procedures(path = "mangadex_at_home")]
 pub trait AtHome {
     async fn server<R: Runtime>(
         params: AtHomeServerParams,
@@ -31,5 +31,21 @@ impl AtHome for MangaDexClient {
             .send()
             .await
             .map_err(<crate::Error as From<mangadex_api_types::error::Error>>::from)
+    }
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+#[derive(Debug, Clone)]
+pub struct AtHomeResolver(pub MangaDexClient);
+
+#[cfg(feature = "mangadex-api-resolver")]
+#[taurpc::resolvers]
+impl AtHome for AtHomeResolver {
+    async fn server<R: Runtime>(
+        self,
+        params: AtHomeServerParams,
+        _window: Window<R>,
+    ) -> Result<Limited<AtHomeServer>> {
+        self.0.server(params, _window).await
     }
 }

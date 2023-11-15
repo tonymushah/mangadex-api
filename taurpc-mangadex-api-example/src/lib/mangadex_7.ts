@@ -93,6 +93,8 @@ export type AuthTokens = { session: string; refresh: string }
  */
 export type ApiClientSecret = { result?: ResultType; data: string }
 
+export type TauRPCMAngadexAPIError = { result: ResultType; type: string; message: string }
+
 export type ApiClientEditParam = { client_id: string; description?: string | null; version: number }
 
 export type GroupStatistics = { comments: Comments | null }
@@ -137,6 +139,8 @@ export type RefreshTokenResponse = { token: AuthTokens; message: string | null }
  */
 export type UploadSource = "local" | "remote"
 
+export type TauRpcApiClientOutputTypes = { proc_name: "list"; output_type: Results<ApiObject<ApiClientAttributes>> } | { proc_name: "create"; output_type: ApiData<ApiObject<ApiClientAttributes>> } | { proc_name: "get_unique"; output_type: ApiData<ApiObject<ApiClientAttributes>> } | { proc_name: "edit"; output_type: ApiData<ApiObject<ApiClientAttributes>> } | { proc_name: "delete"; output_type: NoData } | { proc_name: "get_secret"; output_type: ApiClientSecret } | { proc_name: "refresh_secret"; output_type: ApiClientSecret }
+
 export type Comments = { threadId: number; repliesCount: number }
 
 export type ClientInfo = { clientId: string; clientSecret: string }
@@ -166,8 +170,6 @@ export type AuthorSortOrder = { name: OrderDirection }
  * Languages supported by MangaDex.
  */
 export type Language = "ar" | "az" | "bn" | "bg" | "my" | "ca" | "zh-ro" | "zh" | "zh-hk" | "hr" | "cs" | "da" | "nl" | "en" | "eo" | "tl" | "fi" | "fr" | "de" | "el" | "he" | "hi" | "hu" | "id" | "it" | "ja" | "ja-ro" | "kk" | "ko" | "ko-ro" | "la" | "lt" | "ms" | "mn" | "ne" | "kr" | "no" | "fa" | "pl" | "pt-br" | "pt" | "rm" | "ro" | "ru" | "sr" | "sk" | "es" | "es-la" | "sv" | "ta" | "th" | "tr" | "uk" | "vi" | "NULL"
-
-export type TauRpcApiClientOutputTypes = { proc_name: "list"; output_type: Results<ApiObject<ApiClientAttributes>> } | { proc_name: "create"; output_type: ApiData<ApiObject<ApiClientAttributes>> } | { proc_name: "get_unique"; output_type: ApiData<ApiObject<ApiClientAttributes>> } | { proc_name: "edit"; output_type: ApiData<ApiObject<ApiClientAttributes>> } | { proc_name: "delete"; output_type: NoData } | { proc_name: "get_secret"; output_type: ApiClientSecret } | { proc_name: "refresh_secret"; output_type: ApiClientSecret }
 
 /**
  * Flag to include future updates in the results.
@@ -241,8 +243,6 @@ export type CustomListVisibility = "Public" | "Private"
 export type ReferenceExpansionResource = "manga" | "chapter" | "cover_art" | "author" | "artist" | "scanlation_group" | "tag" | "user" | "custom_list" | "creator" | "reason" | "leader" | "member" | "thread"
 
 export type TauRpcMangaOutputTypes = never
-
-export type TauRpcApiClientInputTypes = { proc_name: "list"; input_type: { __taurpc_type: ApiClientListParam } } | { proc_name: "create"; input_type: { __taurpc_type: ApiClientCreateParams } } | { proc_name: "get_unique"; input_type: { __taurpc_type: ApiClientGetUniqueParams } } | { proc_name: "edit"; input_type: { __taurpc_type: ApiClientEditParam } } | { proc_name: "delete"; input_type: { __taurpc_type: ApiClientDeleteParam } } | { proc_name: "get_secret"; input_type: { __taurpc_type: string } } | { proc_name: "refresh_secret"; input_type: { __taurpc_type: string } }
 
 export type CheckUsernameAvailableResponse = { available: boolean }
 
@@ -375,6 +375,8 @@ export type TauRpcAtHomeInputTypes = { proc_name: "server"; input_type: { __taur
  */
 export type ReportReasonAttributes = { reason: { [key: Language]: string }; detailsRequired: boolean; category: ReportCategory; version: number }
 
+export type TauRpcApiClientInputTypes = { proc_name: "list"; input_type: { __taurpc_type: ApiClientListParam } } | { proc_name: "create"; input_type: { __taurpc_type: ApiClientCreateParams } } | { proc_name: "get_unique"; input_type: { __taurpc_type: ApiClientGetUniqueParams } } | { proc_name: "edit"; input_type: { __taurpc_type: ApiClientEditParam } } | { proc_name: "delete"; input_type: { __taurpc_type: ApiClientDeleteParam } } | { proc_name: "get_secret"; input_type: { __taurpc_type: string } } | { proc_name: "refresh_secret"; input_type: { __taurpc_type: string } }
+
 /**
  * Flag to include future updates in the results.
  */
@@ -424,8 +426,6 @@ export type MangaStatisticsObject = { result?: ResultType; statistics: { [key: s
 
 export type CoverSortOrder = { createdAt: OrderDirection } | { updatedAt: OrderDirection } | { volume: OrderDirection }
 
-export type TauRPCMAngadexAPIError = { result: ResultType; type: string; message: string }
-
 export type AuthorCreateParams = { name: string; biography?: { [key: Language]: string } | null; twitter?: string | null; pixiv?: string | null; melon_book?: string | null; fan_box?: string | null; booth?: string | null; nico_video?: string | null; skeb?: string | null; fantia?: string | null; tumblr?: string | null; youtube?: string | null; weibo?: string | null; naver?: string | null; website?: string | null }
 
 /**
@@ -460,15 +460,14 @@ export type UserAttributes = { username: string; roles: UserRole[]; version: num
 
 export type AuthorEditParams = { id: string; name: string | null; biography?: { [key: Language]: string } | null; twitter?: string | null; pixiv?: string | null; melon_book?: string | null; fan_box?: string | null; booth?: string | null; nico_video?: string | null; skeb?: string | null; fantia?: string | null; tumblr?: string | null; youtube?: string | null; weibo?: string | null; naver?: string | null; website?: string | null; version: number }
 
-const ARGS_MAP = {"mangadex.author":"{\"get_unique\":[\"params\"],\"create\":[\"params\"],\"edit\":[\"params\"],\"list\":[\"params\"],\"delete\":[\"id\"]}","mangadex.oauth":"{\"login\":[\"params\"],\"refresh\":[]}","mangadex.at_home":"{\"server\":[\"params\"]}","mangadex.api_client":"{\"refresh_secret\":[\"id\"],\"list\":[\"params\"],\"edit\":[\"params\"],\"get_unique\":[\"params\"],\"get_secret\":[\"id\"],\"create\":[\"params\"],\"delete\":[\"params\"]}","mangadex.auth":"{\"check\":[]}"}
+const ARGS_MAP = {"mangadex_at_home":"{\"server\":[\"params\"]}","mangadex_author":"{\"edit\":[\"params\"],\"create\":[\"params\"],\"list\":[\"params\"],\"get_unique\":[\"params\"],\"delete\":[\"id\"]}","mangadex_api_client":"{\"edit\":[\"params\"],\"create\":[\"params\"],\"get_secret\":[\"id\"],\"delete\":[\"params\"],\"refresh_secret\":[\"id\"],\"list\":[\"params\"],\"get_unique\":[\"params\"]}","mangadex_auth":"{\"check\":[]}"}
 import { createTauRPCProxy as createProxy } from "taurpc"
 
 export const createTauRPCProxy = () => createProxy<Router>(ARGS_MAP)
 
 type Router = {
-	'mangadex.api_client': [TauRpcApiClientInputTypes, TauRpcApiClientOutputTypes],
-	'mangadex.at_home': [TauRpcAtHomeInputTypes, TauRpcAtHomeOutputTypes],
-	'mangadex.auth': [TauRpcAuthInputTypes, TauRpcAuthOutputTypes],
-	'mangadex.author': [TauRpcAuthorInputTypes, TauRpcAuthorOutputTypes],
-	'mangadex.oauth': [TauRpcOAuthInputTypes, TauRpcOAuthOutputTypes],
+	'mangadex_api_client': [TauRpcApiClientInputTypes, TauRpcApiClientOutputTypes],
+	'mangadex_at_home': [TauRpcAtHomeInputTypes, TauRpcAtHomeOutputTypes],
+	'mangadex_auth': [TauRpcAuthInputTypes, TauRpcAuthOutputTypes],
+	'mangadex_author': [TauRpcAuthorInputTypes, TauRpcAuthorOutputTypes],
 }

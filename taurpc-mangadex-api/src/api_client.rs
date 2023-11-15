@@ -7,6 +7,9 @@ pub mod list;
 use crate::Result;
 use list::ApiClientListParam;
 
+#[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::MangaDexClient;
+
 use mangadex_api_schema::{
     v5::{ApiClientCollection, ApiClientData, ApiClientSecret},
     NoData,
@@ -27,7 +30,7 @@ use mangadex_api::v5::api_client::{
 
 use uuid::Uuid;
 
-#[taurpc::procedures(path = "mangadex.api_client", export_to = "../src/lib/bindings.ts")]
+#[taurpc::procedures(path = "mangadex_api_client")]
 pub trait ApiClient {
     async fn list<R: Runtime>(
         params: ApiClientListParam,
@@ -52,7 +55,7 @@ pub trait ApiClient {
 
 #[cfg(feature = "mangadex-api-resolver")]
 #[taurpc::resolvers]
-impl ApiClient for mangadex_api::MangaDexClient {
+impl ApiClient for MangaDexClient {
     async fn list<R: Runtime>(
         self,
         params: ApiClientListParam,
@@ -135,5 +138,73 @@ impl ApiClient for mangadex_api::MangaDexClient {
             .send()
             .await
             .map_err(<crate::Error as From<mangadex_api_types::error::Error>>::from)
+    }
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+#[derive(Clone)]
+pub struct ApiClientResolver(pub MangaDexClient);
+
+#[cfg(feature = "mangadex-api-resolver")]
+impl From<ApiClientResolver> for MangaDexClient {
+    fn from(value: ApiClientResolver) -> Self {
+        value.0
+    }
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+#[taurpc::resolvers]
+impl ApiClient for ApiClientResolver {
+    async fn list<R: Runtime>(
+        self,
+        params: ApiClientListParam,
+        window: Window<R>,
+    ) -> Result<ApiClientCollection> {
+        let client: MangaDexClient = self.into();
+        client.list(params, window).await
+    }
+    async fn create<R: Runtime>(
+        self,
+        params: ApiClientCreateParams,
+        window: Window<R>,
+    ) -> Result<ApiClientData> {
+        let client: MangaDexClient = self.into();
+        client.create(params, window).await
+    }
+    async fn get_unique<R: Runtime>(
+        self,
+        params: ApiClientGetUniqueParams,
+        window: Window<R>,
+    ) -> Result<ApiClientData> {
+        let client: MangaDexClient = self.into();
+        client.get_unique(params, window).await
+    }
+    async fn edit<R: Runtime>(
+        self,
+        params: ApiClientEditParam,
+        window: Window<R>,
+    ) -> Result<ApiClientData> {
+        let client: MangaDexClient = self.into();
+        client.edit(params, window).await
+    }
+    async fn delete<R: Runtime>(
+        self,
+        params: ApiClientDeleteParam,
+        window: Window<R>,
+    ) -> Result<NoData> {
+        let client: MangaDexClient = self.into();
+        client.delete(params, window).await
+    }
+    async fn get_secret<R: Runtime>(self, id: Uuid, window: Window<R>) -> Result<ApiClientSecret> {
+        let client: MangaDexClient = self.into();
+        client.get_secret(id, window).await
+    }
+    async fn refresh_secret<R: Runtime>(
+        self,
+        id: Uuid,
+        window: Window<R>,
+    ) -> Result<ApiClientSecret> {
+        let client: MangaDexClient = self.into();
+        client.refresh_secret(id, window).await
     }
 }

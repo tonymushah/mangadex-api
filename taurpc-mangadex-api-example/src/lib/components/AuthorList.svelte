@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createTauRPCProxy, type ApiObject, type AuthorAttributes } from "$lib/bindings";
+	import { createTauRPCProxy, type ApiObject, type AuthorAttributes } from "$lib/mangadex_7";
 	import { getName } from '@tauri-apps/api/app';
     import { Button } from "@svelteuidev/core";
 
@@ -12,8 +12,7 @@
     async function fetch_author() {
         const taurpc = await createTauRPCProxy();
         name = await getName();
-        console.log(taurpc);
-        author_list = (await taurpc.mangadex.author.list({})).data;
+        author_list = (await taurpc.mangadex_author.list({})).data;
     }
 </script>
 

@@ -27,7 +27,7 @@ use mangadex_api::{
 
 use crate::Result;
 
-#[taurpc::procedures(path = "mangadex.author", export_to = "../src/lib/bindings.ts")]
+#[taurpc::procedures(path = "mangadex_author", export_to = "../src/lib/mangadex_7.ts")]
 pub trait Author {
     async fn list<R: Runtime>(
         params: AuthorListParams,
@@ -106,5 +106,45 @@ impl Author for MangaDexClient {
             .send()
             .await
             .map_err(<crate::Error as From<mangadex_api_types::error::Error>>::from)
+    }
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+#[derive(Debug, Clone)]
+pub struct AuthorResolver(pub MangaDexClient);
+
+#[cfg(feature = "mangadex-api-resolver")]
+#[taurpc::resolvers]
+impl Author for AuthorResolver {
+    async fn list<R: Runtime>(
+        self,
+        params: AuthorListParams,
+        window: Window<R>,
+    ) -> Result<AuthorCollection> {
+        self.0.list(params, window).await
+    }
+    async fn create<R: Runtime>(
+        self,
+        params: AuthorCreateParams,
+        _window: Window<R>,
+    ) -> Result<Limited<AuthorData>> {
+        self.0.create(params, _window).await
+    }
+    async fn get_unique<R: Runtime>(
+        self,
+        params: AuthorGetUniqueParam,
+        _window: Window<R>,
+    ) -> Result<AuthorData> {
+        self.0.get_unique(params, _window).await
+    }
+    async fn edit<R: Runtime>(
+        self,
+        params: AuthorEditParams,
+        _window: Window<R>,
+    ) -> Result<Limited<AuthorData>> {
+        self.0.edit(params, _window).await
+    }
+    async fn delete<R: Runtime>(self, id: Uuid, _window: Window<R>) -> Result<Limited<NoData>> {
+        self.0.delete(id, _window).await
     }
 }

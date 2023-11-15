@@ -5,7 +5,7 @@
     "beforeDevCommand": "pnpm run dev",
     "devPath": "http://localhost:3456",
     "distDir": "../build",
-    "withGlobalTauri": true
+    "withGlobalTauri": false
   },
   "package": {
     "productName": "taurpc-mangadex-api-example",
@@ -13,7 +13,14 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "shell": {
+        "all": false,
+        "execute": false,
+        "open": true,
+        "scope": [],
+        "sidecar": false
+      }
     },
     "bundle": {
       "active": true,
