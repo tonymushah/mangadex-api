@@ -5,7 +5,7 @@ A collection of enums and static data for the [mangadex-api](https://github.com/
 ## Install 
 
 ```toml
-mangadex-api-types-rust = "0.3.4"
+mangadex-api-types-rust = "0.5"
 ```
 
 ## Features 

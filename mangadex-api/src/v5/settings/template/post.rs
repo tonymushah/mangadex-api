@@ -66,7 +66,7 @@ pub struct CreateSettingsTemplate {
     #[builder(pattern = "immutable")]
     #[allow(unused)]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub(crate) http_client: HttpClientRef,
+    pub http_client: HttpClientRef,
 
     #[builder(default)]
     #[serde(skip_serializing_if = "Option::is_none")]

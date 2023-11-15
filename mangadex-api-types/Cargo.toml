@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api-types-rust"
-version = "0.5.0"
+version = "0.5.2"
 authors = ["tonymushah <tonymushahdev06@yahoo.com>"]
 description = "Types for mangadex-api"
 license = "MIT OR Apache-2.0"

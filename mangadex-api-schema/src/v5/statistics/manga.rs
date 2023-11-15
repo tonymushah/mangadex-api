@@ -30,7 +30,7 @@ pub struct MangaStatistics {
     /// Number of users following the Manga.
     // The API documentation has placed this within the `rating` object as of MangaDex API 5.4.9 but
     // the actual response has this field at this level.
-    pub follows: u64,
+    pub follows: u32,
     pub comments: Option<Comments>,
 }
 
@@ -43,14 +43,17 @@ pub struct MangaRating {
     /// Ratings values with no votes are not included in the calculation.
     ///
     /// Will be `None` if no ratings calculations have been done.
+    #[serde(default)]
     pub average: Option<f32>,
+    #[serde(default)]
+    pub bayesian: Option<f32>,
     /// Ordered distribution of ratings from 1 to 10.
     ///
     /// Array indices correspond to the rating value.
     ///
     /// Each element corresponds to the number of users that have given that rating.
     #[serde(default)]
-    #[cfg_attr(feature = "specta", specta(type = HashMap<String, u64>))]
+    #[cfg_attr(feature = "specta", specta(type = HashMap<String, u32>))]
     pub distribution: RatingsDistribution,
 }
 
@@ -62,25 +65,25 @@ pub struct MangaRating {
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct RatingsDistribution {
     #[serde(rename = "1")]
-    pub r1: u64,
+    pub r1: u32,
     #[serde(rename = "2")]
-    pub r2: u64,
+    pub r2: u32,
     #[serde(rename = "3")]
-    pub r3: u64,
+    pub r3: u32,
     #[serde(rename = "4")]
-    pub r4: u64,
+    pub r4: u32,
     #[serde(rename = "5")]
-    pub r5: u64,
+    pub r5: u32,
     #[serde(rename = "6")]
-    pub r6: u64,
+    pub r6: u32,
     #[serde(rename = "7")]
-    pub r7: u64,
+    pub r7: u32,
     #[serde(rename = "8")]
-    pub r8: u64,
+    pub r8: u32,
     #[serde(rename = "9")]
-    pub r9: u64,
+    pub r9: u32,
     #[serde(rename = "10")]
-    pub r10: u64,
+    pub r10: u32,
 }
 
 impl FromResponse for MangaStatisticsObject {

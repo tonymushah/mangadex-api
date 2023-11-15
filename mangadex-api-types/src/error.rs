@@ -4,7 +4,7 @@ use std::{
 };
 
 use derive_builder::UninitializedFieldError;
-use schema::MangaDexErrorResponse;
+use schema::MangaDexErrorResponse_ as MangaDexErrorResponse;
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 #[derive(Debug, thiserror::Error)]
@@ -151,7 +151,7 @@ pub mod schema {
     #[derive(Debug, thiserror::Error, Deserialize, Serialize)]
     #[error("Bad request")]
     #[cfg_attr(feature = "specta", derive(specta::Type))]
-    pub struct MangaDexErrorResponse {
+    pub struct MangaDexErrorResponse_ {
         #[serde(default = "ResultType::error")]
         pub result: ResultType,
         #[serde(default)]

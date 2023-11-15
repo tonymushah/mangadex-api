@@ -9,6 +9,10 @@ use uuid::Uuid;
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct UserHistoryEntry {
     pub chapter_id: Uuid,
+    #[cfg_attr(
+        feature = "serialize",
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+    )]
     pub read_date: MangaDexDateTime,
 }
 

@@ -53,7 +53,7 @@ pub struct GetMangaStatistics {
     #[serde(skip)]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub(crate) http_client: HttpClientRef,
+    pub http_client: HttpClientRef,
 
     pub manga_id: Uuid,
 }

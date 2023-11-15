@@ -41,7 +41,9 @@ use mangadex_api_types as types;
 use serde::Deserialize;
 use uuid::Uuid;
 
-use types::{Language, MangaRelation, RelationshipType, ResponseType, ResultType};
+use types::{
+    Language, MangaDexDateTime, MangaRelation, RelationshipType, ResponseType, ResultType,
+};
 
 pub(crate) use crate::ApiObject;
 use crate::FromResponse;
@@ -531,5 +533,34 @@ pub(crate) mod language_array_or_skip_null {
         S: Serializer,
     {
         to_use.serialize(serializer)
+    }
+}
+
+pub fn mangadex_datetime_serialize<S>(
+    datetime: &MangaDexDateTime,
+    serializer: S,
+) -> Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    serializer.serialize_str(datetime.to_string().as_str())
+}
+
+#[cfg(test)]
+mod test {
+    use serde::{Deserialize, Serialize};
+
+    use mangadex_api_types::MangaDexDateTime;
+
+    #[derive(Serialize, Deserialize, Default)]
+    struct TestStruct {
+        #[serde(serialize_with = "crate::v5::mangadex_datetime_serialize")]
+        date: MangaDexDateTime,
+    }
+
+    #[tokio::test]
+    async fn mangadex_datetime_serialize_test() {
+        let test: TestStruct = Default::default();
+        println!("{}", serde_json::to_string_pretty(&test).unwrap());
     }
 }

@@ -58,7 +58,7 @@ pub struct GetUserHistory {
     #[serde(skip)]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub(crate) http_client: HttpClientRef,
+    pub http_client: HttpClientRef,
 }
 
 endpoint! {
@@ -99,10 +99,12 @@ mod tests {
             "ratings": [
                 {
                     "chapterId": chapid,
-                    "readDate": date
+                    "readDate": date.to_string()
                 }
             ]
         });
+
+        println!("{:?}", response_body);
 
         Mock::given(method("GET"))
             .and(path_regex(r"/user/history"))

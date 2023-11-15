@@ -30,13 +30,29 @@ pub struct ChapterAttributes {
     pub external_url: Option<Url>,
     pub version: u32,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
+    #[cfg_attr(
+        feature = "serialize",
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+    )]
     pub created_at: MangaDexDateTime,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
+    #[cfg_attr(
+        feature = "serialize",
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+    )]
     pub updated_at: Option<MangaDexDateTime>,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
     #[cfg_attr(feature = "specta", specta(type = String))]
+    #[cfg_attr(
+        feature = "serialize",
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+    )]
     pub publish_at: MangaDexDateTime,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
     #[cfg_attr(feature = "specta", specta(type = String))]
+    #[cfg_attr(
+        feature = "serialize",
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+    )]
     pub readable_at: MangaDexDateTime,
 }

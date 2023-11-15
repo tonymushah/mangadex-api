@@ -11,13 +11,13 @@ use super::AuthTokens;
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct OAuthTokenResponse {
     pub access_token: String,
-    pub expires_in: usize,
-    pub refresh_expires_in: usize,
+    pub expires_in: u32,
+    pub refresh_expires_in: u32,
     pub refresh_token: String,
     pub token_type: String,
     #[serde(default)]
     #[serde(alias = "not-before-policy")]
-    pub not_before_policy: usize,
+    pub not_before_policy: u32,
     pub session_state: uuid::Uuid,
     pub scope: String,
     pub client_type: ApiClientProfile,

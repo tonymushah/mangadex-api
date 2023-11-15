@@ -56,3 +56,9 @@ pub enum RelationshipType {
     #[serde(other)]
     Unknown,
 }
+
+impl Default for RelationshipType {
+    fn default() -> Self {
+        Self::Unknown
+    }
+}

@@ -9,6 +9,6 @@ use uuid::Uuid;
 pub struct LegacyMappingIdAttributes {
     #[serde(rename = "type")]
     pub type_: LegacyMappingType,
-    pub legacy_id: u64,
+    pub legacy_id: u32,
     pub new_id: Uuid,
 }

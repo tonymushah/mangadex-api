@@ -50,7 +50,7 @@ pub struct GetUser {
     #[serde(skip)]
     #[builder(pattern = "immutable")]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub(crate) http_client: HttpClientRef,
+    pub http_client: HttpClientRef,
 
     #[serde(skip_serializing)]
     pub user_id: Uuid,

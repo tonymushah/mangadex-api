@@ -29,10 +29,7 @@ async fn main() -> anyhow::Result<()> {
     println!("Expires in {} minutes", response.expires_in / 60);
     // Wait until the token expires
 
-    sleep(Duration::from_secs(<u64 as TryFrom<usize>>::try_from(
-        response.expires_in,
-    )?))
-    .await;
+    sleep(Duration::from_secs(response.expires_in.into())).await;
 
     // Refresh the session token
     let response = client.oauth().refresh().send().await?;

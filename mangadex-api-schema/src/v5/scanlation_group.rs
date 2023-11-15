@@ -50,7 +50,15 @@ pub struct ScanlationGroupAttributes {
     pub publish_delay: Option<MangaDexDuration>,
     pub version: u32,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
+    #[cfg_attr(
+        feature = "serialize",
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+    )]
     pub created_at: MangaDexDateTime,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
+    #[cfg_attr(
+        feature = "serialize",
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+    )]
     pub updated_at: MangaDexDateTime,
 }

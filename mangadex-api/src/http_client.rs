@@ -261,7 +261,7 @@ impl HttpClient {
     }
 
     /// Send the request to the endpoint and deserialize the response body.
-    #[cfg(feature = "serialize")]
+    #[cfg(all(feature = "serialize", not(feature = "specta")))]
     pub(crate) async fn send_request_with_rate_limit<E>(
         &self,
         endpoint: &E,
@@ -270,6 +270,32 @@ impl HttpClient {
         E: Endpoint,
         <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
         <E as mangadex_api_schema::Endpoint>::Response: serde::Serialize + Clone,
+    {
+        use mangadex_api_types::rate_limit::RateLimit;
+
+        let resp = self.send_request_with_checks(endpoint).await?;
+
+        let rate_limit: RateLimit = TryFrom::try_from(&resp)?;
+
+        let res = self
+            .handle_result::<<E::Response as FromResponse>::Response>(resp)
+            .await?;
+
+        Ok(Limited {
+            rate_limit,
+            body: FromResponse::from_response(res),
+        })
+    }
+
+    #[cfg(all(feature = "serialize", feature = "specta"))]
+    pub(crate) async fn send_request_with_rate_limit<E>(
+        &self,
+        endpoint: &E,
+    ) -> Result<Limited<E::Response>>
+    where
+        E: Endpoint,
+        <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
+        <E as mangadex_api_schema::Endpoint>::Response: serde::Serialize + Clone + specta::Type,
     {
         use mangadex_api_types::rate_limit::RateLimit;
 

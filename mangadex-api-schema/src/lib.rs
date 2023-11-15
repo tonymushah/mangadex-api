@@ -5,7 +5,7 @@ pub mod v5;
 use std::borrow::Cow;
 use std::ops::Deref;
 
-use mangadex_api_types::error::schema::MangaDexErrorResponse;
+use mangadex_api_types::error::schema::MangaDexErrorResponse_ as MangaDexErrorResponse;
 use mangadex_api_types::error::Error;
 use mangadex_api_types::rate_limit::RateLimit;
 use mangadex_api_types::{RelationshipType, ResponseType, ResultType};
@@ -109,14 +109,14 @@ where
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
-pub struct ApiObject<A, T = RelationshipType> {
+pub struct ApiObject<A> {
     pub id: Uuid,
-    pub type_: T,
+    pub type_: RelationshipType,
     pub attributes: A,
     pub relationships: Vec<Relationship>,
 }
 
-impl<A, T> ApiObject<A, T> {
+impl<A> ApiObject<A> {
     pub fn find_relationships(&self, type_: RelationshipType) -> Vec<&Relationship> {
         self.relationships
             .iter()
@@ -128,7 +128,7 @@ impl<A, T> ApiObject<A, T> {
     }
 }
 
-impl<A, T> FromResponse for ApiObject<A, T> {
+impl<A> FromResponse for ApiObject<A> {
     type Response = Self;
 
     fn from_response(value: Self::Response) -> Self {
@@ -146,13 +146,13 @@ impl<T> PartialEq for ApiObject<T> {
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
-pub struct ApiObjectNoRelationships<A, T = RelationshipType> {
+pub struct ApiObjectNoRelationships<A> {
     pub id: Uuid,
-    pub type_: T,
+    pub type_: RelationshipType,
     pub attributes: A,
 }
 
-impl<A, T> FromResponse for ApiObjectNoRelationships<A, T> {
+impl<A> FromResponse for ApiObjectNoRelationships<A> {
     type Response = Self;
 
     fn from_response(value: Self::Response) -> Self {
@@ -219,11 +219,21 @@ where
 /// This struct is used for rate limited endpoint
 /// `rate_limit` is for the rate limit metadata
 /// `body` is the response data
-#[cfg(feature = "serialize")]
+#[cfg(all(feature = "serialize", not(feature = "specta")))]
 #[derive(Debug, Serialize, Clone)]
 pub struct Limited<T>
 where
-    T: Serialize + Clone,
+    T: Serialize + Clone + Deserialize,
+{
+    pub rate_limit: RateLimit,
+    pub body: T,
+}
+
+#[cfg(all(feature = "serialize", feature = "specta"))]
+#[derive(Debug, Serialize, Clone, specta::Type)]
+pub struct Limited<T>
+where
+    T: Serialize + Clone + specta::Type,
 {
     pub rate_limit: RateLimit,
     pub body: T,
@@ -250,10 +260,21 @@ where
     }
 }
 
-#[cfg(feature = "serialize")]
+#[cfg(all(feature = "serialize", not(feature = "specta")))]
 impl<T> Deref for Limited<T>
 where
     T: Clone + serde::Serialize,
+{
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.body
+    }
+}
+
+#[cfg(all(feature = "serialize", feature = "specta"))]
+impl<T> Deref for Limited<T>
+where
+    T: Clone + serde::Serialize + specta::Type,
 {
     type Target = T;
     fn deref(&self) -> &Self::Target {
