@@ -99,10 +99,12 @@ mod tests {
             "ratings": [
                 {
                     "chapterId": chapid,
-                    "readDate": date
+                    "readDate": date.to_string()
                 }
             ]
         });
+
+        println!("{:?}", response_body);
 
         Mock::given(method("GET"))
             .and(path_regex(r"/user/history"))

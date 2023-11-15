@@ -14,7 +14,15 @@ pub struct ApiClientAttributes {
     pub external_client_id: Option<String>,
     pub is_active: bool,
     pub state: ApiClientState,
+    #[cfg_attr(
+        feature = "serialize",
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+    )]
     pub created_at: MangaDexDateTime,
+    #[cfg_attr(
+        feature = "serialize",
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+    )]
     pub updated_at: MangaDexDateTime,
     pub version: u32,
 }

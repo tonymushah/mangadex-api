@@ -1,5 +1,5 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use time::{format_description, OffsetDateTime};
+use time::{format_description, OffsetDateTime, PrimitiveDateTime, UtcOffset};
 
 pub(crate) const MANGADEX_DATETIME_DE_FORMAT: &str =
     "[year]-[month]-[day]T[hour]:[minute]:[second][offset_hour sign:mandatory]:[offset_minute]";
@@ -47,6 +47,7 @@ impl<'de> Deserialize<'de> for MangaDexDateTime {
         D: Deserializer<'de>,
     {
         let s: String = Deserialize::deserialize(deserializer)?;
+
         let format_ser = format_description::parse(MANGADEX_DATETIME_SER_FORMAT).unwrap();
 
         let format_des = format_description::parse(MANGADEX_DATETIME_DE_FORMAT).unwrap();
@@ -55,7 +56,8 @@ impl<'de> Deserialize<'de> for MangaDexDateTime {
             if let Ok(datetime) = OffsetDateTime::parse(&s, &format_des) {
                 datetime
             } else {
-                OffsetDateTime::parse(&s, &format_ser).unwrap()
+                let date = PrimitiveDateTime::parse(&s, &format_ser).unwrap();
+                date.assume_offset(UtcOffset::current_local_offset().unwrap())
             }
         };
 

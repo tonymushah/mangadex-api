@@ -15,6 +15,10 @@ pub struct UserSettingsAttributes {
     #[serde(default)]
     pub result: ResultType,
     #[cfg_attr(feature = "specta", specta(type = String))]
+    #[cfg_attr(
+        feature = "serialize",
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+    )]
     pub updated_at: MangaDexDateTime,
     #[serde(skip)]
     settings: HashMap<String, String>,
