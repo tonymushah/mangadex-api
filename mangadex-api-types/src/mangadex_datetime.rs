@@ -48,18 +48,9 @@ impl<'de> Deserialize<'de> for MangaDexDateTime {
     {
         let s: String = Deserialize::deserialize(deserializer)?;
 
-        let format_ser = format_description::parse(MANGADEX_DATETIME_SER_FORMAT).unwrap();
-
         let format_des = format_description::parse(MANGADEX_DATETIME_DE_FORMAT).unwrap();
 
-        let datetime = {
-            if let Ok(datetime) = OffsetDateTime::parse(&s, &format_des) {
-                datetime
-            } else {
-                let date = PrimitiveDateTime::parse(&s, &format_ser).unwrap();
-                date.assume_offset(UtcOffset::current_local_offset().unwrap())
-            }
-        };
+        let datetime = OffsetDateTime::parse(&s, &format_des).unwrap();
 
         Ok(MangaDexDateTime(datetime))
     }
