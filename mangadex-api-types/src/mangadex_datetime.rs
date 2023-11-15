@@ -1,5 +1,5 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use time::{format_description, OffsetDateTime, PrimitiveDateTime, UtcOffset};
+use time::{format_description, OffsetDateTime};
 
 pub(crate) const MANGADEX_DATETIME_DE_FORMAT: &str =
     "[year]-[month]-[day]T[hour]:[minute]:[second][offset_hour sign:mandatory]:[offset_minute]";
