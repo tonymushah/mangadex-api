@@ -460,7 +460,7 @@ export type UserAttributes = { username: string; roles: UserRole[]; version: num
 
 export type AuthorEditParams = { id: string; name: string | null; biography?: { [key: Language]: string } | null; twitter?: string | null; pixiv?: string | null; melon_book?: string | null; fan_box?: string | null; booth?: string | null; nico_video?: string | null; skeb?: string | null; fantia?: string | null; tumblr?: string | null; youtube?: string | null; weibo?: string | null; naver?: string | null; website?: string | null; version: number }
 
-const ARGS_MAP = {"mangadex_at_home":"{\"server\":[\"params\"]}","mangadex_author":"{\"edit\":[\"params\"],\"create\":[\"params\"],\"list\":[\"params\"],\"get_unique\":[\"params\"],\"delete\":[\"id\"]}","mangadex_api_client":"{\"edit\":[\"params\"],\"create\":[\"params\"],\"get_secret\":[\"id\"],\"delete\":[\"params\"],\"refresh_secret\":[\"id\"],\"list\":[\"params\"],\"get_unique\":[\"params\"]}","mangadex_auth":"{\"check\":[]}"}
+const ARGS_MAP = {"mangadex_api_client":"{\"edit\":[\"params\"],\"create\":[\"params\"],\"get_secret\":[\"id\"],\"delete\":[\"params\"],\"refresh_secret\":[\"id\"],\"list\":[\"params\"],\"get_unique\":[\"params\"]}","mangadex_author":"{\"edit\":[\"params\"],\"create\":[\"params\"],\"list\":[\"params\"],\"get_unique\":[\"params\"],\"delete\":[\"id\"]}","mangadex_at_home":"{\"server\":[\"params\"]}","mangadex_auth":"{\"check\":[]}"}
 import { createTauRPCProxy as createProxy } from "taurpc"
 
 export const createTauRPCProxy = () => createProxy<Router>(ARGS_MAP)
