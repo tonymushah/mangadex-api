@@ -1,6 +1,17 @@
-import { defineConfig } from "vite";
+import { AliasOptions, defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import generouted from '@generouted/react-router/plugin'
+import tsConfig from "./tsconfig.json";
+import { resolve } from "path";
+
+function generateAliases(): AliasOptions {
+    const returns: AliasOptions = {};
+    const tsPaths = tsConfig.compilerOptions.paths;
+    for (const key in tsPaths) {
+        returns[key.replace("/*", "")] = resolve(__dirname, tsPaths[key][0].replace("/*", ""));
+    }
+    return returns;
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
@@ -14,5 +25,10 @@ export default defineConfig(async () => ({
   server: {
     port: 1420,
     strictPort: true,
+  },
+  resolve: {
+    alias: {
+      ...generateAliases(),
+    }
   }
 }));
