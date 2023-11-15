@@ -25,7 +25,7 @@ pub struct CoverAttributes {
     #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     #[cfg_attr(
         feature = "serialize",
-        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize_option")
     )]
     pub updated_at: Option<MangaDexDateTime>,
     pub version: u32,
