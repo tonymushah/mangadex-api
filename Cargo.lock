@@ -3948,6 +3948,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "taurpc-mangadex-api-example2"
+version = "0.0.0"
+dependencies = [
+ "mangadex-api",
+ "serde",
+ "serde_json",
+ "specta",
+ "tauri",
+ "tauri-build",
+ "taurpc",
+ "taurpc-mangadex-api",
+ "tokio",
+]
+
+[[package]]
 name = "tempfile"
 version = "3.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
