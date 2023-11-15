@@ -1,0 +1,36 @@
+#[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::v5::api_client::post::CreateClientBuilder;
+use mangadex_api_types::ApiClientProfile;
+
+#[taurpc::ipc_type]
+pub struct ApiClientCreateParams {
+    pub name: String,
+    #[serde(default)]
+    pub description: Option<String>,
+    #[serde(default)]
+    pub profile: ApiClientProfile,
+    #[serde(default = "ApiClientCreateParams::default_version")]
+    pub version: Option<u32>,
+}
+
+impl ApiClientCreateParams {
+    fn default_version() -> Option<u32> {
+        Some(1)
+    }
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+impl From<ApiClientCreateParams> for CreateClientBuilder {
+    fn from(value: ApiClientCreateParams) -> Self {
+        let mut buidler = Self::default();
+        buidler.name(value.name);
+        if let Some(description) = value.description {
+            buidler.description(description);
+        }
+        buidler.profile(value.profile);
+        if let Some(version) = value.version {
+            buidler.version(version);
+        }
+        buidler
+    }
+}

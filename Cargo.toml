@@ -4,5 +4,7 @@ members = [
     "mangadex-api-types",
     "mangadex-api-schema",
     "mangadex-api",
-    "mangadex-api-tests"
+    "mangadex-api-tests",
+    "taurpc-mangadex-api",
+    "./taurpc-mangadex-api-example/src-tauri"
 ]
