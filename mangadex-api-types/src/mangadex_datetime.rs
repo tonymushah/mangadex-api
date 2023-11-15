@@ -3,9 +3,6 @@ use time::{format_description, OffsetDateTime};
 
 pub(crate) const MANGADEX_DATETIME_FORMAT: &str = "[year]-[month]-[day]T[hour]:[minute]:[second]";
 
-pub(crate) const MANGADEX_DATETIME_FORMAT_DESER: &str =
-    "[year]-[month]-[day]T[hour]:[minute]:[second][offset_hour sign:mandatory]:[offset_minute]";
-
 /// Newtype struct for handling datetime fields in MangaDex.
 #[derive(Debug, Clone, PartialEq, Copy)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
@@ -47,7 +44,7 @@ impl<'de> Deserialize<'de> for MangaDexDateTime {
     {
         let s: String = Deserialize::deserialize(deserializer)?;
 
-        let format = format_description::parse(MANGADEX_DATETIME_FORMAT_DESER).unwrap();
+        let format = format_description::parse(MANGADEX_DATETIME_FORMAT).unwrap();
 
         let datetime = OffsetDateTime::parse(&s, &format).unwrap();
 
