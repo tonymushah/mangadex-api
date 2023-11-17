@@ -1,10 +1,10 @@
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api::v5::author::get::ListAuthorBuilder;
+use mangadex_api::{v5::author::get::ListAuthorBuilder, MangaDexClient};
 
 use mangadex_api_types::{AuthorSortOrder, ReferenceExpansionResource};
 use uuid::Uuid;
 
-#[derive(serde::Serialize, serde::Deserialize, specta::Type)]
+#[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone)]
 pub struct AuthorListParams {
     #[serde(default)]
     pub limit: Option<u32>,
@@ -18,6 +18,20 @@ pub struct AuthorListParams {
     pub order: Option<AuthorSortOrder>,
     #[serde(default)]
     pub includes: Vec<ReferenceExpansionResource>,
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+impl AuthorListParams {
+    pub async fn send(
+        self,
+        client: &MangaDexClient,
+    ) -> mangadex_api_schema::v5::AuthorListResponse {
+        let builder: ListAuthorBuilder = self.into();
+        builder
+            .http_client(client.get_http_client().clone())
+            .send()
+            .await
+    }
 }
 
 #[cfg(feature = "mangadex-api-resolver")]

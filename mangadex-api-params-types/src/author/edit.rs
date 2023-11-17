@@ -1,14 +1,19 @@
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api::v5::author::id::put::UpdateAuthorBuilder;
+use mangadex_api::{v5::author::id::put::UpdateAuthorBuilder, MangaDexClient};
+#[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api_schema::{v5::AuthorData, Limited};
+#[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api_types::error::Result;
 
 use mangadex_api_schema::v5::LocalizedString;
 use url::Url;
 use uuid::Uuid;
 
-#[derive(serde::Serialize, serde::Deserialize, specta::Type)]
+#[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone)]
 pub struct AuthorEditParams {
     pub id: Uuid,
 
+    #[serde(default)]
     pub name: Option<String>,
 
     #[serde(default)]
@@ -54,6 +59,17 @@ pub struct AuthorEditParams {
     pub website: Option<Url>,
 
     pub version: u32,
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+impl AuthorEditParams {
+    pub async fn send(self, client: &MangaDexClient) -> Result<Limited<AuthorData>> {
+        let builder: UpdateAuthorBuilder = self.into();
+        builder
+            .http_client(client.get_http_client().clone())
+            .send()
+            .await
+    }
 }
 
 #[cfg(feature = "mangadex-api-resolver")]

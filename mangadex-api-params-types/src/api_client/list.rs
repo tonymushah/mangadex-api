@@ -1,8 +1,8 @@
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api::v5::api_client::get::ListClientsBuilder;
+use mangadex_api::{v5::api_client::get::ListClientsBuilder, MangaDexClient};
 use mangadex_api_types::{ApiClientState, ReferenceExpansionResource};
 
-#[derive(serde::Serialize, serde::Deserialize, specta::Type)]
+#[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone)]
 pub struct ApiClientListParam {
     #[serde(default)]
     pub limit: Option<u32>,
@@ -14,6 +14,20 @@ pub struct ApiClientListParam {
     pub name: Option<String>,
     #[serde(default)]
     pub includes: Vec<ReferenceExpansionResource>,
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+impl ApiClientListParam {
+    pub async fn send(
+        self,
+        client: &MangaDexClient,
+    ) -> mangadex_api_schema::v5::ApiClientListResponse {
+        let builder: ListClientsBuilder = self.into();
+        builder
+            .http_client(client.get_http_client().clone())
+            .send()
+            .await
+    }
 }
 
 #[cfg(feature = "mangadex-api-resolver")]

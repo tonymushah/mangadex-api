@@ -1,10 +1,14 @@
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api::v5::author::post::CreateAuthorBuilder;
+use mangadex_api::{v5::author::post::CreateAuthorBuilder, MangaDexClient};
+#[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api_schema::{v5::AuthorData, Limited};
+#[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api_types::error::Result;
 
 use mangadex_api_schema::v5::LocalizedString;
 use url::Url;
 
-#[derive(serde::Serialize, serde::Deserialize, specta::Type)]
+#[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone)]
 pub struct AuthorCreateParams {
     pub name: String,
 
@@ -49,6 +53,17 @@ pub struct AuthorCreateParams {
 
     #[serde(default)]
     pub website: Option<Url>,
+}
+
+#[cfg(feature = "mangadex-api-resolver")]
+impl AuthorCreateParams {
+    pub async fn send(self, client: &MangaDexClient) -> Result<Limited<AuthorData>> {
+        let builder: CreateAuthorBuilder = self.into();
+        builder
+            .http_client(client.get_http_client().clone())
+            .send()
+            .await
+    }
 }
 
 #[cfg(feature = "mangadex-api-resolver")]
