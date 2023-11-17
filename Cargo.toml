@@ -5,5 +5,5 @@ members = [
     "mangadex-api-schema",
     "mangadex-api",
     "mangadex-api-tests",
-    "rspc-mangadex-api/src-tauri"
+    "mangadex-api-params-types"
 ]
