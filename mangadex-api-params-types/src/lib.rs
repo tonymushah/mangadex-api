@@ -7,5 +7,6 @@ pub mod cover;
 pub mod custom_list;
 pub mod feed;
 pub mod follows;
+pub mod forums;
 pub mod manga;
 pub mod oauth;
