@@ -86,8 +86,7 @@ pub struct UploadCover {
     /// * Nullable
     /// * <= 8 characters
     /// * Pattern: `^(0|[1-9]\\d*)((\\.\\d+){1,2})?[a-z]?$`
-    #[builder(default)]
-    pub volume: Option<String>,
+    pub volume: String,
     #[builder(default)]
     pub description: String,
     pub locale: Language,
@@ -115,10 +114,8 @@ impl Endpoint for UploadCover {
         let part = Part::bytes(self.file.clone());
         let mut form = Form::new().part("file", part);
 
-        if let Some(volume) = &self.volume {
-            let volume_part = Part::text(volume.to_string());
-            form = form.part("volume", volume_part);
-        }
+        let volume_part = Part::text(self.volume.clone());
+        form = form.part("volume", volume_part);
 
         form = form.part("description", Part::text(self.description.to_string()));
 
