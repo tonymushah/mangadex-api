@@ -38,7 +38,7 @@ use mangadex_api_types::LegacyMappingType;
 struct Args {
     /// Space-separated list of numerical IDs.
     #[clap()]
-    ids: Vec<u64>,
+    ids: Vec<u32>,
     /// Legacy mapping type.
     #[clap(short, long, default_value = "manga")]
     r#type: LegacyMappingType,

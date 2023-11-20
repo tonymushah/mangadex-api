@@ -54,7 +54,7 @@ pub struct LegacyIdMapping {
     #[builder(setter(name = "map_type"))]
     pub type_: LegacyMappingType,
     #[builder(setter(each = "add_id"))]
-    pub ids: Vec<u64>,
+    pub ids: Vec<u32>,
 }
 
 endpoint! {
