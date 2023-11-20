@@ -4,7 +4,6 @@ use mangadex_api::{v5::legacy::mapping::post::LegacyIdMappingBuilder, MangaDexCl
 use mangadex_api_types::LegacyMappingType;
 use serde::{Deserialize, Serialize};
 use specta::Type;
-use uuid::Uuid;
 
 #[derive(Debug, Clone, Type, Serialize, Deserialize)]
 pub struct LegacyIdMappingParams {

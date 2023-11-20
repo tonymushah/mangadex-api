@@ -21,7 +21,7 @@ macro_rules! tags {
         )*
     ) => {
         /// Enum for serialization to tag UUID.
-        #[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq)]
+        #[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, Copy)]
         #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
         #[cfg_attr(feature = "specta", derive(specta::Type))]
         pub enum Tag {
@@ -222,6 +222,17 @@ mod tests {
         assert_eq!(TagGroup::from(Tag::SliceOfLife), TagGroup::Genre);
         assert_eq!(TagGroup::from(Tag::Magic), TagGroup::Theme);
 
+        Ok(())
+    }
+    #[test]
+    fn tag_serialization_works() -> anyhow::Result<()> {
+        let d = serde_json::json!({
+            "tags": [
+                Tag::Action.to_string(),
+                Tag::Aliens.to_string()
+            ]
+        });
+        println!("{d}");
         Ok(())
     }
 }

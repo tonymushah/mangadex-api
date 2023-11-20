@@ -41,7 +41,7 @@ use uuid::Uuid;
 
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::{LocalizedString, MangaData};
-use mangadex_api_types::{ContentRating, Demographic, Language, MangaLinks, MangaStatus, Tag};
+use mangadex_api_types::{ContentRating, Demographic, Language, MangaLinks, MangaStatus};
 
 /// Create a new manga.
 ///
@@ -101,10 +101,11 @@ pub struct CreateManga {
     pub year: Option<Option<u16>>,
     pub content_rating: ContentRating,
     #[builder(default)]
-    pub chapter_numbers_reset_on_new_volume: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chapter_numbers_reset_on_new_volume: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub tags: Option<Vec<Tag>>,
+    pub tags: Option<Vec<Uuid>>,
     /// Cover ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
@@ -126,7 +127,7 @@ mod tests {
     use time::OffsetDateTime;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{header, method, path};
+    use wiremock::matchers::{body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::v5::AuthTokens;
@@ -161,7 +162,8 @@ mod tests {
             "publicationDemographic": "shounen",
             "status": "ongoing",
             "contentRating": "safe",
-            "tags": [tag_id]
+            "tags": [tag_id],
+            "version": 1
         });
         let response_body = json!({
             "result": "ok",
@@ -216,7 +218,7 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(_expected_body))
             .respond_with(
                 ResponseTemplate::new(201)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
@@ -236,7 +238,7 @@ mod tests {
             .publication_demographic(Demographic::Shounen)
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
-            .tags(vec![Tag::Action])
+            .tags(vec![Tag::Action.into()])
             .version(1_u32)
             .send()
             .await?;
@@ -307,16 +309,16 @@ mod tests {
 
         let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "title": {
                 "en": manga_title
             },
             "originalLanguage": "ja",
-            "lastVolume": null,
             "publicationDemographic": "shounen",
             "status": "ongoing",
             "contentRating": "safe",
-            "tags": [tag_id]
+            "tags": [tag_id],
+            "version": 1
         });
         let response_body = json!({
             "result": "ok",
@@ -370,8 +372,7 @@ mod tests {
             .and(path("/manga"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(201)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
@@ -390,7 +391,8 @@ mod tests {
             .original_language(Language::Japanese)
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
-            .tags(vec![Tag::Action])
+            .tags(vec![Tag::Action.into()])
+            .publication_demographic(Demographic::Shounen)
             .version(1_u32)
             .send()
             .await?;
@@ -420,16 +422,16 @@ mod tests {
 
         let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "title": {
                 "en": manga_title
             },
             "originalLanguage": "ja",
-            "lastVolume": null,
             "publicationDemographic": "shounen",
             "status": "ongoing",
             "contentRating": "safe",
-            "tags": [tag_id]
+            "tags": [tag_id],
+            "version": 1
         });
         let response_body = json!({
             "result": "ok",
@@ -483,8 +485,7 @@ mod tests {
             .and(path("/manga"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(201)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
@@ -503,7 +504,8 @@ mod tests {
             .original_language(Language::Japanese)
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
-            .tags(vec![Tag::Action])
+            .publication_demographic(Demographic::Shounen)
+            .tags(vec![Tag::Action.into()])
             .version(1_u32)
             .send()
             .await?;
@@ -533,7 +535,7 @@ mod tests {
 
         let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "title": {
                 "en": manga_title
             },
@@ -542,7 +544,8 @@ mod tests {
             "publicationDemographic": "shounen",
             "status": "ongoing",
             "contentRating": "safe",
-            "tags": [tag_id]
+            "tags": [tag_id],
+            "version": 1
         });
         let response_body = json!({
             "result": "ok",
@@ -597,7 +600,7 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(201)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
@@ -615,9 +618,10 @@ mod tests {
             .add_title((Language::English, manga_title.clone()))
             .original_language(Language::Japanese)
             .last_volume("1")
+            .publication_demographic(Demographic::Shounen)
             .status(MangaStatus::Ongoing)
             .content_rating(ContentRating::Safe)
-            .tags(vec![Tag::Action])
+            .tags(vec![Tag::Action.into()])
             .version(1_u32)
             .send()
             .await?;
