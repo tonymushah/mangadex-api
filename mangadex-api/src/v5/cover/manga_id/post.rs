@@ -205,7 +205,7 @@ mod tests {
                 "attributes": {
                     "volume": "1",
                     "fileName": "1.jpg",
-                    "description": description,
+                    "description": &description,
                     "locale": "en",
                     "version": 1,
                     "createdAt": datetime.to_string(),
@@ -236,6 +236,8 @@ mod tests {
             .cover(manga_id)
             .file(file_bytes)
             .locale(Language::English)
+            .description(description)
+            .volume("1")
             .send()
             .await?;
 
