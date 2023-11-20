@@ -13,7 +13,6 @@ use crate::v5::{chapter_aggregate_array_or_map, volume_aggregate_array_or_map};
 /// Response struct for the manga aggregate endpoint (GET `/manga/:id/aggregate`).
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
-#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaAggregate {
     #[serde(default)]
     pub result: ResultType,
@@ -23,15 +22,24 @@ pub struct MangaAggregate {
 }
 
 #[cfg(feature = "serialize")]
-#[allow(clippy::from_over_into)]
-impl Into<MangaAggregatSer> for MangaAggregate {
-    fn into(self) -> MangaAggregatSer {
+impl specta::Type for MangaAggregate {
+    fn inline(
+        opts: specta::DefOpts,
+        generics: &[specta::DataType],
+    ) -> Result<specta::DataType, specta::ExportError> {
+        MangaAggregatSer::inline(opts, generics)
+    }
+}
+
+#[cfg(feature = "serialize")]
+impl From<MangaAggregate> for MangaAggregatSer {
+    fn from(value: MangaAggregate) -> Self {
         let mut volumes: HashMap<String, VolumeAggregateSer> = HashMap::new();
-        for volume in self.volumes {
+        for volume in value.volumes {
             volumes.insert(volume.volume.clone(), Into::into(volume.clone()));
         }
         MangaAggregatSer {
-            result: self.result,
+            result: value.result,
             volumes,
         }
     }
@@ -39,6 +47,7 @@ impl Into<MangaAggregatSer> for MangaAggregate {
 
 #[cfg(feature = "serialize")]
 #[derive(serde::Serialize, Clone)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaAggregatSer {
     result: ResultType,
     volumes: HashMap<String, VolumeAggregateSer>,
@@ -46,6 +55,7 @@ pub struct MangaAggregatSer {
 
 #[cfg(feature = "serialize")]
 #[derive(serde::Serialize, Clone)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct VolumeAggregateSer {
     /// Volume number.
     pub volume: String,
@@ -82,15 +92,15 @@ pub struct VolumeAggregate {
 
 #[cfg(feature = "serialize")]
 #[allow(clippy::from_over_into)]
-impl Into<VolumeAggregateSer> for VolumeAggregate {
-    fn into(self) -> VolumeAggregateSer {
+impl From<VolumeAggregate> for VolumeAggregateSer {
+    fn from(value: VolumeAggregate) -> Self {
         let mut chapters: HashMap<String, ChapterAggregate> = HashMap::new();
-        for chapter in self.chapters {
+        for chapter in value.chapters {
             chapters.insert(chapter.chapter.clone(), chapter);
         }
         VolumeAggregateSer {
-            volume: self.volume,
-            count: self.count,
+            volume: value.volume,
+            count: value.count,
             chapters,
         }
     }

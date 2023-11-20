@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api-schema-rust"
-version = "0.5.4"
+version = "0.5.5"
 authors = ["tonymushah <tonymushahdev06@yahoo.com>"]
 description = "Response structs and helpers for mangadex-api"
 license = "MIT OR Apache-2.0"

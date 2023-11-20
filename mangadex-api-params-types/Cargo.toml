@@ -26,8 +26,8 @@ features = ["serde"]
 [dependencies.mangadex-api]
 optional = true
 path = "../mangadex-api"
-version = "3.0.0-rc.2"
-features = ["rw-multi-thread", "specta"]
+version = "3.0.0-rc.3"
+features = ["specta"]
 
 [dependencies.mangadex-api-schema]
 package = "mangadex-api-schema-rust"

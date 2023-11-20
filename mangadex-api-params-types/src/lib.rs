@@ -4,5 +4,6 @@ pub mod author;
 pub mod captcha;
 pub mod chapter;
 pub mod cover;
+pub mod custom_list;
 pub mod manga;
 pub mod oauth;
