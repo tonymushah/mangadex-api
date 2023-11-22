@@ -12,14 +12,15 @@ mangadex-api, and the following document explains how you can contribute and how
 you have any questions about contributing or need help with anything, feel free to ask questions
 on issues.
 
-- [Getting started][section-getting-started]
-    - [Basics][section-basics]
-        - [Get the code][section-get-the-code]
-        - [Building and Testing][section-building-and-testing]
-        - [Merge Request][section-merge-request]
-    - [High-level approach][section-high-level-approach]
-- [Writing code][section-writing-code]
-- [Contributions][section-contributions]
+- [Contributing to mangadex-api](#contributing-to-mangadex-api)
+  - [Getting started](#getting-started)
+    - [Basics](#basics)
+      - [Get the Code](#get-the-code)
+      - [Building and Testing](#building-and-testing)
+      - [Merge Request](#merge-request)
+    - [High-level approach](#high-level-approach)
+  - [Writing code](#writing-code)
+  - [Contributions](#contributions)
 
 ## Getting started
 
@@ -35,13 +36,13 @@ your first time working on mangadex-api, create a fork of the repository and clo
 afterwards with the following command:
 
 ```bash
-git clone git@gitlab.com:<your-username>/mangadex-api
+git clone git@github.com:<your-username>/mangadex-api
 ```
 
 If you've already cloned mangadex-api in the past, update it to the latest version:
 
 ```bash
-# Upstream has to be the remote of the "gondolyr/mangadex-api" repo.
+# Upstream has to be the remote of the "tonymushah/mangadex-api" repo.
 git fetch upstream
 
 # Make sure that you are on the "main" branch.
