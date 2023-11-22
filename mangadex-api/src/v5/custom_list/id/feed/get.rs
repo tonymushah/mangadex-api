@@ -34,7 +34,8 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_schema::v5::ChapterListResponse;
 use mangadex_api_types::{
-    ContentRating, IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
+    ContentRating, IncludeExternalUrl, IncludeFuturePages, IncludeFuturePublishAt,
+    IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
     ReferenceExpansionResource,
 };
 
@@ -92,6 +93,15 @@ pub struct CustomListMangaFeed {
     #[builder(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub include_future_updates: Option<IncludeFutureUpdates>,
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub include_empty_pages: Option<IncludeFuturePages>,
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub include_future_publish_at: Option<IncludeFuturePublishAt>,
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub include_external_url: Option<IncludeExternalUrl>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[builder(default)]
     #[serde(skip_serializing_if = "Option::is_none")]

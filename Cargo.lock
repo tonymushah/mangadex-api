@@ -342,6 +342,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ctor"
+version = "0.1.26"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6d2301688392eb071b0bf1a37be05c469d3cc4dbbd95df672fe28ab021e6a096"
+dependencies = [
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
 name = "darling"
 version = "0.14.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -989,7 +999,7 @@ checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
 
 [[package]]
 name = "mangadex-api"
-version = "3.0.0-rc.2"
+version = "3.0.0-rc.3"
 dependencies = [
  "anyhow",
  "async-stream",
@@ -1017,8 +1027,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "mangadex-api-params-types"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "mangadex-api",
+ "mangadex-api-schema-rust",
+ "mangadex-api-types-rust",
+ "serde",
+ "specta",
+ "tokio",
+ "url",
+ "uuid",
+]
+
+[[package]]
 name = "mangadex-api-schema-rust"
-version = "0.5.3"
+version = "0.5.5"
 dependencies = [
  "color-print",
  "jsonxf",
@@ -1049,7 +1074,7 @@ dependencies = [
 
 [[package]]
 name = "mangadex-api-types-rust"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "anyhow",
  "derive_builder",
@@ -1749,6 +1774,7 @@ version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2240c3aa020aa61d2c569087d213baafbb212f4ceb9de9dd162376ea6aa0fe3"
 dependencies = [
+ "ctor",
  "document-features",
  "indoc",
  "once_cell",

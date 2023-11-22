@@ -38,7 +38,7 @@ pub struct ChapterAttributes {
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
     #[cfg_attr(
         feature = "serialize",
-        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize_option")
     )]
     pub updated_at: Option<MangaDexDateTime>,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.

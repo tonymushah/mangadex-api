@@ -546,6 +546,20 @@ where
     serializer.serialize_str(datetime.to_string().as_str())
 }
 
+pub fn mangadex_datetime_serialize_option<S>(
+    datetime: &Option<MangaDexDateTime>,
+    serializer: S,
+) -> Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    if let Some(d) = datetime {
+        serializer.serialize_str(d.to_string().as_str())
+    } else {
+        serializer.serialize_none()
+    }
+}
+
 #[cfg(test)]
 mod test {
     use serde::{Deserialize, Serialize};

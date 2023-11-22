@@ -69,14 +69,14 @@ pub struct EditCover {
     pub cover_id: Uuid,
 
     /// 0-8 characters in length.
-    pub volume: Option<Option<String>>,
+    pub volume: String,
     /// 0-512 characters in length.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub description: Option<Option<String>>,
+    pub description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
-    pub locale: Option<Option<Language>>,
+    pub locale: Option<Language>,
     /// >= 1
     pub version: u32,
 }
@@ -165,7 +165,7 @@ mod tests {
             .cover()
             .cover_id(cover_id)
             .put()
-            .volume(Some("1".to_string()))
+            .volume(String::from("1"))
             .version(2_u32)
             .send()
             .await?;
