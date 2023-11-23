@@ -11,3 +11,4 @@ pub mod forums;
 pub mod legacy;
 pub mod manga;
 pub mod oauth;
+pub mod rating;
