@@ -35,9 +35,15 @@ impl Serialize for MangaDexDateTime {
     where
         S: Serializer,
     {
-        let format = format_description::parse(MANGADEX_DATETIME_SER_FORMAT).unwrap();
+        let format = format_description::parse(MANGADEX_DATETIME_SER_FORMAT)
+            .map_err(serde::ser::Error::custom)?;
 
-        serializer.serialize_str(&self.as_ref().format(&format).unwrap())
+        serializer.serialize_str(
+            &self
+                .as_ref()
+                .format(&format)
+                .map_err(serde::ser::Error::custom)?,
+        )
     }
 }
 
@@ -48,9 +54,10 @@ impl<'de> Deserialize<'de> for MangaDexDateTime {
     {
         let s: String = Deserialize::deserialize(deserializer)?;
 
-        let format_des = format_description::parse(MANGADEX_DATETIME_DE_FORMAT).unwrap();
+        let format_des = format_description::parse(MANGADEX_DATETIME_DE_FORMAT)
+            .map_err(serde::de::Error::custom)?;
 
-        let datetime = OffsetDateTime::parse(&s, &format_des).unwrap();
+        let datetime = OffsetDateTime::parse(&s, &format_des).map_err(serde::de::Error::custom)?;
 
         Ok(MangaDexDateTime(datetime))
     }
