@@ -16,3 +16,4 @@ pub mod read_marker;
 pub mod report;
 pub mod scanlation_group;
 pub mod settings;
+pub mod statistics;
