@@ -12,3 +12,4 @@ pub mod legacy;
 pub mod manga;
 pub mod oauth;
 pub mod rating;
+pub mod read_marker;
