@@ -55,6 +55,12 @@ use uuid::Uuid;
 
 use crate::HttpClientRef;
 
+#[derive(Clone, Debug)]
+pub struct UploadImage {
+    pub filename: String,
+    pub data: Vec<u8>,
+}
+
 /// Upload images to the upload session.
 ///
 /// This requires authentication.
@@ -62,7 +68,7 @@ use crate::HttpClientRef;
 /// Makes a request to `POST /upload/{id}`.
 #[cfg_attr(
     feature = "deserializable-endpoint",
-    derive(serde::Deserialize, getset::Getters, getset::Setters)
+    derive(getset::Getters, getset::Setters)
 )]
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -83,7 +89,8 @@ pub struct UploadImages {
 
     /// Image bytes.
     #[builder(setter(each = "add_file"))]
-    pub files: Vec<Vec<u8>>,
+    #[serde(skip_serializing)]
+    pub files: Vec<UploadImage>,
 }
 
 // TODO: Come up with a way to generalize multipart form data for the `Endpoint` trait.
@@ -107,9 +114,9 @@ impl Endpoint for UploadImages {
     fn multipart(&self) -> Option<Form> {
         let mut form = Form::new();
 
-        for file in &self.files {
-            let part = Part::bytes(file.clone());
-            form = form.part("file", part);
+        for (count, file) in self.files.iter().enumerate() {
+            let part = Part::bytes(file.data.clone()).file_name(file.filename.clone());
+            form = form.part(format!("file{count}"), part);
         }
 
         Some(form)
@@ -162,6 +169,7 @@ mod tests {
     use wiremock::matchers::{header, header_exists, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::v5::upload::upload_session_id::post::UploadImage;
     use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
 
@@ -220,7 +228,10 @@ mod tests {
             .upload()
             .upload_session_id(session_id)
             .post()
-            .add_file(file_bytes)
+            .add_file(UploadImage {
+                filename: String::from("p01.jpg"),
+                data: file_bytes,
+            })
             .send()
             .await?;
 

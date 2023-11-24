@@ -31,6 +31,7 @@ use mangadex_api_schema::v5::UserReportsCollection;
 use mangadex_api_types::{
     ReferenceExpansionResource, ReportCategory, ReportSortOrder, ReportStatus,
 };
+use uuid::Uuid;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -50,12 +51,22 @@ pub struct ListReportsByUser {
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub http_client: HttpClientRef,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub category: Option<ReportCategory>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub object_id: Option<Uuid>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason_id: Option<Uuid>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ReportStatus>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<ReportSortOrder>,
     #[builder(setter(each = "include"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 
