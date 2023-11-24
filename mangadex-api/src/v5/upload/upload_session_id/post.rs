@@ -46,7 +46,7 @@
 use std::borrow::Cow;
 use std::fs::File;
 use std::io::{BufReader, Read};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use derive_builder::Builder;
 use mangadex_api_schema::Endpoint;
