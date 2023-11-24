@@ -18,3 +18,4 @@ pub mod scanlation_group;
 pub mod settings;
 pub mod statistics;
 pub mod upload;
+pub mod user;
