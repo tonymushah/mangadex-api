@@ -44,6 +44,9 @@
 //! ```
 
 use std::borrow::Cow;
+use std::fs::File;
+use std::io::{BufReader, Read};
+use std::path::PathBuf;
 
 use derive_builder::Builder;
 use mangadex_api_schema::Endpoint;
@@ -59,6 +62,45 @@ use crate::HttpClientRef;
 pub struct UploadImage {
     pub filename: String,
     pub data: Vec<u8>,
+}
+
+impl TryFrom<PathBuf> for UploadImage {
+    type Error = std::io::Error;
+    fn try_from(value: PathBuf) -> std::prelude::v1::Result<Self, Self::Error> {
+        if !value.is_file()
+            || !value
+                .extension()
+                .is_some_and(|e| ["jpg", "jpeg", "png", "gif"].iter().any(|a| e == *a))
+        {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                String::from("The given path might not be a file or an image"),
+            ));
+        }
+        let filename = String::from(value.as_path().file_name().and_then(|e| e.to_str()).ok_or(
+            std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                String::from("Can't parse the filename"),
+            ),
+        )?);
+        let buf = {
+            let mut data = Vec::<u8>::new();
+            let mut buf_reader = BufReader::new(File::open(value)?);
+            buf_reader.read_to_end(&mut data)?;
+            data
+        };
+        Ok(Self {
+            filename,
+            data: buf,
+        })
+    }
+}
+
+impl TryFrom<&PathBuf> for UploadImage {
+    type Error = std::io::Error;
+    fn try_from(value: &PathBuf) -> std::prelude::v1::Result<Self, Self::Error> {
+        <Self as TryFrom<PathBuf>>::try_from(value.clone())
+    }
 }
 
 /// Upload images to the upload session.

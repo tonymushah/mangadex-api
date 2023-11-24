@@ -91,6 +91,7 @@ pub struct ChapterDraft {
     /// Must be a URL with "http(s)://".
     ///
     /// Nullable
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub external_url: Option<Url>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub publish_at: Option<MangaDexDateTime>,
@@ -258,7 +259,7 @@ impl CommitUploadSessionBuilder {
 }
 
 endpoint! {
-    PUT ("/upload/{}/commit", session_id),
+    POST ("/upload/{}/commit", session_id),
     #[body auth] CommitUploadSession,
     #[rate_limited] ChapterData,
     CommitUploadSessionBuilder
@@ -275,9 +276,22 @@ mod tests {
     use wiremock::matchers::{body_json, header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::v5::upload::upload_session_id::commit::post::ChapterDraft;
     use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
     use mangadex_api_types::{Language, MangaDexDateTime, RelationshipType};
+
+    use serde::Serialize;
+
+    #[derive(Clone, Serialize, Debug)]
+    #[serde(rename_all = "camelCase")]
+    struct ExceptedBody {
+        chapter_draft: ChapterDraft,
+        /// Ordered list of Upload Session File IDs.
+        ///
+        /// Any uploaded files that are not included in this list will be deleted.
+        page_order: Vec<Uuid>,
+    }
 
     #[tokio::test]
     async fn commit_upload_session_fires_a_request_to_base_url() -> anyhow::Result<()> {
@@ -299,18 +313,18 @@ mod tests {
 
         let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
 
-        let expected_body = json!({
-            "chapterDraft": {
-                "volume": "1",
-                "chapter": "2.5",
-                "title": chapter_title,
-                "translatedLanguage": "en",
-                "externalUrl": null
+        let expected_body = ExceptedBody {
+            chapter_draft: ChapterDraft {
+                volume: Some(String::from("1")),
+                chapter: Some(String::from("2.5")),
+                title: Some(chapter_title.clone()),
+                translated_language: Language::English,
+                external_url: None,
+                publish_at: None,
             },
-            "pageOrder": [
-                session_file_id
-            ]
-        });
+            page_order: vec![session_file_id],
+        };
+
         let response_body = json!({
             "result": "ok",
             "response": "entity",
@@ -334,11 +348,10 @@ mod tests {
             }
 
         });
-
-        Mock::given(method("PUT"))
+        Mock::given(method("POST"))
             .and(path_regex(r"/upload/[0-9a-fA-F-]+/commit"))
-            .and(header("Authorization", "Bearer sessiontoken"))
-            .and(header("Content-Type", "application/json"))
+            .and(header("authorization", "Bearer sessiontoken"))
+            .and(header("content-type", "application/json"))
             // TODO: Make the request body check work.
             .and(body_json(expected_body))
             .respond_with(
@@ -369,7 +382,7 @@ mod tests {
 
         assert_eq!(res.id, chapter_id);
         assert_eq!(res.type_, RelationshipType::Chapter);
-        assert_eq!(res.attributes.title, chapter_title.clone());
+        assert_eq!(res.attributes.title, Some(chapter_title.clone()));
         assert_eq!(res.attributes.volume, Some("1".to_string()));
         assert_eq!(res.attributes.chapter, Some("2.5".to_string()));
         assert_eq!(res.attributes.pages, 4);
@@ -381,8 +394,14 @@ mod tests {
             res.attributes.updated_at.as_ref().unwrap().to_string(),
             datetime.to_string()
         );
-        assert_eq!(res.attributes.publish_at.to_string(), datetime.to_string());
-        assert_eq!(res.attributes.readable_at.to_string(), datetime.to_string());
+        assert_eq!(
+            res.attributes.publish_at.unwrap().to_string(),
+            datetime.to_string()
+        );
+        assert_eq!(
+            res.attributes.readable_at.unwrap().to_string(),
+            datetime.to_string()
+        );
 
         Ok(())
     }

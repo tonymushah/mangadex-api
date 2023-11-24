@@ -139,7 +139,13 @@ async fn run(args: Args) -> anyhow::Result<()> {
         None => "".to_string(),
     };
     let title_separator = if (volume_number.is_empty() && chapter_number.is_empty())
-        || chapter.data.attributes.title.is_empty()
+        || chapter
+            .data
+            .attributes
+            .title
+            .as_ref()
+            .map(|t| t.is_empty())
+            .unwrap_or(false)
     {
         ""
     } else {
@@ -152,7 +158,13 @@ async fn run(args: Args) -> anyhow::Result<()> {
         volume = volume_number,
         chapter = chapter_number,
         separator = title_separator,
-        title = chapter.data.attributes.title
+        title = chapter
+            .data
+            .attributes
+            .title
+            .as_ref()
+            .map(Clone::clone)
+            .unwrap_or(String::default())
     ));
 
     // Only create the output directory if the user has specified that they want to download the

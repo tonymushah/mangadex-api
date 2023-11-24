@@ -1,8 +1,4 @@
-use std::{
-    fs::File,
-    io::{BufReader, Read},
-    path::PathBuf,
-};
+use std::path::PathBuf;
 
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{
@@ -32,27 +28,7 @@ impl From<UploadImageParam> for UploadImagesBuilder {
         let files: Vec<UploadImage> = value
             .files
             .iter()
-            .filter(|f| {
-                f.is_file()
-                    && f.extension()
-                        .is_some_and(|e| ["jpg", "jpeg", "png", "gif"].iter().any(|a| *e == **a))
-            })
-            .flat_map(|f| {
-                let res: std::io::Result<UploadImage> = {
-                    let filename = f
-                        .to_str()
-                        .ok_or(std::io::Error::new(
-                            std::io::ErrorKind::InvalidInput,
-                            String::from("Can't find the filename"),
-                        ))?
-                        .to_string();
-                    let mut data = Vec::<u8>::new();
-                    let mut buf_reader = BufReader::new(File::open(f)?);
-                    buf_reader.read_to_end(&mut data)?;
-                    Ok(UploadImage { filename, data })
-                };
-                res
-            })
+            .flat_map(<UploadImage as TryFrom<&PathBuf>>::try_from)
             .collect();
         builder.files(files);
         builder
