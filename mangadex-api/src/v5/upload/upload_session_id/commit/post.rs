@@ -105,7 +105,7 @@ pub struct ChapterDraft {
 pub struct CommitUploadSessionBuilder {
     #[serde(skip)]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub http_client: HttpClientRef,
+    pub http_client: Option<HttpClientRef>,
 
     pub session_id: Option<Uuid>,
     /// Ordered list of Upload Session File IDs.
@@ -128,9 +128,15 @@ pub struct CommitUploadSessionBuilder {
 impl CommitUploadSessionBuilder {
     pub fn new(http_client: HttpClientRef) -> Self {
         Self {
-            http_client,
+            http_client: Some(http_client),
             ..Default::default()
         }
+    }
+
+    #[doc(hidden)]
+    pub fn http_client(mut self, http_client: HttpClientRef) -> Self {
+        self.http_client = Some(http_client);
+        self
     }
 
     /// Specify the upload session ID to commit.
@@ -218,11 +224,24 @@ impl CommitUploadSessionBuilder {
             return Err(Error::RequestBuilderError(error));
         }
 
-        let session_id = self.session_id.unwrap();
-        let translated_language = self.translated_language.unwrap();
+        let session_id = self
+            .session_id
+            .ok_or(Error::RequestBuilderError(String::from(
+                "session_id must be provided",
+            )))?;
+        let translated_language =
+            self.translated_language
+                .ok_or(Error::RequestBuilderError(String::from(
+                    "translated_language must be provided",
+                )))?;
 
         Ok(CommitUploadSession {
-            http_client: self.http_client.to_owned(),
+            http_client: self
+                .http_client
+                .to_owned()
+                .ok_or(Error::RequestBuilderError(String::from(
+                    "http_client must be provided",
+                )))?,
 
             session_id,
             chapter_draft: ChapterDraft {
