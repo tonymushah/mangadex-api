@@ -30,6 +30,7 @@ const SECONDS_PER_WEEK: u64 = DAYS_PER_WEEK * SECONDS_PER_DAY;
 /// - Two seconds is `PT2S`.
 /// - Six weeks and five minutes is `P6WT5M`.
 #[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaDexDuration(Duration);
 
 impl MangaDexDuration {

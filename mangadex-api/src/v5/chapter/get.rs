@@ -212,7 +212,7 @@ mod tests {
         assert_eq!(res.response, ResponseType::Collection);
         let chapter = &res.data[0];
         assert_eq!(chapter.id, chapter_id);
-        assert_eq!(chapter.attributes.title, chapter_title);
+        assert_eq!(chapter.attributes.title, Some(chapter_title));
         assert_eq!(chapter.attributes.volume, Some("1".to_string()));
         assert_eq!(chapter.attributes.chapter, Some("1.5".to_string()));
         assert_eq!(chapter.attributes.pages, 4);
@@ -227,7 +227,7 @@ mod tests {
             datetime.to_string()
         );
         assert_eq!(
-            chapter.attributes.publish_at.to_string(),
+            chapter.attributes.publish_at.unwrap().to_string(),
             datetime.to_string()
         );
 

@@ -44,6 +44,9 @@
 //! ```
 
 use std::borrow::Cow;
+use std::fs::File;
+use std::io::{BufReader, Read};
+use std::path::{Path, PathBuf};
 
 use derive_builder::Builder;
 use mangadex_api_schema::Endpoint;
@@ -55,6 +58,51 @@ use uuid::Uuid;
 
 use crate::HttpClientRef;
 
+#[derive(Clone, Debug)]
+pub struct UploadImage {
+    pub filename: String,
+    pub data: Vec<u8>,
+}
+
+impl TryFrom<PathBuf> for UploadImage {
+    type Error = std::io::Error;
+    fn try_from(value: PathBuf) -> std::prelude::v1::Result<Self, Self::Error> {
+        if !value.is_file()
+            || !value
+                .extension()
+                .is_some_and(|e| ["jpg", "jpeg", "png", "gif"].iter().any(|a| e == *a))
+        {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                String::from("The given path might not be a file or an image"),
+            ));
+        }
+        let filename = String::from(value.as_path().file_name().and_then(|e| e.to_str()).ok_or(
+            std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                String::from("Can't parse the filename"),
+            ),
+        )?);
+        let buf = {
+            let mut data = Vec::<u8>::new();
+            let mut buf_reader = BufReader::new(File::open(value)?);
+            buf_reader.read_to_end(&mut data)?;
+            data
+        };
+        Ok(Self {
+            filename,
+            data: buf,
+        })
+    }
+}
+
+impl TryFrom<&PathBuf> for UploadImage {
+    type Error = std::io::Error;
+    fn try_from(value: &PathBuf) -> std::prelude::v1::Result<Self, Self::Error> {
+        <Self as TryFrom<PathBuf>>::try_from(value.clone())
+    }
+}
+
 /// Upload images to the upload session.
 ///
 /// This requires authentication.
@@ -62,7 +110,7 @@ use crate::HttpClientRef;
 /// Makes a request to `POST /upload/{id}`.
 #[cfg_attr(
     feature = "deserializable-endpoint",
-    derive(serde::Deserialize, getset::Getters, getset::Setters)
+    derive(getset::Getters, getset::Setters)
 )]
 #[derive(Debug, Builder, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -83,7 +131,8 @@ pub struct UploadImages {
 
     /// Image bytes.
     #[builder(setter(each = "add_file"))]
-    pub files: Vec<Vec<u8>>,
+    #[serde(skip_serializing)]
+    pub files: Vec<UploadImage>,
 }
 
 // TODO: Come up with a way to generalize multipart form data for the `Endpoint` trait.
@@ -107,9 +156,9 @@ impl Endpoint for UploadImages {
     fn multipart(&self) -> Option<Form> {
         let mut form = Form::new();
 
-        for file in &self.files {
-            let part = Part::bytes(file.clone());
-            form = form.part("file", part);
+        for (count, file) in self.files.iter().enumerate() {
+            let part = Part::bytes(file.data.clone()).file_name(file.filename.clone());
+            form = form.part(format!("file{count}"), part);
         }
 
         Some(form)
@@ -162,6 +211,7 @@ mod tests {
     use wiremock::matchers::{header, header_exists, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::v5::upload::upload_session_id::post::UploadImage;
     use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
 
@@ -220,7 +270,10 @@ mod tests {
             .upload()
             .upload_session_id(session_id)
             .post()
-            .add_file(file_bytes)
+            .add_file(UploadImage {
+                filename: String::from("p01.jpg"),
+                data: file_bytes,
+            })
             .send()
             .await?;
 

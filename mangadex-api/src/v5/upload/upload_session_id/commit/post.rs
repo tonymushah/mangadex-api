@@ -91,6 +91,7 @@ pub struct ChapterDraft {
     /// Must be a URL with "http(s)://".
     ///
     /// Nullable
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub external_url: Option<Url>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub publish_at: Option<MangaDexDateTime>,
@@ -105,7 +106,7 @@ pub struct ChapterDraft {
 pub struct CommitUploadSessionBuilder {
     #[serde(skip)]
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
-    pub http_client: HttpClientRef,
+    pub http_client: Option<HttpClientRef>,
 
     pub session_id: Option<Uuid>,
     /// Ordered list of Upload Session File IDs.
@@ -128,9 +129,15 @@ pub struct CommitUploadSessionBuilder {
 impl CommitUploadSessionBuilder {
     pub fn new(http_client: HttpClientRef) -> Self {
         Self {
-            http_client,
+            http_client: Some(http_client),
             ..Default::default()
         }
+    }
+
+    #[doc(hidden)]
+    pub fn http_client(mut self, http_client: HttpClientRef) -> Self {
+        self.http_client = Some(http_client);
+        self
     }
 
     /// Specify the upload session ID to commit.
@@ -218,11 +225,24 @@ impl CommitUploadSessionBuilder {
             return Err(Error::RequestBuilderError(error));
         }
 
-        let session_id = self.session_id.unwrap();
-        let translated_language = self.translated_language.unwrap();
+        let session_id = self
+            .session_id
+            .ok_or(Error::RequestBuilderError(String::from(
+                "session_id must be provided",
+            )))?;
+        let translated_language =
+            self.translated_language
+                .ok_or(Error::RequestBuilderError(String::from(
+                    "translated_language must be provided",
+                )))?;
 
         Ok(CommitUploadSession {
-            http_client: self.http_client.to_owned(),
+            http_client: self
+                .http_client
+                .to_owned()
+                .ok_or(Error::RequestBuilderError(String::from(
+                    "http_client must be provided",
+                )))?,
 
             session_id,
             chapter_draft: ChapterDraft {
@@ -239,7 +259,7 @@ impl CommitUploadSessionBuilder {
 }
 
 endpoint! {
-    PUT ("/upload/{}/commit", session_id),
+    POST ("/upload/{}/commit", session_id),
     #[body auth] CommitUploadSession,
     #[rate_limited] ChapterData,
     CommitUploadSessionBuilder
@@ -253,7 +273,7 @@ mod tests {
     use time::OffsetDateTime;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{header, method, path_regex};
+    use wiremock::matchers::{body_json, header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::v5::AuthTokens;
@@ -280,13 +300,12 @@ mod tests {
 
         let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "chapterDraft": {
                 "volume": "1",
                 "chapter": "2.5",
                 "title": chapter_title,
                 "translatedLanguage": "en",
-                "externalUrl": null
             },
             "pageOrder": [
                 session_file_id
@@ -321,7 +340,7 @@ mod tests {
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(200)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
@@ -350,7 +369,7 @@ mod tests {
 
         assert_eq!(res.id, chapter_id);
         assert_eq!(res.type_, RelationshipType::Chapter);
-        assert_eq!(res.attributes.title, chapter_title.clone());
+        assert_eq!(res.attributes.title, Some(chapter_title.clone()));
         assert_eq!(res.attributes.volume, Some("1".to_string()));
         assert_eq!(res.attributes.chapter, Some("2.5".to_string()));
         assert_eq!(res.attributes.pages, 4);
@@ -362,8 +381,14 @@ mod tests {
             res.attributes.updated_at.as_ref().unwrap().to_string(),
             datetime.to_string()
         );
-        assert_eq!(res.attributes.publish_at.to_string(), datetime.to_string());
-        assert_eq!(res.attributes.readable_at.to_string(), datetime.to_string());
+        assert_eq!(
+            res.attributes.publish_at.unwrap().to_string(),
+            datetime.to_string()
+        );
+        assert_eq!(
+            res.attributes.readable_at.unwrap().to_string(),
+            datetime.to_string()
+        );
 
         Ok(())
     }

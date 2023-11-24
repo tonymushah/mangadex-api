@@ -53,6 +53,7 @@ pub struct GetReadChapters {
     pub http_client: HttpClientRef,
 
     #[builder(setter(each = "add_manga_id"))]
+    #[serde(rename = "ids")]
     pub manga_ids: Vec<Uuid>,
 
     /// Group results by manga IDs.

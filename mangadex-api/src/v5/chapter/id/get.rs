@@ -134,7 +134,7 @@ mod tests {
 
         assert_eq!(res.response, ResponseType::Entity);
         assert_eq!(res.data.id, chapter_id);
-        assert_eq!(res.data.attributes.title, chapter_title);
+        assert_eq!(res.data.attributes.title, Some(chapter_title));
         assert_eq!(res.data.attributes.volume, Some("1".to_string()));
         assert_eq!(res.data.attributes.chapter, Some("1.5".to_string()));
         assert_eq!(res.data.attributes.pages, 4);
@@ -149,7 +149,7 @@ mod tests {
             datetime.to_string()
         );
         assert_eq!(
-            res.data.attributes.publish_at.to_string(),
+            res.data.attributes.publish_at.unwrap().to_string(),
             datetime.to_string()
         );
 

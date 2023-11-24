@@ -15,7 +15,7 @@ use mangadex_api_types::{Language, MangaDexDateTime};
 pub struct ChapterAttributes {
     // TODO: Known issue: API doesn't always return an empty string despite the docs saying it's not nullable.
     #[serde(deserialize_with = "deserialize_null_default")]
-    pub title: String,
+    pub title: Option<String>,
     /// Volume number in the manga.
     pub volume: Option<String>,
     /// Chapter number in the manga.
@@ -45,14 +45,14 @@ pub struct ChapterAttributes {
     #[cfg_attr(feature = "specta", specta(type = String))]
     #[cfg_attr(
         feature = "serialize",
-        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize_option")
     )]
-    pub publish_at: MangaDexDateTime,
+    pub publish_at: Option<MangaDexDateTime>,
     /// Datetime in `YYYY-MM-DDTHH:MM:SS+HH:MM` format.
     #[cfg_attr(feature = "specta", specta(type = String))]
     #[cfg_attr(
         feature = "serialize",
-        serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
+        serde(serialize_with = "crate::v5::mangadex_datetime_serialize_option")
     )]
-    pub readable_at: MangaDexDateTime,
+    pub readable_at: Option<MangaDexDateTime>,
 }

@@ -215,6 +215,12 @@ impl HttpClient {
     where
         T: DeserializeOwned,
     {
+        /*let res_text = res.text().await?;
+        eprintln!("{}", res_text);
+        Ok(serde_json::from_str::<ApiResult<T>>(&res_text)
+        .map_err(|e| Error::UnexpectedError(anyhow::Error::msg(e.to_string())))?
+        .into_result()?)
+        */
         Ok(res.json::<ApiResult<T>>().await?.into_result()?)
     }
 
