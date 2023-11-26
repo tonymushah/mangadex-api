@@ -1,3 +1,5 @@
+use std::fmt::{Debug, Display};
+
 use serde::{Deserialize, Serialize};
 
 // Relationship types for response objects.
@@ -60,5 +62,11 @@ pub enum RelationshipType {
 impl Default for RelationshipType {
     fn default() -> Self {
         Self::Unknown
+    }
+}
+
+impl Display for RelationshipType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        <Self as Debug>::fmt(self, f)
     }
 }

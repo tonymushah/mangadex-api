@@ -47,6 +47,7 @@ use types::{
 
 pub(crate) use crate::ApiObject;
 use crate::FromResponse;
+use types::error::RelationshipConversionError;
 
 // TODO: Find a way to reduce the boilerplate for this.
 // `struct-variant` (https://docs.rs/struct-variant) is a potential candidate for this.
@@ -78,6 +79,106 @@ pub enum RelatedAttributes {
     CustomList(CustomListAttributes),
 }
 
+impl TryFrom<Relationship> for ApiObject<MangaAttributes> {
+    type Error = RelationshipConversionError;
+
+    fn try_from(value: Relationship) -> Result<Self, Self::Error> {
+        if value.type_ != RelationshipType::Manga {
+            return Err(RelationshipConversionError::InvalidInputRelationshipType {
+                input: RelationshipType::Manga,
+                inner: value.type_,
+            });
+        }
+        if let Some(RelatedAttributes::Manga(attributes)) = value.attributes {
+            Ok(ApiObject {
+                id: value.id,
+                type_: RelationshipType::Manga,
+                attributes,
+                relationships: Vec::new(),
+            })
+        } else {
+            Err(RelationshipConversionError::AttributesNotFound(
+                RelationshipType::Manga,
+            ))
+        }
+    }
+}
+
+impl TryFrom<Relationship> for ApiObject<ChapterAttributes> {
+    type Error = RelationshipConversionError;
+
+    fn try_from(value: Relationship) -> Result<Self, Self::Error> {
+        if value.type_ != RelationshipType::Chapter {
+            return Err(RelationshipConversionError::InvalidInputRelationshipType {
+                input: RelationshipType::Chapter,
+                inner: value.type_,
+            });
+        }
+        if let Some(RelatedAttributes::Chapter(attributes)) = value.attributes {
+            Ok(ApiObject {
+                id: value.id,
+                type_: RelationshipType::Chapter,
+                attributes,
+                relationships: Vec::new(),
+            })
+        } else {
+            Err(RelationshipConversionError::AttributesNotFound(
+                RelationshipType::Chapter,
+            ))
+        }
+    }
+}
+
+impl TryFrom<Relationship> for ApiObject<CoverAttributes> {
+    type Error = RelationshipConversionError;
+
+    fn try_from(value: Relationship) -> Result<Self, Self::Error> {
+        if value.type_ != RelationshipType::CoverArt {
+            return Err(RelationshipConversionError::InvalidInputRelationshipType {
+                input: RelationshipType::CoverArt,
+                inner: value.type_,
+            });
+        }
+        if let Some(RelatedAttributes::CoverArt(attributes)) = value.attributes {
+            Ok(ApiObject {
+                id: value.id,
+                type_: RelationshipType::CustomList,
+                attributes,
+                relationships: Vec::new(),
+            })
+        } else {
+            Err(RelationshipConversionError::AttributesNotFound(
+                RelationshipType::CoverArt,
+            ))
+        }
+    }
+}
+
+impl TryFrom<Relationship> for ApiObject<AuthorAttributes> {
+    type Error = RelationshipConversionError;
+
+    fn try_from(value: Relationship) -> Result<Self, Self::Error> {
+        if value.type_ != RelationshipType::Author {
+            return Err(RelationshipConversionError::InvalidInputRelationshipType {
+                input: RelationshipType::Author,
+                inner: value.type_,
+            });
+        }
+        if let Some(RelatedAttributes::Author(attributes)) = value.attributes {
+            Ok(ApiObject {
+                id: value.id,
+                type_: RelationshipType::Author,
+                attributes,
+                relationships: Vec::new(),
+            })
+        } else {
+            Err(RelationshipConversionError::AttributesNotFound(
+                RelationshipType::Author,
+            ))
+        }
+    }
+}
+
 #[derive(Debug, Deserialize, Clone)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
@@ -91,11 +192,13 @@ pub struct Relationship {
     ///
     /// This is only present for a Manga entity and a Manga relationship.
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub related: Option<MangaRelation>,
     /// Contains object attributes for the type.
     ///
     /// Present if [Reference Expansion](https://api.mangadex.org/docs/reference-expansion/) is applied.
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub attributes: Option<RelatedAttributes>,
 }
 

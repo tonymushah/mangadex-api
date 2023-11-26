@@ -18,6 +18,7 @@ description = "Response structs and helpers for mangadex-api"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/tonymushah/mangadex-api"
 resolver = "2"
+keywords = ["mangadex", "response-schemas"]
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"]}

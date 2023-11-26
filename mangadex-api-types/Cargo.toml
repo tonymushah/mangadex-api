@@ -18,6 +18,7 @@ description = "Types for mangadex-api"
 license = "MIT OR Apache-2.0"
 resolver = "2"
 repository = "https://github.com/tonymushah/mangadex-api"
+keywords = ["mangadex", "types-bindings"]
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"]}
