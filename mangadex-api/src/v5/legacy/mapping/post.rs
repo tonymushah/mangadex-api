@@ -165,7 +165,6 @@ mod tests {
         Mock::given(method("POST"))
             .and(path(r"/legacy/mapping"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
             .and(body_json(expected_body))
             .respond_with(ResponseTemplate::new(400).set_body_json(response_body))
             .expect(1)
