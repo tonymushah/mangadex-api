@@ -45,8 +45,8 @@ use types::{
     Language, MangaDexDateTime, MangaRelation, RelationshipType, ResponseType, ResultType,
 };
 
-pub(crate) use crate::ApiObject;
 use crate::FromResponse;
+pub(crate) use crate::{ApiObject, ApiObjectNoRelationships};
 use types::error::RelationshipConversionError;
 
 // TODO: Find a way to reduce the boilerplate for this.
@@ -79,7 +79,7 @@ pub enum RelatedAttributes {
     CustomList(CustomListAttributes),
 }
 
-impl TryFrom<Relationship> for ApiObject<MangaAttributes> {
+impl TryFrom<Relationship> for ApiObjectNoRelationships<MangaAttributes> {
     type Error = RelationshipConversionError;
 
     fn try_from(value: Relationship) -> Result<Self, Self::Error> {
@@ -90,11 +90,10 @@ impl TryFrom<Relationship> for ApiObject<MangaAttributes> {
             });
         }
         if let Some(RelatedAttributes::Manga(attributes)) = value.attributes {
-            Ok(ApiObject {
+            Ok(Self {
                 id: value.id,
                 type_: RelationshipType::Manga,
                 attributes,
-                relationships: Vec::new(),
             })
         } else {
             Err(RelationshipConversionError::AttributesNotFound(
@@ -104,7 +103,7 @@ impl TryFrom<Relationship> for ApiObject<MangaAttributes> {
     }
 }
 
-impl TryFrom<Relationship> for ApiObject<ChapterAttributes> {
+impl TryFrom<Relationship> for ApiObjectNoRelationships<ChapterAttributes> {
     type Error = RelationshipConversionError;
 
     fn try_from(value: Relationship) -> Result<Self, Self::Error> {
@@ -115,11 +114,10 @@ impl TryFrom<Relationship> for ApiObject<ChapterAttributes> {
             });
         }
         if let Some(RelatedAttributes::Chapter(attributes)) = value.attributes {
-            Ok(ApiObject {
+            Ok(Self {
                 id: value.id,
                 type_: RelationshipType::Chapter,
                 attributes,
-                relationships: Vec::new(),
             })
         } else {
             Err(RelationshipConversionError::AttributesNotFound(
@@ -129,7 +127,7 @@ impl TryFrom<Relationship> for ApiObject<ChapterAttributes> {
     }
 }
 
-impl TryFrom<Relationship> for ApiObject<CoverAttributes> {
+impl TryFrom<Relationship> for ApiObjectNoRelationships<CoverAttributes> {
     type Error = RelationshipConversionError;
 
     fn try_from(value: Relationship) -> Result<Self, Self::Error> {
@@ -140,11 +138,10 @@ impl TryFrom<Relationship> for ApiObject<CoverAttributes> {
             });
         }
         if let Some(RelatedAttributes::CoverArt(attributes)) = value.attributes {
-            Ok(ApiObject {
+            Ok(Self {
                 id: value.id,
                 type_: RelationshipType::CustomList,
                 attributes,
-                relationships: Vec::new(),
             })
         } else {
             Err(RelationshipConversionError::AttributesNotFound(
@@ -154,7 +151,7 @@ impl TryFrom<Relationship> for ApiObject<CoverAttributes> {
     }
 }
 
-impl TryFrom<Relationship> for ApiObject<AuthorAttributes> {
+impl TryFrom<Relationship> for ApiObjectNoRelationships<AuthorAttributes> {
     type Error = RelationshipConversionError;
 
     fn try_from(value: Relationship) -> Result<Self, Self::Error> {
@@ -165,15 +162,110 @@ impl TryFrom<Relationship> for ApiObject<AuthorAttributes> {
             });
         }
         if let Some(RelatedAttributes::Author(attributes)) = value.attributes {
-            Ok(ApiObject {
+            Ok(Self {
                 id: value.id,
                 type_: RelationshipType::Author,
                 attributes,
-                relationships: Vec::new(),
             })
         } else {
             Err(RelationshipConversionError::AttributesNotFound(
                 RelationshipType::Author,
+            ))
+        }
+    }
+}
+
+impl TryFrom<Relationship> for ApiObjectNoRelationships<ScanlationGroupAttributes> {
+    type Error = RelationshipConversionError;
+
+    fn try_from(value: Relationship) -> Result<Self, Self::Error> {
+        if value.type_ != RelationshipType::ScanlationGroup {
+            return Err(RelationshipConversionError::InvalidInputRelationshipType {
+                input: RelationshipType::ScanlationGroup,
+                inner: value.type_,
+            });
+        }
+        if let Some(RelatedAttributes::ScanlationGroup(attributes)) = value.attributes {
+            Ok(Self {
+                id: value.id,
+                type_: RelationshipType::ScanlationGroup,
+                attributes,
+            })
+        } else {
+            Err(RelationshipConversionError::AttributesNotFound(
+                RelationshipType::ScanlationGroup,
+            ))
+        }
+    }
+}
+
+impl TryFrom<Relationship> for ApiObjectNoRelationships<TagAttributes> {
+    type Error = RelationshipConversionError;
+
+    fn try_from(value: Relationship) -> Result<Self, Self::Error> {
+        if value.type_ != RelationshipType::Tag {
+            return Err(RelationshipConversionError::InvalidInputRelationshipType {
+                input: RelationshipType::Tag,
+                inner: value.type_,
+            });
+        }
+        if let Some(RelatedAttributes::Tag(attributes)) = value.attributes {
+            Ok(Self {
+                id: value.id,
+                type_: RelationshipType::Tag,
+                attributes,
+            })
+        } else {
+            Err(RelationshipConversionError::AttributesNotFound(
+                RelationshipType::Tag,
+            ))
+        }
+    }
+}
+
+impl TryFrom<Relationship> for ApiObjectNoRelationships<UserAttributes> {
+    type Error = RelationshipConversionError;
+
+    fn try_from(value: Relationship) -> Result<Self, Self::Error> {
+        if value.type_ != RelationshipType::User {
+            return Err(RelationshipConversionError::InvalidInputRelationshipType {
+                input: RelationshipType::User,
+                inner: value.type_,
+            });
+        }
+        if let Some(RelatedAttributes::User(attributes)) = value.attributes {
+            Ok(Self {
+                id: value.id,
+                type_: RelationshipType::User,
+                attributes,
+            })
+        } else {
+            Err(RelationshipConversionError::AttributesNotFound(
+                RelationshipType::User,
+            ))
+        }
+    }
+}
+
+impl TryFrom<Relationship> for ApiObjectNoRelationships<CustomListAttributes> {
+    type Error = RelationshipConversionError;
+
+    fn try_from(value: Relationship) -> Result<Self, Self::Error> {
+        if value.type_ != RelationshipType::CustomList {
+            return Err(RelationshipConversionError::InvalidInputRelationshipType {
+                input: RelationshipType::CustomList,
+                inner: value.type_,
+            });
+        }
+        if let Some(RelatedAttributes::CustomList(attributes)) = value.attributes {
+            Ok(Self {
+                id: value.id,
+                type_: RelationshipType::CustomList,
+                attributes,
+            })
+        } else {
+            Err(RelationshipConversionError::AttributesNotFound(
+                RelationshipType::CustomList,
             ))
         }
     }
