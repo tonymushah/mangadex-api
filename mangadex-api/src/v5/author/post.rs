@@ -161,6 +161,15 @@ pub struct CreateAuthor {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[builder(default)]
     pub website: Option<Option<Url>>,
+
+    #[builder(default = "CreateAuthor::default_version()")]
+    pub version: u16,
+}
+
+impl CreateAuthor {
+    fn default_version() -> u16 {
+        1
+    }
 }
 
 endpoint! {
@@ -179,7 +188,7 @@ mod tests {
     use time::OffsetDateTime;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{header, method, path};
+    use wiremock::matchers::{body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::v5::AuthTokens;
@@ -204,10 +213,11 @@ mod tests {
 
         let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "name": author_name,
             "version": 1
         });
+
         let response_body = json!({
             "result": "ok",
             "response": "entity",
@@ -243,11 +253,10 @@ mod tests {
         });
 
         Mock::given(method("POST"))
-            .and(path(r"/author"))
+            .and(path("/author"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(200)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
