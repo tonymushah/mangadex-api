@@ -96,7 +96,7 @@ mod tests {
     use time::OffsetDateTime;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{header, method, path_regex};
+    use wiremock::matchers::{body_json, header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::v5::AuthTokens;
@@ -120,7 +120,7 @@ mod tests {
 
         let datetime = MangaDexDateTime::new(&OffsetDateTime::now_utc());
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "volume": "1",
             "version": 2
         });
@@ -148,8 +148,7 @@ mod tests {
             .and(path_regex(r"/cover/[0-9a-fA-F-]+"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(200)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
