@@ -142,7 +142,7 @@ builder_send! {
 mod tests {
     use serde_json::json;
     use url::Url;
-    use wiremock::matchers::{header, method, path};
+    use wiremock::matchers::{body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::v5::AuthTokens;
@@ -158,7 +158,7 @@ mod tests {
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "username": "myusername",
             "password": "mypassword"
         });
@@ -173,8 +173,7 @@ mod tests {
         Mock::given(method("POST"))
             .and(path(r"/auth/login"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(200)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
@@ -235,7 +234,7 @@ mod tests {
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "username": "myusername",
             "password": "mypassword"
         });
@@ -247,8 +246,7 @@ mod tests {
         Mock::given(method("POST"))
             .and(path(r"/auth/login"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(400)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
@@ -296,7 +294,7 @@ mod tests {
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "username": "myusername",
             "password": "mypassword"
         });
@@ -304,8 +302,7 @@ mod tests {
         Mock::given(method("POST"))
             .and(path(r"/auth/login"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(401)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
@@ -353,7 +350,7 @@ mod tests {
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "username": "myusername",
             "password": "mypassword"
         });
@@ -361,8 +358,7 @@ mod tests {
         Mock::given(method("POST"))
             .and(path(r"/auth/login"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(503)
                     .insert_header("x-ratelimit-retry-after", "1698723860")
