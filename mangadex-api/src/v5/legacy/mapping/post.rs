@@ -69,7 +69,7 @@ mod tests {
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{header, method, path};
+    use wiremock::matchers::{body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
@@ -86,7 +86,7 @@ mod tests {
 
         let mapping_id = Uuid::new_v4();
         let new_id = Uuid::new_v4();
-        let _expected_body = json!({
+        let expected_body = json!({
             "type": "manga",
             "ids": [1]
         });
@@ -113,8 +113,7 @@ mod tests {
         Mock::given(method("POST"))
             .and(path(r"/legacy/mapping"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
@@ -149,7 +148,7 @@ mod tests {
 
         let error_id = Uuid::new_v4();
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "type": "group",
             "ids": [0],
         });
@@ -167,7 +166,7 @@ mod tests {
             .and(path(r"/legacy/mapping"))
             .and(header("Content-Type", "application/json"))
             // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(ResponseTemplate::new(400).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
