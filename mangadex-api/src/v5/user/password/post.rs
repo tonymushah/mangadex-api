@@ -84,7 +84,7 @@ mod tests {
     use fake::Fake;
     use serde_json::json;
     use url::Url;
-    use wiremock::matchers::{header, method, path};
+    use wiremock::matchers::{body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::v5::AuthTokens;
@@ -105,7 +105,7 @@ mod tests {
 
         let old_password: String = Password(8..1024).fake();
         let new_password: String = Password(8..1024).fake();
-        let _expected_body = json!({
+        let expected_body = json!({
             "oldPassword": old_password,
             "newPassword": new_password
         });
@@ -117,8 +117,7 @@ mod tests {
             .and(path(r"/user/password"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
