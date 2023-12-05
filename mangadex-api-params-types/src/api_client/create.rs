@@ -15,7 +15,6 @@ pub struct ApiClientCreateParams {
     pub version: Option<u32>,
 }
 
-// TODO Implement `send()`
 impl ApiClientCreateParams {
     fn default_version() -> Option<u32> {
         Some(1)

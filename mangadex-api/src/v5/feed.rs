@@ -5,7 +5,7 @@
 use uuid::Uuid;
 
 use crate::v5::custom_list::id::feed::get::CustomListMangaFeedBuilder;
-//use crate::v5::user::followed_manga_feed::GetFollowedMangaFeedBuilder;
+use crate::v5::user::follows::manga::get::FollowedMangaBuilder;
 use crate::HttpClientRef;
 
 /// Feed endpoint handler builder.
@@ -22,7 +22,7 @@ impl FeedBuilder {
 
     /// Get the manga feed for the logged-in user.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Feed/get-user-follows-manga-feed>
+    /// <https://api.mangadex.org/docs/swagger.html#/Feed/get-user-follows-manga-feed>
     ///
     /// # Examples
     ///
@@ -34,11 +34,10 @@ impl FeedBuilder {
     /// let client = MangaDexClient::default();
     ///
     /// let _login_res = client
-    ///     .auth()
+    ///     .oauth()
     ///     .login()
     ///     .username(Username::parse("myusername")?)
     ///     .password(Password::parse("hunter23")?)
-    ///     .build()?
     ///     .send()
     ///     .await?;
     ///
@@ -46,7 +45,6 @@ impl FeedBuilder {
     ///     .feed()
     ///     .followed_manga()
     ///     .limit(1_u32)
-    ///     .build()?
     ///     .send()
     ///     .await?;
     ///
@@ -54,14 +52,13 @@ impl FeedBuilder {
     /// # Ok(())
     /// # }
     /// ```
-    /// TODO Re-add this later
-    /*pub fn followed_manga(&self) -> GetFollowedMangaFeedBuilder {
-        GetFollowedMangaFeedBuilder::default().http_client(self.http_client.clone())
-    }*/
+    pub fn followed_manga(&self) -> FollowedMangaBuilder {
+        FollowedMangaBuilder::default().http_client(self.http_client.clone())
+    }
 
     /// Get the manga feed for a given custom list.
     ///
-    /// <https://api.mangadex.org/swagger.html#/Feed/get-list-id-feed>
+    /// <https://api.mangadex.org/docs/swagger.html#/Feed/get-list-id-feed>
     ///
     /// Alias to [`MangaDexClient::custom_list().id(uuid::Uuid).feed().get()`](crate::v5::custom_list::id::feed::get::CustomListMangaFeedBuilder;).
     ///
@@ -69,15 +66,15 @@ impl FeedBuilder {
     ///
     /// ```rust
     /// use mangadex_api::v5::MangaDexClient;
+    /// use uuid::Uuid;
     ///
     /// # async fn run() -> anyhow::Result<()> {
     /// let client = MangaDexClient::default();
     ///
     /// let res = client
     ///     .feed()
-    ///     .custom_list_manga()
+    ///     .custom_list_manga(Uuid::new_v4())
     ///     .limit(1_u32)
-    ///     .build()?
     ///     .send()
     ///     .await?;
     ///
