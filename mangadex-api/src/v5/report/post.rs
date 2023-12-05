@@ -131,7 +131,6 @@ mod tests {
             .and(path("/report"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
             .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(200)
