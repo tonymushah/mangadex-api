@@ -539,7 +539,6 @@ mod tests {
             .and(path_regex(r"/manga/[0-9a-fA-F-]+"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
             .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(200)
