@@ -7,10 +7,10 @@ use mangadex_api_types::{
     ReferenceExpansionResource,
 };
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaFeedParams {
     pub manga_id: Uuid,
 

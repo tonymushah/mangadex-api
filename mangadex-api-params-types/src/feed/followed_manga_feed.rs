@@ -9,10 +9,10 @@ use mangadex_api_types::{
     ReferenceExpansionResource,
 };
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(default)]
 pub struct FollowedMangaFeedParams {
     pub limit: Option<u32>,

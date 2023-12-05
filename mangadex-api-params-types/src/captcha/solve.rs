@@ -5,9 +5,9 @@ use mangadex_api_schema::Limited;
 use mangadex_api_types::error::Result;
 
 use serde::{Deserialize, Serialize};
-use specta::Type;
 
-#[derive(Debug, Clone, Type, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CaptchaSolveParams {
     pub captcha_challenge: String,
 }

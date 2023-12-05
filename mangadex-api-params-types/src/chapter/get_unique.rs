@@ -3,10 +3,10 @@ use mangadex_api::{v5::chapter::id::get::GetChapterBuilder, MangaDexClient};
 
 use mangadex_api_types::ReferenceExpansionResource;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ChapterGetUniqueParam {
     pub id: Uuid,
     #[serde(default)]

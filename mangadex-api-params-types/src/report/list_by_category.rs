@@ -3,9 +3,9 @@ use mangadex_api::{v5::report::reasons::category::get::ListReasonsBuilder, Manga
 
 use mangadex_api_types::ReportCategory;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ListReasonsByCategory {
     pub category: ReportCategory,
 }

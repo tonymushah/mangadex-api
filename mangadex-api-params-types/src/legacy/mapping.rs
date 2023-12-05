@@ -3,9 +3,9 @@ use mangadex_api::{v5::legacy::mapping::post::LegacyIdMappingBuilder, MangaDexCl
 
 use mangadex_api_types::LegacyMappingType;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct LegacyIdMappingParams {
     pub map_type: LegacyMappingType,
     pub ids: Vec<u32>,

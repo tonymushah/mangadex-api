@@ -2,10 +2,10 @@
 use mangadex_api::{v5::statistics::manga::get::FindMangaStatisticsBuilder, MangaDexClient};
 
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangasStatisticsParams {
     pub mangas: Vec<Uuid>,
 }

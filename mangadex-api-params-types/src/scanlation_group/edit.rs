@@ -8,11 +8,11 @@ use mangadex_api_types::error::Result;
 
 use mangadex_api_types::{Language, MangaDexDuration};
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use url::Url;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct EditScanlationGroupParam {
     pub group_id: Uuid,
 

@@ -2,9 +2,9 @@
 use mangadex_api::{v5::user::follows::user::get::FollowedUsersBuilder, MangaDexClient};
 
 use serde::{Deserialize, Serialize};
-use specta::Type;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(default)]
 pub struct UserFollowedUserParams {
     pub limit: Option<u32>,

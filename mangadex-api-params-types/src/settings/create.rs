@@ -5,9 +5,9 @@ use mangadex_api::{v5::settings::post::CreateOrUpdateUserSettingsBuilder, MangaD
 
 use mangadex_api_types::MangaDexDateTime;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CreateOrUpdateUserSettingsParams {
     #[serde(default)]
     pub settings: HashMap<String, String>,

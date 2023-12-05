@@ -7,10 +7,10 @@ use mangadex_api_types::error::Result;
 
 use mangadex_api_types::{ContentRating, ReferenceExpansionResource, TagSearchMode};
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(default)]
 pub struct MangaRandomParams {
     pub includes: Vec<ReferenceExpansionResource>,

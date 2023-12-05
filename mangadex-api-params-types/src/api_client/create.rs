@@ -4,7 +4,8 @@ use mangadex_api::{v5::api_client::post::CreateClientBuilder, MangaDexClient};
 use mangadex_api_schema::v5::ApiClientResponse;
 use mangadex_api_types::ApiClientProfile;
 
-#[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiClientCreateParams {
     pub name: String,
     #[serde(default)]

@@ -3,10 +3,10 @@ use mangadex_api::{v5::scanlation_group::get::ListGroupBuilder, MangaDexClient};
 
 use mangadex_api_types::{GroupSortOrder, Language, ReferenceExpansionResource};
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(default)]
 pub struct ScanlationGroupListParams {
     pub limit: Option<u32>,

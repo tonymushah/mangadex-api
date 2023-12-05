@@ -7,10 +7,10 @@ use mangadex_api_types::error::Result;
 
 use mangadex_api_types::Language;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CoverEditParam {
     pub cover_or_manga_id: Uuid,
 

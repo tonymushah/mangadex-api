@@ -11,10 +11,10 @@ use mangadex_api_schema::{v5::UploadSessionFileDataObject, Limited};
 use mangadex_api_types::error::Result;
 
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct UploadImageParam {
     pub session_id: Uuid,
     pub files: Vec<PathBuf>,

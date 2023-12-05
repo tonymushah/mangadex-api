@@ -8,10 +8,10 @@ use mangadex_api_types::error::Result;
 
 use mangadex_api_types::MangaDexDuration;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use url::Url;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CreateScalantionGroupParam {
     pub name: String,
     /// Nullable.

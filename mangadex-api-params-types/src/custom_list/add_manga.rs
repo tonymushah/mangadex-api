@@ -6,10 +6,10 @@ use mangadex_api::{
 use mangadex_api_types::error::Result;
 
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CustomListAddMangaParam {
     pub manga_id: Uuid,
     pub list_id: Uuid,

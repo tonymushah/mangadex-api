@@ -9,10 +9,10 @@ use mangadex_api_schema::Limited;
 use mangadex_api_types::error::Result;
 
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct DeleteImageParam {
     pub session_id: Uuid,
     pub session_file_id: Uuid,

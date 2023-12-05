@@ -5,10 +5,10 @@ use mangadex_api::{
 
 use mangadex_api_types::MangaRelation;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaCreateRelationParam {
     pub manga_id: Uuid,
     pub target_manga: Uuid,

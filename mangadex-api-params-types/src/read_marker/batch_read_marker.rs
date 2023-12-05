@@ -2,10 +2,10 @@
 use mangadex_api::{v5::manga::id::read::post::MarkChapterBatchBuilder, MangaDexClient};
 
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MarkChapterBatchParam {
     pub manga_id: Uuid,
     #[serde(default)]

@@ -7,11 +7,11 @@ use mangadex_api_types::{
     ReferenceExpansionResource,
 };
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Deserialize, Serialize, Default)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ChapterListParams {
     pub limit: Option<u32>,
     pub offset: Option<u32>,

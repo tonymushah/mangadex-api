@@ -2,9 +2,9 @@
 use mangadex_api::{v5::settings::template::post::CreateSettingsTemplateBuilder, MangaDexClient};
 
 use serde::{Deserialize, Serialize};
-use specta::Type;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CreateSettingsTemplateParams {
     pub description: Option<String>,
 }

@@ -3,10 +3,10 @@ use mangadex_api::{v5::cover::cover_id::get::GetCoverBuilder, MangaDexClient};
 
 use mangadex_api_types::ReferenceExpansionResource;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CoverGetUniqueParam {
     manga_or_cover_id: Uuid,
     #[serde(default)]

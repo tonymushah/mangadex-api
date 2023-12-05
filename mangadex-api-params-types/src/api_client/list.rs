@@ -2,7 +2,7 @@
 use mangadex_api::{v5::api_client::get::ListClientsBuilder, MangaDexClient};
 use mangadex_api_types::{ApiClientState, ReferenceExpansionResource};
 
-#[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 pub struct ApiClientListParam {
     #[serde(default)]
     pub limit: Option<u32>,

@@ -9,11 +9,11 @@ use mangadex_api_types::error::Result;
 
 use mangadex_api_types::{Language, MangaDexDateTime};
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use url::Url;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CommitUploadSessionParam {
     pub session_id: Uuid,
     /// Ordered list of Upload Session File IDs.

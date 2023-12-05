@@ -7,10 +7,10 @@ use mangadex_api_types::error::Result;
 
 use mangadex_api_types::ForumThreadType;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CreateForumThreadParams {
     pub type_: ForumThreadType,
     pub id: Uuid,

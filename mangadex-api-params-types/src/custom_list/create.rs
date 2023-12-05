@@ -3,10 +3,10 @@ use mangadex_api::{v5::custom_list::post::CreateCustomListBuilder, MangaDexClien
 
 use mangadex_api_types::CustomListVisibility;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CustomListCreateParam {
     pub name: String,
     #[serde(default)]

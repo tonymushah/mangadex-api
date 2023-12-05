@@ -2,10 +2,10 @@
 use mangadex_api::{v5::rating::manga_id::post::CreateUpdateMangaRatingBuilder, MangaDexClient};
 
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CreateUpdateRating {
     pub manga_id: Uuid,
 

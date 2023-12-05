@@ -7,7 +7,8 @@ use mangadex_api_types::error::Result;
 
 use uuid::Uuid;
 
-#[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct AtHomeServerParams {
     chapter_id: Uuid,
     #[serde(default)]

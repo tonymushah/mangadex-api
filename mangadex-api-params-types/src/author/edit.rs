@@ -9,7 +9,8 @@ use mangadex_api_schema::v5::LocalizedString;
 use url::Url;
 use uuid::Uuid;
 
-#[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct AuthorEditParams {
     pub id: Uuid,
 

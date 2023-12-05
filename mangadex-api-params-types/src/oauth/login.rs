@@ -5,7 +5,8 @@ use mangadex_api_schema::v5::oauth::OAuthTokenResponse;
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api_types::{error::Result, Password, Username};
 
-#[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct OAuthLoginParams {
     pub username: String,
     pub password: String,

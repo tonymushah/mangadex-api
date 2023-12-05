@@ -4,7 +4,8 @@ use mangadex_api::{v5::author::get::ListAuthorBuilder, MangaDexClient};
 use mangadex_api_types::{AuthorSortOrder, ReferenceExpansionResource};
 use uuid::Uuid;
 
-#[derive(serde::Serialize, serde::Deserialize, specta::Type, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct AuthorListParams {
     #[serde(default)]
     pub limit: Option<u32>,

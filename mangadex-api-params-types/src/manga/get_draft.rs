@@ -3,10 +3,10 @@ use mangadex_api::{v5::manga::draft::id::get::GetMangaDraftBuilder, MangaDexClie
 
 use mangadex_api_types::ReferenceExpansionResource;
 use serde::{Deserialize, Serialize};
-use specta::Type;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct GetMangaDraftParams {
     pub manga_id: Uuid,
 

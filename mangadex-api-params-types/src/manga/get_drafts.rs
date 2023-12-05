@@ -3,9 +3,9 @@ use mangadex_api::{v5::manga::draft::get::ListMangaDraftsBuilder, MangaDexClient
 
 use mangadex_api_types::{MangaDraftsSortOrder, MangaState, ReferenceExpansionResource};
 use serde::{Deserialize, Serialize};
-use specta::Type;
 
-#[derive(Debug, Clone, Type, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(default)]
 pub struct MangaDraftsParams {
     pub limit: Option<u32>,
