@@ -3,6 +3,8 @@ use mangadex_api::{v5::api_client::get::ListClientsBuilder, MangaDexClient};
 use mangadex_api_types::{ApiClientState, ReferenceExpansionResource};
 
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiClientListParam {
     #[serde(default)]
     pub limit: Option<u32>,

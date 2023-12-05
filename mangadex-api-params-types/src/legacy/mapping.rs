@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct LegacyIdMappingParams {
     pub map_type: LegacyMappingType,
     pub ids: Vec<u32>,

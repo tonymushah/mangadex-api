@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(default)]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct UserFollowedGroupsParams {
     pub limit: Option<u32>,
     pub offset: Option<u32>,

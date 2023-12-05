@@ -12,6 +12,7 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct DeleteImagesParam {
     pub session_id: Uuid,
     pub session_file_ids: Vec<Uuid>,

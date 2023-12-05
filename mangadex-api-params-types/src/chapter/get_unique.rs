@@ -7,6 +7,7 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct ChapterGetUniqueParam {
     pub id: Uuid,
     #[serde(default)]

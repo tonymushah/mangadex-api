@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 #[serde(default)]
 pub struct CustomListGetUserLoggedListsParam {
     pub limit: Option<u32>,

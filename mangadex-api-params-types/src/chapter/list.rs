@@ -11,6 +11,7 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(default)]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ChapterListParams {
     pub limit: Option<u32>,

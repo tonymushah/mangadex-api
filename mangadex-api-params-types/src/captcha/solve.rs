@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct CaptchaSolveParams {
     pub captcha_challenge: String,
 }

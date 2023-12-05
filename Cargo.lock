@@ -148,6 +148,8 @@ dependencies = [
  "static_assertions",
  "tempfile",
  "thiserror",
+ "url",
+ "uuid",
 ]
 
 [[package]]
