@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use std::string::ParseError;
+use std::{fmt::Display, str::FromStr};
 
 use serde::{Deserialize, Serialize};
 
@@ -14,6 +14,7 @@ macro_rules! languages {
         #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Serialize)]
         #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
         #[cfg_attr(feature = "specta", derive(specta::Type))]
+        #[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
         pub enum Language {
             $(
                 $( #[$meta] )*
@@ -131,6 +132,12 @@ languages! {
     Turkish => "tr",
     Ukrainian => "uk",
     Vietnamese => "vi",
+}
+
+impl Display for Language {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.code2())
+    }
 }
 
 #[cfg(test)]

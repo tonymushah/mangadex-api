@@ -5,5 +5,5 @@ members = [
     "mangadex-api-schema",
     "mangadex-api",
     "mangadex-api-tests",
-    "mangadex-api-params-types"
+    "mangadex-api-input-types"
 ]

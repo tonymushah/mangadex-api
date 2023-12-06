@@ -1,0 +1,51 @@
+[package]
+name = "mangadex-api-input-types"
+version = "0.1.0"
+authors = [ "tonymushah" ]
+description = "A collection input types for mangadex-api"
+edition = "2021"
+rust-version = "1.60"
+
+[dependencies]
+serde = "1.0"
+specta = { version = "1.0.5", optional = true }
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+async-graphql = { version = "6", optional = true, features = ["uuid", "url"] }
+
+[dependencies.uuid]
+version = "1.6.1"
+features = [
+    "serde",
+    "v4",
+]
+
+[dependencies.url]
+version = "2.5.0"
+features = ["serde"]
+
+[dependencies.mangadex-api]
+optional = true
+path = "../mangadex-api"
+version = "3.0.0-rc.3"
+features = ["specta"]
+
+[dependencies.mangadex-api-schema]
+package = "mangadex-api-schema-rust"
+version = "0.5"
+path = "../mangadex-api-schema"
+default-features = false
+optional = true
+features = ["serialize"]
+
+[dependencies.mangadex-api-types]
+package = "mangadex-api-types-rust"
+version = "0.5"
+path = "../mangadex-api-types"
+default-features = false
+
+[features]
+default = ["mangadex-api-resolver"]
+mangadex-api-resolver = ["dep:mangadex-api", "dep:mangadex-api-schema"]
+specta = ["dep:specta", "mangadex-api-schema/specta", "mangadex-api-types/specta", "mangadex-api/specta"]
+async-graphql = ["dep:async-graphql", "mangadex-api-types/async-graphql"]

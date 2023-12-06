@@ -1,3 +1,5 @@
+use std::fmt::{Debug, Display};
+
 use serde::{Deserialize, Serialize};
 
 // Relationship types for response objects.
@@ -10,6 +12,7 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
 pub enum RelationshipType {
     /// Manga resource.
     Manga,
@@ -60,5 +63,11 @@ pub enum RelationshipType {
 impl Default for RelationshipType {
     fn default() -> Self {
         Self::Unknown
+    }
+}
+
+impl Display for RelationshipType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        <Self as Debug>::fmt(self, f)
     }
 }

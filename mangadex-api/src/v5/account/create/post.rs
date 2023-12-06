@@ -89,7 +89,7 @@ mod tests {
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{header, method, path};
+    use wiremock::matchers::{body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
@@ -107,7 +107,7 @@ mod tests {
         let password: String = Password(8..1024).fake();
         let email: String = SafeEmail().fake();
 
-        let _expected_body = json!({
+        let expected_body = json!({
             "username": username,
             "password": password,
             "email": email
@@ -139,8 +139,7 @@ mod tests {
         Mock::given(method("POST"))
             .and(path("/account/create"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work with multiple fields.
-            // .and(body_json(expected_body))
+            .and(body_json(expected_body))
             .respond_with(ResponseTemplate::new(201).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)

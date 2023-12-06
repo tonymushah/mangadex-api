@@ -159,7 +159,6 @@ mod tests {
             .and(path("/client"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(header("Content-Type", "application/json"))
-            // TODO: Make the request body check work.
             .and(body_json(_expected_body.clone()))
             .respond_with(ResponseTemplate::new(201).set_body_json(response_body))
             .expect(1)

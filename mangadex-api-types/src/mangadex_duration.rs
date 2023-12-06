@@ -77,6 +77,8 @@ impl<'de> Deserialize<'de> for MangaDexDuration {
     }
 }
 
+#[cfg(feature = "async-graphql")]
+async_graphql::scalar!(MangaDexDuration);
 /// Parse an ISO 8601 duration string and return a `std::time::Duration` struct.
 ///
 /// Should respected ISO 8601 duration specification: <https://en.wikipedia.org/wiki/ISO_8601#Durations>

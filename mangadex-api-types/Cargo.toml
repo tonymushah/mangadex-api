@@ -18,6 +18,7 @@ description = "Types for mangadex-api"
 license = "MIT OR Apache-2.0"
 resolver = "2"
 repository = "https://github.com/tonymushah/mangadex-api"
+keywords = ["mangadex", "types-bindings"]
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"]}
@@ -60,6 +61,14 @@ features = [
     "v4",
 ]
 
+[dependencies.async-graphql]
+version = "6"
+features = [
+    "time",
+    "uuid"
+]
+optional = true
+
 [dependencies.specta]
 version = "1.0.5"
 optional = true
@@ -73,3 +82,4 @@ features = [
 non_exhaustive = []
 default = ["non_exhaustive"]
 specta = ["dep:specta"]
+async-graphql = ["dep:async-graphql"]

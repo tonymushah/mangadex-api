@@ -4,10 +4,11 @@ use std::string::ParseError;
 use serde::{Deserialize, Serialize};
 
 /// Mapping types to get the new UUIDs from the legacy, numerical, IDs.
-#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, Copy)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
 pub enum LegacyMappingType {
     Chapter,
     Group,

@@ -5,7 +5,20 @@ use std::{
 
 use derive_builder::UninitializedFieldError;
 use schema::MangaDexErrorResponse_ as MangaDexErrorResponse;
+
+use crate::RelationshipType;
 pub type Result<T, E = Error> = std::result::Result<T, E>;
+
+#[derive(thiserror::Error, Debug)]
+pub enum RelationshipConversionError {
+    #[error("The input relationship type {input} is incompatible with {inner}")]
+    InvalidInputRelationshipType {
+        input: RelationshipType,
+        inner: RelationshipType,
+    },
+    #[error("The {0} related attributes is not found")]
+    AttributesNotFound(RelationshipType),
+}
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -76,6 +89,9 @@ pub enum Error {
     #[error(transparent)]
     ForumThreadTypeParseError(#[from] crate::forum_thread::ForumThreadTypeParseError),
 
+    #[error(transparent)]
+    RelationshipConversionError(#[from] RelationshipConversionError),
+
     #[error("This file {0} was skipped")]
     SkippedDownload(String),
 
@@ -124,6 +140,9 @@ impl serde::Serialize for Error {
                 serializer.serialize_str("missing captcha; please insert it or solve a captcha")
             }
             Error::SkippedDownload(e) => {
+                serializer.serialize_str(format!("This file {} was skipped", e).as_str())
+            }
+            Error::RelationshipConversionError(e) => {
                 serializer.serialize_str(format!("This file {} was skipped", e).as_str())
             }
         }

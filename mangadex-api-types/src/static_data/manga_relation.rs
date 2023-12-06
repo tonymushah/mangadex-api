@@ -3,9 +3,10 @@ use serde::{Deserialize, Serialize};
 /// Used in the `related` field of a Manga relationships.
 ///
 /// <https://api.mangadex.org/docs/static-data/#manga-related-enum>
-#[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize, Eq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
 pub enum MangaRelation {
     /// The original work this spin-off manga has been adapted from.
     AdaptedFrom,

@@ -128,6 +128,27 @@ impl<A> ApiObject<A> {
     }
 }
 
+impl<T> From<ApiObject<T>> for ApiObjectNoRelationships<T> {
+    fn from(value: ApiObject<T>) -> Self {
+        Self {
+            id: value.id,
+            type_: value.type_,
+            attributes: value.attributes,
+        }
+    }
+}
+
+impl<T> From<ApiObjectNoRelationships<T>> for ApiObject<T> {
+    fn from(value: ApiObjectNoRelationships<T>) -> Self {
+        Self {
+            id: value.id,
+            type_: value.type_,
+            attributes: value.attributes,
+            relationships: Vec::new(),
+        }
+    }
+}
+
 impl<A> FromResponse for ApiObject<A> {
     type Response = Self;
 

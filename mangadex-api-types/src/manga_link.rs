@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, str::FromStr};
 
 use serde::{Deserialize, Serialize};
 
@@ -9,6 +9,7 @@ pub type MangaLinks = HashMap<MangaLink, String>;
 #[serde(rename_all = "lowercase")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
 pub enum MangaLink {
     #[serde(rename = "amz")]
     Amazon,
@@ -36,6 +37,28 @@ pub enum MangaLink {
     // TODO: Known issue: Manga ID "f9c33607-9180-4ba6-b85c-e4b5faee7192" has an unknown key of "dj".
     #[serde(other, skip_serializing)]
     Unknown,
+}
+
+impl FromStr for MangaLink {
+    type Err = crate::error::Error;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let se = match s {
+            "amz" => Self::Amazon,
+            "al" => Self::AniList,
+            "ap" => Self::AnimePlanet,
+            "bw" => Self::BookWalker,
+            "cdj" => Self::CdJapan,
+            "ebj" => Self::EbookJapan,
+            "engtl" => Self::EnglishTranslation,
+            "kt" => Self::Kitsu,
+            "mu" => Self::MangaUpdates,
+            "mal" => Self::MyAnimeList,
+            "nu" => Self::NovelUpdates,
+            "raw" => Self::Raw,
+            _ => Self::Unknown,
+        };
+        Ok(se)
+    }
 }
 
 impl std::fmt::Display for MangaLink {

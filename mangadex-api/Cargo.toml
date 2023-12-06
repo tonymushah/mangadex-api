@@ -15,7 +15,7 @@ name = "mangadex-api"
 version = "3.0.0-rc.3"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
 description = "SDK for the MangaDex API"
-readme = "README.md"
+readme = "../README.md"
 keywords = [
     "api",
     "client",

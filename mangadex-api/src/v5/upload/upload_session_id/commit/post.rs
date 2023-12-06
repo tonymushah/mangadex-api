@@ -352,7 +352,6 @@ mod tests {
             .and(path_regex(r"/upload/[0-9a-fA-F-]+/commit"))
             .and(header("authorization", "Bearer sessiontoken"))
             .and(header("content-type", "application/json"))
-            // TODO: Make the request body check work.
             .and(body_json(expected_body))
             .respond_with(
                 ResponseTemplate::new(200)
