@@ -2,7 +2,6 @@
 use std::{
     fs::File,
     io::{BufReader, Read},
-    path::PathBuf,
 };
 
 #[cfg(feature = "mangadex-api-resolver")]
@@ -12,6 +11,7 @@ use mangadex_api_schema::{v5::CoverData, Limited};
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api_types::error::Result;
 
+use crate::PathBuf;
 use mangadex_api_types::Language;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;

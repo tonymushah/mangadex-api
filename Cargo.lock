@@ -148,6 +148,7 @@ dependencies = [
  "static_assertions",
  "tempfile",
  "thiserror",
+ "time",
  "url",
  "uuid",
 ]
@@ -1286,6 +1287,7 @@ name = "mangadex-api-types-rust"
 version = "0.5.3"
 dependencies = [
  "anyhow",
+ "async-graphql",
  "derive_builder",
  "reqwest",
  "serde",

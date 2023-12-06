@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use crate::PathBuf;
 
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{
@@ -29,7 +29,8 @@ impl From<UploadImageParam> for UploadImagesBuilder {
         let files: Vec<UploadImage> = value
             .files
             .iter()
-            .flat_map(<UploadImage as TryFrom<&PathBuf>>::try_from)
+            .map(|p| <std::path::PathBuf as From<PathBuf>>::from(p.clone()))
+            .flat_map(<UploadImage as TryFrom<std::path::PathBuf>>::try_from)
             .collect();
         builder.files(files);
         builder

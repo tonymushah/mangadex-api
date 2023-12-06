@@ -76,3 +76,6 @@ impl Default for MangaDexDateTime {
         MangaDexDateTime(OffsetDateTime::now_utc())
     }
 }
+
+#[cfg(feature = "async-graphql")]
+async_graphql::scalar!(MangaDexDateTime);

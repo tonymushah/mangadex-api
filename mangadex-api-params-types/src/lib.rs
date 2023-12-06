@@ -1,3 +1,5 @@
+use std::path::Path;
+
 pub mod api_client;
 pub mod at_home;
 pub mod author;
@@ -19,3 +21,26 @@ pub mod settings;
 pub mod statistics;
 pub mod upload;
 pub mod user;
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, serde::Serialize, serde::Deserialize)]
+pub struct PathBuf(std::path::PathBuf);
+
+impl From<std::path::PathBuf> for PathBuf {
+    fn from(value: std::path::PathBuf) -> Self {
+        Self(value)
+    }
+}
+
+impl From<PathBuf> for std::path::PathBuf {
+    fn from(value: PathBuf) -> Self {
+        value.0
+    }
+}
+impl AsRef<Path> for PathBuf {
+    fn as_ref(&self) -> &Path {
+        &self.0
+    }
+}
+
+#[cfg(feature = "async-graphql")]
+async_graphql::scalar!(PathBuf);

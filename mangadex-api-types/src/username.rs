@@ -30,6 +30,22 @@ impl Username {
     }
 }
 
+#[cfg(feature = "async-graphql")]
+#[cfg_attr(feature = "async-graphql", async_graphql::Scalar)]
+impl async_graphql::ScalarType for Username {
+    fn parse(value: async_graphql::Value) -> async_graphql::InputValueResult<Self> {
+        if let async_graphql::Value::String(username) = value {
+            Ok(Username::parse(username)?)
+        } else {
+            Err(async_graphql::InputValueError::expected_type(value))
+        }
+    }
+
+    fn to_value(&self) -> async_graphql::Value {
+        async_graphql::Value::String(self.as_ref().to_string())
+    }
+}
+
 impl AsRef<str> for Username {
     fn as_ref(&self) -> &str {
         &self.0

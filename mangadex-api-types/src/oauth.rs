@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, Eq, Serialize)]
@@ -10,13 +12,13 @@ pub enum GrantTypeSupported {
     ClientCredentials,
 }
 
-impl ToString for GrantTypeSupported {
-    fn to_string(&self) -> String {
-        match self {
-            GrantTypeSupported::RefreshToken => "refresh_token".to_string(),
-            GrantTypeSupported::Password => "password".to_string(),
-            GrantTypeSupported::AuthorizationCode => "authorization_code".to_string(),
-            GrantTypeSupported::ClientCredentials => "client_credentials".to_string(),
-        }
+impl Display for GrantTypeSupported {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            GrantTypeSupported::RefreshToken => "refresh_token",
+            GrantTypeSupported::Password => "password",
+            GrantTypeSupported::AuthorizationCode => "authorization_code",
+            GrantTypeSupported::ClientCredentials => "client_credentials",
+        })
     }
 }
