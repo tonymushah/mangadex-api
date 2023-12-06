@@ -1236,7 +1236,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mangadex-api-params-types"
+name = "mangadex-api-input-types"
 version = "0.1.0"
 dependencies = [
  "anyhow",
