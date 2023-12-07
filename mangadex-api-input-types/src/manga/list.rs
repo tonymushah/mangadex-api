@@ -5,12 +5,13 @@ use mangadex_api_types::{
     ContentRating, Demographic, Language, MangaDexDateTime, MangaSortOrder, MangaStatus,
     ReferenceExpansionResource, TagSearchMode,
 };
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Deserialize, Default)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(default)]
 pub struct MangaListParams {
     pub limit: Option<u32>,
