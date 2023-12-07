@@ -1,9 +1,10 @@
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{v5::settings::template::post::CreateSettingsTemplateBuilder, MangaDexClient};
 
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct CreateSettingsTemplateParams {
