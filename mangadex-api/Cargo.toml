@@ -159,6 +159,7 @@ deserializable-endpoint = ["dep:getset"]
 serialize = ["mangadex-api-schema/serialize"]
 oauth = []
 specta = ["dep:specta", "serialize", "mangadex-api-schema/specta"]
+custom_list_v2 = []
 
 [[example]]
 name = "oauth_manga_feed"
