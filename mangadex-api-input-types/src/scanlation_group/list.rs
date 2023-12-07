@@ -2,12 +2,13 @@
 use mangadex_api::{v5::scanlation_group::get::ListGroupBuilder, MangaDexClient};
 
 use mangadex_api_types::{GroupSortOrder, Language, ReferenceExpansionResource};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Deserialize, Default)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(default)]
 pub struct ScanlationGroupListParams {
     pub limit: Option<u32>,

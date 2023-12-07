@@ -7,12 +7,13 @@ use mangadex_api_schema::{v5::GroupData, Limited};
 use mangadex_api_types::error::Result;
 
 use mangadex_api_types::MangaDexDuration;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use url::Url;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct CreateScalantionGroupParam {
     pub name: String,
     /// Nullable.
