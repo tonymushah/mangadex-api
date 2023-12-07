@@ -62,14 +62,16 @@ Please note that as MangaDex is still in beta, this SDK will be subject to sudde
   - [Authentification (via the `oauth` feature)](#authentification-via-the-oauth-feature)
     - [Login](#login)
     - [Resfresh your token](#resfresh-your-token)
-  - [Changelog](#changelog)
   - [License](#license)
     - [Contribution](#contribution)
   - [Contributing](#contributing)
 
 ## Workspace details
 
-- `mangadex-a`
+- [`mangadex-api`](./mangadex-api/) is the SDK itself
+- [`mangadex-api-types`](./mangadex-api-types/) is the crate containing all enums, and static data. Those are `non_exhaustive` by default
+- [`mangadex-api-schema`](./mangadex-api-schema/) contains all the response structs required. These support serialization with the `serialize` feature
+- [`mangadex-api-inputs-types`](./mangadex-api-input-types/) contains input types for endpoint. Please note that this input crate only contain those with multiple parameters.
 
 ## Requirements
 
@@ -917,14 +919,6 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-## Changelog
-
-[Back to top][readme-section-toc]
-
-The changelog can be found [here][changelog].
-
-Changes are added manually to keep the changelog human-readable with summaries of the changes from each version.
-
 ## License
 
 [Back to top][readme-section-toc]
@@ -978,7 +972,6 @@ We welcome contributions from everyone. There are many ways to contribute and th
 [reqwest-client]: https://docs.rs/reqwest/latest/reqwest/struct.Client.html
 [rust-homepage]: https://rust-lang.org
 
-[changelog]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/CHANGELOG.md
 [contributing]: https://gitlab.com/gondolyr/mangadex-api/-/blob/main/CONTRIBUTING.md
 [library-client]: ./v5/struct.MangaDexClient.html
 [library-schema-module]: https://crates.io/crates/mangadex-api-schema-rust
@@ -989,4 +982,3 @@ We welcome contributions from everyone. There are many ways to contribute and th
 [personal-client]: https://api.mangadex.org/docs/02-authentication/personal-clients/
 [mangadex-settings]: https://mangadex.org/settings
 [custom-list-v2]: https://forums.mangadex.org/threads/follows-customlist-api-changelog-breaking-changes.1419832/
-

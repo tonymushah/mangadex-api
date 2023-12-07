@@ -5,9 +5,8 @@ pub mod delete;
 pub mod follow;
 pub mod get;
 pub mod list;
-#[cfg(feature = "legacy-account")]
-pub mod password;
 
+use crate::HttpClientRef;
 #[cfg(feature = "custom_list_v2")]
 use bookmark::BookmarkEndpoint;
 #[cfg(feature = "legacy-account")]
@@ -15,10 +14,6 @@ use delete::DeleteUserBuilder;
 use follow::FollowEndpoint;
 use get::GetUserBuilder;
 use list::ListEndpoint;
-#[cfg(feature = "legacy-account")]
-use password::PasswordEndpoint;
-
-use crate::HttpClientRef;
 use uuid::Uuid;
 
 #[derive(Debug)]
@@ -37,11 +32,6 @@ impl IdEndpoint {
         DeleteUserBuilder::default()
             .user_id(self.id)
             .http_client(self.http_client.clone())
-    }
-
-    #[cfg(feature = "legacy-account")]
-    pub fn password(&self) -> PasswordEndpoint {
-        PasswordEndpoint::new(self.http_client.clone())
     }
 
     pub fn get(&self) -> GetUserBuilder {
