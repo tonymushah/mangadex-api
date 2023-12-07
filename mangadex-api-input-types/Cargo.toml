@@ -27,16 +27,14 @@ features = ["serde"]
 [dependencies.mangadex-api]
 optional = true
 path = "../mangadex-api"
-version = "3.0.0-rc.3"
-features = ["specta"]
+version = "3.0.0"
+features = ["serialize"]
 
 [dependencies.mangadex-api-schema]
 package = "mangadex-api-schema-rust"
 version = "0.5"
 path = "../mangadex-api-schema"
 default-features = false
-optional = true
-features = ["serialize"]
 
 [dependencies.mangadex-api-types]
 package = "mangadex-api-types-rust"
@@ -45,7 +43,8 @@ path = "../mangadex-api-types"
 default-features = false
 
 [features]
-default = ["mangadex-api-resolver"]
-mangadex-api-resolver = ["dep:mangadex-api", "dep:mangadex-api-schema"]
-specta = ["dep:specta", "mangadex-api-schema/specta", "mangadex-api-types/specta", "mangadex-api/specta"]
+default = ["async-graphql"]
+serialize = ["mangadex-api/serialize", "mangadex-api-schema/serialize"]
+mangadex-api-resolver = ["dep:mangadex-api"]
+specta = ["dep:specta", "mangadex-api-schema/specta", "mangadex-api-types/specta"]
 async-graphql = ["dep:async-graphql", "mangadex-api-types/async-graphql"]

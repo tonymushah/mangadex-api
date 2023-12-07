@@ -3,9 +3,10 @@ use mangadex_api::{v5::api_client::id::get::GetClientBuilder, MangaDexClient};
 use mangadex_api_types::ReferenceExpansionResource;
 use uuid::Uuid;
 
-#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+#[derive(serde::Deserialize, Debug, Clone)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct ApiClientGetUniqueParams {
     pub client_id: Uuid,
 

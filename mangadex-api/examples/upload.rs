@@ -1,6 +1,6 @@
 use mangadex_api::{v5::upload::upload_session_id::post::UploadImage, MangaDexClient};
 use mangadex_api_schema::v5::oauth::ClientInfo;
-use mangadex_api_types::{MangaDexDateTime, Password, Username};
+use mangadex_api_types::{Password, Username};
 use uuid::Uuid;
 
 use std::{

@@ -1,10 +1,14 @@
 # mangadex-api
 
 [![Rust](https://github.com/tonymushah/mangadex-api/actions/workflows/rust.yml/badge.svg)](https://github.com/tonymushah/mangadex-api/actions/workflows/rust.yml)
+[![Crates.io][crates-badge]][crates-url]
+[![Documentation][docs-badge]][docs-url]
+[![Crates.io (recent)](https://img.shields.io/crates/dr/mangadex-api)][crates-url]
 
-## 3.0.0 developpement
-
-A lot of changes will occur in 3.0.0. Please refer to [#27](https://github.com/tonymushah/mangadex-api/issues/27)
+[crates-badge]: https://img.shields.io/crates/v/mangadex-api.svg
+[crates-url]: https://crates.io/crates/mangadex-api
+[docs-badge]: https://img.shields.io/docsrs/mangadex-api.svg
+[docs-url]: https://docs.rs/mangadex-api
 
 ## Important
 
@@ -18,7 +22,7 @@ It covers all public endpoints covered by [their documentation][mangadex-api-doc
 
 [Documentation (docs.rs)](https://docs.rs/mangadex_api)
 
-[Documentation (Project `main` branch)](https://gondolyr.gitlab.io/mangadex-api/mangadex_api)
+[Documentation (Old repo `main` branch)](https://gondolyr.gitlab.io/mangadex-api/mangadex_api)
 
 Please note that as MangaDex is still in beta, this SDK will be subject to sudden breaking changes (a lot).
 
@@ -29,10 +33,10 @@ Please note that as MangaDex is still in beta, this SDK will be subject to sudde
 ## Table of Contents
 
 - [mangadex-api](#mangadex-api)
-  - [3.0.0 developpement](#300-developpement)
   - [Important](#important)
   - [Disclaimer](#disclaimer)
   - [Table of Contents](#table-of-contents)
+  - [Workspace details](#workspace-details)
   - [Requirements](#requirements)
   - [How to install](#how-to-install)
   - [Dependency Justification](#dependency-justification)
@@ -63,6 +67,10 @@ Please note that as MangaDex is still in beta, this SDK will be subject to sudde
     - [Contribution](#contribution)
   - [Contributing](#contributing)
 
+## Workspace details
+
+- `mangadex-a`
+
 ## Requirements
 
 [Back to top][readme-section-toc]
@@ -81,7 +89,7 @@ Add `mangadex-api` to your dependencies:
 # Types and schemas are always required
 mangadex-api-types-rust = "0.5"
 mangadex-api-schema-rust = "0.5"
-mangadex-api = "3.0.0-rc.1"
+mangadex-api = "3.0.0"
 ```
 
 If you are using [`cargo-edit`](https://github.com/killercup/cargo-edit), run
@@ -150,10 +158,12 @@ All features are not included by default. To enable them, add any of the followi
   __Quick Note:__ This `oauth` feature use the [personal-client] approach which means that you need to register a personal client and wait that it'll be validated.
   More details here [here](#authentification-via-the-oauth-feature)
 
+- `custom_list_v2` : Enable the usage of the upcoming custom list system. Please note that these endpoints are deployed yet on `api.mangadex.org` but you can use them on `api.mangadex.dev` (their live dev API). For more information, please refer to [`Follows/CustomList API Changelog - BREAKING CHANGES`][custom-list-v2] on the MangaDex Forums
+
 For example, to enable the `multi-thread` feature, add the following to your `Cargo.toml` file:
 
 ```toml
-mangadex-api = { version = "3.0.0-rc.1", features = ["multi-thread"] }
+mangadex-api = { version = "3.0.0", features = ["multi-thread"] }
 ```
 
 ## HTTP Client
@@ -962,7 +972,7 @@ We welcome contributions from everyone. There are many ways to contribute and th
 [dependency-wiremock-docs]: https://docs.rs/wiremock
 
 [mangadex-api-url]: https://api.mangadex.org
-[mangadex-api-docs-url]: https://api.mangadex.org/swagger.html
+[mangadex-api-docs-url]: https://api.mangadex.org/docs/swagger.html
 [mangadex-homepage]: https://mangadex.org
 [reqwest]: https://docs.rs/reqwest
 [reqwest-client]: https://docs.rs/reqwest/latest/reqwest/struct.Client.html
@@ -978,3 +988,5 @@ We welcome contributions from everyone. There are many ways to contribute and th
 [readme-section-toc]: #table-of-contents
 [personal-client]: https://api.mangadex.org/docs/02-authentication/personal-clients/
 [mangadex-settings]: https://mangadex.org/settings
+[custom-list-v2]: https://forums.mangadex.org/threads/follows-customlist-api-changelog-breaking-changes.1419832/
+
