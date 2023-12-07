@@ -2,6 +2,7 @@
 //!
 //! <https://api.mangadex.org/docs/swagger.html#/User>
 
+#[cfg(feature = "custom_list_v2")]
 pub mod bookmarks;
 #[cfg(feature = "legacy-account")]
 pub mod delete;
@@ -15,11 +16,13 @@ pub mod list;
 pub mod me;
 #[cfg(feature = "legacy-account")]
 pub mod password;
+#[cfg(feature = "custom_list_v2")]
 pub mod subscription;
 
 use crate::HttpClientRef;
 use uuid::Uuid;
 
+#[cfg(feature = "custom_list_v2")]
 use bookmarks::BookmarksEndpoint;
 #[cfg(feature = "legacy-account")]
 use delete::DeleteEndpoint;
@@ -33,6 +36,7 @@ use list::ListEndpoint;
 use me::MeEndpoint;
 #[cfg(feature = "legacy-account")]
 use password::PasswordEndpoint;
+#[cfg(feature = "custom_list_v2")]
 use subscription::SubscriptionEndpoint;
 
 #[derive(Debug)]
@@ -44,6 +48,7 @@ impl UserBuilder {
     pub fn new(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
+    #[cfg(feature = "custom_list_v2")]
     pub fn bookmarks(&self) -> BookmarksEndpoint {
         BookmarksEndpoint::new(self.http_client.clone())
     }
@@ -87,6 +92,7 @@ impl UserBuilder {
         PasswordEndpoint::new(self.http_client.clone())
     }
 
+    #[cfg(feature = "custom_list_v2")]
     pub fn subscription(&self) -> SubscriptionEndpoint {
         SubscriptionEndpoint::new(self.http_client.clone())
     }

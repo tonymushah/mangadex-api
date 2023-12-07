@@ -1,16 +1,22 @@
+#[cfg(feature = "custom_list_v2")]
 pub mod bookmark;
 #[cfg(feature = "legacy-account")]
 pub mod delete;
 pub mod follow;
 pub mod get;
 pub mod list;
+#[cfg(feature = "legacy-account")]
+pub mod password;
 
+#[cfg(feature = "custom_list_v2")]
 use bookmark::BookmarkEndpoint;
 #[cfg(feature = "legacy-account")]
 use delete::DeleteUserBuilder;
 use follow::FollowEndpoint;
 use get::GetUserBuilder;
 use list::ListEndpoint;
+#[cfg(feature = "legacy-account")]
+use password::PasswordEndpoint;
 
 use crate::HttpClientRef;
 use uuid::Uuid;
@@ -33,17 +39,26 @@ impl IdEndpoint {
             .http_client(self.http_client.clone())
     }
 
+    #[cfg(feature = "legacy-account")]
+    pub fn password(&self) -> PasswordEndpoint {
+        PasswordEndpoint::new(self.http_client.clone())
+    }
+
     pub fn get(&self) -> GetUserBuilder {
         GetUserBuilder::default()
             .user_id(self.id)
             .http_client(self.http_client.clone())
     }
 
-    #[deprecated(since = "3.0.0-alpha.1", note = "use .bookmark() instead")]
+    #[cfg_attr(
+        feature = "custom_list_v2",
+        deprecated(since = "3.0.0-alpha.1", note = "use .bookmark() instead")
+    )]
     pub fn follow(&self) -> FollowEndpoint {
         FollowEndpoint::new(self.http_client.clone(), self.id)
     }
 
+    #[cfg(feature = "custom_list_v2")]
     pub fn bookmark(&self) -> BookmarkEndpoint {
         BookmarkEndpoint::new(self.http_client.clone(), self.id)
     }
