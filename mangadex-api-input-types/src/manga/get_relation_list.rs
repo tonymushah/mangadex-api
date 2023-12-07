@@ -2,12 +2,13 @@
 use mangadex_api::{v5::manga::manga_id::relation::get::ListMangaRelationsBuilder, MangaDexClient};
 
 use mangadex_api_types::ReferenceExpansionResource;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct MangaRelationParam {
     manga_id: Uuid,
     #[serde(default)]

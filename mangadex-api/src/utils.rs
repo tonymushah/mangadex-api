@@ -3,6 +3,7 @@ use reqwest::Client;
 use crate::MangaDexClient;
 
 pub mod download;
+pub mod upload;
 
 /// Gives you the `reqwest::Client` from the `MangaDexClient`
 /// Comes handy when you don't want to build a new `reqwest` Client

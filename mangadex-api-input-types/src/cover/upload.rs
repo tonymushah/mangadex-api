@@ -13,11 +13,12 @@ use mangadex_api_types::error::Result;
 
 use crate::PathBuf;
 use mangadex_api_types::Language;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct CoverUploadParam {
     pub manga_id: Uuid,

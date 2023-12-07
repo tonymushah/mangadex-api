@@ -63,9 +63,12 @@ use mangadex_api_types::{
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
-#[deprecated(
-    since = "3.0.0-alpha.1",
-    note = "After the introduction of the Subscription system, this endpoint will be removed in 3.0.0"
+#[cfg_attr(
+    feature = "custom_list_v2",
+    deprecated(
+        since = "3.0.0-rc.1",
+        note = "After the introduction of the Subscription system, this endpoint will be removed in v3"
+    )
 )]
 pub struct GetFollowedMangaFeed {
     /// This should never be set manually as this is only for internal use.

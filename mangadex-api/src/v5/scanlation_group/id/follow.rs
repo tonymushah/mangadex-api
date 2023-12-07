@@ -8,9 +8,12 @@ pub mod post;
 use delete::UnfollowGroupBuilder;
 use post::FollowGroupBuilder;
 
-#[deprecated(
-    since = "3.0.0-alpha.1",
-    note = "After the introduction of the Subscription system, this endpoint will be removed in 3.0.0. Please use the Bookmark Endpoint instead"
+#[cfg_attr(
+    feature = "custom_list_v2",
+    deprecated(
+        since = "3.0.0-rc.1",
+        note = "After the introduction of the Subscription system, this endpoint will be removed in v3"
+    )
 )]
 #[derive(Debug)]
 pub struct FollowEndpoint {

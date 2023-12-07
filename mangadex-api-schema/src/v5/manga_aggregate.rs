@@ -21,7 +21,7 @@ pub struct MangaAggregate {
     pub volumes: Vec<VolumeAggregate>,
 }
 
-#[cfg(feature = "serialize")]
+#[cfg(feature = "specta")]
 impl specta::Type for MangaAggregate {
     fn inline(
         opts: specta::DefOpts,

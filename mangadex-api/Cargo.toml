@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api"
-version = "3.0.0-rc.3"
+version = "3.0.0"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
 description = "SDK for the MangaDex API"
 readme = "../README.md"
@@ -52,13 +52,13 @@ features = [
 
 [dependencies.mangadex-api-schema]
 package = "mangadex-api-schema-rust"
-version = "0.5"
+version = "0.6"
 path = "../mangadex-api-schema"
 default-features = false
 
 [dependencies.mangadex-api-types]
 package = "mangadex-api-types-rust"
-version = "0.5"
+version = "0.6"
 path = "../mangadex-api-types"
 default-features = false
 
@@ -142,23 +142,19 @@ optional = true
 [dev-dependencies.wiremock]
 version = "0.5.22"
 
-[dependencies.specta]
-version = "1.0.5"
-optional = true
-
 [features]
 default = ["oauth"]
 multi-thread = ["futures"]
 tokio-multi-thread = ["tokio/sync"]
 rw-multi-thread = ["tokio/sync"]
 legacy-auth = []
-legacy-account = ["legacy-auth"]
+legacy-account = []
 utils = ["dep:bytes", "dep:tokio", "dep:anyhow", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 non_exhaustive = ["mangadex-api-schema/non_exhaustive", "mangadex-api-types/non_exhaustive"]
 deserializable-endpoint = ["dep:getset"]
 serialize = ["mangadex-api-schema/serialize"]
 oauth = []
-specta = ["dep:specta", "serialize", "mangadex-api-schema/specta"]
+custom_list_v2 = []
 
 [[example]]
 name = "oauth_manga_feed"

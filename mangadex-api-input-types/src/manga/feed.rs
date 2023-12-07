@@ -6,10 +6,11 @@ use mangadex_api_types::{
     IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
     ReferenceExpansionResource,
 };
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct MangaFeedParams {

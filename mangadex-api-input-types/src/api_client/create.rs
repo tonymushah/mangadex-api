@@ -4,8 +4,9 @@ use mangadex_api::{v5::api_client::post::CreateClientBuilder, MangaDexClient};
 use mangadex_api_schema::v5::ApiClientResponse;
 use mangadex_api_types::ApiClientProfile;
 
-#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+#[derive(serde::Deserialize, Debug, Clone)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct ApiClientCreateParams {
     pub name: String,

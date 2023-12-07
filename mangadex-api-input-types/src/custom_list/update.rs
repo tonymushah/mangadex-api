@@ -2,12 +2,13 @@
 use mangadex_api::{v5::custom_list::id::put::UpdateCustomListBuilder, MangaDexClient};
 
 use mangadex_api_types::CustomListVisibility;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct CustomListUpdateParams {
     pub list_id: Uuid,
 

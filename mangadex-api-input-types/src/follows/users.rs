@@ -1,11 +1,12 @@
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{v5::user::follows::user::get::FollowedUsersBuilder, MangaDexClient};
 
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Deserialize, Default)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(default)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct UserFollowedUserParams {
     pub limit: Option<u32>,

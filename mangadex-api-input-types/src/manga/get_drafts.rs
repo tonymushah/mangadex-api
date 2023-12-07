@@ -2,11 +2,12 @@
 use mangadex_api::{v5::manga::draft::get::ListMangaDraftsBuilder, MangaDexClient};
 
 use mangadex_api_types::{MangaDraftsSortOrder, MangaState, ReferenceExpansionResource};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Deserialize, Default)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(default)]
 pub struct MangaDraftsParams {
     pub limit: Option<u32>,

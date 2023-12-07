@@ -7,13 +7,14 @@ use mangadex_api_schema::{v5::GroupData, Limited};
 use mangadex_api_types::error::Result;
 
 use mangadex_api_types::{Language, MangaDexDuration};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use url::Url;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct EditScanlationGroupParam {
     pub group_id: Uuid,
 
