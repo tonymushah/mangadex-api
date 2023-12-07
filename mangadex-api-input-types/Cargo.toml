@@ -27,18 +27,18 @@ features = ["serde"]
 [dependencies.mangadex-api]
 optional = true
 path = "../mangadex-api"
-version = "3.0.0"
+version = "3.0"
 features = ["serialize"]
 
 [dependencies.mangadex-api-schema]
 package = "mangadex-api-schema-rust"
-version = "0.5"
+version = "0.6"
 path = "../mangadex-api-schema"
 default-features = false
 
 [dependencies.mangadex-api-types]
 package = "mangadex-api-types-rust"
-version = "0.5"
+version = "0.6"
 path = "../mangadex-api-types"
 default-features = false
 

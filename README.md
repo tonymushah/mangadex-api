@@ -89,8 +89,8 @@ Add `mangadex-api` to your dependencies:
 [dependencies]
 # ...
 # Types and schemas are always required
-mangadex-api-types-rust = "0.5"
-mangadex-api-schema-rust = "0.5"
+mangadex-api-types-rust = "0.6"
+mangadex-api-schema-rust = "0.6"
 mangadex-api = "3.0.0"
 ```
 
