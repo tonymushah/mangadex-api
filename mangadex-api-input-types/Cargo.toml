@@ -44,7 +44,7 @@ default-features = false
 
 [features]
 default = ["async-graphql"]
-serialize = ["mangadex-api/serialize", "mangadex-api-schema/serialize"]
+serialize = []
 mangadex-api-resolver = ["dep:mangadex-api"]
-specta = ["dep:specta", "mangadex-api-schema/specta", "mangadex-api-types/specta"]
+specta = ["dep:specta", "mangadex-api-types/specta"]
 async-graphql = ["dep:async-graphql", "mangadex-api-types/async-graphql"]
