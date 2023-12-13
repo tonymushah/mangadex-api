@@ -5,6 +5,8 @@ authors = [ "tonymushah" ]
 description = "A collection input types for mangadex-api"
 edition = "2021"
 rust-version = "1.60"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/tonymushah/mangadex-api"
 
 [dependencies]
 serde = "1.0"
