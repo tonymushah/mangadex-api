@@ -21,6 +21,7 @@ pub struct CreateReportParam {
     pub object_id: Uuid,
     /// Optional notes about why this is being reported.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub details: Option<String>,
 }
 

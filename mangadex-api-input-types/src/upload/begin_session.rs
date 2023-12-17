@@ -14,6 +14,7 @@ use uuid::Uuid;
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct BeginUploadSessionParam {
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub groups: Vec<Uuid>,
     #[serde(rename = "manga")]
     pub manga_id: Uuid,

@@ -23,6 +23,7 @@ pub mod upload;
 pub mod user;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct PathBuf(std::path::PathBuf);
 
 impl From<std::path::PathBuf> for PathBuf {

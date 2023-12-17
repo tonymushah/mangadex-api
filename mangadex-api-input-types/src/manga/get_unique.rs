@@ -12,6 +12,7 @@ use uuid::Uuid;
 pub struct MangaGetUniqueParam {
     manga_id: Uuid,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     includes: Vec<ReferenceExpansionResource>,
 }
 

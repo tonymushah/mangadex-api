@@ -2,9 +2,9 @@
 use mangadex_api::{v5::report::reasons::category::get::ListReasonsBuilder, MangaDexClient};
 
 use mangadex_api_types::ReportCategory;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]

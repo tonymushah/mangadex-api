@@ -10,16 +10,22 @@ use uuid::Uuid;
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct AuthorListParams {
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub limit: Option<u32>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub offset: Option<u32>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub author_ids: Vec<Uuid>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub name: Option<String>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub order: Option<AuthorSortOrder>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 

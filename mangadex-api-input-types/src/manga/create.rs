@@ -17,33 +17,45 @@ use uuid::Uuid;
 pub struct CreateMangaParam {
     pub title: LocalizedString,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub alt_titles: Option<Vec<LocalizedString>>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub description: Option<LocalizedString>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub authors: Option<Vec<Uuid>>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub artists: Option<Vec<Uuid>>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub links: Option<MangaLinks>,
     pub original_language: Language,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub last_volume: Option<String>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub last_chapter: Option<String>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub publication_demographic: Option<Option<Demographic>>,
     pub status: MangaStatus,
     /// Year the manga was released.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub year: Option<Option<u16>>,
     pub content_rating: ContentRating,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub chapter_numbers_reset_on_new_volume: Option<bool>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub tags: Option<Vec<Uuid>>,
     /// Cover ID.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub primary_cover: Option<Option<Uuid>>,
     /// >= 1
     pub version: u32,

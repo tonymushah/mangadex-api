@@ -12,6 +12,7 @@ use uuid::Uuid;
 pub struct ChapterGetUniqueParam {
     pub id: Uuid,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 

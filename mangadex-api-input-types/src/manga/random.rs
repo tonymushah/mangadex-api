@@ -15,10 +15,14 @@ use uuid::Uuid;
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(default)]
 pub struct MangaRandomParams {
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub includes: Vec<ReferenceExpansionResource>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub content_rating: Vec<ContentRating>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub included_tags: Vec<Uuid>,
     pub included_tags_mode: Option<TagSearchMode>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_tags: Vec<Uuid>,
     pub excluded_tags_mode: Option<TagSearchMode>,
 }

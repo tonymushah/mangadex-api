@@ -18,28 +18,40 @@ pub struct MangaListParams {
     pub offset: Option<u32>,
     pub title: Option<String>,
     pub author_or_artist: Option<Uuid>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub authors: Vec<Uuid>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub artists: Vec<Uuid>,
     pub year: Option<u16>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub included_tags: Vec<Uuid>,
     pub included_tags_mode: Option<TagSearchMode>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_tags: Vec<Uuid>,
     pub excluded_tags_mode: Option<TagSearchMode>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub status: Vec<MangaStatus>,
     /// Languages the manga results are originally published in.
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub original_language: Vec<Language>,
     /// A list of original languages to exclude.
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_original_language: Vec<Language>,
     /// A list of languages that the manga is translated into.
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub available_translated_language: Vec<Language>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub publication_demographic: Vec<Demographic>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub manga_ids: Vec<Uuid>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub content_rating: Vec<ContentRating>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     pub created_at_since: Option<MangaDexDateTime>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     pub updated_at_since: Option<MangaDexDateTime>,
     pub order: Option<MangaSortOrder>,
+    #[cfg_attr(feature = "async-graphql", graphql(skip))]
     pub includes: Vec<ReferenceExpansionResource>,
     pub has_available_chapters: Option<bool>,
     /// Scanlation group ID.

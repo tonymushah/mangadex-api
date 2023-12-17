@@ -17,46 +17,63 @@ pub struct CustomListMangaFeedParams {
     pub list_id: Uuid,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub limit: Option<u32>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub offset: Option<u32>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub translated_language: Vec<Language>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub original_language: Vec<Language>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_original_language: Vec<Language>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub content_rating: Vec<ContentRating>,
     /// Groups to exclude from the results.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_groups: Vec<Uuid>,
     /// Uploaders to exclude from the results.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_uploaders: Vec<Uuid>,
     /// Flag to include future chapter updates in the results.
     ///
     /// Default: `IncludeFutureUpdates::Include` (1)
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub include_future_updates: Option<IncludeFutureUpdates>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub include_empty_pages: Option<IncludeFuturePages>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub include_future_publish_at: Option<IncludeFuturePublishAt>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub include_external_url: Option<IncludeExternalUrl>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub created_at_since: Option<MangaDexDateTime>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub updated_at_since: Option<MangaDexDateTime>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub publish_at_since: Option<MangaDexDateTime>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub order: Option<MangaFeedSortOrder>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 

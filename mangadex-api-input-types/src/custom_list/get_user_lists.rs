@@ -12,8 +12,10 @@ pub struct UserCustomListParams {
     pub user_id: Uuid,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     limit: Option<u32>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     offset: Option<u32>,
 }
 

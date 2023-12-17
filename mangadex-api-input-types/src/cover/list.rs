@@ -13,11 +13,16 @@ use uuid::Uuid;
 pub struct CoverListParam {
     pub limit: Option<u32>,
     pub offset: Option<u32>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub manga_ids: Vec<Uuid>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub cover_ids: Vec<Uuid>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub uploader_ids: Vec<Uuid>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub locales: Vec<Language>,
     pub order: Option<CoverSortOrder>,
+    #[cfg_attr(feature = "async-graphql", graphql(skip))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 

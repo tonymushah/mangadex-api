@@ -15,6 +15,7 @@ pub struct MangaDraftsParams {
     pub offset: Option<u32>,
     pub state: Option<MangaState>,
     pub order: Option<MangaDraftsSortOrder>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 

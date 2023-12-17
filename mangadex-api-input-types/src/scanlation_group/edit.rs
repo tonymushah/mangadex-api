@@ -19,45 +19,59 @@ pub struct EditScanlationGroupParam {
     pub group_id: Uuid,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub name: Option<String>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub leader: Option<Uuid>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub website: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub irc_server: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub irc_channel: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub discord: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub contact_email: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub description: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub twitter: Option<Url>,
     /// Regex: [^https:/\/www\.mangaupdates\.com\/(?:groups|publishers)\.html\?id=\d+](https://www.mangaupdates.com)
     ///
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub manga_updates: Option<Url>,
     /// Languages the scanlation primarily translates or uploads works into.
     ///
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub focused_languages: Option<Vec<Language>>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub inactive: Option<bool>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub locked: Option<bool>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub publish_delay: Option<MangaDexDuration>,
     /// >= 1
     pub version: u32,

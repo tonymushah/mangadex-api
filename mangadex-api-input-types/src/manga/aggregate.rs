@@ -13,8 +13,10 @@ pub struct MangaAggregateParam {
     pub manga_id: Uuid,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub translated_language: Vec<Language>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub groups: Vec<Uuid>,
 }
 

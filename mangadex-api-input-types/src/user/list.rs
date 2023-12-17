@@ -13,6 +13,7 @@ use uuid::Uuid;
 pub struct UserListParam {
     pub limit: Option<u32>,
     pub offset: Option<u32>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub user_ids: Vec<Uuid>,
     pub username: Option<String>,
     pub order: Option<UserSortOrder>,

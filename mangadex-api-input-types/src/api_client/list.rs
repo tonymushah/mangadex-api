@@ -8,14 +8,19 @@ use mangadex_api_types::{ApiClientState, ReferenceExpansionResource};
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ApiClientListParam {
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub limit: Option<u32>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub offset: Option<u32>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub state: Option<ApiClientState>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub name: Option<String>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 
