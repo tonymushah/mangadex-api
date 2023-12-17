@@ -20,8 +20,10 @@ pub struct CoverEditParam {
     pub volume: String,
     /// 0-512 characters in length.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub description: Option<String>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub locale: Option<Language>,
     /// >= 1
     pub version: u32,

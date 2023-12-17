@@ -10,6 +10,7 @@ use uuid::Uuid;
 pub struct ApiClientEditParam {
     pub client_id: Uuid,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub description: Option<String>,
     // >= 1
     pub version: u32,

@@ -19,13 +19,19 @@ use uuid::Uuid;
 pub struct FollowedMangaFeedParams {
     pub limit: Option<u32>,
     pub offset: Option<u32>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub translated_language: Vec<Language>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub original_language: Vec<Language>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_original_language: Vec<Language>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub content_rating: Vec<ContentRating>,
     /// Groups to exclude from the results.
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_groups: Vec<Uuid>,
     /// Uploaders to exclude from the results.
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_uploaders: Vec<Uuid>,
     /// Flag to include future chapter updates in the results.
     ///
@@ -38,6 +44,7 @@ pub struct FollowedMangaFeedParams {
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     pub publish_at_since: Option<MangaDexDateTime>,
     pub order: Option<MangaFeedSortOrder>,
+    #[cfg_attr(feature = "async-graphql", graphql(skip))]
     pub includes: Vec<ReferenceExpansionResource>,
     pub include_empty_pages: Option<IncludeFuturePages>,
     pub include_future_publish_at: Option<IncludeFuturePublishAt>,

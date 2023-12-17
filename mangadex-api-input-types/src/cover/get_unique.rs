@@ -12,6 +12,7 @@ use uuid::Uuid;
 pub struct CoverGetUniqueParam {
     manga_or_cover_id: Uuid,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     includes: Vec<ReferenceExpansionResource>,
 }
 

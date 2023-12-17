@@ -25,6 +25,7 @@ pub struct ListReportParams {
     pub reason_id: Option<Uuid>,
     pub status: Option<ReportStatus>,
     pub order: Option<ReportSortOrder>,
+    #[cfg_attr(feature = "async-graphql", graphql(skip))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 

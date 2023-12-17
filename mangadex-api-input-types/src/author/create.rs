@@ -16,45 +16,59 @@ pub struct AuthorCreateParams {
     pub name: String,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub biography: Option<LocalizedString>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub twitter: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub pixiv: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub melon_book: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub fan_box: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub booth: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub nico_video: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub skeb: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub fantia: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub tumblr: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub youtube: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub weibo: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub naver: Option<Url>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub website: Option<Url>,
 }
 

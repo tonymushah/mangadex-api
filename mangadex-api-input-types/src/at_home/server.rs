@@ -14,6 +14,7 @@ use uuid::Uuid;
 pub struct AtHomeServerParams {
     chapter_id: Uuid,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     force_port_443: Option<bool>,
 }
 

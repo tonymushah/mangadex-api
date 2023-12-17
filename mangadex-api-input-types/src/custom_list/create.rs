@@ -12,10 +12,13 @@ use uuid::Uuid;
 pub struct CustomListCreateParam {
     pub name: String,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub visibility: Option<CustomListVisibility>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub manga: Vec<Uuid>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub version: Option<u32>,
 }
 

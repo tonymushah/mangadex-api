@@ -18,34 +18,44 @@ pub struct CreateScalantionGroupParam {
     pub name: String,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub website: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub irc_server: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub irc_channel: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub discord: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub contact_email: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub description: Option<String>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub twitter: Option<Url>,
     /// Regex: [^https:/\/www\.mangaupdates\.com\/(?:groups|publishers)\.html\?id=\d+](https://www.mangaupdates.com)
     ///
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub manga_updates: Option<Url>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub inactive: Option<bool>,
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub publish_delay: Option<MangaDexDuration>,
 }
 

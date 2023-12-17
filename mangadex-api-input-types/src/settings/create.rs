@@ -12,8 +12,10 @@ use serde::Deserialize;
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct CreateOrUpdateUserSettingsParams {
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub settings: HashMap<String, String>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub updated_at: MangaDexDateTime,
 }
 

@@ -13,11 +13,13 @@ use uuid::Uuid;
 pub struct ScanlationGroupListParams {
     pub limit: Option<u32>,
     pub offset: Option<u32>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub group_ids: Vec<Uuid>,
     pub name: Option<String>,
     /// Language the scanlation primarily translates or uploads works into.
     // The corresponding response body field returns an array so this seems likely to change to accept an array of languages.
     pub focused_language: Option<Language>,
+    #[cfg_attr(feature = "async-graphql", graphql(skip))]
     pub includes: Vec<ReferenceExpansionResource>,
     pub order: Option<GroupSortOrder>,
 }

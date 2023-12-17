@@ -29,8 +29,10 @@ pub struct CoverUploadParam {
     /// * <= 8 characters
     /// * Pattern: `^(0|[1-9]\\d*)((\\.\\d+){1,2})?[a-z]?$`
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub volume: Option<String>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub description: String,
     pub locale: Language,
 }

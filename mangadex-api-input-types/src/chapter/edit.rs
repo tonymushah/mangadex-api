@@ -20,11 +20,13 @@ pub struct ChapterUpdateParams {
     ///
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub title: Option<String>,
     /// Volume number.
     ///
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub volume: Option<String>,
     /// Chapter number.
     ///
@@ -32,10 +34,13 @@ pub struct ChapterUpdateParams {
     ///
     /// Nullable.
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub chapter: Option<String>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub translated_language: Option<Language>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub groups: Vec<Uuid>,
     /// >= 1
     pub version: u32,

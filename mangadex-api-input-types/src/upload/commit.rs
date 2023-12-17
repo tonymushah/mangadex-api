@@ -23,9 +23,11 @@ pub struct CommitUploadSessionParam {
 
     /// Nullable
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub volume: Option<String>,
     /// Nullable
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub chapter: Option<String>,
     /// Nullable
     pub title: Option<String>,
@@ -35,8 +37,10 @@ pub struct CommitUploadSessionParam {
     ///
     /// Nullable
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub external_url: Option<Url>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub publish_at: Option<MangaDexDateTime>,
 }
 

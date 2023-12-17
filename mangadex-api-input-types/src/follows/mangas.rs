@@ -12,6 +12,7 @@ use serde::Deserialize;
 pub struct UserFollowedMangaParams {
     pub limit: Option<u32>,
     pub offset: Option<u32>,
+    #[cfg_attr(feature = "async-graphql", graphql(skip))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 

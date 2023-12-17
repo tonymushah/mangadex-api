@@ -13,6 +13,7 @@ pub struct GetMangaDraftParams {
     pub manga_id: Uuid,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 

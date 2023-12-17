@@ -13,12 +13,15 @@ pub struct CustomListUpdateParams {
     pub list_id: Uuid,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub name: Option<String>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub visibility: Option<CustomListVisibility>,
 
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub manga: Vec<Uuid>,
 
     pub version: u32,

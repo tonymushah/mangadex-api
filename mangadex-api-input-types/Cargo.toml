@@ -1,6 +1,6 @@
 [package]
 name = "mangadex-api-input-types"
-version = "0.1.0"
+version = "0.2.0"
 authors = [ "tonymushah" ]
 description = "A collection input types for mangadex-api"
 edition = "2021"
@@ -45,7 +45,7 @@ path = "../mangadex-api-types"
 default-features = false
 
 [features]
-default = ["async-graphql"]
+default = ["mangadex-api-resolver"]
 serialize = []
 mangadex-api-resolver = ["dep:mangadex-api"]
 specta = ["dep:specta", "mangadex-api-types/specta"]

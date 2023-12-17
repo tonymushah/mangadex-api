@@ -11,10 +11,13 @@ use uuid::Uuid;
 pub struct MarkChapterBatchParam {
     pub manga_id: Uuid,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub chapter_ids_read: Vec<Uuid>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub chapter_ids_unread: Vec<Uuid>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub update_history: bool,
 }
 

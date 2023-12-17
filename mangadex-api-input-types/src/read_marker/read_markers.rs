@@ -11,6 +11,7 @@ use uuid::Uuid;
 pub struct ChapterReadMarkersParam {
     pub manga_ids: Vec<Uuid>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub grouped: bool,
 }
 

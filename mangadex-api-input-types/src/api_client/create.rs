@@ -11,8 +11,10 @@ use mangadex_api_types::ApiClientProfile;
 pub struct ApiClientCreateParams {
     pub name: String,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub description: Option<String>,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub profile: ApiClientProfile,
     #[serde(default = "ApiClientCreateParams::default_version")]
     pub version: Option<u32>,

@@ -17,21 +17,32 @@ use uuid::Uuid;
 pub struct ChapterListParams {
     pub limit: Option<u32>,
     pub offset: Option<u32>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub chapter_ids: Vec<Uuid>,
     pub title: Option<String>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub groups: Vec<Uuid>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub uploaders: Vec<Uuid>,
     pub manga_id: Option<Uuid>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub volumes: Vec<String>,
     /// Chapter number in the series or volume.
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub chapters: Vec<String>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub translated_languages: Vec<Language>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub original_languages: Vec<Language>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_original_languages: Vec<Language>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub content_rating: Vec<ContentRating>,
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     /// Groups to exclude from the results.
     pub excluded_groups: Vec<Uuid>,
     /// Uploaders to exclude from the results.
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub excluded_uploaders: Vec<Uuid>,
     /// Flag to include future chapter updates in the results.
     ///
@@ -50,6 +61,7 @@ pub struct ChapterListParams {
     /// Include future publish at
     pub include_future_publish_at: Option<IncludeFuturePublishAt>,
     pub order: Option<ChapterSortOrder>,
+    #[cfg_attr(feature = "async-graphql", graphql(skip))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 

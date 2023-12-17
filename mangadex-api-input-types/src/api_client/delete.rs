@@ -12,6 +12,7 @@ use uuid::Uuid;
 pub struct ApiClientDeleteParam {
     pub client_id: Uuid,
     #[serde(default)]
+    #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub version: Option<u32>,
 }
 
