@@ -1,5 +1,6 @@
 use std::string::ParseError;
 use std::{fmt::Display, str::FromStr};
+use std::{vec, vec::Vec};
 
 use serde::{Deserialize, Serialize};
 
@@ -34,6 +35,14 @@ macro_rules! languages {
                     )*
                     Self::Unknown => "NULL",
                 }
+            }
+            pub fn get_langs() -> Vec<Self> {
+                vec![
+                    $(
+                        Self::$lang,
+                    )*
+                    Self::Unknown,
+                ]
             }
         }
 
