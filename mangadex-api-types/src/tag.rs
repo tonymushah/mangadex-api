@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::{vec, vec::Vec};
 use uuid::Uuid;
 
 use crate::error::Error;
@@ -73,6 +74,15 @@ macro_rules! tags {
                         Tag::$tag => Self::$group,
                     )*
                 }
+            }
+        }
+        impl Tag {
+            pub fn get_all_tags() -> Vec<Self> {
+                vec![
+                    $(
+                        Self::$tag,
+                    )*
+                ]
             }
         }
     };
