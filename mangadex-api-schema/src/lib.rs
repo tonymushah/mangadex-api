@@ -138,6 +138,21 @@ impl<T> From<ApiObject<T>> for ApiObjectNoRelationships<T> {
     }
 }
 
+impl<T> ApiObject<T> {
+    pub fn drop_relationships(self) -> ApiObjectNoRelationships<T> {
+        self.into()
+    }
+}
+
+impl<T> ApiObjectNoRelationships<T> {
+    pub fn with_relathionships(self, rel: Option<Vec<Relationship>>) -> ApiObject<T> {
+        let mut res: ApiObject<T> = self.into();
+        let mut rels = rel.unwrap_or_default();
+        res.relationships.append(&mut rels);
+        res
+    }
+}
+
 impl<T> From<ApiObjectNoRelationships<T>> for ApiObject<T> {
     fn from(value: ApiObjectNoRelationships<T>) -> Self {
         Self {
