@@ -195,14 +195,14 @@ impl MangaDexClient {
         feature = "rw-multi-thread"
     ))]
     pub async fn set_auth_tokens(&self, auth_tokens: &AuthTokens) -> Result<()> {
-        let client = {
+        let mut client = {
             #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             {
-                &self.http_client.lock().await
+                self.http_client.lock().await
             }
             #[cfg(feature = "rw-multi-thread")]
             {
-                &self.http_client.write().await
+                self.http_client.write().await
             }
         };
         client.set_auth_tokens(auth_tokens);
@@ -242,14 +242,14 @@ impl MangaDexClient {
         feature = "rw-multi-thread"
     ))]
     pub async fn clear_auth_tokens(&self) -> Result<()> {
-        let client = {
+        let mut client = {
             #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             {
-                &self.http_client.lock().await
+                self.http_client.lock().await
             }
             #[cfg(feature = "rw-multi-thread")]
             {
-                &self.http_client.write().await
+                self.http_client.write().await
             }
         };
         client.clear_auth_tokens();
@@ -296,14 +296,14 @@ impl MangaDexClient {
         feature = "rw-multi-thread"
     ))]
     pub async fn set_captcha<A: Into<String>>(&self, captcha: A) -> Result<()> {
-        let client = {
+        let mut client = {
             #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             {
-                &self.http_client.lock().await
+                self.http_client.lock().await
             }
             #[cfg(feature = "rw-multi-thread")]
             {
-                &self.http_client.write().await
+                self.http_client.write().await
             }
         };
         client.set_captcha(captcha);
@@ -349,14 +349,14 @@ impl MangaDexClient {
         feature = "rw-multi-thread"
     ))]
     pub async fn clear_captcha(&self) -> Result<()> {
-        let client = {
+        let mut client = {
             #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             {
-                &self.http_client.lock().await
+                self.http_client.lock().await
             }
             #[cfg(feature = "rw-multi-thread")]
             {
-                &self.http_client.write().await
+                self.http_client.write().await
             }
         };
         client.clear_captcha();
@@ -611,28 +611,28 @@ impl MangaDexClient {
 ))]
 impl MangaDexClient {
     pub async fn set_client_info(&mut self, client_info: &ClientInfo) -> Result<()> {
-        let client = {
+        let mut client = {
             #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             {
-                &self.http_client.lock().await
+                self.http_client.lock().await
             }
             #[cfg(feature = "rw-multi-thread")]
             {
-                &self.http_client.write().await
+                self.http_client.write().await
             }
         };
         client.set_client_info(client_info);
         Ok(())
     }
     pub async fn clear_client_info(&mut self) -> Result<()> {
-        let client = {
+        let mut client = {
             #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             {
-                &self.http_client.lock().await
+                self.http_client.lock().await
             }
             #[cfg(feature = "rw-multi-thread")]
             {
-                &self.http_client.write().await
+                self.http_client.write().await
             }
         };
         client.clear_client_info();
