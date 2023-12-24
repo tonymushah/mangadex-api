@@ -74,7 +74,8 @@ pub struct UnFollowCustomList {
 endpoint! {
     DELETE ("/list/{}/follow", list_id),
     #[body auth] UnFollowCustomList,
-    #[discard_result] Result<NoData>
+    #[discard_result] Result<NoData>,
+    UnFollowCustomListBuilder
 }
 
 #[cfg(test)]
