@@ -610,7 +610,7 @@ impl MangaDexClient {
     )
 ))]
 impl MangaDexClient {
-    pub async fn set_client_info(&mut self, client_info: &ClientInfo) -> Result<()> {
+    pub async fn set_client_info(&self, client_info: &ClientInfo) -> Result<()> {
         let mut client = {
             #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             {
@@ -624,7 +624,7 @@ impl MangaDexClient {
         client.set_client_info(client_info);
         Ok(())
     }
-    pub async fn clear_client_info(&mut self) -> Result<()> {
+    pub async fn clear_client_info(&self) -> Result<()> {
         let mut client = {
             #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
             {
