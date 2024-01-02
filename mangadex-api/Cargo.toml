@@ -64,7 +64,7 @@ default-features = false
 
 
 [dependencies.serde]
-version = "1.0.193"
+version = "1.0.194"
 features = ["derive"]
 
 [dependencies.serde_qs]
