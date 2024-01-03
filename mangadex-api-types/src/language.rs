@@ -107,6 +107,7 @@ languages! {
     Filipino => "tl",
     Finnish => "fi",
     French => "fr",
+    Georgian => "ka",
     German => "de",
     Greek => "el",
     Hebrew => "he",
