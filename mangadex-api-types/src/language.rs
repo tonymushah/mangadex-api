@@ -103,6 +103,7 @@ languages! {
     Dutch => "nl",
     English => "en",
     Esperanto => "eo",
+    Estonian => "et",
     Filipino => "tl",
     Finnish => "fi",
     French => "fr",
