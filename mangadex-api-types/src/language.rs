@@ -140,6 +140,7 @@ languages! {
     SpanishLatinAmerican => "es-la",
     Swedish => "sv",
     Tamil => "ta",
+    Telugu => "te",
     Thai => "th",
     Turkish => "tr",
     Ukrainian => "uk",
