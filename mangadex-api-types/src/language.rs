@@ -122,6 +122,7 @@ languages! {
     KoreanRomanized => "ko-ro",
     Latin => "la",
     Lithuanian => "lt",
+    Malagasy => "mg",
     Malay => "ms",
     Mongolian => "mn",
     Nepali => "ne",
