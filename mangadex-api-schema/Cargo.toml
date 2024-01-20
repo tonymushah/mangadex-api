@@ -50,7 +50,7 @@ version = "2.5.0"
 features = ["serde"]
 
 [dependencies.uuid]
-version = "1.6.1"
+version = "1.7.0"
 features = [
     "serde",
     "v4",
