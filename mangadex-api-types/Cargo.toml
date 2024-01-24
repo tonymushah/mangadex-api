@@ -28,7 +28,7 @@ serde_json = "1"
 version = "1.0.79"
 
 [dependencies.derive_builder]
-version = "0.12"
+version = "0.13"
 
 [dependencies.reqwest]
 version = "0.11.23"
