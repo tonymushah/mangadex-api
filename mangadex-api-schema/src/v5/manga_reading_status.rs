@@ -9,5 +9,5 @@ use serde::Deserialize;
 pub struct MangaReadingStatus {
     #[serde(default)]
     pub result: ResultType,
-    pub status: ReadingStatus,
+    pub status: Option<ReadingStatus>,
 }
