@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 pub enum ResultType {
     Ok,
     Error,
+    Ko,
 }
 
 impl Default for ResultType {
@@ -21,5 +22,8 @@ impl ResultType {
     }
     pub fn error() -> Self {
         Self::Error
+    }
+    pub fn ko() -> Self {
+        Self::Ko
     }
 }
