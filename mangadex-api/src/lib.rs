@@ -1,4 +1,4 @@
-#![doc = include_str!("../README.md")]
+#![doc = include_str!("../../README.md")]
 #![forbid(unsafe_code)]
 #![cfg_attr(
     not(any(feature = "multi-thread", feature = "tokio-multi-thread")),
