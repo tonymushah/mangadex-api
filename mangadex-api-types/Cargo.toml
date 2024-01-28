@@ -40,7 +40,7 @@ features = [
 ]
 
 [dependencies.serde]
-version = "1.0.195"
+version = "1.0.196"
 features = ["derive"]
 
 [dependencies.thiserror]
