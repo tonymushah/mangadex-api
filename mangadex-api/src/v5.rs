@@ -1,5 +1,6 @@
-#[cfg(feature = "legacy-account")]
-pub mod account;
+cfg_legacy_account! {
+    pub mod account;
+}
 pub mod api_client;
 pub mod at_home;
 pub mod auth;
@@ -12,8 +13,9 @@ pub mod feed;
 pub mod forums;
 pub mod legacy;
 pub mod manga;
-#[cfg(feature = "oauth")]
-pub mod oauth;
+cfg_oauth! {
+    pub mod oauth;
+}
 pub mod ping;
 pub mod rating;
 pub mod report;
