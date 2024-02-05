@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api"
-version = "3.0.3"
+version = "3.1.0"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
 description = "SDK for the MangaDex API"
 readme = "../README.md"
@@ -52,13 +52,13 @@ features = [
 
 [dependencies.mangadex-api-schema]
 package = "mangadex-api-schema-rust"
-version = "0.6"
+version = "0.7"
 path = "../mangadex-api-schema"
 default-features = false
 
 [dependencies.mangadex-api-types]
 package = "mangadex-api-types-rust"
-version = "0.6"
+version = "0.7"
 path = "../mangadex-api-types"
 default-features = false
 
