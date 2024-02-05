@@ -89,9 +89,9 @@ Add `mangadex-api` to your dependencies:
 [dependencies]
 # ...
 # Types and schemas are always required
-mangadex-api-types-rust = "0.6"
-mangadex-api-schema-rust = "0.6"
-mangadex-api = "3.0.0"
+mangadex-api-types-rust = "0.7"
+mangadex-api-schema-rust = "0.7"
+mangadex-api = "3.1.0"
 ```
 
 If you are using [`cargo-edit`](https://github.com/killercup/cargo-edit), run
