@@ -155,7 +155,7 @@ impl TryFrom<Relationship> for ApiObjectNoRelationships<AuthorAttributes> {
     type Error = RelationshipConversionError;
 
     fn try_from(value: Relationship) -> Result<Self, Self::Error> {
-        if value.type_ != RelationshipType::Author || value.type_ != RelationshipType::Artist {
+        if !(value.type_ == RelationshipType::Author || value.type_ == RelationshipType::Artist) {
             return Err(RelationshipConversionError::InvalidInputRelationshipType {
                 input: RelationshipType::Author,
                 inner: value.type_,
@@ -227,9 +227,9 @@ impl TryFrom<Relationship> for ApiObjectNoRelationships<UserAttributes> {
     type Error = RelationshipConversionError;
 
     fn try_from(value: Relationship) -> Result<Self, Self::Error> {
-        if value.type_ != RelationshipType::User
-            || value.type_ != RelationshipType::Member
-            || value.type_ != RelationshipType::Leader
+        if !(value.type_ == RelationshipType::User
+            || value.type_ == RelationshipType::Member
+            || value.type_ == RelationshipType::Leader)
         {
             return Err(RelationshipConversionError::InvalidInputRelationshipType {
                 input: RelationshipType::User,
