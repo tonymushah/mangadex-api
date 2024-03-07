@@ -103,7 +103,7 @@ version = "1.0.80"
 version = "0.7"
 
 [dev-dependencies.clap]
-version = "4.5.1"
+version = "4.5.2"
 features = ["derive"]
 
 [dev-dependencies.fake]
