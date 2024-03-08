@@ -117,6 +117,7 @@ languages! {
     Italian => "it",
     Japanese => "ja",
     JapaneseRomanized => "ja-ro",
+    Jp => "jp",
     Kazakh => "kk",
     Korean => "ko",
     KoreanRomanized => "ko-ro",
@@ -177,5 +178,17 @@ mod tests {
             let lang = Language::from(test);
             assert_eq!(lang, Language::Unknown);
         }
+    }
+    #[test]
+    fn serde_produces_unknown_from_unknown_string() {
+        #[derive(Deserialize)]
+        struct TestStruct {
+            lang: Language,
+        }
+        let value = serde_json::json!({
+            "lang" : "jp"
+        });
+        let out: TestStruct = serde_json::from_value(value).unwrap();
+        assert_eq!(out.lang, Language::Jp);
     }
 }
