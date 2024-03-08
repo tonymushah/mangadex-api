@@ -35,7 +35,7 @@ name = "mangadex_api"
 path = "src/lib.rs"
 
 [dependencies.derive_builder]
-version = "0.20"
+version = "0.13"
 
 [dependencies.futures]
 version = "0.3.30"
