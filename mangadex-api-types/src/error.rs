@@ -94,7 +94,8 @@ pub enum Error {
 
     #[error("This file {0} was skipped")]
     SkippedDownload(String),
-
+    #[error("The IncludeFuturePages variant should only be `0` or `1`")]
+    IncludeFuturePagesParsing,
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
 }
@@ -145,6 +146,7 @@ impl serde::Serialize for Error {
             Error::RelationshipConversionError(e) => {
                 serializer.serialize_str(format!("This file {} was skipped", e).as_str())
             }
+            _ => serializer.serialize_str(self.to_string().as_str()),
         }
     }
 }
