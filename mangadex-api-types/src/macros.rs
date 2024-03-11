@@ -16,7 +16,7 @@ macro_rules! include_enums {
                 match value {
                     0 => Ok(Self::Exclude),
                     1 => Ok(Self::Include),
-                    _ => Err(Error::IncludeEnumsParsing(format!("{{$name}}"))),
+                    _ => Err(Error::IncludeEnumsParsing(String::from(stringify!($name)))),
                 }
             }
         }
