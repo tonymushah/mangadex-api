@@ -1,19 +1,30 @@
+use crate::{error::Error, include_enums};
 use serde::{Deserialize, Serialize};
 
-/// Flag to include future updates in the results.
-#[derive(Clone, Copy, Debug, Deserialize, Serialize, Hash, PartialEq, Eq)]
-#[cfg_attr(feature = "specta", derive(specta::Type))]
-#[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
-pub enum IncludeExternalUrl {
-    Include = 0,
-    Exclude = 1,
+// Flag to include future updates in the results.
+
+include_enums! {
+    IncludeExternalUrl
 }
 
-impl std::fmt::Display for IncludeExternalUrl {
-    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        fmt.write_str(match self {
-            Self::Include => "Include",
-            Self::Exclude => "Exclude",
-        })
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde::Serialize;
+    use serde_json::to_string;
+
+    #[derive(Debug, Serialize)]
+    struct TestStruct {
+        value: IncludeExternalUrl,
+    }
+    #[test]
+    fn test_serialization() {
+        assert_eq!(
+            to_string(&TestStruct {
+                value: IncludeExternalUrl::Exclude
+            })
+            .unwrap(),
+            r#"{"value":0}"#
+        );
     }
 }

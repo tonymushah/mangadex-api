@@ -29,7 +29,7 @@ pub(crate) fn get_default_client_api() -> Client {
     let mut headers = HeaderMap::new();
     headers.append(
         USER_AGENT,
-        HeaderValue::from_static("mangadex-api-rs 3.1.0"),
+        HeaderValue::from_static("mangadex-api-rs 3.2.0"),
     );
     Client::builder().default_headers(headers).build().unwrap()
 }

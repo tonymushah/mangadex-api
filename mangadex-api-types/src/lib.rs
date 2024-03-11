@@ -60,3 +60,6 @@ pub use tag_search_mode::TagSearchMode;
 pub use upload_source::UploadSource;
 pub use user_role::UserRole;
 pub use username::Username;
+
+#[macro_use]
+pub(crate) mod macros;
