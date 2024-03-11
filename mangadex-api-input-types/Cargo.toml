@@ -16,14 +16,14 @@ anyhow = "1"
 async-graphql = { version = "7", optional = true, features = ["uuid", "url"] }
 
 [dependencies.uuid]
-version = "1.7.0"
+version = "1.7"
 features = [
     "serde",
     "v4",
 ]
 
 [dependencies.url]
-version = "2.5.0"
+version = "2.5"
 features = ["serde"]
 
 [dependencies.mangadex-api]
