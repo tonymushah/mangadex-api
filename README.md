@@ -89,9 +89,9 @@ Add `mangadex-api` to your dependencies:
 [dependencies]
 # ...
 # Types and schemas are always required
-mangadex-api-types-rust = "0.7"
-mangadex-api-schema-rust = "0.7"
-mangadex-api = "3.1.0"
+mangadex-api-types-rust = "0.8"
+mangadex-api-schema-rust = "0.8"
+mangadex-api = "3.2.0"
 ```
 
 If you are using [`cargo-edit`](https://github.com/killercup/cargo-edit), run
@@ -165,7 +165,7 @@ All features are not included by default. To enable them, add any of the followi
 For example, to enable the `multi-thread` feature, add the following to your `Cargo.toml` file:
 
 ```toml
-mangadex-api = { version = "3.0.0", features = ["multi-thread"] }
+mangadex-api = { version = "3.2.0", features = ["multi-thread"] }
 ```
 
 ## HTTP Client
