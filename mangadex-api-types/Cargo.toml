@@ -25,7 +25,7 @@ tokio = { version = "1", features = ["rt", "macros"]}
 serde_json = "1"
 
 [dependencies.anyhow]
-version = "1.0.80"
+version = "1.0"
 
 [dependencies.derive_builder]
 version = "0.20"
@@ -40,22 +40,22 @@ features = [
 ]
 
 [dependencies.serde]
-version = "1.0.197"
+version = "1"
 features = ["derive"]
 
 [dependencies.thiserror]
-version = "1.0.57"
+version = "1"
 
 [dependencies.time]
 version = "0.3"
 features = ["serde-human-readable", "large-dates", "local-offset"]
 
 [dependencies.url]
-version = "2.5.0"
+version = "2.5"
 features = ["serde"]
 
 [dependencies.uuid]
-version = "1.7.0"
+version = "1.7"
 features = [
     "serde",
     "v4",
@@ -70,7 +70,7 @@ features = [
 optional = true
 
 [dependencies.specta]
-version = "1.0.5"
+version = "1.0"
 optional = true
 features = [
     "uuid",

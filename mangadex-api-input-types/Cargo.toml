@@ -10,7 +10,7 @@ repository = "https://github.com/tonymushah/mangadex-api"
 
 [dependencies]
 serde = "1.0"
-specta = { version = "1.0.5", optional = true }
+specta = { version = "1.0", optional = true }
 tokio = { version = "1", features = ["full"] }
 anyhow = "1"
 async-graphql = { version = "7", optional = true, features = ["uuid", "url"] }
