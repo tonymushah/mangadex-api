@@ -16,7 +16,7 @@ anyhow = "1"
 async-graphql = { version = "7", optional = true, features = ["uuid", "url"] }
 
 [dependencies.uuid]
-version = "1.7"
+version = "1.8"
 features = [
     "serde",
     "v4",
