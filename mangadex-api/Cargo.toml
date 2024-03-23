@@ -89,7 +89,7 @@ features = [
 ]
 
 [dependencies.bytes]
-version = "1.5"
+version = "1.6"
 optional = true
 
 [dependencies.anyhow]
