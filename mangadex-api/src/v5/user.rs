@@ -23,7 +23,7 @@ use uuid::Uuid;
 
 #[cfg(feature = "custom_list_v2")]
 use bookmarks::BookmarksEndpoint;
-#[cfg(feature = "legacy-account")]
+#[cfg(feature = "legacy-user-delete")]
 use delete::DeleteEndpoint;
 use follows::FollowsEndpoint;
 use get::ListUserBuilder;
@@ -53,7 +53,7 @@ impl UserBuilder {
         ListUserBuilder::default().http_client(self.http_client.clone())
     }
 
-    #[cfg(feature = "legacy-account")]
+    #[cfg(feature = "legacy-user-delete")]
     pub fn delete(&self) -> DeleteEndpoint {
         DeleteEndpoint::new(self.http_client.clone())
     }
