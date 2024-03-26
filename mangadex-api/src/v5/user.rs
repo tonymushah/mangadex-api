@@ -8,16 +8,12 @@ cfg_custom_list_v2! {
 
 #[cfg(feature = "legacy-account")]
 pub mod delete;
-#[cfg(feature = "legacy-account")]
-pub mod email;
 pub mod follows;
 pub mod get;
 pub mod history;
 pub mod id;
 pub mod list;
 pub mod me;
-#[cfg(feature = "legacy-account")]
-pub mod password;
 cfg_custom_list_v2! {
     pub mod subscription;
 }
@@ -29,16 +25,12 @@ use uuid::Uuid;
 use bookmarks::BookmarksEndpoint;
 #[cfg(feature = "legacy-account")]
 use delete::DeleteEndpoint;
-#[cfg(feature = "legacy-account")]
-use email::EmailEndpoint;
 use follows::FollowsEndpoint;
 use get::ListUserBuilder;
 use history::HistoryEndpoint;
 use id::IdEndpoint;
 use list::ListEndpoint;
 use me::MeEndpoint;
-#[cfg(feature = "legacy-account")]
-use password::PasswordEndpoint;
 #[cfg(feature = "custom_list_v2")]
 use subscription::SubscriptionEndpoint;
 
@@ -66,11 +58,6 @@ impl UserBuilder {
         DeleteEndpoint::new(self.http_client.clone())
     }
 
-    #[cfg(feature = "legacy-account")]
-    pub fn email(&self) -> EmailEndpoint {
-        EmailEndpoint::new(self.http_client.clone())
-    }
-
     pub fn follows(&self) -> FollowsEndpoint {
         FollowsEndpoint::new(self.http_client.clone())
     }
@@ -89,11 +76,6 @@ impl UserBuilder {
 
     pub fn me(&self) -> MeEndpoint {
         MeEndpoint::new(self.http_client.clone())
-    }
-
-    #[cfg(feature = "legacy-account")]
-    pub fn password(&self) -> PasswordEndpoint {
-        PasswordEndpoint::new(self.http_client.clone())
     }
 
     cfg_custom_list_v2! {

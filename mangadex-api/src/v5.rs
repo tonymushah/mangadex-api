@@ -1,6 +1,3 @@
-cfg_legacy_account! {
-    pub mod account;
-}
 pub mod api_client;
 pub mod at_home;
 pub mod auth;
@@ -59,8 +56,6 @@ use tokio::sync::RwLock;
 
 #[cfg(feature = "utils")]
 use crate::utils::download::DownloadBuilder;
-#[cfg(feature = "legacy-account")]
-use crate::v5::account::AccountBuilder;
 use crate::v5::api_client::ApiClientEndpoint;
 use crate::v5::at_home::AtHomeBuilder;
 use crate::v5::auth::AuthBuilder;
@@ -389,15 +384,6 @@ impl MangaDexClient {
             .get_client_info()
             .cloned()
             .ok_or(mangadex_api_types::error::Error::MissingClientInfo)
-    }
-
-    /// Get a builder for handling the account endpoints.
-    ///
-    /// <https://api.mangadex.org/docs/redoc.html#tag/Account>
-    #[cfg(feature = "legacy-account")]
-    #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-    pub fn account(&self) -> AccountBuilder {
-        AccountBuilder::new(self.http_client.clone())
     }
 
     /// Get a builder for handling the At-Home endpoints.
