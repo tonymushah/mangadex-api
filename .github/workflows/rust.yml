@@ -20,7 +20,7 @@ jobs:
     - name: Run tests with utils
       run: cargo test --all-targets -F rw-multi-thread,utils --verbose
     - name: Run tests with legacy-account
-      run: cargo test --all-targets -F rw-multi-thread,legacy-account --verbose
+      run: cargo test --all-targets -F rw-multi-thread,legacy-user-delete --verbose
     - name: Run tests with oauth
       run: cargo test --all-targets -F rw-multi-thread,oauth --verbose
       
