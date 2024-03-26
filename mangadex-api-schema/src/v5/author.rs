@@ -53,6 +53,9 @@ pub struct AuthorAttributes {
     /// <https://blog.naver.com/>
     #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub naver: Option<Url>,
+    /// <https://blog.naver.com/>
+    #[cfg_attr(feature = "specta", specta(type = Option<String>))]
+    pub namicomi: Option<Url>,
     #[cfg_attr(feature = "specta", specta(type = Option<String>))]
     pub website: Option<Url>,
     pub version: u32,
