@@ -27,6 +27,7 @@ pub mod report;
 pub mod scanlation_group;
 pub mod statistics;
 pub mod tag;
+pub mod upload_required_approval;
 pub mod upload_session;
 pub mod upload_session_file;
 pub mod user;
