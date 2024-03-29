@@ -6,7 +6,7 @@ cfg_custom_list_v2! {
     pub mod bookmarks;
 }
 
-#[cfg(feature = "legacy-account")]
+#[cfg(feature = "legacy-user-delete")]
 pub mod delete;
 pub mod follows;
 pub mod get;
