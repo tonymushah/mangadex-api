@@ -9,10 +9,12 @@ use crate::v5::cover::manga_id::post::UploadCoverBuilder;
 use crate::HttpClientRef;
 
 pub mod begin;
+pub mod check_approval_required;
 pub mod get;
 pub mod upload_session_id;
 
 use self::begin::BeginEndpoint;
+use self::check_approval_required::CheckApprovalRequiredEndpoint;
 use self::get::GetUploadSessionBuilder;
 use self::upload_session_id::UploadSessionIdEndpoint;
 
@@ -47,5 +49,8 @@ impl UploadBuilder {
 
     pub fn upload_session_id(&self, upload_session_id: Uuid) -> UploadSessionIdEndpoint {
         UploadSessionIdEndpoint::new(self.http_client.clone(), upload_session_id)
+    }
+    pub fn check_approval_required(&self) -> CheckApprovalRequiredEndpoint {
+        CheckApprovalRequiredEndpoint::new(self.http_client.clone())
     }
 }
