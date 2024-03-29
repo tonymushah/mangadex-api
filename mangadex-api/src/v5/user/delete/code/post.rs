@@ -48,7 +48,7 @@ use mangadex_api_types::error::Result;
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
-#[cfg(feature = "legacy-account")]
+#[cfg(feature = "legacy-user-delete")]
 pub struct ApproveUserDeletion {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
