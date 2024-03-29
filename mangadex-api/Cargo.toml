@@ -113,14 +113,14 @@ version = "2.9"
 version = "1.0"
 
 [dev-dependencies.tokio]
-version = "1.36"
+version = "1.37"
 features = [
     "macros",
     "rt-multi-thread",
 ]
 
 [dependencies.tokio]
-version = "1.36"
+version = "1.37"
 default-features = false
 features = [
     "time"
