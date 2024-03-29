@@ -33,8 +33,8 @@ jobs:
       run: cargo test --all-targets -F multi-thread --verbose
     - name: Run tests with utils
       run: cargo test --all-targets -F multi-thread,utils --verbose
-    - name: Run tests with legacy-account
-      run: cargo test --all-targets -F multi-thread,legacy-account --verbose
+    - name: Run tests with legacy-user-delete
+      run: cargo test --all-targets -F multi-thread,legacy-user-delete --verbose
     - name: Run tests with oauth
       run: cargo test --all-targets -F multi-thread,oauth --verbose
       
@@ -47,8 +47,8 @@ jobs:
       run: cargo test --all-targets -F tokio-multi-thread --verbose
     - name: Run tests with utils
       run: cargo test --all-targets -F tokio-multi-thread,utils --verbose
-    - name: Run tests with legacy-account
-      run: cargo test --all-targets -F tokio-multi-thread,legacy-account --verbose
+    - name: Run tests with legacy-user-delete
+      run: cargo test --all-targets -F tokio-multi-thread,legacy-user-delete --verbose
     - name: Run tests with oauth
       run: cargo test --all-targets -F tokio-multi-thread,oauth --verbose
     
@@ -61,7 +61,7 @@ jobs:
       run: cargo test --all-targets --verbose
     - name: Run tests with utils
       run: cargo test --all-targets -F utils --verbose
-    - name: Run tests with legacy-account
-      run: cargo test --all-targets -F legacy-account --verbose
+    - name: Run tests with legacy-user-delete
+      run: cargo test --all-targets -F legacy-user-delete --verbose
     - name: Run tests with oauth
       run: cargo test --all-targets -F oauth --verbose
