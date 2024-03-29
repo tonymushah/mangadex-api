@@ -152,7 +152,58 @@ mod tests {
 
         let res = res.body;
 
-        assert!(!res.requires_approval);
+        assert!(!res.requires_approval.unwrap());
+
+        Ok(())
+    }
+    #[tokio::test]
+    async fn check_approval_required_parses_404_not_found() -> anyhow::Result<()> {
+        let mock_server = MockServer::start().await;
+        let http_client = HttpClient::builder()
+            .base_url(Url::parse(&mock_server.uri())?)
+            .auth_tokens(AuthTokens {
+                session: "sessiontoken".to_string(),
+                refresh: "refreshtoken".to_string(),
+            })
+            .build()?;
+        let mangadex_client = MangaDexClient::new_with_http_client(http_client);
+
+        let manga = Uuid::new_v4();
+        let locale = Language::English;
+
+        let expected_body = ExceptedBody { manga, locale };
+
+        let response_body = json!({
+            "result": "ok"
+        });
+        Mock::given(method("POST"))
+            .and(path_regex(r"/upload/check-approval-required"))
+            .and(header("authorization", "Bearer sessiontoken"))
+            .and(header("content-type", "application/json"))
+            .and(body_json(expected_body))
+            .respond_with(
+                ResponseTemplate::new(404)
+                    .insert_header("x-ratelimit-retry-after", "1698723860")
+                    .insert_header("x-ratelimit-limit", "40")
+                    .insert_header("x-ratelimit-remaining", "39")
+                    .set_body_json(response_body),
+            )
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let res = mangadex_client
+            .upload()
+            .check_approval_required()
+            .post()
+            .locale(locale)
+            .manga_id(manga)
+            .send()
+            .await?;
+
+        let res = res.body;
+
+        assert!(res.is_manga_not_found());
 
         Ok(())
     }
