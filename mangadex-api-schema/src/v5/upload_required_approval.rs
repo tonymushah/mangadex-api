@@ -1,6 +1,8 @@
 use mangadex_api_types::ResultType;
 use serde::Deserialize;
 
+use crate::FromResponse;
+
 /// User Settings response.
 #[derive(Clone, Debug, Deserialize)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -26,5 +28,12 @@ impl From<bool> for UploadRequiredApproval {
 impl From<UploadRequiredApproval> for bool {
     fn from(value: UploadRequiredApproval) -> Self {
         value.requires_approval
+    }
+}
+
+impl FromResponse for UploadRequiredApproval {
+    type Response = Self;
+    fn from_response(res: Self::Response) -> Self {
+        res
     }
 }
