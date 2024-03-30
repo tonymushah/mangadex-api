@@ -176,13 +176,10 @@ impl HttpClient {
         if let Some(multipart) = endpoint.multipart() {
             req = req.multipart(multipart);
         }
-
-        if let Some(tokens) = self.get_tokens() {
-            req = req.bearer_auth(&tokens.session)
-        } else if endpoint.require_auth() {
-            return Err(Error::MissingTokens);
+        if endpoint.require_auth() {
+            let tokens = self.get_tokens().ok_or(Error::MissingTokens)?;
+            req = req.bearer_auth(&tokens.session);
         }
-
         if let Some(captcha) = self.get_captcha() {
             req = req.header("X-Captcha-Result", captcha);
         }
