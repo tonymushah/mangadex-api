@@ -68,7 +68,7 @@ version = "1.0"
 features = ["derive"]
 
 [dependencies.serde_qs]
-version = "0.12"
+version = "0.13"
 
 [dependencies.thiserror]
 version = "1.0"
