@@ -34,6 +34,8 @@ pub enum MangaLink {
     #[serde(rename = "nu")]
     NovelUpdates,
     Raw,
+    #[serde(rename = "engtl")
+    OfficialEnglish,
     // TODO: Known issue: Manga ID "f9c33607-9180-4ba6-b85c-e4b5faee7192" has an unknown key of "dj".
     #[serde(other, skip_serializing)]
     Unknown,
@@ -55,6 +57,7 @@ impl FromStr for MangaLink {
             "mal" => Self::MyAnimeList,
             "nu" => Self::NovelUpdates,
             "raw" => Self::Raw,
+            "engtl" => Self::OfficialEnglish,
             _ => Self::Unknown,
         };
         Ok(se)
@@ -76,6 +79,7 @@ impl std::fmt::Display for MangaLink {
             Self::MyAnimeList => "mal",
             Self::NovelUpdates => "nu",
             Self::Raw => "raw",
+            Self::OfficialEnglish => "engtl",
             Self::Unknown => "<UNKNOWN>",
         })
     }
