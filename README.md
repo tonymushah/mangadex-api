@@ -89,9 +89,9 @@ Add `mangadex-api` to your dependencies:
 [dependencies]
 # ...
 # Types and schemas are always required
-mangadex-api-types-rust = "0.8"
-mangadex-api-schema-rust = "0.8"
-mangadex-api = "3.2.0"
+mangadex-api-types-rust = "0.9"
+mangadex-api-schema-rust = "0.9"
+mangadex-api = "3.3"
 ```
 
 If you are using [`cargo-edit`](https://github.com/killercup/cargo-edit), run
@@ -136,10 +136,6 @@ All features are not included by default. To enable them, add any of the followi
 
   Enable the usage of the `< 5.9.0` login system in the SDK. Please visit the [Mangadex Discord](https://discord.com/invite/mangadex)  for more details
 
-- `legacy-account` *Deprecated*
-
-  Enable the usage of the `< 5.9.0` account management system in the SDK. Please visit the [Mangadex Discord](https://discord.com/invite/mangadex) for more details
-
 - `utils`
 
   Enable the usage of the `MangaDexClient::download()`. Allows you to download chapters or covers image without tears and long code.
@@ -152,6 +148,10 @@ All features are not included by default. To enable them, add any of the followi
   
   Enable the usage of [`tokio::sync::RwLock`](https://docs.rs/tokio/latest/tokio/sync/struct.RwLock.html), instead of [`futures::lock::Mutex`](https://docs.rs/futures/0.3.29/futures/lock/struct.Mutex.html) in the client.
   It can be useful if you want a flexible concurent mutli-thread.
+
+- `legacy-user-delete` *Deprecated*
+
+  Enable the usage of the user delete endpoints.
 
 - `oauth` (Enabled by default)
   
