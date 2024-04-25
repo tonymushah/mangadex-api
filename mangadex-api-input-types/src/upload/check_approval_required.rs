@@ -5,7 +5,9 @@ use mangadex_api::{
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api_schema::{v5::upload_required_approval::UploadRequiredApproval, Limited};
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_types::{error::Result, Language};
+use mangadex_api_types::error::Result;
+
+use mangadex_api_types::Language;
 
 use serde::Deserialize;
 use uuid::Uuid;
