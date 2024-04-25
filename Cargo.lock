@@ -1099,7 +1099,7 @@ dependencies = [
 
 [[package]]
 name = "mangadex-api-input-types"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "anyhow",
  "async-graphql",
