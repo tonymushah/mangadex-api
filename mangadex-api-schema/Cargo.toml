@@ -22,7 +22,7 @@ keywords = ["mangadex", "response-schemas"]
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"]}
-serde_json = "1"
+serde_json = "1.0.116"
 jsonxf = "1"
 color-print = "0.3.6"
 
