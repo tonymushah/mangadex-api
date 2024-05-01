@@ -107,7 +107,7 @@ version = "4.5.4"
 features = ["derive"]
 
 [dev-dependencies.fake]
-version = "2.9"
+version = "2.9.2"
 
 [dev-dependencies.serde_json]
 version = "1.0"
