@@ -128,7 +128,7 @@ features = [
 optional = true
 
 [dependencies.async-stream]
-version = "0.3"
+version = "0.3.5"
 optional = true
 
 [dependencies.tokio-stream]
