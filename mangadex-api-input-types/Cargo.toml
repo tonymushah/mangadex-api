@@ -9,7 +9,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/tonymushah/mangadex-api"
 
 [dependencies]
-serde = "1.0"
+serde = "1.0.200"
 specta = { version = "1.0", optional = true }
 tokio = { version = "1", features = ["full"] }
 anyhow = "1.0.82"
