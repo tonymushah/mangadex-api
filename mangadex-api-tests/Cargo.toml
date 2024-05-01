@@ -10,6 +10,6 @@ mangadex-api = { path = "../mangadex-api" }
 mangadex-api-types-rust = { path = "../mangadex-api-types" }
 mangadex-api-schema-rust = { path = "../mangadex-api-schema" }
 tokio = { version = "1.37", features = ["full"] }
-anyhow = { version = "1" }
+anyhow = { version = "1.0.82" }
 reqwest = "0.12"
 uuid = "1"

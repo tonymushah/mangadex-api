@@ -93,11 +93,11 @@ version = "1.6"
 optional = true
 
 [dependencies.anyhow]
-version = "1.0"
+version = "1.0.82"
 optional = true
 
 [dev-dependencies.anyhow]
-version = "1.0"
+version = "1.0.82"
 
 [dev-dependencies.serde_urlencoded]
 version = "0.7"
