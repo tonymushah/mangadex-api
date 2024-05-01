@@ -38,7 +38,7 @@ path = "src/lib.rs"
 version = "0.20"
 
 [dependencies.futures]
-version = "0.3"
+version = "0.3.30"
 optional = true
 
 [dependencies.reqwest]
