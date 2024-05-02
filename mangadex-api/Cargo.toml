@@ -74,7 +74,7 @@ version = "0.13"
 version = "1.0"
 
 [dependencies.time]
-version = "0.3"
+version = "0.3.36"
 features = ["serde-human-readable"]
 
 [dependencies.url]

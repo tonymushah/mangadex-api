@@ -47,7 +47,7 @@ features = ["derive"]
 version = "1"
 
 [dependencies.time]
-version = "0.3"
+version = "0.3.36"
 features = ["serde-human-readable", "large-dates", "local-offset"]
 
 [dependencies.url]
