@@ -21,7 +21,7 @@ repository = "https://github.com/tonymushah/mangadex-api"
 keywords = ["mangadex", "types-bindings"]
 
 [dev-dependencies]
-tokio = { version = "1", features = ["rt", "macros"]}
+tokio = { version = "1.37.0", features = ["rt", "macros"]}
 serde_json = "1"
 
 [dependencies.anyhow]
