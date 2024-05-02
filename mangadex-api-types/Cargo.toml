@@ -44,7 +44,7 @@ version = "1"
 features = ["derive"]
 
 [dependencies.thiserror]
-version = "1"
+version = "1.0.59"
 
 [dependencies.time]
 version = "0.3"

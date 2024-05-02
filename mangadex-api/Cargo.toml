@@ -71,7 +71,7 @@ features = ["derive"]
 version = "0.13"
 
 [dependencies.thiserror]
-version = "1.0"
+version = "1.0.59"
 
 [dependencies.time]
 version = "0.3"
