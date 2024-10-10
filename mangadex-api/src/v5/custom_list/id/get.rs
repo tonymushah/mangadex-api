@@ -26,6 +26,7 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_types::ReferenceExpansionResource;
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -52,6 +53,9 @@ pub struct GetCustomList {
 
     #[serde(skip_serializing)]
     pub list_id: Uuid,
+
+    #[builder(setter(each = "include"), default)]
+    pub includes: Vec<ReferenceExpansionResource>,
 }
 
 endpoint! {
