@@ -7,3 +7,9 @@ members = [
     "mangadex-api-tests",
     "mangadex-api-input-types"
 ]
+
+[workspace.dependencies]
+syn = "2"
+darling = "0.20"
+proc-macro2 = "1"
+quote = "1"
