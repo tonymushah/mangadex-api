@@ -1082,7 +1082,7 @@ checksum = "a7a70ba024b9dc04c27ea2f0c0548feb474ec5c54bba33a7f72f873a39d07b24"
 
 [[package]]
 name = "mangadex-api"
-version = "3.3.0"
+version = "3.4.0"
 dependencies = [
  "anyhow",
  "async-stream",
@@ -1110,9 +1110,8 @@ dependencies = [
 
 [[package]]
 name = "mangadex-api-input-types"
-version = "0.5.1"
+version = "0.6.0"
 dependencies = [
- "anyhow",
  "async-graphql",
  "mangadex-api",
  "mangadex-api-schema-rust",
@@ -1157,7 +1156,7 @@ dependencies = [
 
 [[package]]
 name = "mangadex-api-types-rust"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "async-graphql",
