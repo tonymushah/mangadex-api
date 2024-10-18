@@ -30,7 +30,7 @@ impl CustomListBuilder {
         CreateCustomListBuilder::default().http_client(self.http_client.clone())
     }
 
-    /// Containing existing endpoint in https://api.mangadex.org/list/{id}
+    /// Containing existing endpoint in <https://api.mangadex.org/list/>{id}
     pub fn id(&self, id: Uuid) -> IdEnpoint {
         IdEnpoint::new(self.http_client.clone(), id)
     }

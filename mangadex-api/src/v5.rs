@@ -135,9 +135,9 @@ impl MangaDexClient {
     pub fn new_with_http_client_ref(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
-    /// Create a new `MangaDexClient` with a custom [`HttpClient`](crate::HttpClient).
+    /// Create a new `MangaDexClient` with a custom [`HttpClient`].
     ///
-    /// In most cases, providing a custom [`HttpClient`](crate::HttpClient) isn't necessary.
+    /// In most cases, providing a custom [`HttpClient`] isn't necessary.
     /// This function is primarily useful for mock testing but is available for anyone that needs to
     /// change the base URL if it changes due to an unforeseen event.
     ///
@@ -172,7 +172,7 @@ impl MangaDexClient {
     ///
     /// This can be used to create manual HTTP requests.
     ///
-    /// Using this is generally not advised as it can provide mutable access to the [`HttpClient`](crate::HttpClient).
+    /// Using this is generally not advised as it can provide mutable access to the [`HttpClient`].
     pub fn get_http_client(&self) -> HttpClientRef {
         self.http_client.clone()
     }
@@ -360,32 +360,32 @@ impl MangaDexClient {
         Ok(())
     }
 
-    #[cfg(feature = "oauth")]
-    pub async fn get_client_info(&self) -> Result<ClientInfo> {
-        let client = {
-            #[cfg(all(
-                not(feature = "multi-thread"),
-                not(feature = "tokio-multi-thread"),
-                not(feature = "rw-multi-thread")
-            ))]
-            {
-                &self.http_client.try_borrow()?
-            }
-            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-            {
-                &self.http_client.lock().await
-            }
-            #[cfg(feature = "rw-multi-thread")]
-            {
-                &self.http_client.read().await
-            }
-        };
-        client
-            .get_client_info()
-            .cloned()
-            .ok_or(mangadex_api_types::error::Error::MissingClientInfo)
+    cfg_oauth! {
+        pub async fn get_client_info(&self) -> Result<ClientInfo> {
+            let client = {
+                #[cfg(all(
+                    not(feature = "multi-thread"),
+                    not(feature = "tokio-multi-thread"),
+                    not(feature = "rw-multi-thread")
+                ))]
+                {
+                    &self.http_client.try_borrow()?
+                }
+                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
+                {
+                    &self.http_client.lock().await
+                }
+                #[cfg(feature = "rw-multi-thread")]
+                {
+                    &self.http_client.read().await
+                }
+            };
+            client
+                .get_client_info()
+                .cloned()
+                .ok_or(mangadex_api_types::error::Error::MissingClientInfo)
+        }
     }
-
     /// Get a builder for handling the At-Home endpoints.
     ///
     /// <https://api.mangadex.org/swagger.html#/AtHome>
@@ -531,18 +531,20 @@ impl MangaDexClient {
     pub fn api_dev_client() -> Self {
         Self::new_with_http_client(HttpClient::api_dev_client())
     }
-    #[cfg(feature = "utils")]
-    pub fn download(&self) -> DownloadBuilder {
-        DownloadBuilder::new(self.http_client.clone())
+    cfg_utils! {
+        pub fn download(&self) -> DownloadBuilder {
+            DownloadBuilder::new(self.http_client.clone())
+        }
     }
 
     pub fn forums(&self) -> ForumsEndpoint {
         ForumsEndpoint::new(self.http_client.clone())
     }
 
-    #[cfg(feature = "oauth")]
-    pub fn oauth(&self) -> OAuthBuider {
-        OAuthBuider::new(self.http_client.clone())
+    cfg_oauth! {
+        pub fn oauth(&self) -> OAuthBuider {
+            OAuthBuider::new(self.http_client.clone())
+        }
     }
 }
 
@@ -574,6 +576,17 @@ fn create_ref_counted_http_client(http_client: HttpClient) -> HttpClientRef {
         not(feature = "rw-multi-thread")
     )
 ))]
+#[cfg_attr(
+    docsrs,
+    doc(cfg(all(
+        feature = "oauth",
+        all(
+            not(feature = "multi-thread"),
+            not(feature = "tokio-multi-thread"),
+            not(feature = "rw-multi-thread")
+        )
+    )))
+)]
 impl MangaDexClient {
     pub async fn set_client_info(&mut self, client_info: &ClientInfo) -> Result<()> {
         let client = &mut self.http_client.try_borrow_mut()?;
@@ -581,7 +594,6 @@ impl MangaDexClient {
         client.set_client_info(client_info);
         Ok(())
     }
-    #[cfg(feature = "oauth")]
     pub async fn clear_client_info(&mut self) -> Result<()> {
         let client = &mut self.http_client.try_borrow_mut()?;
         client.clear_client_info();
@@ -597,6 +609,17 @@ impl MangaDexClient {
         feature = "rw-multi-thread"
     )
 ))]
+#[cfg_attr(
+    docsrs,
+    doc(all(
+        feature = "oauth",
+        any(
+            feature = "multi-thread",
+            feature = "tokio-multi-thread",
+            feature = "rw-multi-thread"
+        )
+    ))
+)]
 impl MangaDexClient {
     pub async fn set_client_info(&self, client_info: &ClientInfo) -> Result<()> {
         let mut client = {

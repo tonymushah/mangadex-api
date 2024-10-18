@@ -80,11 +80,7 @@ pub struct CreateUpdateMangaRating {
 
 impl CreateUpdateMangaRating {
     pub async fn send(&mut self) -> Result<NoData> {
-        if self.rating < 1 {
-            self.rating = 1;
-        } else if self.rating > 10 {
-            self.rating = 10;
-        }
+        self.rating = self.rating.clamp(1, 10);
 
         #[cfg(all(
             not(feature = "multi-thread"),

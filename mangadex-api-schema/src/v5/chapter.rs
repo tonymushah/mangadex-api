@@ -6,7 +6,7 @@ use crate::deserialize_null_default;
 use mangadex_api_types::{Language, MangaDexDateTime};
 
 /// General chapter information.
-/// More details at https://api.mangadex.org/docs/swagger.html#model-ChapterAttributes
+/// More details at <https://api.mangadex.org/docs/swagger.html#model-ChapterAttributes>
 #[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
