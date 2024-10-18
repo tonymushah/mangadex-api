@@ -1,7 +1,5 @@
 #[cfg(feature = "custom_list_v2")]
 pub mod bookmark;
-#[cfg(feature = "legacy-account")]
-pub mod delete;
 pub mod follow;
 pub mod get;
 pub mod list;
@@ -9,8 +7,6 @@ pub mod list;
 use crate::HttpClientRef;
 #[cfg(feature = "custom_list_v2")]
 use bookmark::BookmarkEndpoint;
-#[cfg(feature = "legacy-account")]
-use delete::DeleteUserBuilder;
 use follow::FollowEndpoint;
 use get::GetUserBuilder;
 use list::ListEndpoint;
@@ -25,13 +21,6 @@ pub struct IdEndpoint {
 impl IdEndpoint {
     pub fn new(http_client: HttpClientRef, id: Uuid) -> Self {
         Self { http_client, id }
-    }
-
-    #[cfg(feature = "legacy-account")]
-    pub fn delete(&self) -> DeleteUserBuilder {
-        DeleteUserBuilder::default()
-            .user_id(self.id)
-            .http_client(self.http_client.clone())
     }
 
     pub fn get(&self) -> GetUserBuilder {
