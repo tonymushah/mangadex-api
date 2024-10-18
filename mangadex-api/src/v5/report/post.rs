@@ -73,7 +73,7 @@ pub struct CreateReport {
     pub category: ReportCategory,
     /// The report reason ID for sub-categorization.
     ///
-    /// For example, if a manga was being reported for being a troll entry, the specific reason ID should be used, obtained from the [list report reasons endpoint](crate::v5::report::list).
+    /// For example, if a manga was being reported for being a troll entry, the specific reason ID should be used, obtained from the [list report reasons endpoint](crate::v5::report::get).
     pub reason: Uuid,
     /// The ID from the category type.
     ///

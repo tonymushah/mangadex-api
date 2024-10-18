@@ -135,9 +135,9 @@ impl MangaDexClient {
     pub fn new_with_http_client_ref(http_client: HttpClientRef) -> Self {
         Self { http_client }
     }
-    /// Create a new `MangaDexClient` with a custom [`HttpClient`](crate::HttpClient).
+    /// Create a new `MangaDexClient` with a custom [`HttpClient`].
     ///
-    /// In most cases, providing a custom [`HttpClient`](crate::HttpClient) isn't necessary.
+    /// In most cases, providing a custom [`HttpClient`] isn't necessary.
     /// This function is primarily useful for mock testing but is available for anyone that needs to
     /// change the base URL if it changes due to an unforeseen event.
     ///
@@ -172,7 +172,7 @@ impl MangaDexClient {
     ///
     /// This can be used to create manual HTTP requests.
     ///
-    /// Using this is generally not advised as it can provide mutable access to the [`HttpClient`](crate::HttpClient).
+    /// Using this is generally not advised as it can provide mutable access to the [`HttpClient`].
     pub fn get_http_client(&self) -> HttpClientRef {
         self.http_client.clone()
     }
