@@ -37,9 +37,10 @@ impl IdEndpoint {
         FollowEndpoint::new(self.http_client.clone(), self.id)
     }
 
-    #[cfg(feature = "custom_list_v2")]
-    pub fn bookmark(&self) -> BookmarkEndpoint {
-        BookmarkEndpoint::new(self.http_client.clone(), self.id)
+    cfg_custom_list_v2! {
+        pub fn bookmark(&self) -> BookmarkEndpoint {
+            BookmarkEndpoint::new(self.http_client.clone(), self.id)
+        }
     }
 
     pub fn list(&self) -> ListEndpoint {

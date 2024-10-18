@@ -49,33 +49,38 @@ impl IdEnpoint {
     pub fn batch_manga(&self) -> BatchMangaEndpoint {
         BatchMangaEndpoint::new(self.http_client.clone(), self.id)
     }
-    #[cfg(feature = "custom_list_v2")]
-    pub fn bookmark(&self) -> BookMarkEndpoint {
-        BookMarkEndpoint::new(self.http_client.clone(), self.id)
+    cfg_custom_list_v2! {
+        pub fn bookmark(&self) -> BookMarkEndpoint {
+            BookMarkEndpoint::new(self.http_client.clone(), self.id)
+        }
     }
-    #[cfg(feature = "custom_list_v2")]
-    pub fn default(&self) -> DefaultEndpoint {
-        DefaultEndpoint::new(self.http_client.clone(), self.id)
+    cfg_custom_list_v2! {
+        pub fn default(&self) -> DefaultEndpoint {
+            DefaultEndpoint::new(self.http_client.clone(), self.id)
+        }
     }
     pub fn feed(&self) -> FeedEndPoint {
         FeedEndPoint::new(self.http_client.clone(), self.id)
     }
-    #[cfg(feature = "custom_list_v2")]
-    pub fn manga(&self) -> MangaEndpoint {
-        MangaEndpoint::new(self.http_client.clone(), self.id)
+    cfg_custom_list_v2! {
+        pub fn manga(&self) -> MangaEndpoint {
+            MangaEndpoint::new(self.http_client.clone(), self.id)
+        }
     }
     pub fn get(&self) -> GetCustomListBuilder {
         GetCustomListBuilder::default()
             .list_id(self.id)
             .http_client(self.http_client.clone())
     }
-    #[cfg(feature = "custom_list_v2")]
-    pub fn pin(&self) -> PinEndpoint {
-        PinEndpoint::new(self.http_client.clone(), self.id)
+    cfg_custom_list_v2! {
+        pub fn pin(&self) -> PinEndpoint {
+            PinEndpoint::new(self.http_client.clone(), self.id)
+        }
     }
-    #[cfg(feature = "custom_list_v2")]
-    pub fn unpin(&self) -> UnPinEndpoint {
-        UnPinEndpoint::new(self.http_client.clone(), self.id)
+    cfg_custom_list_v2! {
+        pub fn unpin(&self) -> UnPinEndpoint {
+            UnPinEndpoint::new(self.http_client.clone(), self.id)
+        }
     }
     pub fn delete(&self) -> DeleteCustomListBuilder {
         DeleteCustomListBuilder::default()
