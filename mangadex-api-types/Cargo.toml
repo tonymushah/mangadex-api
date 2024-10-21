@@ -62,7 +62,7 @@ features = [
 ]
 
 [dependencies.async-graphql]
-version = "7.0.3"
+version = "7.0.10"
 features = [
     "time",
     "uuid"
