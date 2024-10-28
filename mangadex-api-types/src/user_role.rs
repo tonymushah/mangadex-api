@@ -44,6 +44,8 @@ pub enum UserRole {
     RoleUser,
     /// Important people that in one way or another helped MangaDex
     RoleVip,
+    /// MangaDex Supporter
+    RoleSupporter,
     #[serde(other)]
     Unknown,
 }
