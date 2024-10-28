@@ -1,6 +1,6 @@
 //! Builder for getting client secret by its id.
 //!
-//! <https://api.mangadex.org/docs/swagger.html#/ApiClient/get-apiclient>
+//! <https://api.mangadex.org/docs/redoc.html#tag/ApiClient/operation/get-apiclient-secret>
 //!
 //! # Examples
 //!
