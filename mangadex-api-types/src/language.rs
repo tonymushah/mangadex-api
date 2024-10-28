@@ -22,7 +22,7 @@ macro_rules! languages {
                 #[serde(rename = $code)]
                 $lang,
             )*
-            #[serde(rename = "NULL")]
+            #[serde(other)]
             Unknown,
         }
 
@@ -33,7 +33,7 @@ macro_rules! languages {
                     $(
                         Self::$lang => $code,
                     )*
-                    Self::Unknown => "NULL",
+                    Self::Unknown => "Unknown",
                 }
             }
             pub fn get_langs() -> Vec<Self> {
