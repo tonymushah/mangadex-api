@@ -20,7 +20,6 @@ pub struct UserSettingsAttributes {
         serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
     )]
     pub updated_at: MangaDexDateTime,
-    #[serde(skip)]
-    settings: HashMap<String, String>,
-    template: Uuid,
+    settings: serde_json::Value,
+    pub template: Uuid,
 }

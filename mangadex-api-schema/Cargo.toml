@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api-schema-rust"
-version = "0.9.1"
+version = "0.10.0"
 authors = ["tonymushah <tonymushahdev06@yahoo.com>"]
 description = "Response structs and helpers for mangadex-api"
 license = "MIT OR Apache-2.0"
@@ -21,53 +21,38 @@ resolver = "2"
 keywords = ["mangadex", "response-schemas"]
 
 [dev-dependencies]
-tokio = { version = "1", features = ["rt", "macros"]}
-serde_json = "1"
-jsonxf = "1"
-color-print = "0.3.6"
+tokio = { workspace = true, features = ["rt", "macros"]}
+serde_json = { workspace = true }
+jsonxf = { workspace = true }
+color-print = { workspace = true }
 
 [dependencies.reqwest]
-version = "0.12"
-features = [
-    "cookies",
-    "json",
-    "multipart",
-    "rustls-tls",
-]
+workspace = true
 
 [dependencies.serde]
-version = "1.0"
-features = ["derive"]
+workspace = true
 
 [dependencies.serde_qs]
-version = "0.13"
+workspace = true
 
 [dependencies.thiserror]
-version = "1.0"
+workspace = true
 
 [dependencies.url]
-version = "2.5"
-features = ["serde"]
+workspace = true
 
 [dependencies.uuid]
-version = "1.8"
-features = [
-    "serde",
-    "v4",
-]
+workspace = true
 
 [dependencies.specta]
-version = "1.0"
 optional = true
-features = [
-    "uuid",
-    "url"
-]
+workspace = true
+
+[dependencies.serde_json]
+workspace = true
 
 [dependencies.mangadex-api-types]
-package = "mangadex-api-types-rust"
-version = "0.9"
-path = "../mangadex-api-types"
+workspace = true
 
 [features]
 non_exhaustive = []

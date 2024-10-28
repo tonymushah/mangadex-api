@@ -96,8 +96,6 @@ pub enum Error {
     SkippedDownload(String),
     #[error("The {0} variant should only be `0` or `1`")]
     IncludeEnumsParsing(String),
-    #[error(transparent)]
-    UnexpectedError(#[from] anyhow::Error),
 }
 
 impl serde::Serialize for Error {
@@ -127,7 +125,6 @@ impl serde::Serialize for Error {
             Error::BorrowError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::BorrowMutError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::Io(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::UnexpectedError(e) => serializer.serialize_str(e.to_string().as_str()),
             Error::UninitializedFieldError(e) => serializer.serialize_str(
                 format!("the field {} must be initialized", e.field_name()).as_str(),
             ),
