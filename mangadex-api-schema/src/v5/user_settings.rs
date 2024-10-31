@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use mangadex_api_types::{MangaDexDateTime, ResultType};
 use serde::Deserialize;
 use uuid::Uuid;
