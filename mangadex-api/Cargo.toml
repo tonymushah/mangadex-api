@@ -53,6 +53,9 @@ workspace = true
 [dependencies.serde]
 workspace = true
 
+[dependencies.serde_json]
+workspace = true
+
 [dependencies.serde_qs]
 workspace = true
 

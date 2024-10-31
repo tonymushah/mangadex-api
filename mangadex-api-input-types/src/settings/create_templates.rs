@@ -8,15 +8,15 @@ use serde::Deserialize;
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct CreateSettingsTemplateParams {
-    pub description: Option<String>,
+    pub template: Option<String>,
 }
 
 #[cfg(feature = "mangadex-api-resolver")]
 impl From<CreateSettingsTemplateParams> for CreateSettingsTemplateBuilder {
     fn from(value: CreateSettingsTemplateParams) -> Self {
         let mut builder = Self::default();
-        if let Some(description) = value.description {
-            builder.description(description);
+        if let Some(template) = value.template {
+            builder.template(template);
         }
         builder
     }
