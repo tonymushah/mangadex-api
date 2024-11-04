@@ -67,10 +67,7 @@ impl ChapterDownload {
                 .body,
         );
         let http_client = Arc::new(get_reqwest_client(&client).await);
-        let page_filenames = match match self.mode.clone() {
-            None => Default::default(),
-            Some(d) => d,
-        } {
+        let page_filenames = match self.mode.unwrap_or_default() {
             DownloadMode::Normal => Arc::clone(&at_home).chapter.data.clone(),
             DownloadMode::DataSaver => Arc::clone(&at_home).chapter.data_saver.clone(),
         };
@@ -80,10 +77,7 @@ impl ChapterDownload {
                 yield AtHomePreDownloadImageData {
                     http_client: http_client.clone(),
                     filename: filename.clone(),
-                    quality: match self.mode.clone() {
-                        None => Default::default(),
-                        Some(d) => d,
-                    },
+                    quality: self.mode.unwrap_or_default(),
                     at_home: Arc::clone(&at_home),
                     report: self.report.unwrap_or(false),
                 };

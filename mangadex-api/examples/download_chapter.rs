@@ -162,8 +162,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .data
             .attributes
             .title
-            .as_ref()
-            .map(Clone::clone)
+            .clone()
             .unwrap_or(String::default())
     ));
 

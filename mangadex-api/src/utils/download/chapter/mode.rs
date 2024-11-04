@@ -1,7 +1,7 @@
 /// Chapter Download Mode
 /// Normal = "data"
 /// DataSaver = "data-saver"
-#[derive(Clone)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum DownloadMode {
     Normal,
     DataSaver,

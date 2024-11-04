@@ -75,10 +75,6 @@ workspace = true
 workspace = true
 optional = true
 
-[dependencies.anyhow]
-workspace = true
-optional = true
-
 [dev-dependencies.anyhow]
 workspace = true
 
@@ -132,7 +128,7 @@ tokio-multi-thread = ["tokio/sync"]
 rw-multi-thread = ["tokio/sync"]
 legacy-auth = []
 legacy-user-delete = []
-utils = ["dep:bytes", "dep:tokio", "dep:anyhow", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
+utils = ["dep:bytes", "dep:tokio", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 non_exhaustive = ["mangadex-api-schema/non_exhaustive", "mangadex-api-types/non_exhaustive"]
 deserializable-endpoint = ["dep:getset"]
 serialize = ["mangadex-api-schema/serialize"]

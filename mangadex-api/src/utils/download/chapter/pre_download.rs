@@ -49,7 +49,7 @@ impl AtHomePreDownloadImageData {
     pub fn build_page_url(&self) -> Result<Url> {
         match self.at_home.base_url.join(&format!(
             "/{quality_mode}/{chapter_hash}/{page_filename}",
-            quality_mode = Into::<String>::into(self.quality.clone()),
+            quality_mode = Into::<String>::into(self.quality),
             chapter_hash = self.at_home.chapter.hash,
             page_filename = self.filename
         )) {

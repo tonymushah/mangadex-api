@@ -96,6 +96,18 @@ pub enum Error {
     SkippedDownload(String),
     #[error("The {0} variant should only be `0` or `1`")]
     IncludeEnumsParsing(String),
+
+    #[error("{0}")]
+    UnknowSource(String),
+}
+
+impl Error {
+    pub fn unknow<S>(source: S) -> Self
+    where
+        S: Into<String>,
+    {
+        Self::UnknowSource(source.into())
+    }
 }
 
 impl serde::Serialize for Error {
@@ -145,6 +157,7 @@ impl serde::Serialize for Error {
             }
             Error::IncludeEnumsParsing(e) => serializer
                 .serialize_str(format!("The {e} variant should only be `0` or `1`").as_str()),
+            Error::UnknowSource(e) => serializer.serialize_str(e),
         }
     }
 }
