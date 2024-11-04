@@ -4,7 +4,7 @@ use mangadex_api::{v5::user::follows::manga::get::FollowedMangaBuilder, MangaDex
 use mangadex_api_types::ReferenceExpansionResource;
 use serde::Deserialize;
 
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, Deserialize, Default, PartialEq, Eq)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(default)]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]

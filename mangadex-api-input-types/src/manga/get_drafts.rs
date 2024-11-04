@@ -4,7 +4,7 @@ use mangadex_api::{v5::manga::draft::get::ListMangaDraftsBuilder, MangaDexClient
 use mangadex_api_types::{MangaDraftsSortOrder, MangaState, ReferenceExpansionResource};
 use serde::Deserialize;
 
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, Deserialize, Default, PartialEq, Eq)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
