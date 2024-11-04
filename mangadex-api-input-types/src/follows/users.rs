@@ -3,7 +3,7 @@ use mangadex_api::{v5::user::follows::user::get::FollowedUsersBuilder, MangaDexC
 
 use serde::Deserialize;
 
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, Deserialize, Default, PartialEq, Eq)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]

@@ -5,5 +5,58 @@ members = [
     "mangadex-api-schema",
     "mangadex-api",
     "mangadex-api-tests",
-    "mangadex-api-input-types"
+    "mangadex-api-input-types",
 ]
+default-members = ["mangadex-api"]
+
+[workspace.dependencies]
+syn = "2"
+darling = "0.20"
+proc-macro2 = "1"
+quote = "1"
+tokio = { version = "1", default-features = false }
+serde_json = "1"
+color-print = "0.3.6"
+jsonxf = "1"
+anyhow = "1"
+derive_builder = "0.20"
+reqwest = { version = "0.12", features = [
+    "cookies",
+    "json",
+    "multipart",
+    "rustls-tls",
+] }
+serde = { version = "1", features = ["derive"]}
+thiserror = "1"
+time = { version = "0.3", features = [
+    "serde-human-readable",
+    "large-dates",
+    "local-offset",
+] }
+url = { version = "2.5", features = ["serde"] }
+uuid = { version = "1.8", features = ["serde", "v4"] }
+async-graphql = "7"
+specta = { version = "1", features = ["uuid", "url", "time"] }
+futures = "0.3"
+bytes = "1.6"
+serde_urlencoded = "0.7"
+clap = "4.5.4"
+fake = "2.9.2"
+async-stream = "0.3"
+tokio-stream = "0.1"
+getset = "0"
+wiremock = "0.6"
+serde_qs = "0.13"
+
+[workspace.dependencies.mangadex-api-types]
+package = "mangadex-api-types-rust"
+path = "./mangadex-api-types"
+default-features = false
+
+[workspace.dependencies.mangadex-api-schema]
+package = "mangadex-api-schema-rust"
+path = "./mangadex-api-schema"
+default-features = false
+
+[workspace.dependencies.mangadex-api]
+path = "../mangadex-api"

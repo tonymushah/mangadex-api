@@ -2,7 +2,7 @@
 use mangadex_api::{v5::api_client::get::ListClientsBuilder, MangaDexClient};
 use mangadex_api_types::{ApiClientState, ReferenceExpansionResource};
 
-#[derive(serde::Deserialize, Debug, Clone)]
+#[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]

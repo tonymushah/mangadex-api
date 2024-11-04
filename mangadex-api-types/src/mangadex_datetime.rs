@@ -8,7 +8,7 @@ pub(crate) const MANGADEX_DATETIME_SER_FORMAT: &str =
     "[year]-[month]-[day]T[hour]:[minute]:[second]";
 
 /// Newtype struct for handling datetime fields in MangaDex.
-#[derive(Debug, Clone, PartialEq, Copy)]
+#[derive(Debug, Clone, PartialEq, Copy, Eq, PartialOrd, Ord)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaDexDateTime(OffsetDateTime);
 

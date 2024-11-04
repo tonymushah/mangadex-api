@@ -14,7 +14,7 @@ use uuid::Uuid;
 
 use super::DownloadElement;
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub enum CoverQuality {
     Default = 0,
     /// For 512 cover fetching
@@ -79,10 +79,10 @@ pub async fn download_via_cover_api_object(
         None => {
             return (
                 file_name,
-                Err(Error::UnexpectedError(anyhow::Error::msg(format!(
+                Err(Error::unknow(format!(
                     "Manga relationship not found in cover {} object",
                     cover.id
-                )))),
+                ))),
             )
         }
     };
@@ -167,11 +167,7 @@ pub async fn download_via_manga_api_object(
                 .build()
             {
                 Ok(d) => match d.send().await?.data.first() {
-                    None => {
-                        return Err(Error::UnexpectedError(anyhow::Error::msg(
-                            "can't find the first cover of this manga",
-                        )))
-                    }
+                    None => return Err(Error::unknow("can't find the first cover of this manga")),
                     Some(cover) => cover.attributes.file_name.clone(),
                 },
                 Err(e) => return Err(Error::RequestBuilderError(e.to_string())),
@@ -218,19 +214,19 @@ pub struct CoverDownload {
 
 impl CoverDownload {
     pub async fn via_cover_api_object(&self, cover: ApiObject<CoverAttributes>) -> DownloadElement {
-        download_via_cover_api_object(self.http_client.clone(), cover, self.quality.clone()).await
+        download_via_cover_api_object(self.http_client.clone(), cover, self.quality).await
     }
     pub async fn via_cover_id(&self, cover_id: Uuid) -> Result<DownloadElement> {
-        download_via_cover_id(self.http_client.clone(), cover_id, self.quality.clone()).await
+        download_via_cover_id(self.http_client.clone(), cover_id, self.quality).await
     }
     pub async fn via_manga_api_object(
         &self,
         manga: ApiObject<MangaAttributes>,
     ) -> Result<DownloadElement> {
-        download_via_manga_api_object(self.http_client.clone(), manga, self.quality.clone()).await
+        download_via_manga_api_object(self.http_client.clone(), manga, self.quality).await
     }
     pub async fn via_manga_id(&self, manga_id: Uuid) -> Result<DownloadElement> {
-        download_via_manga_id(self.http_client.clone(), manga_id, self.quality.clone()).await
+        download_via_manga_id(self.http_client.clone(), manga_id, self.quality).await
     }
 }
 

@@ -12,7 +12,7 @@ use mangadex_api_types::{
 use serde::Deserialize;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, Deserialize, Default, PartialEq, Eq)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]

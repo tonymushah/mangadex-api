@@ -3,7 +3,7 @@ use mangadex_api::{v5::user::list::get::MyCustomListsBuilder, MangaDexClient};
 
 use serde::Deserialize;
 
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, Deserialize, Default, PartialEq, Eq)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]

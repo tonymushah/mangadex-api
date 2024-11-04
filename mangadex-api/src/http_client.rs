@@ -41,7 +41,7 @@ use mangadex_api_types::error::Result;
     not(feature = "rw-multi-thread")
 ))]
 #[cfg_attr(
-    docrs,
+    docsrs,
     doc(cfg(all(
         not(feature = "multi-thread"),
         not(feature = "tokio-multi-thread"),
@@ -51,12 +51,12 @@ use mangadex_api_types::error::Result;
 pub type HttpClientRef = Rc<RefCell<HttpClient>>;
 #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
 #[cfg_attr(
-    docrs,
+    docsrs,
     doc(cfg(any(feature = "multi-thread", feature = "tokio-multi-thread")))
 )]
 pub type HttpClientRef = Arc<Mutex<HttpClient>>;
 #[cfg(feature = "rw-multi-thread")]
-#[cfg_attr(docrs, doc(cfg(feature = "rw-multi-thread")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "rw-multi-thread")))]
 pub type HttpClientRef = Arc<RwLock<HttpClient>>;
 
 #[derive(Debug, Builder, Clone)]
@@ -66,7 +66,7 @@ pub type HttpClientRef = Arc<RwLock<HttpClient>>;
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg(not(feature = "oauth"))]
-#[cfg_attr(docrs, doc(cfg(not(feature = "oauth"))))]
+#[cfg_attr(docsrs, doc(cfg(not(feature = "oauth"))))]
 pub struct HttpClient {
     pub client: Client,
     pub base_url: Url,
@@ -81,7 +81,7 @@ pub struct HttpClient {
     build_fn(error = "mangadex_api_types::error::BuilderError")
 )]
 #[cfg(feature = "oauth")]
-#[cfg_attr(docrs, doc(cfg(feature = "oauth")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "oauth")))]
 pub struct HttpClient {
     pub client: Client,
     pub base_url: Url,
@@ -253,7 +253,7 @@ impl HttpClient {
 
     /// Send the request to the endpoint and deserialize the response body.
     #[cfg(not(feature = "serialize"))]
-    #[cfg_attr(docrs, doc(cfg(not(feature = "serialize"))))]
+    #[cfg_attr(docsrs, doc(cfg(not(feature = "serialize"))))]
     pub(crate) async fn send_request_with_rate_limit<E>(
         &self,
         endpoint: &E,
@@ -281,7 +281,7 @@ impl HttpClient {
 
     /// Send the request to the endpoint and deserialize the response body.
     #[cfg(feature = "serialize")]
-    #[cfg_attr(docrs, doc(cfg(feature = "serialize")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "serialize")))]
     pub(crate) async fn send_request_with_rate_limit<E>(
         &self,
         endpoint: &E,
@@ -355,7 +355,7 @@ impl HttpClient {
     }
 
     #[cfg(feature = "oauth")]
-    #[cfg_attr(docrs, doc(cfg(feature = "oauth")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "oauth")))]
     pub fn clear_client_info(&mut self) {
         self.client_info = None;
     }

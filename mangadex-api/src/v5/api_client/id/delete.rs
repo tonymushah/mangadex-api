@@ -1,6 +1,6 @@
 //! Builder for the delete manga endpoint.
 //!
-//! <https://api.mangadex.org/swagger.html#/Manga/delete-manga-id>
+//! <https://api.mangadex.org/docs/redoc.html#tag/ApiClient/operation/delete-apiclient>
 //!
 //! # Examples
 //!

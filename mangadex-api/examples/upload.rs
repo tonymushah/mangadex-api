@@ -235,7 +235,7 @@ async fn main() -> anyhow::Result<()> {
 
     println!("Started!");
 
-    let files = vec![
+    let files = [
         Path::new("upload-test/1.png").to_path_buf(),
         Path::new("upload-test/2.png").to_path_buf(),
     ];

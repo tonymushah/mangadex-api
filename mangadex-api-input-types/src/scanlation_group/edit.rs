@@ -11,7 +11,7 @@ use serde::Deserialize;
 use url::Url;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]

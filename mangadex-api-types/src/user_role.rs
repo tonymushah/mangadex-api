@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// User roles that define what a user has permission to do.
-/// More details at : https://api.mangadex.org/docs/static-data/#user-roles-enum
+/// More details at : <https://api.mangadex.org/docs/static-data/#user-roles-enum>
 #[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -44,6 +44,8 @@ pub enum UserRole {
     RoleUser,
     /// Important people that in one way or another helped MangaDex
     RoleVip,
+    /// MangaDex Supporter
+    RoleSupporter,
     #[serde(other)]
     Unknown,
 }

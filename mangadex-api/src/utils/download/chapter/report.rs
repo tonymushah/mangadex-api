@@ -30,9 +30,7 @@ impl AtHomeReport {
                 Err(e) => Result::Err(Error::RequestError(e)),
             }
         } else {
-            Result::Err(Error::UnexpectedError(anyhow::Error::msg(
-                "the mangadex.org pattern found!",
-            )))
+            Result::Err(Error::unknow("the mangadex.org pattern found!"))
         }
     }
 }

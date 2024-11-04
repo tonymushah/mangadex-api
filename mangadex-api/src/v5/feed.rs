@@ -60,7 +60,7 @@ impl FeedBuilder {
     ///
     /// <https://api.mangadex.org/docs/swagger.html#/Feed/get-list-id-feed>
     ///
-    /// Alias to [`MangaDexClient::custom_list().id(uuid::Uuid).feed().get()`](crate::v5::custom_list::id::feed::get::CustomListMangaFeedBuilder;).
+    /// Alias to [`MangaDexClient::custom_list().id(uuid::Uuid).feed().get()`](crate::v5::custom_list::id::feed::get::CustomListMangaFeedBuilder).
     ///
     /// # Examples
     ///

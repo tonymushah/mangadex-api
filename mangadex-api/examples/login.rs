@@ -10,24 +10,24 @@
 //! login
 //! ```
 
-#[cfg(all(feature = "legacy-auth", feature = "legacy-account"))]
+#[cfg(feature = "legacy-auth")]
 use mangadex_api::v5::MangaDexClient;
-#[cfg(all(feature = "legacy-auth", feature = "legacy-account"))]
+#[cfg(feature = "legacy-auth")]
 use mangadex_api_types::{Password, Username};
 
 #[tokio::main]
 async fn main() {
-    #[cfg(all(feature = "legacy-auth", feature = "legacy-account"))]
+    #[cfg(feature = "legacy-auth")]
     if let Err(e) = run().await {
         use std::process;
         eprintln!("Application error: {}", e);
         process::exit(1);
     }
-    #[cfg(not(all(feature = "legacy-auth", feature = "legacy-account")))]
+    #[cfg(not(feature = "legacy-auth"))]
     eprintln!("You should enable the `legacy-auth` and `legacy-account` features")
 }
 
-#[cfg(all(feature = "legacy-auth", feature = "legacy-account"))]
+#[cfg(feature = "legacy-auth")]
 async fn run() -> anyhow::Result<()> {
     // the old login system still work on api.mangadex.dev for now
     let client = MangaDexClient::api_dev_client();

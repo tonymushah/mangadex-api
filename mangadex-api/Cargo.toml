@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api"
-version = "3.3.0"
+version = "3.4.0"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
 description = "SDK for the MangaDex API"
 readme = "../README.md"
@@ -35,92 +35,71 @@ name = "mangadex_api"
 path = "src/lib.rs"
 
 [dependencies.derive_builder]
-version = "0.20"
+workspace = true
 
 [dependencies.futures]
-version = "0.3"
+workspace = true
 optional = true
 
 [dependencies.reqwest]
-version = "0.12"
-features = [
-    "cookies",
-    "json",
-    "multipart",
-    "rustls-tls",
-]
+workspace = true
 
 [dependencies.mangadex-api-schema]
-package = "mangadex-api-schema-rust"
-version = "0.9"
-path = "../mangadex-api-schema"
-default-features = false
+workspace = true
 
 [dependencies.mangadex-api-types]
-package = "mangadex-api-types-rust"
-version = "0.9"
-path = "../mangadex-api-types"
-default-features = false
-
+workspace = true
 
 [dependencies.serde]
-version = "1.0"
-features = ["derive"]
+workspace = true
+
+[dependencies.serde_json]
+workspace = true
 
 [dependencies.serde_qs]
-version = "0.13"
+workspace = true
 
 [dependencies.thiserror]
-version = "1.0"
+workspace = true
 
 [dependencies.time]
-version = "0.3"
-features = ["serde-human-readable"]
+workspace = true
 
 [dependencies.url]
-version = "2.5"
-features = ["serde"]
+workspace = true
 
 [dependencies.uuid]
-version = "1.8"
-features = [
-    "serde",
-    "v4",
-]
+workspace = true
 
 [dependencies.bytes]
-version = "1.6"
-optional = true
-
-[dependencies.anyhow]
-version = "1.0.82"
+workspace = true
 optional = true
 
 [dev-dependencies.anyhow]
-version = "1.0.82"
+workspace = true
 
 [dev-dependencies.serde_urlencoded]
-version = "0.7"
+workspace = true
 
 [dev-dependencies.clap]
-version = "4.5.4"
+workspace = true
 features = ["derive"]
 
 [dev-dependencies.fake]
-version = "2.9.2"
+workspace = true
 
 [dev-dependencies.serde_json]
-version = "1.0"
+workspace = true
 
 [dev-dependencies.tokio]
-version = "1.37"
+workspace = true
 features = [
     "macros",
     "rt-multi-thread",
 ]
 
 [dependencies.tokio]
-version = "1.37"
+workspace = true
 default-features = false
 features = [
     "time"
@@ -128,19 +107,19 @@ features = [
 optional = true
 
 [dependencies.async-stream]
-version = "0.3.5"
+workspace = true
 optional = true
 
 [dependencies.tokio-stream]
-version = "0.1"
+workspace = true
 optional = true
 
 [dependencies.getset]
-version = "0"
+workspace = true
 optional = true
 
 [dev-dependencies.wiremock]
-version = "0.6"
+workspace = true
 
 [features]
 default = ["oauth"]
@@ -149,7 +128,7 @@ tokio-multi-thread = ["tokio/sync"]
 rw-multi-thread = ["tokio/sync"]
 legacy-auth = []
 legacy-user-delete = []
-utils = ["dep:bytes", "dep:tokio", "dep:anyhow", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
+utils = ["dep:bytes", "dep:tokio", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 non_exhaustive = ["mangadex-api-schema/non_exhaustive", "mangadex-api-types/non_exhaustive"]
 deserializable-endpoint = ["dep:getset"]
 serialize = ["mangadex-api-schema/serialize"]

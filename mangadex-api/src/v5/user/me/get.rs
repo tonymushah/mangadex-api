@@ -63,17 +63,18 @@ pub struct GetMyUserDetails {
 
 endpoint! {
     GET "/user/me",
-    #[query] GetMyUserDetails,
+    #[query auth] GetMyUserDetails,
     #[flatten_result] UserResponse,
     GetMyUserDetailsBuilder
 }
 
 #[cfg(test)]
 mod tests {
+    use mangadex_api_schema::v5::AuthTokens;
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{method, path};
+    use wiremock::matchers::{header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
@@ -83,6 +84,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
+            .auth_tokens(AuthTokens {
+                session: "sessiontoken".to_string(),
+                refresh: "refreshtoken".to_string(),
+            })
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
@@ -113,6 +118,7 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path(r"/user/me"))
+            .and(header("Authorization", "Bearer sessiontoken"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
