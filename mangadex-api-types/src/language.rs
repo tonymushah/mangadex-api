@@ -92,6 +92,7 @@ languages! {
     Afrikaans => "af",
     Albanian => "sq",
     Basque => "eu",
+    Belarusian => "be",
     Bengali => "bn",
     Bulgarian => "bg",
     Burmese => "my",
