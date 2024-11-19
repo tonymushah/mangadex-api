@@ -153,6 +153,7 @@ languages! {
     Thai => "th",
     Turkish => "tr",
     Ukrainian => "uk",
+    Urdu => "ur",
     Vietnamese => "vi",
 }
 
