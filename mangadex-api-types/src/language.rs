@@ -118,6 +118,7 @@ languages! {
     Hindi => "hi",
     Hungarian => "hu",
     Indonesian => "id",
+    Irish => "ga",
     Italian => "it",
     Japanese => "ja",
     JapaneseRomanized => "ja-ro",
