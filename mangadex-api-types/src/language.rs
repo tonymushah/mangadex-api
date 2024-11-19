@@ -154,6 +154,7 @@ languages! {
     Turkish => "tr",
     Ukrainian => "uk",
     Urdu => "ur",
+    Uzbek => "uz",
     Vietnamese => "vi",
 }
 
