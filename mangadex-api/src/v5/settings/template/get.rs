@@ -39,8 +39,7 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::NoData;
-use mangadex_api_types::error::Result;
+use mangadex_api_schema::v5::UserSettingsTemplateResponse;
 
 /// Get the latest Settings template.
 ///
@@ -71,21 +70,66 @@ pub struct GetLatestSettingsTemplate {
 endpoint! {
     GET "/settings/template",
     #[no_data auth] GetLatestSettingsTemplate,
-    #[discard_result] Result<NoData>,
+    #[flatten_result] UserSettingsTemplateResponse,
     GetLatestSettingsTemplateBuilder
 }
 
 #[cfg(test)]
 mod tests {
+    use mangadex_api_schema::v5::AuthTokens;
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{method, path_regex};
+    use wiremock::matchers::{header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
     use mangadex_api_types::error::Error;
 
+    #[tokio::test]
+    async fn get_latest_settings_template() -> anyhow::Result<()> {
+        let mock_server = MockServer::start().await;
+        let http_client: HttpClient = HttpClient::builder()
+            .base_url(Url::parse(&mock_server.uri())?)
+            .auth_tokens(AuthTokens {
+                session: "sessiontoken".to_string(),
+                refresh: "refreshtoken".to_string(),
+            })
+            .build()?;
+        let mangadex_client = MangaDexClient::new_with_http_client(http_client);
+
+        let response_body = json!({
+            "result": "ok",
+            "response": "entity",
+            "data": {
+                "id": "f582e935-effb-4a39-821d-7a512e5b3f55",
+                "type": "settings_template",
+                "attributes": {
+                    "template": {
+                    },
+                    "createdAt": "2024-07-29T10:20:22+00:00",
+                    "updatedAt": "2024-07-29T10:20:22+00:00",
+                    "version": 1
+                },
+                "relationships": []
+            }
+        });
+
+        Mock::given(method("GET"))
+            .and(path_regex("/settings/template"))
+            .and(header("Authorization", "Bearer sessiontoken"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let res = mangadex_client.settings().template().get().send().await?;
+        assert_eq!(
+            res.data.attributes.template,
+            serde_json::Value::Object(Default::default())
+        );
+        Ok(())
+    }
     #[tokio::test]
     async fn get_latest_settings_template_requires_auth() -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
