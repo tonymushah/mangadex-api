@@ -25,6 +25,7 @@ pub mod ratings;
 pub mod refresh_token_response;
 pub mod report;
 pub mod scanlation_group;
+pub mod settings_template;
 pub mod statistics;
 pub mod tag;
 pub mod upload_required_approval;
