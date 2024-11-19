@@ -86,3 +86,6 @@ pub use forum_thread::*;
 
 mod api_client;
 pub use api_client::*;
+
+mod settings_template;
+pub use settings_template::*;

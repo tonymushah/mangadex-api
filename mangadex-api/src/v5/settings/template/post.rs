@@ -137,7 +137,7 @@ mod tests {
             .and(header("Content-Type", "application/json"))
             .and(header("Authorization", "Bearer sessiontoken"))
             .and(body_json(&resp))
-            .respond_with(ResponseTemplate::new(403).set_body_json({
+            .respond_with(ResponseTemplate::new(200).set_body_json({
                 let body: TestTemplateResponse = resp.into();
                 body
             }))
