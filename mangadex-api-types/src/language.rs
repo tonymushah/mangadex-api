@@ -122,6 +122,7 @@ languages! {
     Italian => "it",
     Japanese => "ja",
     JapaneseRomanized => "ja-ro",
+    Javanese => "jv",
     Jp => "jp",
     Kazakh => "kk",
     Korean => "ko",
