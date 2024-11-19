@@ -89,6 +89,7 @@ macro_rules! languages {
 languages! {
     Arabic => "ar",
     Azerbaijani => "az",
+    Afrikaans => "af",
     Albanian => "sq",
     Basque => "eu",
     Bengali => "bn",
