@@ -100,6 +100,7 @@ languages! {
     ChineseRomanized => "zh-ro",
     ChineseSimplified => "zh",
     ChineseTraditional => "zh-hk",
+    Chuvash => "cv",
     Croatian => "hr",
     Czech => "cs",
     Danish => "da",
