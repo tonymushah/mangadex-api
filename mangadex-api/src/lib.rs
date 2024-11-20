@@ -1,9 +1,10 @@
-#![doc = include_str!("../../README.md")]
+#![doc = include_str!("../README.md")]
 #![forbid(unsafe_code)]
 #![cfg_attr(
     not(any(feature = "multi-thread", feature = "tokio-multi-thread")),
     allow(clippy::await_holding_refcell_ref)
 )]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 #[macro_use]
 pub(crate) mod macros;
