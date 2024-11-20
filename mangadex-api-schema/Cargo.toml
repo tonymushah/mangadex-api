@@ -52,8 +52,6 @@ workspace = true
 workspace = true
 
 [dependencies.mangadex-api-types]
-version = "0.10"
-package = "mangadex-api-types-rust"
 workspace = true
 
 [features]
