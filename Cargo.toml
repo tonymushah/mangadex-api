@@ -34,7 +34,7 @@ time = { version = "0.3", features = [
     "local-offset",
 ] }
 url = { version = "2.5", features = ["serde"] }
-uuid = { version = "1.8", features = ["serde", "v4"] }
+uuid = { version = "1", features = ["serde", "v4"] }
 async-graphql = "7"
 specta = { version = "1", features = ["uuid", "url", "time"] }
 futures = "0.3"
