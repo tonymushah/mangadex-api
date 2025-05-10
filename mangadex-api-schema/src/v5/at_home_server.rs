@@ -2,8 +2,6 @@ use mangadex_api_types::ResultType;
 use serde::Deserialize;
 use url::Url;
 
-use crate::FromResponse;
-
 #[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
@@ -17,13 +15,6 @@ pub struct AtHomeServer {
     /// from the time of the response.
     pub base_url: Url,
     pub chapter: ChapterData,
-}
-
-impl FromResponse for AtHomeServer {
-    type Response = Self;
-    fn from_response(res: Self::Response) -> Self {
-        res
-    }
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq)]

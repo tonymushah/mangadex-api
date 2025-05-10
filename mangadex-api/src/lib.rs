@@ -14,6 +14,7 @@ pub mod constants;
 pub mod http_client;
 pub mod error;
 pub mod rate_limit;
+pub mod traits;
 pub mod v5;
 
 cfg_utils! {

@@ -124,3 +124,48 @@ mod tests {
         Ok(())
     }
 }
+
+/// This struct is used for rate limited endpoint
+/// `rate_limit` is for the rate limit metadata
+/// `body` is the response data
+#[cfg(feature = "serialize")]
+#[derive(Debug, Serialize, Clone)]
+pub struct Limited<T>
+where
+    T: Serialize + Clone,
+{
+    pub rate_limit: RateLimit,
+    pub body: T,
+}
+
+#[cfg(not(feature = "serialize"))]
+#[derive(Debug, Clone)]
+pub struct Limited<T>
+where
+    T: Clone,
+{
+    pub rate_limit: RateLimit,
+    pub body: T,
+}
+
+#[cfg(not(feature = "serialize"))]
+impl<T> Deref for Limited<T>
+where
+    T: Clone,
+{
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.body
+    }
+}
+
+#[cfg(feature = "serialize")]
+impl<T> Deref for Limited<T>
+where
+    T: Clone + serde::Serialize,
+{
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.body
+    }
+}
