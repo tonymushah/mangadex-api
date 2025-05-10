@@ -6,8 +6,6 @@ cfg_custom_list_v2! {
     pub mod bookmarks;
 }
 
-#[cfg(feature = "legacy-user-delete")]
-pub mod delete;
 pub mod follows;
 pub mod get;
 pub mod history;
@@ -23,8 +21,6 @@ use uuid::Uuid;
 
 #[cfg(feature = "custom_list_v2")]
 use bookmarks::BookmarksEndpoint;
-#[cfg(feature = "legacy-user-delete")]
-use delete::DeleteEndpoint;
 use follows::FollowsEndpoint;
 use get::ListUserBuilder;
 use history::HistoryEndpoint;
@@ -51,11 +47,6 @@ impl UserBuilder {
 
     pub fn get(&self) -> ListUserBuilder {
         ListUserBuilder::default().http_client(self.http_client.clone())
-    }
-
-    #[cfg(feature = "legacy-user-delete")]
-    pub fn delete(&self) -> DeleteEndpoint {
-        DeleteEndpoint::new(self.http_client.clone())
     }
 
     pub fn follows(&self) -> FollowsEndpoint {
