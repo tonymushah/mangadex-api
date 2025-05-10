@@ -1,4 +1,4 @@
-use std::num::ParseIntError;
+use std::{num::ParseIntError, ops::Deref};
 
 use reqwest::{
     header::{HeaderMap, ToStrError},
@@ -7,7 +7,7 @@ use reqwest::{
 use serde::Serialize;
 use time::OffsetDateTime;
 
-use crate::MangaDexDateTime;
+use mangadex_api_types::MangaDexDateTime;
 
 pub const LIMIT: &str = "x-ratelimit-limit";
 
@@ -36,7 +36,6 @@ pub const RETRY_AFTER: &str = "x-ratelimit-retry-after";
 ///
 #[derive(Serialize, Debug, Clone)]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
-#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct RateLimit {
     /// value from `x-ratelimit-limit` header
     pub limit: u32,
@@ -122,5 +121,50 @@ mod tests {
         assert_eq!(rate_limit.limit, 40);
         assert_eq!(rate_limit.remaining, 39);
         Ok(())
+    }
+}
+
+/// This struct is used for rate limited endpoint
+/// `rate_limit` is for the rate limit metadata
+/// `body` is the response data
+#[cfg(feature = "serialize")]
+#[derive(Debug, Serialize, Clone)]
+pub struct Limited<T>
+where
+    T: Serialize + Clone,
+{
+    pub rate_limit: RateLimit,
+    pub body: T,
+}
+
+#[cfg(not(feature = "serialize"))]
+#[derive(Debug, Clone)]
+pub struct Limited<T>
+where
+    T: Clone,
+{
+    pub rate_limit: RateLimit,
+    pub body: T,
+}
+
+#[cfg(not(feature = "serialize"))]
+impl<T> Deref for Limited<T>
+where
+    T: Clone,
+{
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.body
+    }
+}
+
+#[cfg(feature = "serialize")]
+impl<T> Deref for Limited<T>
+where
+    T: Clone + serde::Serialize,
+{
+    type Target = T;
+    fn deref(&self) -> &Self::Target {
+        &self.body
     }
 }

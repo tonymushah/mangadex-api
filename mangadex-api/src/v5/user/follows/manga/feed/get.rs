@@ -60,7 +60,7 @@ use mangadex_api_types::{
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 #[cfg_attr(

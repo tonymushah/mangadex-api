@@ -3,7 +3,7 @@
 use mangadex_api_types::{ResultType, UploadSource};
 use serde::Deserialize;
 
-use crate::{v5::error::MangaDexError_, FromResponse};
+use crate::v5::error::MangaDexError_;
 
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -27,11 +27,4 @@ pub struct UploadSessionFileData<A> {
     pub result: ResultType,
     pub errors: Vec<MangaDexError_>,
     pub data: Vec<A>,
-}
-
-impl<A> FromResponse for UploadSessionFileData<A> {
-    type Response = Self;
-    fn from_response(res: Self::Response) -> Self {
-        res
-    }
 }

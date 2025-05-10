@@ -48,7 +48,7 @@ use mangadex_api_schema::NoData;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct SolveCaptcha {
     /// This should never be set manually as this is only for internal use.
@@ -75,8 +75,8 @@ mod tests {
     use wiremock::matchers::{body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
 
     #[tokio::test]
     async fn solve_captcha_fires_a_request_to_base_url() -> anyhow::Result<()> {

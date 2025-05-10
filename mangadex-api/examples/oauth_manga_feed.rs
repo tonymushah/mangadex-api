@@ -54,7 +54,7 @@ struct UserInfos {
 }
 
 impl TryFrom<PreUserInfos> for UserInfos {
-    type Error = mangadex_api_types::error::Error;
+    type Error = crate::error::Error;
     fn try_from(value: PreUserInfos) -> Result<Self, Self::Error> {
         Ok(Self {
             username: Username::parse(value.username)?,

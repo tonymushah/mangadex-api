@@ -43,7 +43,7 @@ use mangadex_api_types::{CoverSortOrder, Language, ReferenceExpansionResource};
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ListCover {
@@ -90,8 +90,8 @@ mod tests {
     use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::{Language, MangaDexDateTime, ResponseType};
 
     #[tokio::test]

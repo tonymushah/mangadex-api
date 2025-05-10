@@ -57,7 +57,7 @@ use mangadex_api_types::UserSortOrder;
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ListUser {
@@ -95,9 +95,9 @@ mod tests {
     use wiremock::matchers::{header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::ResponseType;
 
     #[tokio::test]

@@ -40,8 +40,8 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
+use crate::Result;
 use mangadex_api_schema::NoData;
-use mangadex_api_types::error::Result;
 
 /// Create a Settings template.
 ///
@@ -56,7 +56,7 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct CreateSettingsTemplate {
@@ -91,8 +91,8 @@ mod tests {
     use wiremock::matchers::{body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
 
     #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
     struct TestTemplate {

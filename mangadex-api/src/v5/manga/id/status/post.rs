@@ -33,8 +33,8 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
+use crate::Result;
 use mangadex_api_schema::NoData;
-use mangadex_api_types::error::Result;
 use mangadex_api_types::ReadingStatus;
 
 #[cfg_attr(
@@ -43,10 +43,7 @@ use mangadex_api_types::ReadingStatus;
 )]
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
-#[builder(
-    setter(into),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
-)]
+#[builder(setter(into), build_fn(error = "crate::error::BuilderError"))]
 #[cfg_attr(
     feature = "custom_list_v2",
     deprecated(

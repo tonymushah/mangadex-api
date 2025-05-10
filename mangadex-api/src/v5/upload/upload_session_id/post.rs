@@ -48,10 +48,10 @@ use std::fs::File;
 use std::io::{BufReader, Read};
 use std::path::PathBuf;
 
+use crate::traits::Endpoint;
+use crate::Result;
 use derive_builder::Builder;
-use mangadex_api_schema::Endpoint;
 use mangadex_api_schema::{v5::UploadSessionFileDataObject, Limited};
-use mangadex_api_types::error::Result;
 use reqwest::multipart::{Form, Part};
 use serde::Serialize;
 use uuid::Uuid;
@@ -116,7 +116,7 @@ impl TryFrom<&PathBuf> for UploadImage {
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct UploadImages {
     /// This should never be set manually as this is only for internal use.

@@ -11,7 +11,7 @@ use self::{
     cover::{CoverDownloadBuilder, CoverQuality},
 };
 
-use mangadex_api_types::error::Result;
+use crate::Result;
 
 pub type DownloadElement = (String, Result<Bytes>);
 

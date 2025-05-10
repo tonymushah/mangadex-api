@@ -43,7 +43,7 @@ use serde::Serialize;
 use url::Url;
 
 use crate::v5::HttpClientRef;
-use mangadex_api_types::error::Result;
+use crate::Result;
 use mangadex_api_types::{Password, Username};
 
 /// Log into an account.
@@ -56,7 +56,7 @@ use mangadex_api_types::{Password, Username};
 #[derive(Debug, Clone, Builder)]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct RetriveTokens {
     /// This should never be set manually as this is only for internal use.
@@ -103,7 +103,7 @@ impl RetriveTokens {
             };
             let client_info = client
                 .get_client_info()
-                .ok_or(mangadex_api_types::error::Error::MissingClientInfo)?;
+                .ok_or(crate::error::Error::MissingClientInfo)?;
             let params = RetriveTokenBody {
                 grant_type: GrantTypeSupported::Password,
                 username: self.username.to_owned(),

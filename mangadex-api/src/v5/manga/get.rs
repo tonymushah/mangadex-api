@@ -44,7 +44,7 @@ use mangadex_api_types::{
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ListManga {
@@ -139,8 +139,8 @@ mod tests {
     use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::{
         ContentRating, Demographic, Language, MangaDexDateTime, MangaStatus, ResponseType,
     };

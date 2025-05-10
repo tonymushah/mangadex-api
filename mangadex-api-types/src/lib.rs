@@ -15,7 +15,6 @@ pub mod mangadex_duration;
 pub mod oauth;
 pub mod order_direction;
 pub mod password;
-pub mod rate_limit;
 pub mod report_category;
 pub mod report_status;
 pub mod result;

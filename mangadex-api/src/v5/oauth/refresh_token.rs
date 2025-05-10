@@ -57,7 +57,7 @@ use serde::Serialize;
 use url::Url;
 
 use crate::v5::HttpClientRef;
-use mangadex_api_types::error::Result;
+use crate::Result;
 
 /// Log into an account.
 ///
@@ -69,7 +69,7 @@ use mangadex_api_types::error::Result;
 #[derive(Debug, Clone, Builder)]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct RefreshTokens {
     /// This should never be set manually as this is only for internal use.
@@ -111,10 +111,10 @@ impl RefreshTokens {
             };
             let client_info = client
                 .get_client_info()
-                .ok_or(mangadex_api_types::error::Error::MissingClientInfo)?;
+                .ok_or(crate::error::Error::MissingClientInfo)?;
             let auth_tokens = client
                 .get_tokens()
-                .ok_or(mangadex_api_types::error::Error::MissingTokens)?;
+                .ok_or(crate::error::Error::MissingTokens)?;
             let params = RefreshTokenBody {
                 grant_type: GrantTypeSupported::RefreshToken,
                 refresh_token: auth_tokens.refresh.to_owned(),

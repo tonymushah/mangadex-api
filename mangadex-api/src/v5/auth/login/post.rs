@@ -27,13 +27,13 @@
 //! # }
 //! ```
 
+use crate::rate_limit::Limited;
 use derive_builder::Builder;
-use mangadex_api_schema::Limited;
 use serde::Serialize;
 
 use crate::v5::HttpClientRef;
+use crate::Result;
 use mangadex_api_schema::v5::LoginResponse;
-use mangadex_api_types::error::Result;
 use mangadex_api_types::{Password, Username};
 
 /// Log into an account.
@@ -47,7 +47,7 @@ use mangadex_api_types::{Password, Username};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
 pub struct Login {
@@ -147,7 +147,7 @@ mod tests {
 
     use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
+    use crate::error::Error;
     use mangadex_api_types::{Password, Username};
 
     #[tokio::test]

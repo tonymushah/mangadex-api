@@ -60,7 +60,7 @@ use crate::HttpClientRef;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct StartEditChapterSession {
     /// This should never be set manually as this is only for internal use.
