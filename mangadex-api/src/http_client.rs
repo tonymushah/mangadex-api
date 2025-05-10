@@ -497,7 +497,7 @@ macro_rules! builder_send {
 macro_rules! endpoint {
     {
         $method:ident $path:tt,
-        #[$payload:ident $($auth:ident)?] $typ:ty,
+        #[$payload:ident $($auth:ident $(=> $field:ident)?)?] $typ:ty,
         $(#[$out_res:ident])? $out:ty
         $(,$builder_ty:ty)?
     } => {
@@ -513,7 +513,7 @@ macro_rules! endpoint {
             endpoint! { @path $path }
             endpoint! { @payload $payload }
             // If the `auth` attribute is set, make the request require authentication.
-            $(endpoint! { @$auth })?
+            $(endpoint! { @$auth $(, $field)? })?
         }
 
         endpoint! { @send $(:$out_res)?, $typ, $out $(,$builder_ty)? }
@@ -563,6 +563,13 @@ macro_rules! endpoint {
         /// Get whether auth is required for this request.
         fn require_auth(&self) -> bool {
             true
+        }
+    };
+
+    { @auth, $field:ident } => {
+        /// Get whether auth is required for this request.
+        fn require_auth(&self) -> bool {
+            self.$field
         }
     };
 

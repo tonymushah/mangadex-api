@@ -54,13 +54,16 @@ pub struct GetCustomList {
     #[serde(skip_serializing)]
     pub list_id: Uuid,
 
+    #[serde(skip_serializing)]
+    pub with_auth: bool,
+
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 
 endpoint! {
     GET ("/list/{}", list_id),
-    #[query] GetCustomList,
+    #[query auth => with_auth] GetCustomList,
     #[flatten_result] CustomListResponse,
     GetCustomListBuilder
 }
@@ -69,10 +72,11 @@ endpoint! {
 mod tests {
     use fake::faker::name::en::Name;
     use fake::Fake;
+    use mangadex_api_schema::v5::AuthTokens;
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{method, path_regex};
+    use wiremock::matchers::{header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
@@ -161,6 +165,63 @@ mod tests {
             .custom_list()
             .id(list_id)
             .get()
+            .send()
+            .await
+            .expect_err("expected error");
+
+        if let Error::Api(errors) = res {
+            assert_eq!(errors.errors.len(), 1);
+
+            assert_eq!(errors.errors[0].id, error_id);
+            assert_eq!(errors.errors[0].status, 404);
+            assert_eq!(errors.errors[0].title, Some("Not found".to_string()));
+            assert_eq!(
+                errors.errors[0].detail,
+                Some("CustomList could not be found".to_string())
+            );
+        }
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn get_custom_list_handles_auth() -> anyhow::Result<()> {
+        let mock_server = MockServer::start().await;
+        let http_client: HttpClient = HttpClient::builder()
+            .base_url(Url::parse(&mock_server.uri())?)
+            .auth_tokens(AuthTokens {
+                session: "sessiontoken".into(),
+                refresh: "refresh".into(),
+            })
+            .build()?;
+        let mangadex_client = MangaDexClient::new_with_http_client(http_client);
+
+        let list_id = Uuid::new_v4();
+        let error_id = Uuid::new_v4();
+
+        let response_body = json!({
+            "result": "error",
+            "errors": [{
+                "id": error_id.to_string(),
+                "status": 404,
+                "title": "Not found",
+                "detail": "CustomList could not be found"
+            }]
+        });
+
+        Mock::given(method("GET"))
+            .and(path_regex(r"/list/[0-9a-fA-F-]+"))
+            .and(header("Authorization", "Bearer sessiontoken"))
+            .respond_with(ResponseTemplate::new(404).set_body_json(response_body))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let res = mangadex_client
+            .custom_list()
+            .id(list_id)
+            .get()
+            .with_auth(true)
             .send()
             .await
             .expect_err("expected error");
