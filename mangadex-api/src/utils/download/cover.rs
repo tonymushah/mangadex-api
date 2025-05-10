@@ -1,11 +1,12 @@
-use crate::{utils::get_reqwest_client, HttpClientRef, MangaDexClient, CDN_URL};
+use crate::{
+    error::Error, utils::get_reqwest_client, HttpClientRef, MangaDexClient, Result, CDN_URL,
+};
 use derive_builder::Builder;
 use mangadex_api_schema::{
     v5::{CoverAttributes, MangaAttributes, RelatedAttributes},
     ApiObject,
 };
 use mangadex_api_types::{
-    error::{Error, Result},
     CoverSortOrder, OrderDirection, ReferenceExpansionResource, RelationshipType,
 };
 use reqwest::Client;
