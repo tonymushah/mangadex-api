@@ -31,12 +31,7 @@ pub use super::user_report::UserReportAttributes;
 pub use super::user_settings::UserSettingsAttributes;
 use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
 
-use super::statistics::chapter::ChapterStatisticsObject;
-use super::statistics::groups::GroupStatisticsObject;
 use crate::v5::Results;
-
-mod at_home;
-pub use at_home::*;
 
 mod author;
 pub use author::*;
@@ -59,9 +54,6 @@ pub use id_mapping::*;
 mod manga;
 pub use manga::*;
 
-mod rating;
-pub use rating::*;
-
 mod report;
 pub use report::*;
 
@@ -76,9 +68,6 @@ pub use user::*;
 
 mod user_reports;
 pub use user_reports::*;
-
-mod user_settings;
-pub use user_settings::*;
 
 mod forum_thread;
 pub use forum_thread::*;

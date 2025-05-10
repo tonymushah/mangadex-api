@@ -1,11 +1,9 @@
-use super::{ApiObject, Result, UploadSessionFileAttributes, UploadSessionFileData};
+use super::{ApiObject, UploadSessionFileAttributes, UploadSessionFileData};
 
-use crate::{v5::upload_session::UploadSessionAttributes, ApiData};
+use crate::{ApiData, v5::upload_session::UploadSessionAttributes};
 
 pub type UploadSessionObject = ApiObject<UploadSessionAttributes>;
 pub type UploadSessionData = ApiData<UploadSessionObject>;
-pub type UploadSessionResponse = Result<UploadSessionData>;
 
 pub type UploadSessionFileObject = ApiObject<UploadSessionFileAttributes>;
 pub type UploadSessionFileDataObject = UploadSessionFileData<UploadSessionFileObject>;
-pub type UploadSessionFileResponse = Result<UploadSessionFileDataObject>;

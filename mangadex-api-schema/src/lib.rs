@@ -3,14 +3,11 @@
 mod bind;
 pub mod error;
 pub mod v5;
-use std::borrow::Cow;
-use std::ops::Deref;
 
-use mangadex_api_types::error::Error;
 use mangadex_api_types::error::MangaDexErrorResponse_ as MangaDexErrorResponse;
 use mangadex_api_types::{RelationshipType, ResponseType, ResultType};
 use serde::de::DeserializeOwned;
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Deserializer};
 use uuid::Uuid;
 
 use crate::v5::Relationship;
