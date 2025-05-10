@@ -43,8 +43,9 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ApiClientResponse;
 use mangadex_api_types::ApiClientProfile;
+
+type ApiClientResponse = crate::Result<mangadex_api_schema::v5::ApiClientObject>;
 
 /// Create a new api client.
 ///

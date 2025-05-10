@@ -31,7 +31,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ApiClientSecretResponse;
+type ApiClientSecretResponse = crate::Result<mangadex_api_schema::v5::ApiClientSecret>;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",

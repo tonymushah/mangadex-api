@@ -28,8 +28,9 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ApiClientResponse;
 use mangadex_api_types::ReferenceExpansionResource;
+
+type ApiClientResponse = crate::Result<mangadex_api_schema::v5::ApiClientObject>;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",

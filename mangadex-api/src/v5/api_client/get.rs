@@ -26,8 +26,10 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ApiClientListResponse;
+use mangadex_api_schema::v5::Results;
 use mangadex_api_types::{ApiClientState, ReferenceExpansionResource};
+
+type ApiClientListResponse = crate::Result<Results<mangadex_api_schema::v5::ApiClientObject>>;
 
 // Make a request to `GET /client`
 #[cfg_attr(
@@ -82,8 +84,8 @@ mod tests {
     use wiremock::matchers::{header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
-    use crate::{HttpClient, MangaDexClient};
     use crate::error::Error;
+    use crate::{HttpClient, MangaDexClient};
     use mangadex_api_types::{
         ApiClientProfile, ApiClientState, MangaDexDateTime, RelationshipType, ResponseType,
     };
