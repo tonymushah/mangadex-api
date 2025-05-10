@@ -46,7 +46,7 @@ async-stream = "0.3"
 tokio-stream = "0.1"
 getset = "0"
 wiremock = "0.6"
-serde_qs = "0.13"
+serde_qs = "0.15"
 
 [workspace.dependencies.mangadex-api-types]
 package = "mangadex-api-types-rust"
