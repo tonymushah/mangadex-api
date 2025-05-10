@@ -31,8 +31,8 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
+use crate::Result;
 use mangadex_api_schema::NoData;
-use mangadex_api_types::error::Result;
 
 /// Approve the deletion of a user.
 ///
@@ -45,7 +45,7 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
 #[cfg(feature = "legacy-user-delete")]

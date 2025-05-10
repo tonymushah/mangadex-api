@@ -40,10 +40,10 @@
 
 use std::borrow::Cow;
 
+use crate::rate_limit::Limited;
+use crate::traits::Endpoint;
 use derive_builder::Builder;
 use mangadex_api_schema::v5::CoverData;
-use mangadex_api_schema::Endpoint;
-use mangadex_api_schema::Limited;
 use reqwest::multipart::{Form, Part};
 use serde::Serialize;
 use uuid::Uuid;
@@ -64,7 +64,7 @@ use mangadex_api_types::{error::Result, Language};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct UploadCover {

@@ -1,3 +1,11 @@
+use mangadex_api_schema::{
+    v5::error::MangaDexErrorResponse, v5::Results, ApiData, ApiObject, ApiObjectNoRelationships,
+    ApiResult, NoData,
+};
+use serde::de::DeserializeOwned;
+
+use super::FromResponse;
+
 impl FromResponse for NoData {
     type Response = Self;
     fn from_response(res: Self::Response) -> Self {
@@ -5,7 +13,7 @@ impl FromResponse for NoData {
     }
 }
 
-impl<T> FromResponse for Result<T, Error> {
+impl<T> FromResponse for Result<T, crate::error::Error> {
     type Response = ApiResult<T, MangaDexErrorResponse>;
 
     fn from_response(value: Self::Response) -> Self {
@@ -13,7 +21,7 @@ impl<T> FromResponse for Result<T, Error> {
     }
 }
 
-impl<T> FromResponse for Vec<Result<T, Error>> {
+impl<T> FromResponse for Vec<Result<T, crate::error::Error>> {
     type Response = Vec<ApiResult<T, MangaDexErrorResponse>>;
 
     fn from_response(value: Self::Response) -> Self {
@@ -58,14 +66,14 @@ impl<T> FromResponse for Results<T> {
     }
 }
 
-impl FromResponse for AtHomeServer {
+impl FromResponse for mangadex_api_schema::v5::AtHomeServer {
     type Response = Self;
     fn from_response(res: Self::Response) -> Self {
         res
     }
 }
 
-impl FromResponse for CheckUsernameAvailableResponse {
+impl FromResponse for mangadex_api_schema::v5::CheckUsernameAvailableResponse {
     type Response = Self;
 
     fn from_response(value: Self::Response) -> Self {
@@ -73,15 +81,7 @@ impl FromResponse for CheckUsernameAvailableResponse {
     }
 }
 
-impl FromResponse for CheckUsernameAvailableResponse {
-    type Response = Self;
-
-    fn from_response(value: Self::Response) -> Self {
-        value
-    }
-}
-
-impl FromResponse for OAuthTokenResponse {
+impl FromResponse for mangadex_api_schema::v5::oauth::OAuthTokenResponse {
     type Response = Self;
 
     fn from_response(res: Self::Response) -> Self {
@@ -89,7 +89,7 @@ impl FromResponse for OAuthTokenResponse {
     }
 }
 
-impl FromResponse for RefreshTokenResponse {
+impl FromResponse for mangadex_api_schema::v5::RefreshTokenResponse {
     type Response = Self;
 
     fn from_response(res: Self::Response) -> Self {
@@ -97,14 +97,14 @@ impl FromResponse for RefreshTokenResponse {
     }
 }
 
-impl FromResponse for UploadRequiredApproval {
+impl FromResponse for mangadex_api_schema::v5::upload_required_approval::UploadRequiredApproval {
     type Response = Self;
     fn from_response(res: Self::Response) -> Self {
         res
     }
 }
 
-impl FromResponse for MangaStatisticsObject {
+impl FromResponse for mangadex_api_schema::v5::MangaStatisticsObject {
     type Response = Self;
 
     fn from_response(value: Self::Response) -> Self {
@@ -112,7 +112,7 @@ impl FromResponse for MangaStatisticsObject {
     }
 }
 
-impl<A, T> FromResponse for ForumThreadObject<A, T> {
+impl<A, T> FromResponse for mangadex_api_schema::v5::ForumThreadObject<A, T> {
     type Response = Self;
 
     fn from_response(value: Self::Response) -> Self {
@@ -120,7 +120,7 @@ impl<A, T> FromResponse for ForumThreadObject<A, T> {
     }
 }
 
-impl<A> FromResponse for UploadSessionFileData<A> {
+impl<A> FromResponse for mangadex_api_schema::v5::UploadSessionFileData<A> {
     type Response = Self;
     fn from_response(res: Self::Response) -> Self {
         res

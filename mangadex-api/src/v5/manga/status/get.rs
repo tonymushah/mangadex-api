@@ -40,7 +40,7 @@ use mangadex_api_types::ReadingStatus;
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(
     feature = "custom_list_v2",

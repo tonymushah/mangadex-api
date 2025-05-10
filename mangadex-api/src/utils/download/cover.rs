@@ -201,7 +201,7 @@ pub async fn download_via_manga_id(
 #[builder(
     setter(into, strip_option),
     pattern = "owned",
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct CoverDownload {

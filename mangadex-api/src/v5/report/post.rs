@@ -61,7 +61,7 @@ use mangadex_api_types::ReportCategory;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct CreateReport {
     #[doc(hidden)]

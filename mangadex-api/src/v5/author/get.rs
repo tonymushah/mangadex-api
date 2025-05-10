@@ -39,7 +39,7 @@ use mangadex_api_types::{AuthorSortOrder, ReferenceExpansionResource};
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct ListAuthor {
@@ -93,7 +93,7 @@ mod tests {
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
+    use crate::error::Error;
     use mangadex_api_types::{Language, MangaDexDateTime, ResponseType};
 
     #[tokio::test]

@@ -1,3 +1,11 @@
+use std::{
+    cell::{BorrowError, BorrowMutError},
+    fmt::Display,
+};
+
+use derive_builder::UninitializedFieldError;
+use mangadex_api_schema::error::RelationshipConversionError;
+
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     /// Error when parsing a URL.
@@ -33,7 +41,7 @@ pub enum Error {
 
     /// Errors returned from the MangaDex API request.
     #[error("an error occurred with the MangaDex API request: {0:?}")]
-    Api(#[from] MangaDexErrorResponse),
+    Api(#[from] mangadex_api_types::error::MangaDexErrorResponse_),
 
     /// Error while building the request struct.
     #[error("failed to build a request: {0}")]
@@ -59,10 +67,13 @@ pub enum Error {
     RateLimitExcedeed,
 
     #[error(transparent)]
-    ForumThreadTypeParseError(#[from] crate::forum_thread::ForumThreadTypeParseError),
+    ForumThreadTypeParseError(#[from] mangadex_api_types::forum_thread::ForumThreadTypeParseError),
 
     #[error(transparent)]
     RelationshipConversionError(#[from] RelationshipConversionError),
+
+    #[error(transparent)]
+    Types(#[from] mangadex_api_types::error::Error),
 
     #[error("This file {0} was skipped")]
     SkippedDownload(String),
@@ -85,60 +96,7 @@ impl serde::Serialize for Error {
     where
         S: serde::Serializer,
     {
-        match self {
-            Error::ParseUrlError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::ServerError(port, host) => serializer.serialize_str(
-                format!("there was an error from the MangaDex servers (HTTP {host}): {port}")
-                    .as_str(),
-            ),
-            Error::RequestError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::BuilderError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::MissingTokens => {
-                serializer.serialize_str("missing auth tokens; please log in to MangaDex")
-            }
-            Error::UsernameError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::PasswordError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::PingError => serializer.serialize_str(
-                "Cannot ping the Mangadex API. Please checkout your internet connection",
-            ),
-            Error::Api(e) => e.serialize(serializer),
-            Error::RequestBuilderError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::ParseError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::BorrowError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::BorrowMutError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::Io(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::UninitializedFieldError(e) => serializer.serialize_str(
-                format!("the field {} must be initialized", e.field_name()).as_str(),
-            ),
-            Error::RateLimitParseError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::RateLimitExcedeed => serializer.serialize_str("Rate Limit Excedeed"),
-            Error::ForumThreadTypeParseError(e) => serializer.serialize_str(e.to_string().as_str()),
-            Error::MissingClientInfo => serializer.serialize_str(
-                "missing client info; please insert the client_id and client_secret",
-            ),
-            Error::MissingCaptcha => {
-                serializer.serialize_str("missing captcha; please insert it or solve a captcha")
-            }
-            Error::SkippedDownload(e) => {
-                serializer.serialize_str(format!("This file {} was skipped", e).as_str())
-            }
-            Error::RelationshipConversionError(e) => {
-                serializer.serialize_str(format!("This file {} was skipped", e).as_str())
-            }
-            Error::IncludeEnumsParsing(e) => serializer
-                .serialize_str(format!("The {e} variant should only be `0` or `1`").as_str()),
-            Error::UnknowSource(e) => serializer.serialize_str(e),
-        }
-    }
-}
-
-#[cfg(feature = "specta")]
-impl specta::Type for Error {
-    fn inline(
-        _opts: specta::DefOpts,
-        _generics: &[specta::DataType],
-    ) -> std::result::Result<specta::DataType, specta::ExportError> {
-        Ok(specta::DataType::Primitive(specta::PrimitiveType::String))
+        format!("{self}").serialize(serializer)
     }
 }
 

@@ -54,7 +54,7 @@ use mangadex_api_schema::v5::UserSettingsTemplateResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
 pub struct GetLatestSettingsTemplate {
@@ -83,8 +83,8 @@ mod tests {
     use wiremock::matchers::{header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
 
     #[tokio::test]
     async fn get_latest_settings_template() -> anyhow::Result<()> {

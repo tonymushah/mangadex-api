@@ -52,7 +52,7 @@ use mangadex_api_types::error::{Error, Result};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[deprecated = "Usage deprecated after the introduction of OAuth authentification from Mangadex API 5.9"]
 pub struct RefreshToken {
@@ -167,7 +167,7 @@ mod tests {
 
     use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
+    use crate::error::Error;
 
     #[tokio::test]
     async fn refresh_token_fires_a_request_to_base_url() -> anyhow::Result<()> {

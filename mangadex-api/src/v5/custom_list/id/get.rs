@@ -41,7 +41,7 @@ use mangadex_api_schema::v5::CustomListResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct GetCustomList {
     /// This should never be set manually as this is only for internal use.
@@ -80,8 +80,8 @@ mod tests {
     use wiremock::matchers::{header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::CustomListVisibility;
 
     #[tokio::test]

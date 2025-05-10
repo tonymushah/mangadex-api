@@ -1,3 +1,7 @@
+use std::borrow::Cow;
+
+use serde::Serialize;
+
 pub mod from_response;
 
 pub trait UrlSerdeQS {

@@ -23,12 +23,12 @@ pub mod statistics;
 pub mod upload;
 pub mod user;
 
+use crate::Result;
 #[cfg(all(feature = "multi-thread", not(feature = "tokio-multi-thread")))]
 use futures::lock::Mutex;
 pub use mangadex_api_schema::v5 as schema;
 use mangadex_api_schema::v5::oauth::ClientInfo;
 pub(crate) use mangadex_api_schema::v5::AuthTokens;
-use mangadex_api_types::error::Result;
 
 use reqwest::Client;
 #[cfg(all(
@@ -274,7 +274,7 @@ impl MangaDexClient {
         client
             .get_tokens()
             .cloned()
-            .ok_or(mangadex_api_types::error::Error::MissingTokens)
+            .ok_or(crate::error::Error::MissingTokens)
     }
 
     #[cfg(all(
@@ -328,7 +328,7 @@ impl MangaDexClient {
         client
             .get_captcha()
             .cloned()
-            .ok_or(mangadex_api_types::error::Error::MissingCaptcha)
+            .ok_or(crate::error::Error::MissingCaptcha)
     }
     #[cfg(all(
         not(feature = "multi-thread"),
@@ -383,7 +383,7 @@ impl MangaDexClient {
             client
                 .get_client_info()
                 .cloned()
-                .ok_or(mangadex_api_types::error::Error::MissingClientInfo)
+                .ok_or(crate::error::Error::MissingClientInfo)
         }
     }
     /// Get a builder for handling the At-Home endpoints.
