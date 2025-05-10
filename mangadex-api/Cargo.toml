@@ -130,13 +130,12 @@ legacy-auth = []
 legacy-user-delete = []
 utils = ["dep:bytes", "dep:tokio", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 deserializable-endpoint = ["dep:getset"]
-serialize = ["mangadex-api-schema/serialize"]
 oauth = []
 custom_list_v2 = []
 
 [[example]]
 name = "oauth_manga_feed"
-required-features = ["oauth", "serialize"]
+required-features = ["oauth", "mangadex-api-schema/serialize"]
 
 [[example]]
 name = "download_chapter_via_utils_vecs"

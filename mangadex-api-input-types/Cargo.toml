@@ -27,7 +27,6 @@ features = ["serde"]
 [dependencies.mangadex-api]
 optional = true
 workspace = true
-features = ["serialize"]
 
 [dependencies.mangadex-api-schema]
 workspace = true
