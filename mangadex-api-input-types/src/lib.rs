@@ -12,6 +12,8 @@ pub mod follows;
 pub mod forums;
 pub mod legacy;
 pub mod manga;
+#[cfg(feature = "oauth")]
+#[cfg_attr(docsrs, doc(cfg(feature = "oauth")))]
 pub mod oauth;
 pub mod rating;
 pub mod read_marker;

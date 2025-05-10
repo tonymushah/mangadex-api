@@ -37,8 +37,9 @@ workspace = true
 default-features = false
 
 [features]
-default = ["mangadex-api-resolver"]
+default = ["mangadex-api-resolver", "oauth"]
 serialize = []
 mangadex-api-resolver = ["dep:mangadex-api"]
 specta = ["dep:specta", "mangadex-api-types/specta"]
 async-graphql = ["dep:async-graphql", "mangadex-api-types/async-graphql"]
+oauth = ["mangadex-api/oauth", "mangadex-api-resolver"]
