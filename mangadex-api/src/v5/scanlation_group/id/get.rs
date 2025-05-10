@@ -27,11 +27,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::GroupData;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::GroupResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
 #[cfg_attr(
@@ -62,7 +62,7 @@ pub struct GetGroup {
 endpoint! {
     GET ("/group/{}", group_id),
     #[query] GetGroup,
-    #[flatten_result] GroupResponse,
+    #[flatten_result] crate::Result<GroupData>,
     GetGroupBuilder
 }
 

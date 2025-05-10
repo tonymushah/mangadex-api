@@ -24,11 +24,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::GroupCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::GroupListResponse;
 use mangadex_api_types::{GroupSortOrder, Language, ReferenceExpansionResource};
 
 #[cfg_attr(
@@ -67,7 +67,7 @@ pub struct ListGroup {
 endpoint! {
     GET "/group",
     #[query] ListGroup,
-    #[flatten_result] GroupListResponse,
+    #[flatten_result] crate::Result<GroupCollection>,
     ListGroupBuilder
 }
 

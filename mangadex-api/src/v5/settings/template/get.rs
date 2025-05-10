@@ -39,7 +39,7 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UserSettingsTemplateResponse;
+use mangadex_api_schema::v5::UserSettingsTemplateData;
 
 /// Get the latest Settings template.
 ///
@@ -70,7 +70,7 @@ pub struct GetLatestSettingsTemplate {
 endpoint! {
     GET "/settings/template",
     #[no_data auth] GetLatestSettingsTemplate,
-    #[flatten_result] UserSettingsTemplateResponse,
+    #[flatten_result] crate::Result<UserSettingsTemplateData>,
     GetLatestSettingsTemplateBuilder
 }
 

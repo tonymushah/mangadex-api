@@ -31,11 +31,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::statistics::chapter::ChapterStatisticsObject;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ChapterStatisticsResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -63,7 +63,7 @@ endpoint! {
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is
     // available to guests.
     #[no_data] GetChapterStatistics,
-    #[flatten_result] ChapterStatisticsResponse,
+    #[flatten_result] crate::Result<ChapterStatisticsObject>,
     GetChapterStatisticsBuilder
 }
 

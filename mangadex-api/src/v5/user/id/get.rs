@@ -28,11 +28,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::UserData;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UserResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -59,7 +59,7 @@ pub struct GetUser {
 endpoint! {
     GET ("/user/{}", user_id),
     #[query] GetUser,
-    #[flatten_result] UserResponse,
+    #[flatten_result] crate::Result<UserData>,
     GetUserBuilder
 }
 

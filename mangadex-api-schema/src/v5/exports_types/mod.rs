@@ -24,11 +24,11 @@ pub use super::report::ReportReasonAttributes;
 pub use super::scanlation_group::ScanlationGroupAttributes;
 pub use super::statistics::manga::MangaStatisticsObject;
 pub use super::tag::TagAttributes;
-pub use super::types::error::MangaDexErrorResponse_ as MangaDexErrorResponse;
 pub use super::upload_session_file::{UploadSessionFileAttributes, UploadSessionFileData};
 pub use super::user::UserAttributes;
 pub use super::user_report::UserReportAttributes;
 pub use super::user_settings::UserSettingsAttributes;
+pub use crate::error::MangaDexErrorResponse_ as MangaDexErrorResponse;
 use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
 
 use crate::v5::Results;

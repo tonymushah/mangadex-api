@@ -25,7 +25,7 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_types::error::{Error, Result};
+use crate::{error::Error, Result};
 
 /// Ping the server.
 ///

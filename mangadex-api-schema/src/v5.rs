@@ -7,7 +7,6 @@ pub mod check_token_response;
 pub mod check_username_available;
 pub mod cover;
 pub mod custom_list;
-pub mod error;
 mod exports_types;
 pub mod forum_thread;
 pub mod is_following_response;
@@ -57,6 +56,7 @@ pub(crate) use crate::{ApiObject, ApiObjectNoRelationships};
 #[serde(untagged)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub enum RelatedAttributes {
     /// Manga resource.
     Manga(MangaAttributes),

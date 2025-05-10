@@ -45,7 +45,7 @@
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::MangaObject;
+use mangadex_api_schema::v5::MangaData;
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -80,7 +80,7 @@ pub struct GetMangaDraft {
 endpoint! {
     GET ("/manga/draft/{}", manga_id),
     #[query auth] GetMangaDraft,
-    #[flatten_result] crate::Result<MangaObject>,
+    #[flatten_result] crate::Result<MangaData>,
     GetMangaDraftBuilder
 }
 

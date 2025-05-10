@@ -51,11 +51,12 @@ use std::path::PathBuf;
 use crate::traits::Endpoint;
 use crate::Result;
 use derive_builder::Builder;
-use mangadex_api_schema::{v5::UploadSessionFileDataObject, Limited};
+use mangadex_api_schema::v5::UploadSessionFileDataObject;
 use reqwest::multipart::{Form, Part};
 use serde::Serialize;
 use uuid::Uuid;
 
+use crate::rate_limit::Limited;
 use crate::HttpClientRef;
 
 #[derive(Clone, Debug)]

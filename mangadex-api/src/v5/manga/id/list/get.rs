@@ -27,11 +27,11 @@
 //! # }
 //! ```
 use derive_builder::Builder;
+use mangadex_api_schema::v5::CustomListCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::CustomListListResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -65,7 +65,7 @@ pub struct GetMangaCustomLists {
 endpoint! {
     GET ("/manga/{}/list", manga_id),
     #[query] GetMangaCustomLists,
-    #[flatten_result] CustomListListResponse,
+    #[flatten_result] crate::Result<CustomListCollection>,
     GetMangaCustomListsBuilder
 }
 

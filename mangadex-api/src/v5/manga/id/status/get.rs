@@ -31,7 +31,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaReadingStatusResponse;
+use mangadex_api_schema::v5::MangaReadingStatus as StatusResponseData;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -47,7 +47,7 @@ use mangadex_api_schema::v5::MangaReadingStatusResponse;
     feature = "custom_list_v2",
     deprecated(
         since = "3.0.0-rc.1",
-        note = "After the introduction of the Subscription system, this endpoint will be removed in v3"
+        note = "After the introduction of the Subscription system, this endpoint will be removed in a major version."
     )
 )]
 pub struct MangaReadingStatus {
@@ -65,7 +65,7 @@ pub struct MangaReadingStatus {
 endpoint! {
     GET ("/manga/{}/status", manga_id),
     #[no_data auth] MangaReadingStatus,
-    #[flatten_result] MangaReadingStatusResponse,
+    #[flatten_result] crate::Result<StatusResponseData>,
     MangaReadingStatusBuilder
 }
 

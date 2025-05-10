@@ -27,6 +27,7 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::MangaAggregate;
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -64,7 +65,7 @@ pub struct GetMangaAggregate {
 endpoint! {
     GET ("/manga/{}/aggregate", manga_id),
     #[query] GetMangaAggregate,
-    #[flatten_result] MangaAggregateResponse,
+    #[flatten_result] crate::Result<MangaAggregate>,
     GetMangaAggregateBuilder
 }
 

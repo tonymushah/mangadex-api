@@ -44,8 +44,9 @@
 
 use std::borrow::Cow;
 
+use crate::{rate_limit::Limited, traits::Endpoint};
 use derive_builder::Builder;
-use mangadex_api_schema::{Endpoint, Limited, NoData};
+use mangadex_api_schema::NoData;
 use serde::Serialize;
 use uuid::Uuid;
 

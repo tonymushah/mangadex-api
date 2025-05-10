@@ -51,7 +51,7 @@ use url::Url;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_types::error::{Error, Result};
+use crate::{error::Error, Result};
 use mangadex_api_types::{Language, MangaDexDateTime};
 
 #[cfg_attr(

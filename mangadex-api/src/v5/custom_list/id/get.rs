@@ -26,7 +26,7 @@
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::CustomListObject;
+use mangadex_api_schema::v5::CustomListData;
 use mangadex_api_types::ReferenceExpansionResource;
 use serde::Serialize;
 use uuid::Uuid;
@@ -65,7 +65,7 @@ pub struct GetCustomList {
 endpoint! {
     GET ("/list/{}", list_id),
     #[query auth => with_auth] GetCustomList,
-    #[flatten_result] crate::Result<CustomListObject>,
+    #[flatten_result] crate::Result<CustomListData>,
     GetCustomListBuilder
 }
 

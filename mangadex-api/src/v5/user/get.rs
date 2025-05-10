@@ -41,11 +41,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::UserCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UserListResponse;
 use mangadex_api_types::UserSortOrder;
 
 #[cfg_attr(
@@ -83,7 +83,7 @@ pub struct ListUser {
 endpoint! {
     GET "/user",
     #[query auth] ListUser,
-    #[flatten_result] UserListResponse,
+    #[flatten_result] crate::Result<UserCollection>,
     ListUserBuilder
 }
 

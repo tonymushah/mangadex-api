@@ -4,7 +4,7 @@ mod bind;
 pub mod error;
 pub mod v5;
 
-use mangadex_api_types::error::MangaDexErrorResponse_ as MangaDexErrorResponse;
+use error::MangaDexErrorResponse_ as MangaDexErrorResponse;
 use mangadex_api_types::{RelationshipType, ResponseType, ResultType};
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Deserializer};

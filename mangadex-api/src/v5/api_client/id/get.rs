@@ -30,7 +30,7 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_types::ReferenceExpansionResource;
 
-type ApiClientResponse = crate::Result<mangadex_api_schema::v5::ApiClientObject>;
+type ApiClientResponse = crate::Result<mangadex_api_schema::v5::ApiClientData>;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",

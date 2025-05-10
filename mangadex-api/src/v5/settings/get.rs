@@ -34,10 +34,10 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::UserSettingsAttributes;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UserSettingsResponse;
 
 /// Getting a user's Settings.
 ///
@@ -68,7 +68,7 @@ pub struct GetUserSettings {
 endpoint! {
     GET "/settings",
     #[no_data auth] GetUserSettings,
-    #[flatten_result] UserSettingsResponse,
+    #[flatten_result] crate::Result<UserSettingsAttributes>,
     GetUserSettingsBuilder
 }
 

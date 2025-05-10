@@ -30,11 +30,11 @@
 //! # }
 //! ```
 use derive_builder::Builder;
+use mangadex_api_schema::v5::statistics::groups::GroupStatisticsObject;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::GroupStatisticsResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -62,7 +62,7 @@ endpoint! {
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is
     // available to guests.
     #[no_data] GetGroupStatistics,
-    #[flatten_result] GroupStatisticsResponse,
+    #[flatten_result] crate::Result<GroupStatisticsObject>,
     GetGroupStatisticsBuilder
 }
 

@@ -1,6 +1,6 @@
+use mangadex_api_schema::error::MangaDexErrorResponse_ as MangaDexErrorResponse;
 use mangadex_api_schema::{
-    v5::error::MangaDexErrorResponse, v5::Results, ApiData, ApiObject, ApiObjectNoRelationships,
-    ApiResult, NoData,
+    v5::Results, ApiData, ApiObject, ApiObjectNoRelationships, ApiResult, NoData,
 };
 use serde::de::DeserializeOwned;
 

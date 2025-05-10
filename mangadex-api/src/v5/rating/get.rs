@@ -43,11 +43,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::RatingsList;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::RatingsResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -75,7 +75,7 @@ pub struct GetYourMangaRatings {
 endpoint! {
     GET "/rating",
     #[query auth] GetYourMangaRatings,
-    #[flatten_result] RatingsResponse,
+    #[flatten_result] crate::Result<RatingsList>,
     GetYourMangaRatingsBuilder
 }
 

@@ -26,7 +26,7 @@
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::CoverObject;
+use mangadex_api_schema::v5::CoverData;
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -62,7 +62,7 @@ pub struct GetCover {
 endpoint! {
     GET ("/cover/{}", cover_id),
     #[query] GetCover,
-    #[flatten_result] crate::Result<CoverObject>,
+    #[flatten_result] crate::Result<CoverData>,
     GetCoverBuilder
 }
 

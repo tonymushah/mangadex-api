@@ -35,7 +35,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaStatisticsResponse;
+use mangadex_api_schema::v5::MangaStatisticsObject;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -65,7 +65,7 @@ endpoint! {
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is
     // available to guests.
     #[query] FindMangaStatistics,
-    #[flatten_result] MangaStatisticsResponse,
+    #[flatten_result] crate::Result<MangaStatisticsObject>,
     FindMangaStatisticsBuilder
 }
 

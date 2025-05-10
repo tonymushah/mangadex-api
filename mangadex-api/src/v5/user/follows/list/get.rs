@@ -44,7 +44,7 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::CustomListListResponse;
+use mangadex_api_schema::v5::CustomListCollection;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -61,7 +61,7 @@ use mangadex_api_schema::v5::CustomListListResponse;
     feature = "custom_list_v2",
     deprecated(
         since = "3.0.0-rc.1",
-        note = "After the introduction of the Subscription system, this endpoint will be removed in v3"
+        note = "After the introduction of the Subscription system, this endpoint will be removed in a major version."
     )
 )]
 pub struct GetFollowedCustomLists {
@@ -87,7 +87,7 @@ pub struct GetFollowedCustomLists {
 endpoint! {
     GET "/user/follows/list",
     #[query auth] GetFollowedCustomLists,
-    #[flatten_result] CustomListListResponse,
+    #[flatten_result] crate::Result<CustomListCollection>,
     GetFollowedCustomListsBuilder
 }
 

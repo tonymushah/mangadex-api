@@ -267,7 +267,7 @@ impl HttpClient {
         <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
         <E as crate::traits::Endpoint>::Response: Clone,
     {
-        use mangadex_api_types::rate_limit::RateLimit;
+        use crate::rate_limit::RateLimit;
 
         let resp = self.send_request_with_checks(endpoint).await?;
 

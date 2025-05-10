@@ -31,7 +31,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UngroupedMangaReadMarkersResponse;
+use mangadex_api_schema::v5::UngroupedMangaReadMarkers;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -58,7 +58,7 @@ pub struct GetMangaReadChapters {
 endpoint! {
     GET ("/manga/{}/read", manga_id),
     #[no_data auth] GetMangaReadChapters,
-    #[flatten_result] UngroupedMangaReadMarkersResponse,
+    #[flatten_result] crate::Result<UngroupedMangaReadMarkers>,
     GetMangaReadChaptersBuilder
 }
 

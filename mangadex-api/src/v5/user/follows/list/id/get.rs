@@ -44,12 +44,12 @@
 
 use derive_builder::Builder;
 use mangadex_api_schema::v5::IsFollowingResponse;
-use mangadex_api_schema::{FromResponse, NoData};
+use mangadex_api_schema::NoData;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_types::error::{Error, Result};
+use crate::{error::Error, traits::FromResponse, Result};
 
 /// Check if the logged-in user follows a custom list.
 ///
@@ -68,7 +68,7 @@ use mangadex_api_types::error::{Error, Result};
     feature = "custom_list_v2",
     deprecated(
         since = "3.0.0-rc.1",
-        note = "After the introduction of the Subscription system, this endpoint will be removed in v3"
+        note = "After the introduction of the Subscription system, this endpoint will be removed in a major version."
     )
 )]
 pub struct IsFollowingCustomList {

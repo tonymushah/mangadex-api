@@ -26,11 +26,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::MangaData;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
 #[cfg_attr(
@@ -61,7 +61,7 @@ pub struct GetManga {
 endpoint! {
     GET ("/manga/{}", manga_id),
     #[query] GetManga,
-    #[flatten_result] MangaResponse,
+    #[flatten_result] crate::Result<MangaData>,
     GetMangaBuilder
 }
 

@@ -36,6 +36,7 @@
 use std::collections::HashMap;
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::UserSettingsAttributes;
 // use mangadex_api_schema::v5::UserSettingsResponse;
 // use crate::Result;
 use mangadex_api_types::MangaDexDateTime;
@@ -78,7 +79,7 @@ pub struct CreateOrUpdateUserSettings {
 endpoint! {
     POST "/settings",
     #[body auth] CreateOrUpdateUserSettings,
-    #[flatten_result] mangadex_api_schema::v5::UserSettingsResponse,
+    #[flatten_result] crate::Result<UserSettingsAttributes>,
     CreateOrUpdateUserSettingsBuilder
 }
 

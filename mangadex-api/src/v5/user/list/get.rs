@@ -40,10 +40,10 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::CustomListCollection;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::CustomListListResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -73,7 +73,7 @@ pub struct MyCustomLists {
 endpoint! {
     GET "/user/list",
     #[query auth] MyCustomLists,
-    #[flatten_result] CustomListListResponse,
+    #[flatten_result] crate::Result<CustomListCollection>,
     MyCustomListsBuilder
 }
 

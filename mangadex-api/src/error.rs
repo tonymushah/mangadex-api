@@ -41,7 +41,7 @@ pub enum Error {
 
     /// Errors returned from the MangaDex API request.
     #[error("an error occurred with the MangaDex API request: {0:?}")]
-    Api(#[from] mangadex_api_types::error::MangaDexErrorResponse_),
+    Api(#[from] mangadex_api_schema::error::MangaDexErrorResponse_),
 
     /// Error while building the request struct.
     #[error("failed to build a request: {0}")]
