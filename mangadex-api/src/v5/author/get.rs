@@ -23,11 +23,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::AuthorCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::AuthorListResponse;
 use mangadex_api_types::{AuthorSortOrder, ReferenceExpansionResource};
 
 #[cfg_attr(
@@ -76,7 +76,7 @@ pub struct ListAuthor {
 endpoint! {
     GET "/author",
     #[query] ListAuthor,
-    #[flatten_result] AuthorListResponse,
+    #[flatten_result] crate::Result<AuthorCollection>,
     ListAuthorBuilder
 }
 
@@ -92,8 +92,8 @@ mod tests {
     use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
-    use crate::{HttpClient, MangaDexClient};
     use crate::error::Error;
+    use crate::{HttpClient, MangaDexClient};
     use mangadex_api_types::{Language, MangaDexDateTime, ResponseType};
 
     #[tokio::test]

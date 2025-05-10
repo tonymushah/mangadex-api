@@ -26,11 +26,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::AuthorObject;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::AuthorResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
 #[cfg_attr(
@@ -61,7 +61,7 @@ pub struct GetAuthor {
 endpoint! {
     GET ("/author/{}", author_id),
     #[query] GetAuthor,
-    #[flatten_result] AuthorResponse,
+    #[flatten_result] crate::Result<AuthorObject>,
     GetAuthorBuilder
 }
 
