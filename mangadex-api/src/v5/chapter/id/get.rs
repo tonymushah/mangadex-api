@@ -26,11 +26,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::ChapterObject;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ChapterResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
 #[cfg_attr(
@@ -61,7 +61,7 @@ pub struct GetChapter {
 endpoint! {
     GET ("/chapter/{}", chapter_id),
     #[query] GetChapter,
-    #[flatten_result] ChapterResponse,
+    #[flatten_result] crate::Result<ChapterObject>,
     GetChapterBuilder
 }
 

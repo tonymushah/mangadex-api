@@ -23,11 +23,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::ChapterCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ChapterListResponse;
 use mangadex_api_types::{
     ChapterSortOrder, ContentRating, IncludeExternalUrl, IncludeFuturePages,
     IncludeFuturePublishAt, IncludeFutureUpdates, Language, MangaDexDateTime,
@@ -139,7 +139,7 @@ pub struct ListChapter {
 endpoint! {
     GET "/chapter",
     #[query] ListChapter,
-    #[flatten_result] ChapterListResponse,
+    #[flatten_result] crate::Result<ChapterCollection>,
     ListChapterBuilder
 }
 
