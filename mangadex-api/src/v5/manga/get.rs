@@ -25,11 +25,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::MangaCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaListResponse;
 use mangadex_api_types::{
     ContentRating, Demographic, Language, MangaDexDateTime, MangaSortOrder, MangaStatus,
     ReferenceExpansionResource, TagSearchMode,
@@ -126,7 +126,7 @@ pub struct ListManga {
 endpoint! {
     GET "/manga",
     #[query] ListManga,
-    #[flatten_result] MangaListResponse,
+    #[flatten_result] crate::Result<MangaCollection>,
     ListMangaBuilder
 }
 

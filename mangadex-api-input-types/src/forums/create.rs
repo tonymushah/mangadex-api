@@ -1,9 +1,9 @@
 #[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::Result;
+#[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{v5::forums::thread::post::CreateForumThreadBuilder, MangaDexClient};
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api_schema::{v5::ForumThreadResponseData, Limited};
-#[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_types::error::Result;
 
 use mangadex_api_types::ForumThreadType;
 use serde::Deserialize;

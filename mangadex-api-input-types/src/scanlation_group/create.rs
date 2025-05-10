@@ -2,9 +2,9 @@
 use mangadex_api::{v5::scanlation_group::post::CreateGroupBuilder, MangaDexClient};
 
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_schema::{v5::GroupData, Limited};
+use mangadex_api::Result;
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_types::error::Result;
+use mangadex_api_schema::{v5::GroupData, Limited};
 
 use mangadex_api_types::MangaDexDuration;
 use serde::Deserialize;

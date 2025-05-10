@@ -1,9 +1,9 @@
 #[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::Result;
+#[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{v5::at_home::server::id::get::GetAtHomeServerBuilder, MangaDexClient};
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api_schema::{v5::AtHomeServer, Limited};
-#[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_types::error::Result;
 
 use uuid::Uuid;
 

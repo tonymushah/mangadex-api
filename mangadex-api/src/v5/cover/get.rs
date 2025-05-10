@@ -26,11 +26,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::CoverCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::CoverListResponse;
 use mangadex_api_types::{CoverSortOrder, Language, ReferenceExpansionResource};
 
 /// Query parameters for `/cover`.
@@ -75,7 +75,7 @@ pub struct ListCover {
 endpoint! {
     GET "/cover",
     #[query] ListCover,
-    #[flatten_result] CoverListResponse,
+    #[flatten_result] crate::Result<CoverCollection>,
     ListCoverBuilder
 }
 

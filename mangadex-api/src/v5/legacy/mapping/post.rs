@@ -26,10 +26,10 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::IdMappindCollection;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::IdMappingListResponse;
 use mangadex_api_types::LegacyMappingType;
 
 #[cfg_attr(
@@ -60,7 +60,7 @@ pub struct LegacyIdMapping {
 endpoint! {
     POST "/legacy/mapping",
     #[body] LegacyIdMapping,
-    #[flatten_result] IdMappingListResponse,
+    #[flatten_result] crate::Result<IdMappindCollection>,
     LegacyIdMappingBuilder
 }
 

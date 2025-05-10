@@ -39,11 +39,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::CustomListObject;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::CustomListResponse;
 use mangadex_api_types::CustomListVisibility;
 
 #[cfg_attr(
@@ -80,7 +80,7 @@ pub struct CreateCustomList {
 endpoint! {
     POST ("/list"),
     #[body auth] CreateCustomList,
-    #[flatten_result] CustomListResponse,
+    #[flatten_result] crate::Result<CustomListObject>,
     CreateCustomListBuilder
 }
 

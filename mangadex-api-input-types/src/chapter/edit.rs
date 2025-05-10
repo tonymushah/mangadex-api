@@ -1,9 +1,9 @@
 #[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::Result;
+#[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{v5::chapter::id::put::UpdateChapterBuilder, MangaDexClient};
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api_schema::{v5::ChapterData, Limited};
-#[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_types::error::Result;
 
 use mangadex_api_types::Language;
 use serde::Deserialize;

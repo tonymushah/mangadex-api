@@ -5,11 +5,11 @@ use std::{
 };
 
 #[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::Result;
+#[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{v5::cover::manga_id::post::UploadCoverBuilder, MangaDexClient};
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api_schema::{v5::CoverData, Limited};
-#[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_types::error::Result;
 
 use crate::PathBuf;
 use mangadex_api_types::Language;

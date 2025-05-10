@@ -29,7 +29,7 @@ impl From<CreateUpdateRating> for CreateUpdateMangaRatingBuilder {
 
 #[cfg(feature = "mangadex-api-resolver")]
 impl CreateUpdateRating {
-    pub async fn send(self, client: &MangaDexClient) -> mangadex_api_types::error::Result<()> {
+    pub async fn send(self, client: &MangaDexClient) -> mangadex_api::Result<()> {
         <CreateUpdateMangaRatingBuilder as From<Self>>::from(self)
             .http_client(client.get_http_client().clone())
             .send()

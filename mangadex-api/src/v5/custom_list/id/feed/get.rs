@@ -28,11 +28,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::ChapterCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ChapterListResponse;
 use mangadex_api_types::{
     ContentRating, IncludeExternalUrl, IncludeFuturePages, IncludeFuturePublishAt,
     IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
@@ -125,7 +125,7 @@ pub struct CustomListMangaFeed {
 endpoint! {
     GET ("/list/{}/feed", list_id),
     #[query] CustomListMangaFeed,
-    #[flatten_result] ChapterListResponse,
+    #[flatten_result] crate::Result<ChapterCollection>,
     CustomListMangaFeedBuilder
 }
 

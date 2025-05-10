@@ -49,7 +49,9 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_types::{error::Result, Language};
+use mangadex_api_types::Language;
+
+use crate::Result;
 
 /// Upload a new cover for a manga.
 ///
