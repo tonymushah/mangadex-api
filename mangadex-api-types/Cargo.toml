@@ -48,7 +48,5 @@ workspace = true
 optional = true
 
 [features]
-non_exhaustive = []
-default = ["non_exhaustive"]
 specta = ["dep:specta"]
 async-graphql = ["dep:async-graphql"]

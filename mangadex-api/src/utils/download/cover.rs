@@ -203,7 +203,7 @@ pub async fn download_via_manga_id(
     pattern = "owned",
     build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct CoverDownload {
     #[doc(hidden)]
     #[builder(pattern = "immutable")]

@@ -8,7 +8,7 @@ use crate::v5::LocalizedString;
 #[derive(Clone, Debug, Deserialize)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ScanlationGroupAttributes {
     pub name: String,

@@ -4,7 +4,7 @@ use url::Url;
 
 #[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct AtHomeServer {
@@ -19,7 +19,7 @@ pub struct AtHomeServer {
 
 #[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ChapterData {

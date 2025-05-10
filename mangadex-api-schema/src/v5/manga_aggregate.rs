@@ -12,7 +12,7 @@ use crate::v5::{chapter_aggregate_array_or_map, volume_aggregate_array_or_map};
 
 /// Response struct for the manga aggregate endpoint (GET `/manga/:id/aggregate`).
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct MangaAggregate {
     #[serde(default)]
     pub result: ResultType,
@@ -78,7 +78,7 @@ impl Serialize for MangaAggregate {
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct VolumeAggregate {
     /// Volume number.
@@ -108,7 +108,7 @@ impl From<VolumeAggregate> for VolumeAggregateSer {
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ChapterAggregate {
     /// Chapter number.

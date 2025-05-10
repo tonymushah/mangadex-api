@@ -31,7 +31,6 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaAggregateResponse;
 use mangadex_api_types::Language;
 
 #[cfg_attr(
@@ -44,7 +43,7 @@ use mangadex_api_types::Language;
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct GetMangaAggregate {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

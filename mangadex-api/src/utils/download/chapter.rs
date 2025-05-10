@@ -3,10 +3,10 @@ mod pre_download;
 mod report;
 use std::sync::Arc;
 
+use crate::Result;
 use async_stream::stream;
 use derive_builder::Builder;
 use mangadex_api_schema::v5::AtHomeServer;
-use crate::Result;
 use reqwest::Response;
 use tokio::pin;
 use tokio_stream::Stream;
@@ -28,7 +28,7 @@ pub use report::AtHomeReport;
     pattern = "owned",
     build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct ChapterDownload {
     #[doc(hidden)]
     #[builder(pattern = "immutable")]

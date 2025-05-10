@@ -46,7 +46,7 @@ use mangadex_api_schema::v5::GroupStatisticsResponse;
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct GetGroupStatistics {
     #[doc(hidden)]
     #[serde(skip)]

@@ -39,11 +39,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::MangaCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaListResponse;
 use mangadex_api_types::{MangaDraftsSortOrder, MangaState, ReferenceExpansionResource};
 
 #[cfg_attr(
@@ -57,7 +57,7 @@ use mangadex_api_types::{MangaDraftsSortOrder, MangaState, ReferenceExpansionRes
     default,
     build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct ListMangaDrafts {
     #[doc(hidden)]
     #[serde(skip)]
@@ -90,7 +90,7 @@ pub struct ListMangaDrafts {
 endpoint! {
     GET "/manga/draft",
     #[query auth] ListMangaDrafts,
-    #[flatten_result] MangaListResponse,
+    #[flatten_result] crate::Result<MangaCollection>,
     ListMangaDraftsBuilder
 }
 

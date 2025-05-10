@@ -62,7 +62,7 @@ use mangadex_api_types::{
     default,
     build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(
     feature = "custom_list_v2",
     deprecated(

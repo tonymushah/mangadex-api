@@ -43,7 +43,7 @@ type ApiClientListResponse = crate::Result<Results<mangadex_api_schema::v5::ApiC
     default,
     build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct ListClients {
     #[doc(hidden)]
     #[serde(skip)]

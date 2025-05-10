@@ -4,7 +4,7 @@ use url::Url;
 /// Related links for a manga.
 #[derive(Clone, Debug, Default, Deserialize, Hash, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaLinks {
     /// Amazon Product URL.

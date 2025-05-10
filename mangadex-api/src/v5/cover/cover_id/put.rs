@@ -55,7 +55,7 @@ use mangadex_api_types::Language;
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct EditCover {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

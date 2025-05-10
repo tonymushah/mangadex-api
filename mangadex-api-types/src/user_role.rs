@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 /// More details at : <https://api.mangadex.org/docs/static-data/#user-roles-enum>
 #[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
 pub enum UserRole {

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// Report reasons for submitting reports to the MangaDex staff.
 #[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, Copy)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
 pub enum ReportStatus {

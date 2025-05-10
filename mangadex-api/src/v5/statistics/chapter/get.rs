@@ -48,7 +48,7 @@ use mangadex_api_schema::v5::ChapterStatisticsResponse;
     build_fn(error = "crate::error::BuilderError"),
     default
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct FindChapterStatistics {
     #[doc(hidden)]
     #[serde(skip)]

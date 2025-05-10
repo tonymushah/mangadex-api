@@ -57,7 +57,7 @@ use mangadex_api_types::{ContentRating, ReferenceExpansionResource};
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct GetCustomListManga {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
