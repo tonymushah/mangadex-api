@@ -1260,7 +1260,6 @@ dependencies = [
  "mangadex-api-types-rust",
  "serde",
  "serde_json",
- "serde_qs",
  "specta",
  "thiserror 2.0.12",
  "tokio",
