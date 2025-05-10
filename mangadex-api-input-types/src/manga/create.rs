@@ -1,9 +1,9 @@
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api::Result;
+use mangadex_api::{rate_limit::Limited, Result};
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{v5::manga::post::CreateMangaBuilder, MangaDexClient};
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_schema::{v5::MangaData, Limited};
+use mangadex_api_schema::v5::MangaData;
 
 use mangadex_api_schema::v5::LocalizedString;
 use mangadex_api_types::{ContentRating, Demographic, Language, MangaLinks, MangaStatus};

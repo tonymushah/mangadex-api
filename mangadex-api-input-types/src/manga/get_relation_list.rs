@@ -31,7 +31,7 @@ impl MangaRelationParam {
     pub async fn send(
         self,
         client: &MangaDexClient,
-    ) -> mangadex_api_schema::v5::MangaRelationListResponse {
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::MangaRelationCollection> {
         let builder: ListMangaRelationsBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())

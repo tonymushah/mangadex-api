@@ -45,7 +45,7 @@ impl CustomListCreateParam {
     pub async fn send(
         self,
         client: &MangaDexClient,
-    ) -> mangadex_api_schema::v5::CustomListResponse {
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::CustomListData> {
         let builder: CreateCustomListBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())

@@ -17,7 +17,10 @@ pub struct ApiClientGetUniqueParams {
 
 #[cfg(feature = "mangadex-api-resolver")]
 impl ApiClientGetUniqueParams {
-    pub async fn send(self, client: &MangaDexClient) -> mangadex_api_schema::v5::ApiClientResponse {
+    pub async fn send(
+        self,
+        client: &MangaDexClient,
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::ApiClientData> {
         let builder: GetClientBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())

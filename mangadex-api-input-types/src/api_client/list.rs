@@ -29,7 +29,7 @@ impl ApiClientListParam {
     pub async fn send(
         self,
         client: &MangaDexClient,
-    ) -> mangadex_api_schema::v5::ApiClientListResponse {
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::ApiClientCollection> {
         let builder: ListClientsBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())

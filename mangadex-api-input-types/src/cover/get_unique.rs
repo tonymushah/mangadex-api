@@ -10,10 +10,10 @@ use uuid::Uuid;
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::InputObject))]
 pub struct CoverGetUniqueParam {
-    manga_or_cover_id: Uuid,
+    pub manga_or_cover_id: Uuid,
     #[serde(default)]
     #[cfg_attr(feature = "async-graphql", graphql(default))]
-    includes: Vec<ReferenceExpansionResource>,
+    pub includes: Vec<ReferenceExpansionResource>,
 }
 
 #[cfg(feature = "mangadex-api-resolver")]
@@ -28,7 +28,10 @@ impl From<CoverGetUniqueParam> for GetCoverBuilder {
 
 #[cfg(feature = "mangadex-api-resolver")]
 impl CoverGetUniqueParam {
-    pub async fn send(self, client: &MangaDexClient) -> mangadex_api_schema::v5::CoverResponse {
+    pub async fn send(
+        self,
+        client: &MangaDexClient,
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::CoverData> {
         let builder: GetCoverBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())

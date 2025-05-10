@@ -18,7 +18,10 @@ pub struct ApiClientEditParam {
 
 #[cfg(feature = "mangadex-api-resolver")]
 impl ApiClientEditParam {
-    pub async fn send(self, client: &MangaDexClient) -> mangadex_api_schema::v5::ApiClientResponse {
+    pub async fn send(
+        self,
+        client: &MangaDexClient,
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::ApiClientData> {
         let builder: EditClientBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())

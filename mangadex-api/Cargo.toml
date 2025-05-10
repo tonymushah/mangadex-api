@@ -101,9 +101,6 @@ features = [
 [dependencies.tokio]
 workspace = true
 default-features = false
-features = [
-    "time"
-]
 optional = true
 
 [dependencies.async-stream]

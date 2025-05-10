@@ -1,9 +1,9 @@
 #[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::rate_limit::Limited;
+#[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::Result;
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{v5::captcha::solve::post::SolveCaptchaBuilder, MangaDexClient};
-#[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_schema::Limited;
 
 use serde::Deserialize;
 

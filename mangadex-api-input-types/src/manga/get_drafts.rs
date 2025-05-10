@@ -42,7 +42,10 @@ impl From<MangaDraftsParams> for ListMangaDraftsBuilder {
 
 #[cfg(feature = "mangadex-api-resolver")]
 impl MangaDraftsParams {
-    pub async fn send(self, client: &MangaDexClient) -> mangadex_api_schema::v5::MangaListResponse {
+    pub async fn send(
+        self,
+        client: &MangaDexClient,
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::MangaCollection> {
         <ListMangaDraftsBuilder as From<Self>>::from(self)
             .http_client(client.get_http_client().clone())
             .send()

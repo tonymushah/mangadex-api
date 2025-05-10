@@ -28,7 +28,10 @@ impl From<ScanlationGroupGetUniqueParam> for GetGroupBuilder {
 
 #[cfg(feature = "mangadex-api-resolver")]
 impl ScanlationGroupGetUniqueParam {
-    pub async fn send(self, client: &MangaDexClient) -> mangadex_api_schema::v5::GroupResponse {
+    pub async fn send(
+        self,
+        client: &MangaDexClient,
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::GroupData> {
         let builder: GetGroupBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())

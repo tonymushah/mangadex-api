@@ -26,7 +26,7 @@
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::IdMappindCollection;
+use mangadex_api_schema::v5::IdMappingCollection;
 use serde::Serialize;
 
 use crate::HttpClientRef;
@@ -60,7 +60,7 @@ pub struct LegacyIdMapping {
 endpoint! {
     POST "/legacy/mapping",
     #[body] LegacyIdMapping,
-    #[flatten_result] crate::Result<IdMappindCollection>,
+    #[flatten_result] crate::Result<IdMappingCollection>,
     LegacyIdMappingBuilder
 }
 

@@ -1,9 +1,9 @@
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api::{v5::oauth::login::RetriveTokensBuilder, MangaDexClient};
+use mangadex_api::{v5::oauth::login::RetriveTokensBuilder, MangaDexClient, Result};
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api_schema::v5::oauth::OAuthTokenResponse;
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_types::{error::Result, Password, Username};
+use mangadex_api_types::{Password, Username};
 
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]

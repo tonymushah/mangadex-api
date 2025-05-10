@@ -1,10 +1,12 @@
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api::{v5::scanlation_group::id::put::UpdateGroupBuilder, MangaDexClient};
+use mangadex_api::{
+    rate_limit::Limited, v5::scanlation_group::id::put::UpdateGroupBuilder, MangaDexClient,
+};
 
 #[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::Result;
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_schema::{v5::GroupData, Limited};
+use mangadex_api_schema::v5::GroupData;
 
 use mangadex_api_types::{Language, MangaDexDuration};
 use serde::Deserialize;
