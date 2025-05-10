@@ -12,6 +12,8 @@ pub(crate) mod macros;
 pub mod constants;
 #[macro_use]
 pub mod http_client;
+pub mod error;
+pub mod rate_limit;
 pub mod v5;
 
 cfg_utils! {
@@ -25,6 +27,8 @@ use reqwest::{
     Client,
 };
 pub use v5::MangaDexClient;
+
+pub type Result<T, E = error::Error> = std::result::Result<T, E>;
 
 pub(crate) fn get_default_client_api() -> Client {
     let mut headers = HeaderMap::new();
