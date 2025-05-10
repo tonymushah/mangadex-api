@@ -9,20 +9,19 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/tonymushah/mangadex-api"
 
 [dependencies]
-serde = "1.0"
-specta = { version = "1.0", optional = true }
-tokio = { version = "1", features = ["full"] }
-async-graphql = { version = "7.0.3", optional = true, features = ["uuid", "url"] }
+serde.workspace = true
+specta = { workspace = true , optional = true }
+async-graphql = { workspace = true, optional = true, features = ["uuid", "url"] }
 
 [dependencies.uuid]
-version = "1.8"
+workspace = true
 features = [
     "serde",
     "v4",
 ]
 
 [dependencies.url]
-version = "2.5"
+workspace = true
 features = ["serde"]
 
 [dependencies.mangadex-api]

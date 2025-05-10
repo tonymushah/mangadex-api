@@ -1246,7 +1246,6 @@ dependencies = [
  "mangadex-api-types-rust",
  "serde",
  "specta",
- "tokio",
  "url",
  "uuid",
 ]
