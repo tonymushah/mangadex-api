@@ -36,9 +36,6 @@ workspace = true
 [dependencies.time]
 workspace = true
 
-[dependencies.url]
-workspace = true
-
 [dependencies.uuid]
 workspace = true
 
