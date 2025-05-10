@@ -41,7 +41,7 @@
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::CustomListObject;
+use mangadex_api_schema::v5::CustomListData;
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -88,7 +88,7 @@ pub struct UpdateCustomList {
 endpoint! {
     PUT ("/list/{}", list_id),
     #[body auth] UpdateCustomList,
-    #[flatten_result] crate::Result<CustomListObject>,
+    #[flatten_result] crate::Result<CustomListData>,
     UpdateCustomListBuilder
 }
 

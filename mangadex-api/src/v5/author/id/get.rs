@@ -26,7 +26,7 @@
 //! ```
 
 use derive_builder::Builder;
-use mangadex_api_schema::v5::AuthorObject;
+use mangadex_api_schema::v5::AuthorData;
 use serde::Serialize;
 use uuid::Uuid;
 
@@ -61,7 +61,7 @@ pub struct GetAuthor {
 endpoint! {
     GET ("/author/{}", author_id),
     #[query] GetAuthor,
-    #[flatten_result] crate::Result<AuthorObject>,
+    #[flatten_result] crate::Result<AuthorData>,
     GetAuthorBuilder
 }
 
