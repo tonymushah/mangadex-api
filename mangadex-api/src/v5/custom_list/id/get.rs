@@ -55,6 +55,7 @@ pub struct GetCustomList {
     pub list_id: Uuid,
 
     #[serde(skip_serializing)]
+    #[builder(default)]
     pub with_auth: bool,
 
     #[builder(setter(each = "include"), default)]
