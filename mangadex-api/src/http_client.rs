@@ -256,8 +256,6 @@ impl HttpClient {
     }
 
     /// Send the request to the endpoint and deserialize the response body.
-    #[cfg(not(feature = "serialize"))]
-    #[cfg_attr(docsrs, doc(cfg(not(feature = "serialize"))))]
     pub(crate) async fn send_request_with_rate_limit<E>(
         &self,
         endpoint: &E,
@@ -265,7 +263,6 @@ impl HttpClient {
     where
         E: Endpoint,
         <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
-        <E as crate::traits::Endpoint>::Response: Clone,
     {
         use crate::rate_limit::RateLimit;
 
@@ -279,34 +276,6 @@ impl HttpClient {
 
         Ok(Limited {
             rate_limit: some_rate_limit?,
-            body: FromResponse::from_response(res),
-        })
-    }
-
-    /// Send the request to the endpoint and deserialize the response body.
-    #[cfg(feature = "serialize")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "serialize")))]
-    pub(crate) async fn send_request_with_rate_limit<E>(
-        &self,
-        endpoint: &E,
-    ) -> Result<Limited<E::Response>>
-    where
-        E: Endpoint,
-        <<E as Endpoint>::Response as FromResponse>::Response: DeserializeOwned,
-        <E as crate::traits::Endpoint>::Response: serde::Serialize + Clone,
-    {
-        use crate::rate_limit::RateLimit;
-
-        let resp = self.send_request_with_checks(endpoint).await?;
-
-        let rate_limit: RateLimit = TryFrom::try_from(&resp)?;
-
-        let res = self
-            .handle_result::<<E::Response as FromResponse>::Response>(resp)
-            .await?;
-
-        Ok(Limited {
-            rate_limit,
             body: FromResponse::from_response(res),
         })
     }
