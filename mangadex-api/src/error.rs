@@ -1,7 +1,4 @@
-use std::{
-    cell::{BorrowError, BorrowMutError},
-    fmt::Display,
-};
+use std::fmt::Display;
 
 use derive_builder::UninitializedFieldError;
 use mangadex_api_schema::error::RelationshipConversionError;
@@ -50,12 +47,6 @@ pub enum Error {
     /// Error while parsing the type.
     #[error("an error occurred while parsing the type: {0}")]
     ParseError(String),
-
-    #[error("an error occurred when borrowing the http client")]
-    BorrowError(#[from] BorrowError),
-
-    #[error("an error occured when borrowing the http client as mutable")]
-    BorrowMutError(#[from] BorrowMutError),
 
     #[error("an eccor captured")]
     Io(#[from] std::io::Error),
