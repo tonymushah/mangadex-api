@@ -118,7 +118,7 @@ optional = true
 workspace = true
 
 [features]
-default = ["oauth", "utils"]
+default = ["oauth"]
 utils = ["dep:bytes", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 deserializable-endpoint = ["dep:getset"]
 oauth = []
