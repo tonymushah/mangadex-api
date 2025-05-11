@@ -43,12 +43,12 @@
 
 use derive_builder::Builder;
 use mangadex_api_schema::v5::IsFollowingResponse;
-use mangadex_api_schema::{FromResponse, NoData};
+use mangadex_api_schema::NoData;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_types::error::{Error, Result};
+use crate::{error::Error, traits::FromResponse, Result};
 
 /// Check if the logged-in user follows a scanlation group.
 ///
@@ -76,24 +76,6 @@ pub struct IsBookmarkingGroup {
 
 impl IsBookmarkingGroup {
     pub async fn send(&mut self) -> Result<IsFollowingResponse> {
-        #[cfg(all(
-            not(feature = "multi-thread"),
-            not(feature = "tokio-multi-thread"),
-            not(feature = "rw-multi-thread")
-        ))]
-        let res = self
-            .http_client
-            .try_borrow()?
-            .send_request_without_deserializing(self)
-            .await?;
-        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-        let res = self
-            .http_client
-            .lock()
-            .await
-            .send_request_without_deserializing(self)
-            .await?;
-        #[cfg(feature = "rw-multi-thread")]
         let res = self
             .http_client
             .read()

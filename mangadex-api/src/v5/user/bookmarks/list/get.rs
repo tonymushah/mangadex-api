@@ -42,10 +42,10 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::CustomListCollection;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::CustomListListResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -75,7 +75,7 @@ pub struct BookmarkedCustomLists {
 endpoint! {
     GET "/user/bookmarks/list",
     #[query auth] BookmarkedCustomLists,
-    #[flatten_result] CustomListListResponse,
+    #[flatten_result] crate::Result<CustomListCollection>,
     BookmarkedCustomListsBuilder
 }
 

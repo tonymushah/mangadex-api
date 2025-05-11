@@ -42,10 +42,10 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::UserCollection;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UserListResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -75,7 +75,7 @@ pub struct BookmarkedUsers {
 endpoint! {
     GET "/user/bookmarks/user",
     #[query auth] BookmarkedUsers,
-    #[flatten_result] UserListResponse,
+    #[flatten_result] crate::Result<UserCollection>,
     BookmarkedUsersBuilder
 }
 
