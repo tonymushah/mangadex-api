@@ -102,33 +102,11 @@ impl Endpoint for DeleteImages {
 
 impl DeleteImages {
     pub async fn send(&self) -> Result<Limited<NoData>> {
-        #[cfg(all(
-            not(feature = "multi-thread"),
-            not(feature = "tokio-multi-thread"),
-            not(feature = "rw-multi-thread")
-        ))]
-        {
-            self.http_client
-                .try_borrow()?
-                .send_request_with_rate_limit(self)
-                .await
-        }
-        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-        {
-            self.http_client
-                .lock()
-                .await
-                .send_request_with_rate_limit(self)
-                .await
-        }
-        #[cfg(feature = "rw-multi-thread")]
-        {
-            self.http_client
-                .read()
-                .await
-                .send_request_with_rate_limit(self)
-                .await
-        }
+        self.http_client
+            .read()
+            .await
+            .send_request_with_rate_limit(self)
+            .await
     }
 }
 

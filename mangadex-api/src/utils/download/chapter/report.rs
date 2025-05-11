@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::{error::Error, Result};
 use reqwest::{Client, Response};
 use serde::Serialize;
@@ -18,7 +16,7 @@ pub struct AtHomeReport {
 }
 
 impl AtHomeReport {
-    pub async fn send(&self, client: Arc<Client>) -> Result<Response> {
+    pub async fn send(&self, client: &Client) -> Result<Response> {
         if !self.url.as_str().contains("mangadex.org") {
             match client
                 .post("https://api.mangadex.network/report")

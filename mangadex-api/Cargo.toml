@@ -100,8 +100,7 @@ features = [
 
 [dependencies.tokio]
 workspace = true
-default-features = false
-optional = true
+features = ["sync"]
 
 [dependencies.async-stream]
 workspace = true
@@ -119,11 +118,8 @@ optional = true
 workspace = true
 
 [features]
-default = ["oauth"]
-multi-thread = ["futures"]
-tokio-multi-thread = ["tokio/sync"]
-rw-multi-thread = ["tokio/sync"]
-utils = ["dep:bytes", "dep:tokio", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
+default = ["oauth", "utils"]
+utils = ["dep:bytes", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 deserializable-endpoint = ["dep:getset"]
 oauth = []
 custom_list_v2 = []

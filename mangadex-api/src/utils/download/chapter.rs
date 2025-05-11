@@ -13,7 +13,6 @@ use tokio_stream::Stream;
 use tokio_stream::StreamExt;
 use uuid::Uuid;
 
-use crate::utils::get_reqwest_client;
 use crate::{HttpClientRef, MangaDexClient};
 
 use super::DownloadElement;
@@ -66,7 +65,7 @@ impl ChapterDownload {
                 .await?
                 .body,
         );
-        let http_client = Arc::new(get_reqwest_client(&client).await);
+        let http_client = client.get_reqwest_client().await;
         let page_filenames = match self.mode.unwrap_or_default() {
             DownloadMode::Normal => Arc::clone(&at_home).chapter.data.clone(),
             DownloadMode::DataSaver => Arc::clone(&at_home).chapter.data_saver.clone(),

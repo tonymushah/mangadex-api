@@ -17,7 +17,7 @@ use super::DownloadElement;
 
 #[derive(Clone)]
 pub struct AtHomePreDownloadImageData {
-    pub http_client: Arc<Client>,
+    pub http_client: Client,
     pub filename: String,
     pub quality: DownloadMode,
     pub at_home: Arc<AtHomeServer>,
@@ -42,7 +42,7 @@ impl AtHomePreDownloadImageData {
                 bytes,
                 duration: end.duration_since(start).as_millis(),
             }
-            .send(self.http_client.clone())
+            .send(&self.http_client)
             .await;
         }
     }

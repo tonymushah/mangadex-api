@@ -1,6 +1,4 @@
-use crate::{
-    error::Error, utils::get_reqwest_client, HttpClientRef, MangaDexClient, Result, CDN_URL,
-};
+use crate::{error::Error, HttpClientRef, MangaDexClient, Result, CDN_URL};
 use derive_builder::Builder;
 use mangadex_api_schema::{
     v5::{CoverAttributes, MangaAttributes, RelatedAttributes},
@@ -87,7 +85,7 @@ pub async fn download_via_cover_api_object(
             )
         }
     };
-    let client = get_reqwest_client(&mangadex_api_client).await;
+    let client = mangadex_api_client.get_reqwest_client().await;
     download_cover(&client, file_name, manga_id, cover_quality).await
 }
 
@@ -175,7 +173,7 @@ pub async fn download_via_manga_api_object(
             }
         }
     };
-    let client: Client = get_reqwest_client(&mangadex_api_client).await;
+    let client = mangadex_api_client.get_reqwest_client().await;
     Ok(download_cover(&client, file_name, manga.id, cover_quality).await)
 }
 
