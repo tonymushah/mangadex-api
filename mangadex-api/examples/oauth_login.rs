@@ -4,7 +4,7 @@ use mangadex_api_types::{Password, Username};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let mut client = MangaDexClient::default();
+    let client = MangaDexClient::default();
     client
         .set_client_info(&ClientInfo {
             client_id: String::from("<SET YOUR CLIENT ID HERE>"),
