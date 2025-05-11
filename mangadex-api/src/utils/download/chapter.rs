@@ -175,12 +175,12 @@ mod tests {
 
     /// It's from this manga called [`Keiken Zumi na Kimi to, Keiken Zero na Ore ga, Otsukiai Suru Hanashi`](https://mangadex.org/title/1c8f0358-d663-4d60-8590-b5e82890a1e3/keiken-zumi-na-kimi-to-keiken-zero-na-ore-ga-otsukiai-suru-hanashi)
     ///
-    /// [Chapter 13 English](https://mangadex.org/chapter/250f091f-4166-4831-9f45-89ff54bf433b) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
+    /// [Chapter 13 English](https://mangadex.org/chapter/84d76ccb-4068-4e7d-873b-c2bf0fefde65) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
     #[tokio::test]
     async fn download_chapter_with_streams() -> Result<()> {
         let output_dir = "./test-outputs/";
         let client = MangaDexClient::default();
-        let chapter_id = uuid::Uuid::parse_str("250f091f-4166-4831-9f45-89ff54bf433b")?;
+        let chapter_id = uuid::Uuid::parse_str("84d76ccb-4068-4e7d-873b-c2bf0fefde65")?;
         create_dir_all(format!("{}{}", output_dir, chapter_id))?;
         let download = client
             .download()
@@ -203,7 +203,7 @@ mod tests {
 
     /// It's from this manga called [`Keiken Zumi na Kimi to, Keiken Zero na Ore ga, Otsukiai Suru Hanashi`](https://mangadex.org/title/1c8f0358-d663-4d60-8590-b5e82890a1e3/keiken-zumi-na-kimi-to-keiken-zero-na-ore-ga-otsukiai-suru-hanashi)
     ///
-    /// [Chapter 13 English](https://mangadex.org/chapter/250f091f-4166-4831-9f45-89ff54bf433b) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
+    /// [Chapter 30 English](https://mangadex.org/chapter/250f091f-4166-4831-9f45-89ff54bf433b) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
     #[tokio::test]
     async fn download_chapter_with_streams_and_checker() -> Result<()> {
         let output_dir = "./test-outputs/";
