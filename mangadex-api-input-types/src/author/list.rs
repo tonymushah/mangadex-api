@@ -34,7 +34,7 @@ impl AuthorListParams {
     pub async fn send(
         self,
         client: &MangaDexClient,
-    ) -> mangadex_api_schema::v5::AuthorListResponse {
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::AuthorCollection> {
         let builder: ListAuthorBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())

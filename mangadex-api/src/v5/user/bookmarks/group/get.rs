@@ -58,7 +58,7 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct BookmarkedGroups {
     /// This should never be set manually as this is only for internal use.

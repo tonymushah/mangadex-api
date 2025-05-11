@@ -37,10 +37,10 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::UserData;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UserResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -50,7 +50,7 @@ use mangadex_api_schema::v5::UserResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct GetMyUserDetails {
     /// This should never be set manually as this is only for internal use.
@@ -64,7 +64,7 @@ pub struct GetMyUserDetails {
 endpoint! {
     GET "/user/me",
     #[query auth] GetMyUserDetails,
-    #[flatten_result] UserResponse,
+    #[flatten_result] crate::Result<UserData>,
     GetMyUserDetailsBuilder
 }
 

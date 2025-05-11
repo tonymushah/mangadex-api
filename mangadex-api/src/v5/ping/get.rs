@@ -25,7 +25,7 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_types::error::{Error, Result};
+use crate::{error::Error, Result};
 
 /// Ping the server.
 ///
@@ -39,7 +39,7 @@ use mangadex_api_types::error::{Error, Result};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct Ping {
     /// This should never be set manually as this is only for internal use.

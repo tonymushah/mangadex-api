@@ -39,7 +39,7 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UserHistoryResponse;
+use mangadex_api_schema::v5::user_history::UserHistory;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -50,7 +50,7 @@ use mangadex_api_schema::v5::UserHistoryResponse;
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct GetUserHistory {
     /// This should never be set manually as this is only for internal use.
@@ -64,7 +64,7 @@ pub struct GetUserHistory {
 endpoint! {
     GET "/user/history",
     #[query auth] GetUserHistory,
-    #[flatten_result] UserHistoryResponse,
+    #[flatten_result] crate::Result<UserHistory>,
     GetUserHistoryBuilder
 }
 

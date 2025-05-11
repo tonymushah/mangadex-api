@@ -7,7 +7,6 @@ pub mod check_token_response;
 pub mod check_username_available;
 pub mod cover;
 pub mod custom_list;
-pub mod error;
 mod exports_types;
 pub mod forum_thread;
 pub mod is_following_response;
@@ -47,9 +46,8 @@ use types::{
     Language, MangaDexDateTime, MangaRelation, RelationshipType, ResponseType, ResultType,
 };
 
-use crate::FromResponse;
+use crate::error::RelationshipConversionError;
 pub(crate) use crate::{ApiObject, ApiObjectNoRelationships};
-use types::error::RelationshipConversionError;
 
 // TODO: Find a way to reduce the boilerplate for this.
 // `struct-variant` (https://docs.rs/struct-variant) is a potential candidate for this.
@@ -58,6 +56,7 @@ use types::error::RelationshipConversionError;
 #[serde(untagged)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub enum RelatedAttributes {
     /// Manga resource.
     Manga(MangaAttributes),
@@ -312,13 +311,6 @@ pub struct Results<T> {
     pub total: u32,
 }
 
-impl<T> FromResponse for Results<T> {
-    type Response = Self;
-    fn from_response(res: Self::Response) -> Self {
-        res
-    }
-}
-
 pub type LocalizedString = HashMap<Language, String>;
 
 /// Originally a Deserializer helper to handle JSON array or object types.
@@ -382,11 +374,11 @@ pub(crate) mod localizedstring_array_or_map {
 /// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod volume_aggregate_array_or_map {
     use super::manga_aggregate::VolumeAggregate;
+    #[cfg(feature = "serialize")]
+    use serde::Serialize;
     use serde::de::{Deserializer, MapAccess, SeqAccess, Visitor};
     #[cfg(feature = "serialize")]
     use serde::ser::Serializer;
-    #[cfg(feature = "serialize")]
-    use serde::Serialize;
     use std::collections::BTreeMap;
     #[cfg(feature = "serialize")]
     use std::collections::HashMap;
@@ -484,11 +476,11 @@ pub(crate) mod volume_aggregate_array_or_map {
 ///
 /// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod chapter_aggregate_array_or_map {
+    #[cfg(feature = "serialize")]
+    use serde::Serialize;
     use serde::de::{Deserializer, MapAccess, SeqAccess, Visitor};
     #[cfg(feature = "serialize")]
     use serde::ser::Serializer;
-    #[cfg(feature = "serialize")]
-    use serde::Serialize;
     use std::collections::BTreeMap;
 
     use super::manga_aggregate::ChapterAggregate;
@@ -586,11 +578,11 @@ pub(crate) mod chapter_aggregate_array_or_map {
 /// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod manga_links_array_or_struct {
     use crate::v5::MangaLinks;
+    #[cfg(feature = "serialize")]
+    use serde::Serialize;
     use serde::de::{Deserialize, Deserializer, MapAccess, SeqAccess, Visitor};
     #[cfg(feature = "serialize")]
     use serde::ser::Serializer;
-    #[cfg(feature = "serialize")]
-    use serde::Serialize;
 
     /// Deserialize a `MangaLinks` from a JSON value or none.
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<MangaLinks>, D::Error>
@@ -688,11 +680,11 @@ pub(crate) mod manga_links_array_or_struct {
 /// The Serializer was added in 0.2.0 for pratical and necessities reason
 pub(crate) mod language_array_or_skip_null {
     use mangadex_api_types::Language;
+    #[cfg(feature = "serialize")]
+    use serde::Serialize;
     use serde::de::{Deserializer, SeqAccess, Visitor};
     #[cfg(feature = "serialize")]
     use serde::ser::Serializer;
-    #[cfg(feature = "serialize")]
-    use serde::Serialize;
     /// Deserialize a `Vec<Language>` from an array of JSON values.
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Vec<Language>, D::Error>
     where

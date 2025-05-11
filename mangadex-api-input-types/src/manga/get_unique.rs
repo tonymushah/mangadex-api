@@ -28,7 +28,10 @@ impl From<MangaGetUniqueParam> for GetMangaBuilder {
 
 #[cfg(feature = "mangadex-api-resolver")]
 impl MangaGetUniqueParam {
-    pub async fn send(self, client: &MangaDexClient) -> mangadex_api_schema::v5::MangaResponse {
+    pub async fn send(
+        self,
+        client: &MangaDexClient,
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::MangaData> {
         let builder: GetMangaBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())

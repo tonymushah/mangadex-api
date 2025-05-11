@@ -26,11 +26,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::CoverData;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::CoverResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
 #[cfg_attr(
@@ -41,7 +41,7 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct GetCover {
     /// This should never be set manually as this is only for internal use.
@@ -62,7 +62,7 @@ pub struct GetCover {
 endpoint! {
     GET ("/cover/{}", cover_id),
     #[query] GetCover,
-    #[flatten_result] CoverResponse,
+    #[flatten_result] crate::Result<CoverData>,
     GetCoverBuilder
 }
 
@@ -77,8 +77,8 @@ mod tests {
     use wiremock::matchers::{method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::{Language, MangaDexDateTime};
 
     #[tokio::test]

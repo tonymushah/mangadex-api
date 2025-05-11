@@ -26,10 +26,10 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::IdMappingCollection;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::IdMappingListResponse;
 use mangadex_api_types::LegacyMappingType;
 
 #[cfg_attr(
@@ -40,7 +40,7 @@ use mangadex_api_types::LegacyMappingType;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct LegacyIdMapping {
     /// This should never be set manually as this is only for internal use.
@@ -60,7 +60,7 @@ pub struct LegacyIdMapping {
 endpoint! {
     POST "/legacy/mapping",
     #[body] LegacyIdMapping,
-    #[flatten_result] IdMappingListResponse,
+    #[flatten_result] crate::Result<IdMappingCollection>,
     LegacyIdMappingBuilder
 }
 
@@ -72,8 +72,8 @@ mod tests {
     use wiremock::matchers::{body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::{LegacyMappingType, ResponseType};
 
     #[tokio::test]

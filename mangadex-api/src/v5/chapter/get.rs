@@ -23,11 +23,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::ChapterCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ChapterListResponse;
 use mangadex_api_types::{
     ChapterSortOrder, ContentRating, IncludeExternalUrl, IncludeFuturePages,
     IncludeFuturePublishAt, IncludeFutureUpdates, Language, MangaDexDateTime,
@@ -43,9 +43,9 @@ use mangadex_api_types::{
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct ListChapter {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
@@ -139,7 +139,7 @@ pub struct ListChapter {
 endpoint! {
     GET "/chapter",
     #[query] ListChapter,
-    #[flatten_result] ChapterListResponse,
+    #[flatten_result] crate::Result<ChapterCollection>,
     ListChapterBuilder
 }
 
@@ -154,8 +154,8 @@ mod tests {
     use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::{Language, MangaDexDateTime, ResponseType};
 
     #[tokio::test]

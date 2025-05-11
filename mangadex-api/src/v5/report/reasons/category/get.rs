@@ -28,10 +28,10 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::ReportReasonCollection;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ReportReasonListResponse;
 use mangadex_api_types::ReportCategory;
 
 #[cfg_attr(
@@ -42,7 +42,7 @@ use mangadex_api_types::ReportCategory;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct ListReasons {
     #[doc(hidden)]
@@ -59,7 +59,7 @@ endpoint! {
     GET ("/report/reasons/{}", category),
     // Known issue: Despite the API docs stating that authorization is required, the endpoint is available to guests.
     #[no_data] ListReasons,
-    #[flatten_result] ReportReasonListResponse,
+    #[flatten_result] crate::Result<ReportReasonCollection>,
     ListReasonsBuilder
 }
 

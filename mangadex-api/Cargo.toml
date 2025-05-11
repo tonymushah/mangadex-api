@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "mangadex-api"
-version = "3.4.2"
+version = "4.0.0"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
 description = "SDK for the MangaDex API"
 readme = "../README.md"
@@ -101,9 +101,6 @@ features = [
 [dependencies.tokio]
 workspace = true
 default-features = false
-features = [
-    "time"
-]
 optional = true
 
 [dependencies.async-stream]
@@ -126,18 +123,14 @@ default = ["oauth"]
 multi-thread = ["futures"]
 tokio-multi-thread = ["tokio/sync"]
 rw-multi-thread = ["tokio/sync"]
-legacy-auth = []
-legacy-user-delete = []
 utils = ["dep:bytes", "dep:tokio", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
-non_exhaustive = ["mangadex-api-schema/non_exhaustive", "mangadex-api-types/non_exhaustive"]
 deserializable-endpoint = ["dep:getset"]
-serialize = ["mangadex-api-schema/serialize"]
 oauth = []
 custom_list_v2 = []
 
 [[example]]
 name = "oauth_manga_feed"
-required-features = ["oauth", "serialize"]
+required-features = ["oauth", "mangadex-api-schema/serialize"]
 
 [[example]]
 name = "download_chapter_via_utils_vecs"

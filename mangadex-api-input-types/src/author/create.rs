@@ -1,9 +1,9 @@
 #[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::{rate_limit::Limited, Result};
+#[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{v5::author::post::CreateAuthorBuilder, MangaDexClient};
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_schema::{v5::AuthorData, Limited};
-#[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_types::error::Result;
+use mangadex_api_schema::v5::AuthorData;
 
 use mangadex_api_schema::v5::LocalizedString;
 use url::Url;

@@ -61,7 +61,7 @@ use mangadex_api_types::error::{Error, Result};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct IsBookmarkingGroup {
     /// This should never be set manually as this is only for internal use.
@@ -132,7 +132,7 @@ builder_send! {
 
 #[cfg(test)]
 mod tests {
-    use mangadex_api_types::error::Error;
+    use crate::error::Error;
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;

@@ -24,11 +24,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::GroupCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::GroupListResponse;
 use mangadex_api_types::{GroupSortOrder, Language, ReferenceExpansionResource};
 
 #[cfg_attr(
@@ -40,9 +40,9 @@ use mangadex_api_types::{GroupSortOrder, Language, ReferenceExpansionResource};
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct ListGroup {
     #[doc(hidden)]
     #[serde(skip)]
@@ -67,7 +67,7 @@ pub struct ListGroup {
 endpoint! {
     GET "/group",
     #[query] ListGroup,
-    #[flatten_result] GroupListResponse,
+    #[flatten_result] crate::Result<GroupCollection>,
     ListGroupBuilder
 }
 
@@ -80,8 +80,8 @@ mod tests {
     use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::{MangaDexDateTime, ResponseType};
 
     #[tokio::test]

@@ -41,11 +41,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::UserCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::UserListResponse;
 use mangadex_api_types::UserSortOrder;
 
 #[cfg_attr(
@@ -57,9 +57,9 @@ use mangadex_api_types::UserSortOrder;
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct ListUser {
     #[doc(hidden)]
     #[serde(skip)]
@@ -83,7 +83,7 @@ pub struct ListUser {
 endpoint! {
     GET "/user",
     #[query auth] ListUser,
-    #[flatten_result] UserListResponse,
+    #[flatten_result] crate::Result<UserCollection>,
     ListUserBuilder
 }
 
@@ -95,9 +95,9 @@ mod tests {
     use wiremock::matchers::{header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::ResponseType;
 
     #[tokio::test]

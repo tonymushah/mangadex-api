@@ -1,13 +1,3 @@
-macro_rules! cfg_legacy_auth{
-    ($($item:item)*) => {
-        $(
-            #[cfg(feature = "legacy-auth")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "legacy-auth")))]
-            $item
-        )*
-    }
-}
-
 macro_rules! cfg_utils{
     ($($item:item)*) => {
         $(

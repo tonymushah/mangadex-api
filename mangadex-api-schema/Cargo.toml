@@ -10,9 +10,9 @@
 # See Cargo.toml.orig for the original contents.
 
 [package]
-edition = "2021"
+edition = "2024"
 name = "mangadex-api-schema-rust"
-version = "0.10.0"
+version = "1.0.0"
 authors = ["tonymushah <tonymushahdev06@yahoo.com>"]
 description = "Response structs and helpers for mangadex-api"
 license = "MIT OR Apache-2.0"
@@ -26,13 +26,7 @@ serde_json = { workspace = true }
 jsonxf = { workspace = true }
 color-print = { workspace = true }
 
-[dependencies.reqwest]
-workspace = true
-
 [dependencies.serde]
-workspace = true
-
-[dependencies.serde_qs]
 workspace = true
 
 [dependencies.thiserror]
@@ -55,7 +49,5 @@ workspace = true
 workspace = true
 
 [features]
-non_exhaustive = []
 specta = ["dep:specta", "mangadex-api-types/specta"]
 serialize = []
-default = ["non_exhaustive"]

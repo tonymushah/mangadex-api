@@ -12,7 +12,7 @@ use post::FollowGroupBuilder;
     feature = "custom_list_v2",
     deprecated(
         since = "3.0.0-rc.1",
-        note = "After the introduction of the Subscription system, this endpoint will be removed in v3"
+        note = "After the introduction of the Subscription system, this endpoint will be removed in a major version."
     )
 )]
 #[derive(Debug)]

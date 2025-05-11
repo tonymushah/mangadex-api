@@ -44,7 +44,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ChapterListResponse;
+use mangadex_api_schema::v5::ChapterCollection;
 use mangadex_api_types::{
     ContentRating, IncludeExternalUrl, IncludeFuturePages, IncludeFuturePublishAt,
     IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
@@ -60,14 +60,14 @@ use mangadex_api_types::{
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(
     feature = "custom_list_v2",
     deprecated(
         since = "3.0.0-rc.1",
-        note = "After the introduction of the Subscription system, this endpoint will be removed in v3"
+        note = "After the introduction of the Subscription system, this endpoint will be removed in a major version."
     )
 )]
 pub struct GetFollowedMangaFeed {
@@ -135,7 +135,7 @@ pub struct GetFollowedMangaFeed {
 endpoint! {
     GET "/user/follows/manga/feed",
     #[query auth] GetFollowedMangaFeed,
-    #[flatten_result] ChapterListResponse,
+    #[flatten_result] crate::Result<ChapterCollection>,
     GetFollowedMangaFeedBuilder
 }
 

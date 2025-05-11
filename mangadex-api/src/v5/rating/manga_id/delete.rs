@@ -49,8 +49,8 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
+use crate::Result;
 use mangadex_api_schema::NoData;
-use mangadex_api_types::error::Result;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -60,7 +60,7 @@ use mangadex_api_types::error::Result;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct DeleteMangaRating {
     /// This should never be set manually as this is only for internal use.
@@ -89,9 +89,9 @@ mod tests {
     use wiremock::matchers::{header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
 
     #[tokio::test]
     async fn delete_manga_rating_fires_a_request_to_base_url() -> anyhow::Result<()> {

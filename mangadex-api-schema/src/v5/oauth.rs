@@ -1,12 +1,10 @@
 use mangadex_api_types::ApiClientProfile;
 use serde::Deserialize;
 
-use crate::FromResponse;
-
 use super::AuthTokens;
 
 #[derive(Debug, Deserialize, Clone)]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct OAuthTokenResponse {
@@ -29,14 +27,6 @@ impl From<OAuthTokenResponse> for AuthTokens {
             session: value.access_token.to_owned(),
             refresh: value.refresh_token.clone(),
         }
-    }
-}
-
-impl FromResponse for OAuthTokenResponse {
-    type Response = Self;
-
-    fn from_response(res: Self::Response) -> Self {
-        res
     }
 }
 

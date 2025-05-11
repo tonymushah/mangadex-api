@@ -1,6 +1,5 @@
-use super::{ApiData, ApiObject, LegacyMappingIdAttributes, Result, Results};
+use super::{ApiData, ApiObject, LegacyMappingIdAttributes, Results};
 
 pub type IdMappingObject = ApiObject<LegacyMappingIdAttributes>;
 pub type IdMappingData = ApiData<IdMappingObject>;
-pub type IdMappindCollection = Results<IdMappingObject>;
-pub type IdMappingListResponse = Result<IdMappindCollection>;
+pub type IdMappingCollection = Results<IdMappingObject>;

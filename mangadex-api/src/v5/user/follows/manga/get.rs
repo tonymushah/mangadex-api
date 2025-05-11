@@ -44,7 +44,7 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaListResponse;
+use mangadex_api_schema::v5::MangaCollection;
 use mangadex_api_types::ReferenceExpansionResource;
 
 #[cfg_attr(
@@ -56,13 +56,13 @@ use mangadex_api_types::ReferenceExpansionResource;
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(
     feature = "custom_list_v2",
     deprecated(
         since = "3.0.0-rc.1",
-        note = "After the introduction of the Subscription system, this endpoint will be removed in v3"
+        note = "After the introduction of the Subscription system, this endpoint will be removed in a major version."
     )
 )]
 pub struct FollowedManga {
@@ -84,7 +84,7 @@ pub struct FollowedManga {
 endpoint! {
     GET "/user/follows/manga",
     #[query auth] FollowedManga,
-    #[flatten_result] MangaListResponse,
+    #[flatten_result] crate::Result<MangaCollection>,
     FollowedMangaBuilder
 }
 

@@ -1,22 +1,37 @@
 use std::collections::HashMap;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, thiserror::Error, Deserialize)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
-#[error("Bad request")]
-#[cfg_attr(feature = "specta", derive(specta::Type))]
-pub struct MangaDexErrorResponse {
-    #[serde(default)]
-    pub errors: Vec<MangaDexError_>,
+use crate::ResultType;
+
+use crate::RelationshipType;
+
+#[derive(thiserror::Error, Debug)]
+pub enum RelationshipConversionError {
+    #[error("The input relationship type {input} is incompatible with {inner}")]
+    InvalidInputRelationshipType {
+        input: RelationshipType,
+        inner: RelationshipType,
+    },
+    #[error("The {0} related attributes is not found")]
+    AttributesNotFound(RelationshipType),
 }
 
-#[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone)]
-#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[derive(Debug, thiserror::Error, Deserialize, Serialize)]
+#[error("Bad request")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct MangaDexErrorResponse_ {
+    #[serde(default = "ResultType::error")]
+    pub result: ResultType,
+    #[serde(default)]
+    pub errors: Vec<MangaDexError>,
+}
+
+#[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone, Serialize)]
 #[error("API error")]
-pub struct MangaDexError_ {
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct MangaDexError {
     pub id: Uuid,
     /// HTTP status code.
     pub status: u16,

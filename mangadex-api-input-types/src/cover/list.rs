@@ -49,7 +49,10 @@ impl From<CoverListParam> for ListCoverBuilder {
 
 #[cfg(feature = "mangadex-api-resolver")]
 impl CoverListParam {
-    pub async fn send(self, client: &MangaDexClient) -> mangadex_api_schema::v5::CoverListResponse {
+    pub async fn send(
+        self,
+        client: &MangaDexClient,
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::CoverCollection> {
         let builder: ListCoverBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())

@@ -1,13 +1,11 @@
 use mangadex_api_types::ResultType;
 use serde::Deserialize;
 
-use crate::FromResponse;
-
 /// User Settings response.
 #[derive(Clone, Debug, Deserialize, Copy, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[allow(unused)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct UploadRequiredApproval {
@@ -35,12 +33,5 @@ impl UploadRequiredApproval {
 impl From<UploadRequiredApproval> for bool {
     fn from(value: UploadRequiredApproval) -> Self {
         value.requires_approval.unwrap_or_default()
-    }
-}
-
-impl FromResponse for UploadRequiredApproval {
-    type Response = Self;
-    fn from_response(res: Self::Response) -> Self {
-        res
     }
 }

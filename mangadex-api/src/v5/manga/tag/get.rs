@@ -25,10 +25,10 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::TagCollection;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::TagListResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -38,7 +38,7 @@ use mangadex_api_schema::v5::TagListResponse;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct ListTags {
     /// This should never be set manually as this is only for internal use.
@@ -52,7 +52,7 @@ pub struct ListTags {
 endpoint! {
     GET "/manga/tag",
     #[no_data] ListTags,
-    #[flatten_result] TagListResponse,
+    #[flatten_result] crate::Result<TagCollection>,
     ListTagsBuilder
 }
 

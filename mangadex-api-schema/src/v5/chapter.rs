@@ -9,7 +9,7 @@ use mangadex_api_types::{Language, MangaDexDateTime};
 /// More details at <https://api.mangadex.org/docs/swagger.html#model-ChapterAttributes>
 #[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ChapterAttributes {

@@ -36,7 +36,7 @@ impl MangaAggregateParam {
     pub async fn send(
         self,
         client: &MangaDexClient,
-    ) -> mangadex_api_schema::v5::MangaAggregateResponse {
+    ) -> mangadex_api::Result<mangadex_api_schema::v5::MangaAggregate> {
         <GetMangaAggregateBuilder as From<Self>>::from(self)
             .http_client(client.get_http_client().clone())
             .send()

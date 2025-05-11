@@ -36,8 +36,9 @@
 use std::collections::HashMap;
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::UserSettingsAttributes;
 // use mangadex_api_schema::v5::UserSettingsResponse;
-// use mangadex_api_types::error::Result;
+// use crate::Result;
 use mangadex_api_types::MangaDexDateTime;
 use serde::Serialize;
 
@@ -56,9 +57,9 @@ use crate::HttpClientRef;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct CreateOrUpdateUserSettings {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
@@ -78,7 +79,7 @@ pub struct CreateOrUpdateUserSettings {
 endpoint! {
     POST "/settings",
     #[body auth] CreateOrUpdateUserSettings,
-    #[flatten_result] mangadex_api_schema::v5::UserSettingsResponse,
+    #[flatten_result] crate::Result<UserSettingsAttributes>,
     CreateOrUpdateUserSettingsBuilder
 }
 
@@ -90,8 +91,8 @@ mod tests {
     use wiremock::matchers::{header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
 
     #[tokio::test]
     async fn create_or_update_user_settings_requires_auth() -> anyhow::Result<()> {

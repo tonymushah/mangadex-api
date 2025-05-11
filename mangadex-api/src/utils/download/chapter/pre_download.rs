@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
+use crate::{error::Error, Result};
 use bytes::Bytes;
 use bytes::BytesMut;
 use mangadex_api_schema::v5::AtHomeServer;
-use mangadex_api_types::error::{Error, Result};
 use reqwest::{Client, Response};
 use tokio::pin;
 use tokio::time::Instant;

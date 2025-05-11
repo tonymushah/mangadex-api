@@ -31,8 +31,9 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::ApiClientResponse;
 use uuid::Uuid;
+
+type ApiClientResponse = crate::Result<mangadex_api_schema::v5::ApiClientData>;
 
 /// Create a new api client.
 ///
@@ -47,9 +48,9 @@ use uuid::Uuid;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct EditClient {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

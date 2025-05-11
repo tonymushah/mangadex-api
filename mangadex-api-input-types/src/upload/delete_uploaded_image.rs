@@ -1,12 +1,10 @@
 #[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::{rate_limit::Limited, Result};
+#[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{
     v5::upload::upload_session_id::upload_session_file_id::delete::DeleteImageBuilder,
     MangaDexClient,
 };
-#[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_schema::Limited;
-#[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_types::error::Result;
 
 use serde::Deserialize;
 use uuid::Uuid;

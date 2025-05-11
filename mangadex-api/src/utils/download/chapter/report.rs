@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use mangadex_api_types::error::{Error, Result};
+use crate::{error::Error, Result};
 use reqwest::{Client, Response};
 use serde::Serialize;
 use url::Url;

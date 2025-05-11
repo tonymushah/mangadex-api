@@ -1,9 +1,9 @@
 #[cfg(feature = "mangadex-api-resolver")]
+use mangadex_api::Result;
+#[cfg(feature = "mangadex-api-resolver")]
 use mangadex_api::{
     v5::manga::id::list::list_id::post::AddMangaToCustomListBuilder, MangaDexClient,
 };
-#[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_types::error::Result;
 
 use serde::Deserialize;
 use uuid::Uuid;

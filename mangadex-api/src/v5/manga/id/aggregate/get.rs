@@ -27,11 +27,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::MangaAggregate;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaAggregateResponse;
 use mangadex_api_types::Language;
 
 #[cfg_attr(
@@ -42,9 +42,9 @@ use mangadex_api_types::Language;
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct GetMangaAggregate {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
@@ -65,7 +65,7 @@ pub struct GetMangaAggregate {
 endpoint! {
     GET ("/manga/{}/aggregate", manga_id),
     #[query] GetMangaAggregate,
-    #[flatten_result] MangaAggregateResponse,
+    #[flatten_result] crate::Result<MangaAggregate>,
     GetMangaAggregateBuilder
 }
 

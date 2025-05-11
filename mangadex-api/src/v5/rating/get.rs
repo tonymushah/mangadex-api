@@ -43,11 +43,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::RatingsList;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::RatingsResponse;
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -58,7 +58,7 @@ use mangadex_api_schema::v5::RatingsResponse;
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 pub struct GetYourMangaRatings {
     /// This should never be set manually as this is only for internal use.
@@ -75,7 +75,7 @@ pub struct GetYourMangaRatings {
 endpoint! {
     GET "/rating",
     #[query auth] GetYourMangaRatings,
-    #[flatten_result] RatingsResponse,
+    #[flatten_result] crate::Result<RatingsList>,
     GetYourMangaRatingsBuilder
 }
 
@@ -87,9 +87,9 @@ mod tests {
     use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
 
     #[tokio::test]
     async fn your_manga_ratings_fires_a_request_to_base_url() -> anyhow::Result<()> {

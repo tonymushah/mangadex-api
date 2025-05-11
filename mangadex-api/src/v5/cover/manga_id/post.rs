@@ -40,16 +40,18 @@
 
 use std::borrow::Cow;
 
+use crate::rate_limit::Limited;
+use crate::traits::Endpoint;
 use derive_builder::Builder;
 use mangadex_api_schema::v5::CoverData;
-use mangadex_api_schema::Endpoint;
-use mangadex_api_schema::Limited;
 use reqwest::multipart::{Form, Part};
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_types::{error::Result, Language};
+use mangadex_api_types::Language;
+
+use crate::Result;
 
 /// Upload a new cover for a manga.
 ///
@@ -64,9 +66,9 @@ use mangadex_api_types::{error::Result, Language};
 #[serde(rename_all = "camelCase")]
 #[builder(
     setter(into, strip_option),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct UploadCover {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

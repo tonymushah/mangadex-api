@@ -173,14 +173,14 @@ enum CheckSessionError {
     #[error("An upload session {0} already exists")]
     AlreadyExists(Uuid),
     #[error(transparent)]
-    MangadexApiError(#[from] mangadex_api_types::error::Error),
+    MangadexApiError(#[from] mangadex_api::error::Error),
 }
 
 async fn check_session(client: &MangaDexClient) -> Result<(), CheckSessionError> {
     match client.upload().get().send().await {
         Ok(i) => Err(CheckSessionError::AlreadyExists(i.body.data.id)),
         Err(e) => {
-            if let mangadex_api_types::error::Error::Api(error) = &e {
+            if let mangadex_api::error::Error::Api(error) = &e {
                 if error.errors.iter().any(|er| er.status == 404) {
                     return Ok(());
                 }
@@ -192,7 +192,7 @@ async fn check_session(client: &MangaDexClient) -> Result<(), CheckSessionError>
 
 async fn check_and_abandon_session_if_exists(
     client: &MangaDexClient,
-) -> Result<(), mangadex_api_types::error::Error> {
+) -> Result<(), mangadex_api::error::Error> {
     if let Err(e) = check_session(client).await {
         match e {
             CheckSessionError::AlreadyExists(id) => abandon(id, client).await?,
@@ -202,10 +202,7 @@ async fn check_and_abandon_session_if_exists(
     Ok(())
 }
 
-async fn abandon(
-    session: Uuid,
-    client: &MangaDexClient,
-) -> Result<(), mangadex_api_types::error::Error> {
+async fn abandon(session: Uuid, client: &MangaDexClient) -> Result<(), mangadex_api::error::Error> {
     client
         .upload()
         .upload_session_id(session)

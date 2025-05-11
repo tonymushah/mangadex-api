@@ -1,6 +1,6 @@
 [package]
 name = "mangadex-api-input-types"
-version = "0.6.0"
+version = "1.0.0"
 authors = [ "tonymushah" ]
 description = "A collection input types for mangadex-api"
 edition = "2021"
@@ -9,43 +9,37 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/tonymushah/mangadex-api"
 
 [dependencies]
-serde = "1.0"
-specta = { version = "1.0", optional = true }
-tokio = { version = "1", features = ["full"] }
-async-graphql = { version = "7.0.3", optional = true, features = ["uuid", "url"] }
+serde.workspace = true
+specta = { workspace = true , optional = true }
+async-graphql = { workspace = true, optional = true, features = ["uuid", "url"] }
 
 [dependencies.uuid]
-version = "1.8"
+workspace = true
 features = [
     "serde",
     "v4",
 ]
 
 [dependencies.url]
-version = "2.5"
+workspace = true
 features = ["serde"]
 
 [dependencies.mangadex-api]
 optional = true
-path = "../mangadex-api"
-version = "3.4"
-features = ["serialize"]
+workspace = true
 
 [dependencies.mangadex-api-schema]
-package = "mangadex-api-schema-rust"
-version = "0.10"
-path = "../mangadex-api-schema"
+workspace = true
 default-features = false
 
 [dependencies.mangadex-api-types]
-package = "mangadex-api-types-rust"
-version = "0.10"
-path = "../mangadex-api-types"
+workspace = true
 default-features = false
 
 [features]
-default = ["mangadex-api-resolver"]
+default = ["mangadex-api-resolver", "oauth"]
 serialize = []
 mangadex-api-resolver = ["dep:mangadex-api"]
 specta = ["dep:specta", "mangadex-api-types/specta"]
 async-graphql = ["dep:async-graphql", "mangadex-api-types/async-graphql"]
+oauth = ["mangadex-api/oauth", "mangadex-api-resolver"]

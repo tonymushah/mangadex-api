@@ -24,7 +24,7 @@ impl From<CreateSettingsTemplateParams> for CreateSettingsTemplateBuilder {
 
 #[cfg(feature = "mangadex-api-resolver")]
 impl CreateSettingsTemplateParams {
-    pub async fn send(self, client: &MangaDexClient) -> mangadex_api_types::error::Result<()> {
+    pub async fn send(self, client: &MangaDexClient) -> mangadex_api::Result<()> {
         <CreateSettingsTemplateBuilder as From<Self>>::from(self)
             .http_client(client.get_http_client().clone())
             .send()

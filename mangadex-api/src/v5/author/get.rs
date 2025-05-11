@@ -23,11 +23,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::AuthorCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::AuthorListResponse;
 use mangadex_api_types::{AuthorSortOrder, ReferenceExpansionResource};
 
 #[cfg_attr(
@@ -39,9 +39,9 @@ use mangadex_api_types::{AuthorSortOrder, ReferenceExpansionResource};
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 pub struct ListAuthor {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
@@ -76,7 +76,7 @@ pub struct ListAuthor {
 endpoint! {
     GET "/author",
     #[query] ListAuthor,
-    #[flatten_result] AuthorListResponse,
+    #[flatten_result] crate::Result<AuthorCollection>,
     ListAuthorBuilder
 }
 
@@ -92,8 +92,8 @@ mod tests {
     use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::{Language, MangaDexDateTime, ResponseType};
 
     #[tokio::test]

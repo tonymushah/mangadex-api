@@ -2,11 +2,9 @@ use mangadex_api_types::ResultType;
 use serde::Deserialize;
 use url::Url;
 
-use crate::FromResponse;
-
 #[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct AtHomeServer {
@@ -19,16 +17,9 @@ pub struct AtHomeServer {
     pub chapter: ChapterData,
 }
 
-impl FromResponse for AtHomeServer {
-    type Response = Self;
-    fn from_response(res: Self::Response) -> Self {
-        res
-    }
-}
-
 #[derive(Clone, Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-#[cfg_attr(feature = "non_exhaustive", non_exhaustive)]
+#[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ChapterData {

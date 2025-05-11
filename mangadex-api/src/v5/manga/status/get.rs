@@ -28,7 +28,7 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaReadingStatusesResponse;
+use mangadex_api_schema::v5::MangaReadingStatuses as MangaReadingStatusesRes;
 use mangadex_api_types::ReadingStatus;
 
 #[cfg_attr(
@@ -40,7 +40,7 @@ use mangadex_api_types::ReadingStatus;
 #[builder(
     setter(into, strip_option),
     default,
-    build_fn(error = "mangadex_api_types::error::BuilderError")
+    build_fn(error = "crate::error::BuilderError")
 )]
 #[cfg_attr(
     feature = "custom_list_v2",
@@ -64,7 +64,7 @@ pub struct MangaReadingStatuses {
 endpoint! {
     GET "/manga/status",
     #[query auth] MangaReadingStatuses,
-    #[flatten_result] MangaReadingStatusesResponse,
+    #[flatten_result] crate::Result<MangaReadingStatusesRes>,
     MangaReadingStatusesBuilder
 }
 

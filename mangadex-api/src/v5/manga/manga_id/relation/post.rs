@@ -46,11 +46,11 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::MangaRelationCollection;
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::MangaRelationListResponse;
 use mangadex_api_types::MangaRelation;
 
 #[cfg_attr(
@@ -59,10 +59,7 @@ use mangadex_api_types::MangaRelation;
 )]
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
-#[builder(
-    setter(into),
-    build_fn(error = "mangadex_api_types::error::BuilderError")
-)]
+#[builder(setter(into), build_fn(error = "crate::error::BuilderError"))]
 pub struct CreateMangaRelation {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
@@ -80,7 +77,7 @@ pub struct CreateMangaRelation {
 endpoint! {
     POST ("/manga/{}/relation", manga_id),
     #[body auth] CreateMangaRelation,
-    #[flatten_result] MangaRelationListResponse,
+    #[flatten_result] crate::Result<MangaRelationCollection>,
     CreateMangaRelationBuilder
 }
 
@@ -92,9 +89,9 @@ mod tests {
     use wiremock::matchers::{body_json, header, method, path_regex};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    use crate::error::Error;
     use crate::v5::AuthTokens;
     use crate::{HttpClient, MangaDexClient};
-    use mangadex_api_types::error::Error;
     use mangadex_api_types::{MangaRelation, RelationshipType, ResponseType};
 
     #[tokio::test]

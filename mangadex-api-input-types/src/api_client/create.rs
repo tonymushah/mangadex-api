@@ -1,7 +1,7 @@
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api::{v5::api_client::post::CreateClientBuilder, MangaDexClient};
+use mangadex_api::{v5::api_client::post::CreateClientBuilder, MangaDexClient, Result as MDResult};
 #[cfg(feature = "mangadex-api-resolver")]
-use mangadex_api_schema::v5::ApiClientResponse;
+use mangadex_api_schema::v5::ApiClientData;
 use mangadex_api_types::ApiClientProfile;
 
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq)]
@@ -25,7 +25,7 @@ impl ApiClientCreateParams {
         Some(1)
     }
     #[cfg(feature = "mangadex-api-resolver")]
-    pub async fn send(self, client: &MangaDexClient) -> ApiClientResponse {
+    pub async fn send(self, client: &MangaDexClient) -> MDResult<ApiClientData> {
         let builder: CreateClientBuilder = self.into();
         builder
             .http_client(client.get_http_client().clone())
