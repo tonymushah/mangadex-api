@@ -35,7 +35,7 @@ impl AtHomePreDownloadImageData {
     ) {
         if self.report {
             let end = Instant::now();
-            let _ = AtHomeReport {
+            let fut = AtHomeReport {
                 url: page_url,
                 success,
                 cached,

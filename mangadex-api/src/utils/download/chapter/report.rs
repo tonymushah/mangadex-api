@@ -21,6 +21,7 @@ impl AtHomeReport {
             match client
                 .post("https://api.mangadex.network/report")
                 .json(self)
+                .timeout(std::time::Duration::from_secs(2))
                 .send()
                 .await
             {
