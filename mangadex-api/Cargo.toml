@@ -155,3 +155,7 @@ required-features = ["oauth"]
 [[example]]
 name = "oauth_login_refresh"
 required-features = ["oauth"]
+
+[[example]]
+name = "upload"
+required-features = ["oauth"]
