@@ -5,7 +5,7 @@ use tokio::time::{sleep, Duration};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let mut client = MangaDexClient::default();
+    let client = MangaDexClient::default();
 
     // Register your client info
     client

@@ -1,32 +1,10 @@
-#[cfg(all(
-    not(feature = "multi-thread"),
-    not(feature = "tokio-multi-thread"),
-    not(feature = "rw-multi-thread")
-))]
-use std::cell::RefCell;
-#[cfg(all(
-    not(feature = "multi-thread"),
-    not(feature = "tokio-multi-thread"),
-    not(feature = "rw-multi-thread")
-))]
-use std::rc::Rc;
-#[cfg(any(
-    feature = "multi-thread",
-    feature = "tokio-multi-thread",
-    feature = "rw-multi-thread"
-))]
 use std::sync::Arc;
 
 use derive_builder::Builder;
-#[cfg(all(feature = "multi-thread", not(feature = "tokio-multi-thread")))]
-use futures::lock::Mutex;
 use mangadex_api_schema::v5::oauth::ClientInfo;
 use mangadex_api_schema::ApiResult;
 use reqwest::{Client, Response};
 use serde::de::DeserializeOwned;
-#[cfg(feature = "tokio-multi-thread")]
-use tokio::sync::Mutex;
-#[cfg(feature = "rw-multi-thread")]
 use tokio::sync::RwLock;
 use url::Url;
 
@@ -39,28 +17,6 @@ use crate::{
 };
 use crate::{API_DEV_URL, API_URL};
 
-#[cfg(all(
-    not(feature = "multi-thread"),
-    not(feature = "tokio-multi-thread"),
-    not(feature = "rw-multi-thread")
-))]
-#[cfg_attr(
-    docsrs,
-    doc(cfg(all(
-        not(feature = "multi-thread"),
-        not(feature = "tokio-multi-thread"),
-        not(feature = "rw-multi-thread")
-    )))
-)]
-pub type HttpClientRef = Rc<RefCell<HttpClient>>;
-#[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-#[cfg_attr(
-    docsrs,
-    doc(cfg(any(feature = "multi-thread", feature = "tokio-multi-thread")))
-)]
-pub type HttpClientRef = Arc<Mutex<HttpClient>>;
-#[cfg(feature = "rw-multi-thread")]
-#[cfg_attr(docsrs, doc(cfg(feature = "rw-multi-thread")))]
 pub type HttpClientRef = Arc<RwLock<HttpClient>>;
 
 #[derive(Debug, Builder, Clone)]
@@ -69,32 +25,15 @@ pub type HttpClientRef = Arc<RwLock<HttpClient>>;
     default,
     build_fn(error = "crate::error::BuilderError")
 )]
-#[cfg(not(feature = "oauth"))]
-#[cfg_attr(docsrs, doc(cfg(not(feature = "oauth"))))]
 pub struct HttpClient {
     pub client: Client,
     pub base_url: Url,
     auth_tokens: Option<AuthTokens>,
     captcha: Option<String>,
-}
-
-#[derive(Debug, Builder, Clone)]
-#[builder(
-    setter(into, strip_option),
-    default,
-    build_fn(error = "crate::error::BuilderError")
-)]
-#[cfg(feature = "oauth")]
-#[cfg_attr(docsrs, doc(cfg(feature = "oauth")))]
-pub struct HttpClient {
-    pub client: Client,
-    pub base_url: Url,
-    auth_tokens: Option<AuthTokens>,
-    captcha: Option<String>,
+    #[cfg(feature = "oauth")]
     client_info: Option<ClientInfo>,
 }
 
-#[cfg(feature = "oauth")]
 impl Default for HttpClient {
     fn default() -> Self {
         Self {
@@ -102,19 +41,8 @@ impl Default for HttpClient {
             base_url: Url::parse(API_URL).expect("error parsing the base url"),
             auth_tokens: None,
             captcha: None,
+            #[cfg(feature = "oauth")]
             client_info: None,
-        }
-    }
-}
-
-#[cfg(not(feature = "oauth"))]
-impl Default for HttpClient {
-    fn default() -> Self {
-        Self {
-            client: crate::get_default_client_api(),
-            base_url: Url::parse(API_URL).expect("error parsing the base url"),
-            auth_tokens: None,
-            captcha: None,
         }
     }
 }
@@ -318,11 +246,13 @@ impl HttpClient {
     }
 
     #[cfg(feature = "oauth")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "oauth")))]
     pub fn set_client_info(&mut self, client_info: &ClientInfo) {
         self.client_info = Some(client_info.clone());
     }
 
     #[cfg(feature = "oauth")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "oauth")))]
     pub fn get_client_info(&self) -> Option<&ClientInfo> {
         self.client_info.as_ref()
     }
@@ -333,23 +263,13 @@ impl HttpClient {
         self.client_info = None;
     }
 
-    /// Create a new client of api.mangadex.dev
-    #[cfg(not(feature = "oauth"))]
     pub fn api_dev_client() -> Self {
         Self {
             client: Client::new(),
             base_url: Url::parse(API_DEV_URL).expect("error parsing the base url"),
             auth_tokens: None,
             captcha: None,
-        }
-    }
-    #[cfg(feature = "oauth")]
-    pub fn api_dev_client() -> Self {
-        Self {
-            client: Client::new(),
-            base_url: Url::parse(API_DEV_URL).expect("error parsing the base url"),
-            auth_tokens: None,
-            captcha: None,
+            #[cfg(feature = "oauth")]
             client_info: None,
         }
     }
@@ -578,18 +498,9 @@ macro_rules! endpoint {
         impl $typ {
             /// Send the request.
             pub async fn send(&self) -> crate::Result<crate::rate_limit::Limited<$out>> {
-                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread"), not(feature = "rw-multi-thread")))]
-                {
-                    self.http_client.try_borrow()?.send_request_with_rate_limit(self).await
-                }
-                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-                {
-                    self.http_client.lock().await.send_request_with_rate_limit(self).await
-                }
-                #[cfg(feature = "rw-multi-thread")]
-                {
+
                     self.http_client.read().await.send_request_with_rate_limit(self).await
-                }
+
             }
         }
 
@@ -606,18 +517,7 @@ macro_rules! endpoint {
             /// Send the request.
             #[allow(dead_code)]
             pub async fn send(&self) -> $out {
-                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread"), not(feature = "rw-multi-thread")))]
-                {
-                    self.http_client.try_borrow()?.send_request(self).await?
-                }
-                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-                {
-                    self.http_client.lock().await.send_request(self).await?
-                }
-                #[cfg(feature = "rw-multi-thread")]
-                {
-                    self.http_client.read().await.send_request(self).await?
-                }
+                self.http_client.read().await.send_request(self).await?
             }
         }
 
@@ -634,13 +534,7 @@ macro_rules! endpoint {
             /// Send the request.
             #[allow(dead_code)]
             pub async fn send(&self) -> crate::Result<()> {
-                #[cfg(all(not(feature = "multi-thread"), not(feature = "tokio-multi-thread"), not(feature = "rw-multi-thread")))]
-                self.http_client.try_borrow()?.send_request(self).await??;
-                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-                self.http_client.lock().await.send_request(self).await??;
-                #[cfg(feature = "rw-multi-thread")]
                 self.http_client.read().await.send_request(self).await??;
-
                 Ok(())
             }
         }

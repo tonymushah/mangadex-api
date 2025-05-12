@@ -32,7 +32,7 @@ async fn run() -> anyhow::Result<()> {
     // the old login system still work on api.mangadex.dev for now
 
     use mangadex_api_schema::v5::oauth::ClientInfo;
-    let mut client = MangaDexClient::api_dev_client();
+    let client = MangaDexClient::api_dev_client();
 
     client
         .set_client_info(&ClientInfo {

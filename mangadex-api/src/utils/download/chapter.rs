@@ -13,7 +13,6 @@ use tokio_stream::Stream;
 use tokio_stream::StreamExt;
 use uuid::Uuid;
 
-use crate::utils::get_reqwest_client;
 use crate::{HttpClientRef, MangaDexClient};
 
 use super::DownloadElement;
@@ -66,7 +65,7 @@ impl ChapterDownload {
                 .await?
                 .body,
         );
-        let http_client = Arc::new(get_reqwest_client(&client).await);
+        let http_client = client.get_reqwest_client().await;
         let page_filenames = match self.mode.unwrap_or_default() {
             DownloadMode::Normal => Arc::clone(&at_home).chapter.data.clone(),
             DownloadMode::DataSaver => Arc::clone(&at_home).chapter.data_saver.clone(),
@@ -140,9 +139,10 @@ impl ChapterDownload {
 mod tests {
     use crate::{utils::download::chapter::DownloadMode, MangaDexClient};
     use anyhow::Result;
+    use bytes::Buf;
     use std::{
         fs::{create_dir_all, File},
-        io::Write,
+        io::{BufWriter, Write},
     };
     use tokio::pin;
     use tokio_stream::StreamExt;
@@ -168,7 +168,11 @@ mod tests {
             if let Ok(bytes) = bytes_ {
                 let mut file: File =
                     File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
-                file.write_all(&bytes)?
+                {
+                    let mut buffer = BufWriter::new(&mut file);
+                    std::io::copy(&mut bytes.reader(), &mut buffer)?;
+                    buffer.flush()?;
+                }
             };
         }
         Ok(())
@@ -176,12 +180,12 @@ mod tests {
 
     /// It's from this manga called [`Keiken Zumi na Kimi to, Keiken Zero na Ore ga, Otsukiai Suru Hanashi`](https://mangadex.org/title/1c8f0358-d663-4d60-8590-b5e82890a1e3/keiken-zumi-na-kimi-to-keiken-zero-na-ore-ga-otsukiai-suru-hanashi)
     ///
-    /// [Chapter 13 English](https://mangadex.org/chapter/250f091f-4166-4831-9f45-89ff54bf433b) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
+    /// [Chapter 30 English](https://mangadex.org/chapter/84d76ccb-4068-4e7d-873b-c2bf0fefde65) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
     #[tokio::test]
     async fn download_chapter_with_streams() -> Result<()> {
         let output_dir = "./test-outputs/";
         let client = MangaDexClient::default();
-        let chapter_id = uuid::Uuid::parse_str("250f091f-4166-4831-9f45-89ff54bf433b")?;
+        let chapter_id = uuid::Uuid::parse_str("84d76ccb-4068-4e7d-873b-c2bf0fefde65")?;
         create_dir_all(format!("{}{}", output_dir, chapter_id))?;
         let download = client
             .download()
@@ -196,7 +200,11 @@ mod tests {
             if let Ok(bytes) = bytes_ {
                 let mut file: File =
                     File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
-                file.write_all(&bytes)?
+                {
+                    let mut buffer = BufWriter::new(&mut file);
+                    std::io::copy(&mut bytes.reader(), &mut buffer)?;
+                    buffer.flush()?;
+                }
             }
         }
         Ok(())
@@ -249,7 +257,11 @@ mod tests {
             if let Ok(bytes) = bytes_ {
                 let mut file: File =
                     File::create(format!("{}{}/{}", output_dir, chapter_id, filename))?;
-                file.write_all(&bytes)?;
+                {
+                    let mut buffer = BufWriter::new(&mut file);
+                    std::io::copy(&mut bytes.reader(), &mut buffer)?;
+                    buffer.flush()?;
+                }
                 println!("Downloaded {filename}");
             } else {
                 println!("Skipped {filename}");

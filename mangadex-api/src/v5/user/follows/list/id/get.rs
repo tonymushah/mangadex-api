@@ -84,24 +84,6 @@ pub struct IsFollowingCustomList {
 
 impl IsFollowingCustomList {
     pub async fn send(&mut self) -> Result<IsFollowingResponse> {
-        #[cfg(all(
-            not(feature = "multi-thread"),
-            not(feature = "tokio-multi-thread"),
-            not(feature = "rw-multi-thread")
-        ))]
-        let res = self
-            .http_client
-            .try_borrow()?
-            .send_request_without_deserializing(self)
-            .await?;
-        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-        let res = self
-            .http_client
-            .lock()
-            .await
-            .send_request_without_deserializing(self)
-            .await?;
-        #[cfg(feature = "rw-multi-thread")]
         let res = self
             .http_client
             .read()

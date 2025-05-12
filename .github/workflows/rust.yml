@@ -10,58 +10,14 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  test-rw-multi-thread:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Run tests default
-      run: cargo test --all-targets -F rw-multi-thread --verbose
-    - name: Run tests with utils
-      run: cargo test --all-targets -F rw-multi-thread,utils --verbose
-    - name: Run tests with legacy-user-delete
-      run: cargo test --all-targets -F rw-multi-thread,legacy-user-delete --verbose
-    - name: Run tests with oauth
-      run: cargo test --all-targets -F rw-multi-thread,oauth --verbose
-      
-  test-mutli-thread:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Run tests default
-      run: cargo test --all-targets -F multi-thread --verbose
-    - name: Run tests with utils
-      run: cargo test --all-targets -F multi-thread,utils --verbose
-    - name: Run tests with legacy-user-delete
-      run: cargo test --all-targets -F multi-thread,legacy-user-delete --verbose
-    - name: Run tests with oauth
-      run: cargo test --all-targets -F multi-thread,oauth --verbose
-      
-  test-tokio-mutli-thread:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Run tests default
-      run: cargo test --all-targets -F tokio-multi-thread --verbose
-    - name: Run tests with utils
-      run: cargo test --all-targets -F tokio-multi-thread,utils --verbose
-    - name: Run tests with legacy-user-delete
-      run: cargo test --all-targets -F tokio-multi-thread,legacy-user-delete --verbose
-    - name: Run tests with oauth
-      run: cargo test --all-targets -F tokio-multi-thread,oauth --verbose
-    
   test-default:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: Run tests default
-      run: cargo test --all-targets --verbose
+    - name: Run tests no default feature
+      run: cargo test --all-targets --no-default-features --verbose
     - name: Run tests with utils
       run: cargo test --all-targets -F utils --verbose
-    - name: Run tests with legacy-user-delete
-      run: cargo test --all-targets -F legacy-user-delete --verbose
     - name: Run tests with oauth
       run: cargo test --all-targets -F oauth --verbose

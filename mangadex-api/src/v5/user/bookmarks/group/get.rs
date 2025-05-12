@@ -43,10 +43,10 @@
 //! ```
 
 use derive_builder::Builder;
+use mangadex_api_schema::v5::GroupCollection;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::GroupListResponse;
 use mangadex_api_types::ReferenceExpansionResource;
 
 #[cfg_attr(
@@ -80,7 +80,7 @@ pub struct BookmarkedGroups {
 endpoint! {
     GET "/user/bookmarks/group",
     #[query auth] BookmarkedGroups,
-    #[flatten_result] GroupListResponse,
+    #[flatten_result] crate::Result<GroupCollection>,
     BookmarkedGroupsBuilder
 }
 

@@ -229,39 +229,6 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
             println!("done");
         } else {
-            #[cfg(all(
-                not(feature = "multi-thread"),
-                not(feature = "tokio-multi-thread"),
-                not(feature = "rw-multi-thread")
-            ))]
-            #[cfg_attr(
-                all(
-                    not(feature = "multi-thread"),
-                    not(feature = "tokio-multi-thread"),
-                    not(feature = "rw-multi-thread")
-                ),
-                allow(clippy::await_holding_refcell_ref)
-            )]
-            let page_res = client
-                .get_http_client()
-                .clone()
-                .try_borrow()?
-                .client
-                .get(page_url.clone())
-                .send()
-                .await?;
-            #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-            let page_res = client
-                .get_http_client()
-                .lock()
-                .await
-                .client
-                .get(page_url.clone())
-                .send()
-                .await?
-                .bytes()
-                .await?;
-            #[cfg(feature = "rw-multi-thread")]
             let page_res = client
                 .get_http_client()
                 .read()
@@ -286,30 +253,6 @@ async fn download_file(
     output: &Path,
     file_name: &str,
 ) -> anyhow::Result<()> {
-    #[cfg(all(
-        not(feature = "multi-thread"),
-        not(feature = "tokio-multi-thread"),
-        not(feature = "rw-multi-thread")
-    ))]
-    let image_bytes = http_client
-        .try_borrow()?
-        .client
-        .get(url.clone())
-        .send()
-        .await?
-        .bytes()
-        .await?;
-    #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-    let image_bytes = http_client
-        .lock()
-        .await
-        .client
-        .get(url.clone())
-        .send()
-        .await?
-        .bytes()
-        .await?;
-    #[cfg(feature = "rw-multi-thread")]
     let image_bytes = http_client
         .read()
         .await

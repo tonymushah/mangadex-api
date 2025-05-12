@@ -97,15 +97,11 @@ pub struct ChapterDraft {
     pub publish_at: Option<MangaDexDateTime>,
 }
 
-#[cfg_attr(
-    feature = "deserializable-endpoint",
-    derive(serde::Deserialize, getset::Getters, getset::Setters)
-)]
+#[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize))]
 /// Custom request builder to handle nested struct.
 #[derive(Debug, Serialize, Clone, Default)]
 pub struct CommitUploadSessionBuilder {
     #[serde(skip)]
-    #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub http_client: Option<HttpClientRef>,
 
     pub session_id: Option<Uuid>,
@@ -134,7 +130,6 @@ impl CommitUploadSessionBuilder {
         }
     }
 
-    #[doc(hidden)]
     pub fn http_client(mut self, http_client: HttpClientRef) -> Self {
         self.http_client = Some(http_client);
         self

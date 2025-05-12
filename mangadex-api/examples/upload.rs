@@ -99,7 +99,7 @@ fn get_refresh_token_from_var() -> VarResult<String> {
 
 async fn init_client() -> anyhow::Result<MangaDexClient> {
     let client_info = get_client_info_from_var()?;
-    let mut client = MangaDexClient::default();
+    let client = MangaDexClient::default();
     client.set_client_info(&client_info).await?;
     Ok(client)
 }

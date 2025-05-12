@@ -83,24 +83,7 @@ struct RetriveTokenBody {
 impl RetriveTokens {
     pub async fn send(&mut self) -> Result<OAuthTokenResponse> {
         let res = {
-            let client = {
-                #[cfg(all(
-                    not(feature = "multi-thread"),
-                    not(feature = "tokio-multi-thread"),
-                    not(feature = "rw-multi-thread")
-                ))]
-                {
-                    &self.http_client.try_borrow()?
-                }
-                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-                {
-                    &self.http_client.lock().await
-                }
-                #[cfg(feature = "rw-multi-thread")]
-                {
-                    &self.http_client.read().await
-                }
-            };
+            let client = self.http_client.read().await;
             let client_info = client
                 .get_client_info()
                 .ok_or(crate::error::Error::MissingClientInfo)?;
@@ -138,24 +121,7 @@ impl RetriveTokens {
         };
         {
             let auth_tokens: AuthTokens = From::from(res.clone());
-            let client = {
-                #[cfg(all(
-                    not(feature = "multi-thread"),
-                    not(feature = "tokio-multi-thread"),
-                    not(feature = "rw-multi-thread")
-                ))]
-                {
-                    &mut self.http_client.try_borrow_mut()?
-                }
-                #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-                {
-                    &mut self.http_client.lock().await
-                }
-                #[cfg(feature = "rw-multi-thread")]
-                {
-                    &mut self.http_client.write().await
-                }
-            };
+            let mut client = self.http_client.write().await;
             client.set_auth_tokens(&auth_tokens);
         };
         Ok(res)
@@ -188,7 +154,7 @@ mod tests {
         let http_client: HttpClient = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
             .build()?;
-        let mut mangadex_client = MangaDexClient::new_with_http_client(http_client);
+        let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
         let client_info: ClientInfo = ClientInfo {
             client_id: "someClientId".to_string(),
@@ -242,21 +208,6 @@ mod tests {
             .send()
             .await?;
 
-        #[cfg(all(
-            not(feature = "multi-thread"),
-            not(feature = "tokio-multi-thread"),
-            not(feature = "rw-multi-thread")
-        ))]
-        assert_eq!(
-            mangadex_client.http_client.try_borrow()?.get_tokens(),
-            Some(&auth_tokens)
-        );
-        #[cfg(any(feature = "multi-thread", feature = "tokio-multi-thread"))]
-        assert_eq!(
-            mangadex_client.http_client.lock().await.get_tokens(),
-            Some(&auth_tokens)
-        );
-        #[cfg(feature = "rw-multi-thread")]
         assert_eq!(
             mangadex_client.http_client.read().await.get_tokens(),
             Some(&auth_tokens)
