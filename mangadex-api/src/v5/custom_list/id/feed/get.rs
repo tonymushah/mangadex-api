@@ -120,11 +120,14 @@ pub struct CustomListMangaFeed {
     #[builder(setter(each = "include"), default)]
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub includes: Vec<ReferenceExpansionResource>,
+    #[builder(default)]
+    #[serde(skip_serializing, default)]
+    pub with_auth: bool
 }
 
 endpoint! {
     GET ("/list/{}/feed", list_id),
-    #[query] CustomListMangaFeed,
+    #[query auth => with_auth] CustomListMangaFeed,
     #[flatten_result] ChapterListResponse,
     CustomListMangaFeedBuilder
 }
