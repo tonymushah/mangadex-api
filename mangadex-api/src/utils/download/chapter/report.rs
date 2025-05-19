@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
 use mangadex_api_types::error::{Error, Result};
 use reqwest::{Client, Response};
@@ -23,6 +23,7 @@ impl AtHomeReport {
             match client
                 .post("https://api.mangadex.network/report")
                 .json(self)
+                .timeout(Duration::from_secs(1))
                 .send()
                 .await
             {
