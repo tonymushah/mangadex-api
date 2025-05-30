@@ -147,14 +147,11 @@ mod tests {
     use tokio::pin;
     use tokio_stream::StreamExt;
 
-    /// It's from this manga called [`The Grim Reaper Falls In Love With A Human`](https://mangadex.org/title/be2efc56-1669-4e42-9f27-3bd232bca8ea/the-grim-reaper-falls-in-love-with-a-human)
-    ///
-    /// [Chapter 1 English](https://mangadex.org/chapter/2b4e39a5-fba0-4055-a176-8b7e19faacdb) by [`Kredim`](https://mangadex.org/group/0b870e54-c75f-4d2e-8068-c40f939135fd/kredim)
     #[tokio::test]
     async fn download_chapter_save() -> Result<()> {
         let output_dir = "./test-outputs/";
         let client = MangaDexClient::default();
-        let chapter_id = uuid::Uuid::parse_str("32b229f6-e9bf-41a0-9694-63c11191704c")?;
+        let chapter_id = uuid::Uuid::parse_str("e716db76-fefa-46c1-8b0a-3a7a8879d7d2")?;
         let chapter_files = client
             .download()
             .chapter(chapter_id)
@@ -178,14 +175,11 @@ mod tests {
         Ok(())
     }
 
-    /// It's from this manga called [`Keiken Zumi na Kimi to, Keiken Zero na Ore ga, Otsukiai Suru Hanashi`](https://mangadex.org/title/1c8f0358-d663-4d60-8590-b5e82890a1e3/keiken-zumi-na-kimi-to-keiken-zero-na-ore-ga-otsukiai-suru-hanashi)
-    ///
-    /// [Chapter 30 English](https://mangadex.org/chapter/84d76ccb-4068-4e7d-873b-c2bf0fefde65) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
     #[tokio::test]
     async fn download_chapter_with_streams() -> Result<()> {
         let output_dir = "./test-outputs/";
         let client = MangaDexClient::default();
-        let chapter_id = uuid::Uuid::parse_str("84d76ccb-4068-4e7d-873b-c2bf0fefde65")?;
+        let chapter_id = uuid::Uuid::parse_str("2be303df-2853-490c-93e0-d4544634024e")?;
         create_dir_all(format!("{}{}", output_dir, chapter_id))?;
         let download = client
             .download()
@@ -210,14 +204,11 @@ mod tests {
         Ok(())
     }
 
-    /// It's from this manga called [`Keiken Zumi na Kimi to, Keiken Zero na Ore ga, Otsukiai Suru Hanashi`](https://mangadex.org/title/1c8f0358-d663-4d60-8590-b5e82890a1e3/keiken-zumi-na-kimi-to-keiken-zero-na-ore-ga-otsukiai-suru-hanashi)
-    ///
-    /// [Chapter 13 English](https://mangadex.org/chapter/250f091f-4166-4831-9f45-89ff54bf433b) by [`Galaxy Degen Scans`](https://mangadex.org/group/ab24085f-b16c-4029-8c05-38fe16592a85/galaxy-degen-scans)
     #[tokio::test]
     async fn download_chapter_with_streams_and_checker() -> Result<()> {
         let output_dir = "./test-outputs/";
         let client = MangaDexClient::default();
-        let chapter_id = uuid::Uuid::parse_str("250f091f-4166-4831-9f45-89ff54bf433b")?;
+        let chapter_id = uuid::Uuid::parse_str("0c364253-a720-44ff-8e7b-9119c64da767")?;
         create_dir_all(format!("{}{}", output_dir, chapter_id))?;
         let download = client
             .download()
