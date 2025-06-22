@@ -50,3 +50,23 @@ pub trait Endpoint {
         None
     }
 }
+
+pub(crate) mod bool_serde {
+    use serde::Serializer;
+
+    pub fn option_bool_ser<S: Serializer>(
+        value: &Option<bool>,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error> {
+        match value {
+            Some(bool_) => bool_ser(bool_, serializer),
+            None => serializer.serialize_none(),
+        }
+    }
+    pub fn bool_ser<S: Serializer>(value: &bool, serializer: S) -> Result<S::Ok, S::Error> {
+        match value {
+            true => serializer.serialize_i8(1),
+            false => serializer.serialize_i8(0),
+        }
+    }
+}
