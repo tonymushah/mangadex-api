@@ -30,6 +30,8 @@ pub struct MangaStatistics {
     // the actual response has this field at this level.
     pub follows: u32,
     pub comments: Option<Comments>,
+    #[serde(default)]
+    pub unavailable_chapter_count: u32,
 }
 
 #[derive(Clone, Debug, Deserialize, Copy)]
