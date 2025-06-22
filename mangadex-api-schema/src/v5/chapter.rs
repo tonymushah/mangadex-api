@@ -55,4 +55,6 @@ pub struct ChapterAttributes {
         serde(serialize_with = "crate::v5::mangadex_datetime_serialize_option")
     )]
     pub readable_at: Option<MangaDexDateTime>,
+    #[serde(default)]
+    pub is_unavailable: bool,
 }
