@@ -56,6 +56,7 @@ pub struct MangaListParams {
     pub has_available_chapters: Option<bool>,
     /// Scanlation group ID.
     pub group: Option<Uuid>,
+    pub has_unavailable_chapters: Option<bool>,
 }
 
 #[cfg(feature = "mangadex-api-resolver")]
@@ -109,6 +110,9 @@ impl From<MangaListParams> for ListMangaBuilder {
         }
         if let Some(group) = value.group {
             builder.group(group);
+        }
+        if let Some(has_unavailable_chapters) = value.has_unavailable_chapters {
+            builder.has_unavailable_chapters(has_unavailable_chapters);
         }
         builder
     }
