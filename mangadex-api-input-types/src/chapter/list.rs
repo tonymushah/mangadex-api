@@ -3,7 +3,7 @@ use mangadex_api::{v5::chapter::get::ListChapterBuilder, MangaDexClient};
 
 use mangadex_api_types::{
     ChapterSortOrder, ContentRating, IncludeExternalUrl, IncludeFuturePages,
-    IncludeFuturePublishAt, IncludeFutureUpdates, Language, MangaDexDateTime,
+    IncludeFuturePublishAt, IncludeFutureUpdates, IncludeUnvailable, Language, MangaDexDateTime,
     ReferenceExpansionResource,
 };
 use serde::Deserialize;
@@ -63,6 +63,7 @@ pub struct ChapterListParams {
     pub order: Option<ChapterSortOrder>,
     #[cfg_attr(feature = "async-graphql", graphql(skip))]
     pub includes: Vec<ReferenceExpansionResource>,
+    pub include_unavailable: Option<IncludeUnvailable>,
 }
 
 #[cfg(feature = "mangadex-api-resolver")]
@@ -117,6 +118,9 @@ impl From<ChapterListParams> for ListChapterBuilder {
             builder.order(order);
         }
         builder.includes(value.includes);
+        if let Some(include_unavailable) = value.include_unavailable {
+            builder.include_unavailable(include_unavailable);
+        }
         builder
     }
 }
