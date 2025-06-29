@@ -34,7 +34,7 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_types::{
     ContentRating, IncludeExternalUrl, IncludeFuturePages, IncludeFuturePublishAt,
-    IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
+    IncludeFutureUpdates, IncludeUnvailable, Language, MangaDexDateTime, MangaFeedSortOrder,
     ReferenceExpansionResource,
 };
 
@@ -103,6 +103,8 @@ pub struct GetMangaFeed {
     pub include_future_publish_at: Option<IncludeFuturePublishAt>,
     #[builder(default)]
     pub include_external_url: Option<IncludeExternalUrl>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub include_unavailable: Option<IncludeUnvailable>,
 }
 
 endpoint! {

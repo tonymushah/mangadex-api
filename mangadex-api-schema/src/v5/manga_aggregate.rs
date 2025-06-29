@@ -118,4 +118,6 @@ pub struct ChapterAggregate {
     pub others: Vec<Uuid>,
     /// Number of translations for the chapter.
     pub count: u32,
+    #[serde(default)]
+    pub is_unavailable: bool,
 }

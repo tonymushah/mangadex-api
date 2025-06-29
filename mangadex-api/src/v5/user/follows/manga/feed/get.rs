@@ -47,7 +47,7 @@ use crate::HttpClientRef;
 use mangadex_api_schema::v5::ChapterCollection;
 use mangadex_api_types::{
     ContentRating, IncludeExternalUrl, IncludeFuturePages, IncludeFuturePublishAt,
-    IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
+    IncludeFutureUpdates, IncludeUnvailable, Language, MangaDexDateTime, MangaFeedSortOrder,
     ReferenceExpansionResource,
 };
 
@@ -130,6 +130,8 @@ pub struct GetFollowedMangaFeed {
     #[builder(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub include_external_url: Option<IncludeExternalUrl>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub include_unavailable: Option<IncludeUnvailable>,
 }
 
 endpoint! {
