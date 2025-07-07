@@ -123,6 +123,7 @@ pub struct CustomListMangaFeed {
     #[builder(default)]
     #[serde(skip_serializing, default)]
     pub with_auth: bool,
+    #[builder(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub include_unavailable: Option<IncludeUnvailable>,
 }
