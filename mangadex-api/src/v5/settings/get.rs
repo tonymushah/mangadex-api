@@ -118,7 +118,7 @@ mod tests {
 
         match res {
             Error::MissingTokens => {}
-            _ => panic!("unexpected error: {:#?}", res),
+            _ => panic!("unexpected error: {res:#?}"),
         }
 
         Ok(())

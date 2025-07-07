@@ -50,7 +50,7 @@ async fn main() {
 
     if let Err(e) = run(args).await {
         use std::process;
-        eprintln!("Application error: {}", e);
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
 }
@@ -75,7 +75,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         .map(|id_map| (id_map.attributes.legacy_id, id_map.attributes.new_id))
         .collect();
 
-    println!("{:#?}", ids);
+    println!("{ids:#?}");
 
     Ok(())
 }

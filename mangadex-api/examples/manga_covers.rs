@@ -59,7 +59,7 @@ async fn main() {
 
     if let Err(e) = run(args).await {
         use std::process;
-        eprintln!("Application error: {}", e);
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
 }
@@ -105,10 +105,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let file_name = cover_data.attributes.file_name;
 
         let cover_url = Url::parse(&format!(
-            "{base_url}/covers/{manga_id}/{cover_file_name}",
-            base_url = CDN_URL,
-            manga_id = manga_id,
-            cover_file_name = file_name
+            "{CDN_URL}/covers/{manga_id}/{file_name}"
         ))?;
 
         if args.output.is_some() {
@@ -125,7 +122,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             )
             .await?;
         } else {
-            println!("{:?} - {:?}", manga_title, file_name);
+            println!("{manga_title:?} - {file_name:?}");
         }
     }
 

@@ -159,7 +159,7 @@ async fn init() -> anyhow::Result<MangaDexClient> {
     if let Ok(refresh) = get_refresh_token_from_var() {
         refresh_token(&mut client, refresh).await?;
     } else {
-        println!("{} Not found", REFRESH_TOKEN);
+        println!("{REFRESH_TOKEN} Not found");
         println!("using login");
         login(&client).await?;
     }
@@ -266,7 +266,7 @@ async fn main() -> anyhow::Result<()> {
         .collect();
 
         println!("Uploaded!");
-        println!("files_id: {:?}", files_id);
+        println!("files_id: {files_id:?}");
         println!("Commiting...");
         let files_ids = files_id.values().map(Clone::clone).collect::<Vec<Uuid>>();
 

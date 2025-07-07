@@ -6,6 +6,6 @@ async fn main() -> anyhow::Result<()> {
 
     let manga_results = client.manga().get().title("full metal").send().await?;
 
-    println!("manga results = {:?}", manga_results);
+    println!("manga results = {manga_results:?}");
     Ok(())
 }

@@ -192,7 +192,7 @@ mod tests {
         match res {
             Error::MissingTokens => {}
             Error::Api(e) => assert_eq!(e.errors[0].status, 403),
-            _ => panic!("unexpected error: {:#?}", res),
+            _ => panic!("unexpected error: {res:#?}"),
         }
 
         Ok(())

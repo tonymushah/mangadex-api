@@ -104,7 +104,7 @@ mod tests {
             ]
         });
 
-        println!("{:?}", response_body);
+        println!("{response_body:?}");
 
         Mock::given(method("GET"))
             .and(path_regex(r"/user/history"))

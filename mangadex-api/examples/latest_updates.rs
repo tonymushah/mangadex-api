@@ -58,7 +58,7 @@ async fn main() {
 
     if let Err(e) = run(args).await {
         use std::process;
-        eprintln!("Application error: {}", e);
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
 }
@@ -129,7 +129,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         })
         .collect();
 
-    println!("\n{:#?}", manga_list);
+    println!("\n{manga_list:#?}");
 
     Ok(())
 }
