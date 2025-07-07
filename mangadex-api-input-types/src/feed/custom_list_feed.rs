@@ -3,7 +3,7 @@ use mangadex_api::{v5::custom_list::id::feed::get::CustomListMangaFeedBuilder, M
 
 use mangadex_api_types::{
     ContentRating, IncludeExternalUrl, IncludeFuturePages, IncludeFuturePublishAt,
-    IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
+    IncludeFutureUpdates, IncludeUnvailable, Language, MangaDexDateTime, MangaFeedSortOrder,
     ReferenceExpansionResource,
 };
 use serde::Deserialize;
@@ -75,6 +75,7 @@ pub struct CustomListMangaFeedParams {
     #[serde(default)]
     #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub includes: Vec<ReferenceExpansionResource>,
+    pub include_unavailable: Option<IncludeUnvailable>,
 }
 
 #[cfg(feature = "mangadex-api-resolver")]
@@ -119,6 +120,9 @@ impl From<CustomListMangaFeedParams> for CustomListMangaFeedBuilder {
             builder.order(order);
         }
         builder.includes(value.includes);
+        if let Some(include_unavailable) = value.include_unavailable {
+            builder.include_unavailable(include_unavailable);
+        }
         builder
     }
 }

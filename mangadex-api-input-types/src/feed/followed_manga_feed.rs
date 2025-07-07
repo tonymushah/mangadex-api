@@ -5,7 +5,7 @@ use mangadex_api::{
 
 use mangadex_api_types::{
     ContentRating, IncludeExternalUrl, IncludeFuturePages, IncludeFuturePublishAt,
-    IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
+    IncludeFutureUpdates, IncludeUnvailable, Language, MangaDexDateTime, MangaFeedSortOrder,
     ReferenceExpansionResource,
 };
 use serde::Deserialize;
@@ -49,6 +49,7 @@ pub struct FollowedMangaFeedParams {
     pub include_empty_pages: Option<IncludeFuturePages>,
     pub include_future_publish_at: Option<IncludeFuturePublishAt>,
     pub include_external_url: Option<IncludeExternalUrl>,
+    pub include_unavailable: Option<IncludeUnvailable>,
 }
 
 #[cfg(feature = "mangadex-api-resolver")]
@@ -92,6 +93,9 @@ impl From<FollowedMangaFeedParams> for GetFollowedMangaFeedBuilder {
             builder.order(order);
         }
         builder.includes(value.includes);
+        if let Some(include_unavailable) = value.include_unavailable {
+            builder.include_unavailable(include_unavailable);
+        }
         builder
     }
 }

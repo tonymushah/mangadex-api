@@ -35,7 +35,7 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_types::{
     ContentRating, IncludeExternalUrl, IncludeFuturePages, IncludeFuturePublishAt,
-    IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
+    IncludeFutureUpdates, IncludeUnvailable, Language, MangaDexDateTime, MangaFeedSortOrder,
     ReferenceExpansionResource,
 };
 
@@ -122,7 +122,10 @@ pub struct CustomListMangaFeed {
     pub includes: Vec<ReferenceExpansionResource>,
     #[builder(default)]
     #[serde(skip_serializing, default)]
-    pub with_auth: bool
+    pub with_auth: bool,
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub include_unavailable: Option<IncludeUnvailable>,
 }
 
 endpoint! {

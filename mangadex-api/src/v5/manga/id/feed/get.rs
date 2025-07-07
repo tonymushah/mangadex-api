@@ -34,7 +34,7 @@ use uuid::Uuid;
 use crate::HttpClientRef;
 use mangadex_api_types::{
     ContentRating, IncludeExternalUrl, IncludeFuturePages, IncludeFuturePublishAt,
-    IncludeFutureUpdates, Language, MangaDexDateTime, MangaFeedSortOrder,
+    IncludeFutureUpdates, IncludeUnvailable, Language, MangaDexDateTime, MangaFeedSortOrder,
     ReferenceExpansionResource,
 };
 
@@ -62,8 +62,10 @@ pub struct GetMangaFeed {
 
     // `manga_id` cannot use the `Default` trait so these attributes have to be manually set.
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u32>,
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<u32>,
     #[builder(setter(each = "add_translated_language"), default)]
     pub translated_language: Vec<Language>,
@@ -83,26 +85,38 @@ pub struct GetMangaFeed {
     ///
     /// Default: `IncludeFutureUpdates::Include` (1)
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub include_future_updates: Option<IncludeFutureUpdates>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub created_at_since: Option<MangaDexDateTime>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub updated_at_since: Option<MangaDexDateTime>,
     /// DateTime string with following format: `YYYY-MM-DDTHH:MM:SS`.
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub publish_at_since: Option<MangaDexDateTime>,
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<MangaFeedSortOrder>,
     #[builder(setter(each = "include"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub includes: Vec<ReferenceExpansionResource>,
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub include_empty_pages: Option<IncludeFuturePages>,
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub include_future_publish_at: Option<IncludeFuturePublishAt>,
     #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub include_external_url: Option<IncludeExternalUrl>,
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub include_unavailable: Option<IncludeUnvailable>,
 }
 
 endpoint! {
