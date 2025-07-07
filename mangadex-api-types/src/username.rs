@@ -21,8 +21,7 @@ impl Username {
 
         if is_too_short || is_too_long {
             Err(Error::UsernameError(format!(
-                "The username must be between {} and {} characters",
-                MIN_LEN, MAX_LEN
+                "The username must be between {MIN_LEN} and {MAX_LEN} characters"
             )))
         } else {
             Ok(Self(username))

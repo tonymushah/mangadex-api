@@ -155,7 +155,7 @@ fn iso_8601_to_duration(date_interval: &str) -> Result<Duration, String> {
     }
 
     if invalid_input {
-        return Err(format!("invalid DateInterval '{}'", date_interval));
+        return Err(format!("invalid DateInterval '{date_interval}'"));
     }
 
     Ok(Duration::from_secs(secs))
@@ -199,31 +199,31 @@ fn duration_to_iso_8601(duration: &Duration) -> String {
 
     let mut duration_period = "".to_string();
     if weeks > 0 {
-        duration_period += &format!("{}W", weeks)
+        duration_period += &format!("{weeks}W")
     }
     if days > 0 {
-        duration_period += &format!("{}D", days)
+        duration_period += &format!("{days}D")
     }
-    let duration_period = format!("P{}", duration_period);
+    let duration_period = format!("P{duration_period}");
 
     let mut time_elements = "".to_string();
     if duration_period == "P" || hours > 0 || minutes > 0 || secs > 0 {
         time_elements += "T";
 
         if hours > 0 {
-            time_elements += &format!("{}H", hours);
+            time_elements += &format!("{hours}H");
         }
 
         if minutes > 0 {
-            time_elements += &format!("{}M", minutes);
+            time_elements += &format!("{minutes}M");
         }
 
         if time_elements == "T" || secs > 0 {
-            time_elements += &format!("{}S", secs);
+            time_elements += &format!("{secs}S");
         }
     }
 
-    format!("{}{}", duration_period, time_elements)
+    format!("{duration_period}{time_elements}")
 }
 
 #[cfg(test)]
