@@ -1,3 +1,6 @@
+#![deny(clippy::exhaustive_enums)]
+#![deny(clippy::exhaustive_structs)]
+
 pub mod api_client_profile;
 pub mod api_client_state;
 pub mod error;

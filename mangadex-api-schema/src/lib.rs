@@ -1,3 +1,6 @@
+#![deny(clippy::exhaustive_enums)]
+#![deny(clippy::exhaustive_structs)]
+
 //! MangaDex API response object types.
 
 mod bind;
