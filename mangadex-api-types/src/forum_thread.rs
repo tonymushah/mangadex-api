@@ -14,6 +14,7 @@ pub enum ForumThreadType {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum ForumThreadTypeParseError {
     #[error("the input {0} is invalid")]
     InvalidInput(String),
