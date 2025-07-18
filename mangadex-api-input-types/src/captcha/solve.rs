@@ -23,10 +23,7 @@ impl CaptchaSolveParams {
             .http_client(client.get_http_client().clone())
             .send()
             .await
-            .map(|d| Limited {
-                rate_limit: d.rate_limit,
-                body: (),
-            })
+            .map(|d| d.drop_body())
     }
 }
 

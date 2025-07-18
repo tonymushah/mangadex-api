@@ -12,6 +12,7 @@ repository = "https://github.com/tonymushah/mangadex-api"
 serde.workspace = true
 specta = { workspace = true , optional = true }
 async-graphql = { workspace = true, optional = true, features = ["uuid", "url"] }
+non-exhaustive = { workspace = true }
 
 [dependencies.uuid]
 workspace = true

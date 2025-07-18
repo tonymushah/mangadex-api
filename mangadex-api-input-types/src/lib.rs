@@ -1,6 +1,3 @@
-#![deny(clippy::exhaustive_enums)]
-#![deny(clippy::exhaustive_structs)]
-
 use std::path::Path;
 
 pub mod api_client;

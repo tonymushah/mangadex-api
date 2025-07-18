@@ -135,6 +135,15 @@ pub struct Limited<T> {
     pub body: T,
 }
 
+impl<T> Limited<T> {
+    pub fn drop_body(self) -> Limited<()> {
+        Limited {
+            rate_limit: self.rate_limit,
+            body: (),
+        }
+    }
+}
+
 impl<T> Deref for Limited<T> {
     type Target = T;
     fn deref(&self) -> &Self::Target {
