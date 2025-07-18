@@ -1248,6 +1248,7 @@ dependencies = [
  "getset",
  "mangadex-api-schema-rust",
  "mangadex-api-types-rust",
+ "non-exhaustive",
  "reqwest",
  "serde",
  "serde_json",
@@ -1411,6 +1412,12 @@ dependencies = [
  "memchr",
  "minimal-lexical",
 ]
+
+[[package]]
+name = "non-exhaustive"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "daee4e13b993996fb01f271f3512b3d07f6bacbb64cf1edeb705d92c8a1881ff"
 
 [[package]]
 name = "num-conv"

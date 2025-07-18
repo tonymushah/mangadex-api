@@ -131,7 +131,7 @@ mod tests {
         assert_eq!(res.response, ResponseType::Collection);
         let manga_map = &res.data[0];
         assert_eq!(manga_map.id, mapping_id);
-        assert_eq!(manga_map.attributes.type_, LegacyMappingType::Manga);
+        assert_eq!(manga_map.attributes.type_, Some(LegacyMappingType::Manga));
         assert_eq!(manga_map.attributes.legacy_id, 1);
         assert_eq!(manga_map.attributes.new_id, new_id);
 

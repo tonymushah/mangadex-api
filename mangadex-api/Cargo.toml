@@ -70,6 +70,9 @@ workspace = true
 [dev-dependencies.serde_urlencoded]
 workspace = true
 
+[dev-dependencies.non-exhaustive]
+version = "0.1"
+
 [dev-dependencies.clap]
 workspace = true
 features = ["derive"]

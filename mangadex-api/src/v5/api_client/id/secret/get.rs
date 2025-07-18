@@ -67,6 +67,7 @@ mod tests {
     use std::collections::hash_map::DefaultHasher;
     use std::hash::{Hash, Hasher};
 
+    use non_exhaustive::non_exhaustive;
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
@@ -80,10 +81,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
-            .auth_tokens(AuthTokens {
+            .auth_tokens(non_exhaustive!(AuthTokens {
                 session: "myToken".to_string(),
-                refresh: "myRefreshToken".to_string(),
-            })
+                refresh: "myRefreshToken".to_string()
+            }))
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 

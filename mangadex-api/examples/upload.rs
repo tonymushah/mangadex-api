@@ -127,10 +127,10 @@ async fn login(client: &MangaDexClient) -> anyhow::Result<()> {
 async fn refresh_token(client: &mut MangaDexClient, refresh_token: String) -> anyhow::Result<()> {
     println!("Fetching your access token");
     client
-        .set_auth_tokens(&AuthTokens {
+        .set_auth_tokens(&non_exhaustive::non_exhaustive!(AuthTokens {
             session: Default::default(),
             refresh: refresh_token,
-        })
+        }))
         .await?;
     let oauth_res = client.oauth().refresh().send().await?;
     println!(

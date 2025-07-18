@@ -36,8 +36,8 @@ use derive_builder::Builder;
 use serde::Serialize;
 
 use crate::HttpClientRef;
-use mangadex_api_schema::v5::CheckTokenResponse;
 use crate::Result;
+use mangadex_api_schema::v5::CheckTokenResponse;
 
 /// Check the session token and get additional user information.
 ///
@@ -84,10 +84,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let http_client: HttpClient = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
-            .auth_tokens(AuthTokens {
+            .auth_tokens(non_exhaustive::non_exhaustive!(AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "refreshtoken".to_string(),
-            })
+            }))
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 

@@ -100,10 +100,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let http_client: HttpClient = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
-            .auth_tokens(AuthTokens {
+            .auth_tokens(non_exhaustive::non_exhaustive!(AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "refreshtoken".to_string(),
-            })
+            }))
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
         let id = Uuid::from_str("f582e935-effb-4a39-821d-7a512e5b3f55")?;

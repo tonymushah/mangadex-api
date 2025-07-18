@@ -156,10 +156,10 @@ mod tests {
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
-        let client_info: ClientInfo = ClientInfo {
+        let client_info: ClientInfo = non_exhaustive::non_exhaustive!(ClientInfo {
             client_id: "someClientId".to_string(),
             client_secret: "someClientSecret".to_string(),
-        };
+        });
 
         mangadex_client.set_client_info(&client_info).await?;
 
@@ -167,10 +167,10 @@ mod tests {
 
         let password = Password::parse("mypassword")?;
 
-        let auth_tokens = AuthTokens {
+        let auth_tokens = non_exhaustive::non_exhaustive!(AuthTokens {
             session: "sessiontoken".to_string(),
             refresh: "refreshtoken".to_string(),
-        };
+        });
 
         let response_body = json!({
             "access_token": auth_tokens.session.clone(),
