@@ -1,8 +1,10 @@
-use mangadex_api_types::{Language, MangaDexDateTime};
+use mangadex_api_types::{Language, MangaDexDateTime, RelationshipType};
 use serde::Deserialize;
 
+use crate::TypedAttributes;
+
 /// General cover information.
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -29,4 +31,8 @@ pub struct CoverAttributes {
     )]
     pub updated_at: Option<MangaDexDateTime>,
     pub version: u32,
+}
+
+impl TypedAttributes for CoverAttributes {
+    const TYPE_: mangadex_api_types::RelationshipType = RelationshipType::CoverArt;
 }

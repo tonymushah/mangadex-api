@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Report reasons for submitting reports to the MangaDex staff.
-#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, Copy)]
+#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, Copy, Default)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
@@ -10,6 +10,7 @@ pub enum ReportStatus {
     Accepted,
     Autoresolved,
     Refused,
+    #[default]
     Waiting,
 }
 

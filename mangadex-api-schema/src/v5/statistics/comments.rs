@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use url::Url;
 
-#[derive(Deserialize, Clone, Debug, Copy)]
+#[derive(Deserialize, Clone, Debug, Copy, Default)]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]

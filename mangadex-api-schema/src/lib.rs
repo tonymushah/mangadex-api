@@ -17,6 +17,7 @@ use crate::v5::Relationship;
 
 #[derive(Deserialize)]
 #[serde(tag = "result", remote = "std::result::Result")]
+#[non_exhaustive]
 enum ApiResultDef<T, E> {
     #[serde(rename = "ok")]
     Ok(T),
@@ -40,6 +41,7 @@ impl<T, E> ApiResult<T, E> {
 #[derive(Debug, Deserialize, Clone)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct ApiData<T> {
     #[serde(default)]
     pub result: ResultType,
@@ -47,10 +49,30 @@ pub struct ApiData<T> {
     pub data: T,
 }
 
-#[derive(Debug, Default, Deserialize, Clone)]
+impl<T> ApiData<T> {
+    fn new(data: T) -> ApiData<T> {
+        Self {
+            response: ResponseType::Entity,
+            data,
+            result: ResultType::Ok,
+        }
+    }
+}
+
+impl<T> Default for ApiData<T>
+where
+    T: Default,
+{
+    fn default() -> Self {
+        Self::new(T::default())
+    }
+}
+
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct ApiObject<A> {
     pub id: Uuid,
     pub type_: RelationshipType,
@@ -58,7 +80,44 @@ pub struct ApiObject<A> {
     pub relationships: Vec<Relationship>,
 }
 
+impl Default for ApiObject<()> {
+    fn default() -> Self {
+        Self {
+            id: Uuid::nil(),
+            type_: RelationshipType::Unknown,
+            attributes: (),
+            relationships: Vec::new(),
+        }
+    }
+}
+
+pub trait TypedAttributes {
+    const TYPE_: RelationshipType;
+}
+
+impl<A> Default for ApiObject<A>
+where
+    A: TypedAttributes + Default,
+{
+    fn default() -> Self {
+        Self {
+            id: Uuid::nil(),
+            type_: A::TYPE_,
+            attributes: A::default(),
+            relationships: Vec::new(),
+        }
+    }
+}
+
 impl<A> ApiObject<A> {
+    pub fn new(id: Uuid, type_: RelationshipType, attr: A) -> Self {
+        Self {
+            id,
+            type_,
+            attributes: attr,
+            relationships: Default::default(),
+        }
+    }
     pub fn find_relationships(&self, type_: RelationshipType) -> Vec<&Relationship> {
         self.relationships
             .iter()
@@ -112,14 +171,38 @@ impl<T> PartialEq for ApiObject<T> {
     }
 }
 
-#[derive(Debug, Default, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct ApiObjectNoRelationships<A> {
     pub id: Uuid,
     pub type_: RelationshipType,
     pub attributes: A,
+}
+
+impl<A> Default for ApiObjectNoRelationships<A>
+where
+    A: TypedAttributes + Default,
+{
+    fn default() -> Self {
+        Self {
+            id: Uuid::nil(),
+            type_: A::TYPE_,
+            attributes: A::default(),
+        }
+    }
+}
+
+impl<A> ApiObjectNoRelationships<A> {
+    pub fn new(attributes: A) -> Self {
+        Self {
+            id: Uuid::nil(),
+            type_: RelationshipType::Unknown,
+            attributes,
+        }
+    }
 }
 
 /// Placeholder to hold response bodies that will be discarded.
@@ -138,6 +221,7 @@ pub struct ApiObjectNoRelationships<A> {
 #[derive(Debug, Default, Deserialize, Clone, Hash, PartialEq, Eq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct NoData {
     #[serde(default)]
     result: ResultType,

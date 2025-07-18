@@ -23,6 +23,7 @@ pub struct MangaStatisticsObject {
 #[derive(Clone, Debug, Deserialize, Copy)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct MangaStatistics {
     pub rating: MangaRating,
     /// Number of users following the Manga.
@@ -37,6 +38,7 @@ pub struct MangaStatistics {
 #[derive(Clone, Debug, Deserialize, Copy)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct MangaRating {
     /// Average rating of distributed votes.
     ///
@@ -63,6 +65,7 @@ pub struct MangaRating {
 /// "r" to denote "rating".
 #[derive(Clone, Debug, Deserialize, Default, Copy)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[non_exhaustive]
 pub struct RatingsDistribution {
     #[serde(rename = "1")]
     pub r1: u32,

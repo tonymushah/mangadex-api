@@ -8,6 +8,7 @@ use crate::ResultType;
 use crate::RelationshipType;
 
 #[derive(thiserror::Error, Debug)]
+#[non_exhaustive]
 pub enum RelationshipConversionError {
     #[error("The input relationship type {input} is incompatible with {inner}")]
     InvalidInputRelationshipType {
@@ -21,6 +22,7 @@ pub enum RelationshipConversionError {
 #[derive(Debug, thiserror::Error, Deserialize, Serialize)]
 #[error("Bad request")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct MangaDexErrorResponse_ {
     #[serde(default = "ResultType::error")]
     pub result: ResultType,
@@ -28,9 +30,10 @@ pub struct MangaDexErrorResponse_ {
     pub errors: Vec<MangaDexError>,
 }
 
-#[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone, Serialize)]
+#[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone, Serialize, Default)]
 #[error("API error")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct MangaDexError {
     pub id: Uuid,
     /// HTTP status code.

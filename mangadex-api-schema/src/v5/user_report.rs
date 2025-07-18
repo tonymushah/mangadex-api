@@ -1,8 +1,10 @@
-use mangadex_api_types::{MangaDexDateTime, ReportStatus};
+use mangadex_api_types::{MangaDexDateTime, RelationshipType, ReportStatus};
 use serde::Deserialize;
 
+use crate::TypedAttributes;
+
 /// User submitted report information.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
@@ -18,4 +20,8 @@ pub struct UserReportAttributes {
         serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
     )]
     pub created_at: MangaDexDateTime,
+}
+
+impl TypedAttributes for UserReportAttributes {
+    const TYPE_: mangadex_api_types::RelationshipType = RelationshipType::Report;
 }

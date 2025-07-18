@@ -46,7 +46,7 @@ impl From<MangaAggregate> for MangaAggregatSer {
 }
 
 #[cfg(feature = "serialize")]
-#[derive(serde::Serialize, Clone)]
+#[derive(serde::Serialize, Clone, Default)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MangaAggregatSer {
     result: ResultType,

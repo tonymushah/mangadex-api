@@ -2,7 +2,7 @@ use mangadex_api_types::ResultType;
 use serde::Deserialize;
 
 /// User Settings response.
-#[derive(Clone, Debug, Deserialize, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, Deserialize, Copy, PartialEq, Eq, Hash, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]

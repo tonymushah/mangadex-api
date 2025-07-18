@@ -17,7 +17,18 @@ pub struct AtHomeServer {
     pub chapter: ChapterData,
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+impl Default for AtHomeServer {
+    fn default() -> Self {
+        Self {
+            result: ResultType::Ok,
+            // Not the default url btw
+            base_url: Url::parse("https://upload.mangadex.org/").unwrap(),
+            chapter: Default::default(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]

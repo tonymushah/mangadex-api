@@ -4,12 +4,13 @@ use uuid::Uuid;
 
 use crate::error::Error;
 
-#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, Copy)]
+#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, Copy, Default)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
 #[non_exhaustive]
 pub enum TagGroup {
+    #[default]
     Content,
     Format,
     Genre,

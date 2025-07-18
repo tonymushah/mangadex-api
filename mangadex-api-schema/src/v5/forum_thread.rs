@@ -1,7 +1,7 @@
 use mangadex_api_types::RelationshipType;
 use serde::Deserialize;
 
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -12,7 +12,7 @@ pub struct ForumThreadObject<A, T = RelationshipType> {
     pub attributes: A,
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]

@@ -21,6 +21,7 @@ pub struct RatingsList {
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct Rating {
     /// `[ 1 .. 10 ]`.
     pub rating: u8,

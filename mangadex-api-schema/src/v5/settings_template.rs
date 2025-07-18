@@ -1,7 +1,9 @@
-use mangadex_api_types::MangaDexDateTime;
+use mangadex_api_types::{MangaDexDateTime, RelationshipType};
 use serde::Deserialize;
 
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+use crate::TypedAttributes;
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -11,4 +13,8 @@ pub struct UserSettingsTemplateAttributes {
     pub created_at: MangaDexDateTime,
     pub updated_at: MangaDexDateTime,
     pub version: u32,
+}
+
+impl TypedAttributes for UserSettingsTemplateAttributes {
+    const TYPE_: mangadex_api_types::RelationshipType = RelationshipType::SettingsTemplate;
 }

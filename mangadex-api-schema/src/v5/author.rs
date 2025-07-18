@@ -1,11 +1,14 @@
-use mangadex_api_types::MangaDexDateTime;
+use mangadex_api_types::{MangaDexDateTime, RelationshipType};
 use serde::Deserialize;
 use url::Url;
 
-use crate::v5::{localizedstring_array_or_map, LocalizedString};
+use crate::{
+    TypedAttributes,
+    v5::{LocalizedString, localizedstring_array_or_map},
+};
 
 /// General author information.
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -73,4 +76,8 @@ pub struct AuthorAttributes {
         serde(serialize_with = "crate::v5::mangadex_datetime_serialize_option")
     )]
     pub updated_at: Option<MangaDexDateTime>,
+}
+
+impl TypedAttributes for AuthorAttributes {
+    const TYPE_: RelationshipType = RelationshipType::Author;
 }

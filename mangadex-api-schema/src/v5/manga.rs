@@ -1,16 +1,20 @@
 use mangadex_api_types::{
     ContentRating, Demographic, Language, MangaDexDateTime, MangaState, MangaStatus,
+    RelationshipType,
 };
 use serde::Deserialize;
 use uuid::Uuid;
 
-use crate::v5::{
-    language_array_or_skip_null, localizedstring_array_or_map, manga_links_array_or_struct,
-    ApiObject, LocalizedString, MangaLinks, TagAttributes,
+use crate::{
+    TypedAttributes,
+    v5::{
+        ApiObject, LocalizedString, MangaLinks, TagAttributes, language_array_or_skip_null,
+        localizedstring_array_or_map, manga_links_array_or_struct,
+    },
 };
 
 /// General manga information.
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -66,4 +70,8 @@ pub struct MangaAttributes {
     )]
     pub updated_at: Option<MangaDexDateTime>,
     pub version: u32,
+}
+
+impl TypedAttributes for MangaAttributes {
+    const TYPE_: mangadex_api_types::RelationshipType = RelationshipType::Manga;
 }
