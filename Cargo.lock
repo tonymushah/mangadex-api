@@ -1271,6 +1271,7 @@ dependencies = [
  "mangadex-api",
  "mangadex-api-schema-rust",
  "mangadex-api-types-rust",
+ "non-exhaustive",
  "serde",
  "specta",
  "url",

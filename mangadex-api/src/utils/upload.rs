@@ -4,6 +4,7 @@ use crate::MangaDexClient;
 
 /// An Enum for handling [`check_session`] errors
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum CheckSessionError {
     #[error("An upload session {0} already exists")]
     AlreadyExists(Uuid),

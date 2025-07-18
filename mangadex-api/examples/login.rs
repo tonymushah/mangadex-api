@@ -35,10 +35,10 @@ async fn run() -> anyhow::Result<()> {
     let client = MangaDexClient::api_dev_client();
 
     client
-        .set_client_info(&ClientInfo {
+        .set_client_info(&non_exhaustive::non_exhaustive!(ClientInfo {
             client_secret: "YOUR CLIENT SECRET HERE".into(),
             client_id: "YOUR CLIENT ID HERE".into(),
-        })
+        }))
         .await?;
 
     let _login_res = client

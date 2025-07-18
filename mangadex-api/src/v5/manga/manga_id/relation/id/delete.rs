@@ -62,6 +62,7 @@ use mangadex_api_schema::NoData;
 #[derive(Debug, Serialize, Clone, Builder, Default)]
 #[serde(rename_all = "camelCase")]
 #[builder(setter(into), build_fn(error = "crate::error::BuilderError"))]
+#[non_exhaustive]
 pub struct DeleteMangaRelation {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

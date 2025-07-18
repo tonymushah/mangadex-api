@@ -60,6 +60,7 @@ use mangadex_api_types::{Language, MangaDexDateTime};
 )]
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
+#[non_exhaustive]
 pub struct CommitUploadSession {
     /// This should never be set manually as this is only for internal use.
     #[serde(skip)]
@@ -80,6 +81,7 @@ pub struct CommitUploadSession {
 #[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize))]
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
+#[non_exhaustive]
 pub struct ChapterDraft {
     /// Nullable
     pub volume: Option<String>,
@@ -100,6 +102,7 @@ pub struct ChapterDraft {
 #[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize))]
 /// Custom request builder to handle nested struct.
 #[derive(Debug, Serialize, Clone, Default)]
+#[non_exhaustive]
 pub struct CommitUploadSessionBuilder {
     #[serde(skip)]
     pub http_client: Option<HttpClientRef>,

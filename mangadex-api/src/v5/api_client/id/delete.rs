@@ -53,6 +53,7 @@ use mangadex_api_schema::NoData;
 #[derive(Debug, Serialize, Clone, Builder)]
 #[serde(rename_all = "camelCase")]
 #[builder(build_fn(error = "crate::error::BuilderError"))]
+#[non_exhaustive]
 pub struct DeleteClient {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

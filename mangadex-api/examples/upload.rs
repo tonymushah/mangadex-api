@@ -67,7 +67,7 @@ impl TryFrom<PreUserInfos> for UserInfos {
 }
 
 fn get_client_info_from_var() -> VarResult<ClientInfo> {
-    Ok(ClientInfo {
+    Ok(non_exhaustive::non_exhaustive!(ClientInfo {
         client_id: var(CLIENT_ID).map_err(|e| match e {
             VarError::NotPresent => std::io::Error::new(std::io::ErrorKind::NotFound, CLIENT_ID),
             VarError::NotUnicode(e) => std::io::Error::new(
@@ -84,7 +84,7 @@ fn get_client_info_from_var() -> VarResult<ClientInfo> {
                 e.to_str().unwrap_or_default().to_string(),
             ),
         })?,
-    })
+    }))
 }
 
 fn get_refresh_token_from_var() -> VarResult<String> {

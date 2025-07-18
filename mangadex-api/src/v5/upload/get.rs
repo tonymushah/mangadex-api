@@ -53,6 +53,7 @@ use crate::HttpClientRef;
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
+#[non_exhaustive]
 pub struct GetUploadSession {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

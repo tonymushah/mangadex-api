@@ -60,6 +60,7 @@ use crate::rate_limit::Limited;
 use crate::HttpClientRef;
 
 #[derive(Clone, Debug)]
+#[allow(clippy::exhaustive_structs)]
 pub struct UploadImage {
     pub filename: String,
     pub data: Vec<u8>,
@@ -119,6 +120,7 @@ impl TryFrom<&PathBuf> for UploadImage {
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
+#[non_exhaustive]
 pub struct UploadImages {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

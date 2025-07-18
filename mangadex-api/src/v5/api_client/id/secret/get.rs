@@ -43,6 +43,7 @@ type ApiClientSecretResponse = crate::Result<ApiClientSecret>;
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
+#[non_exhaustive]
 pub struct GetClientSecret {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

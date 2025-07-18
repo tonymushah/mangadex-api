@@ -44,6 +44,7 @@ use uuid::Uuid;
     default,
     build_fn(error = "crate::error::BuilderError")
 )]
+#[non_exhaustive]
 pub struct ListReportsByUser {
     #[doc(hidden)]
     #[serde(skip)]

@@ -4,6 +4,7 @@ use derive_builder::UninitializedFieldError;
 use mangadex_api_schema::error::RelationshipConversionError;
 
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum Error {
     /// Error when parsing a URL.
     ///
@@ -92,6 +93,7 @@ impl serde::Serialize for Error {
 }
 
 #[derive(Debug)]
+#[non_exhaustive]
 pub enum BuilderError {
     /// Uninitialized field
     UninitializedField(String),

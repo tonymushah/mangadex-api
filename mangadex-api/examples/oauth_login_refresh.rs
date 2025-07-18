@@ -9,10 +9,10 @@ async fn main() -> anyhow::Result<()> {
 
     // Register your client info
     client
-        .set_client_info(&ClientInfo {
+        .set_client_info(&non_exhaustive::non_exhaustive!(ClientInfo {
             client_id: String::from("<SET YOUR CLIENT ID HERE>"),
             client_secret: String::from("<SET YOUR CLIENT INFO HERE>"),
-        })
+        }))
         .await?;
 
     // Login to your account

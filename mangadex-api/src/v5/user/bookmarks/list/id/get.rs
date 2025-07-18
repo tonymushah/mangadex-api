@@ -65,6 +65,7 @@ use crate::{error::Error, traits::FromResponse, Result};
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
+#[non_exhaustive]
 pub struct HaveBookMarkedCustomList {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
@@ -86,15 +87,17 @@ impl HaveBookMarkedCustomList {
             .await?;
 
         match res.status() {
-            reqwest::StatusCode::OK => Ok(IsFollowingResponse { is_following: true }),
+            reqwest::StatusCode::OK => Ok(non_exhaustive::non_exhaustive!(IsFollowingResponse {
+                is_following: true
+            })),
             reqwest::StatusCode::NOT_FOUND => {
                 let result = res
                     .json::<<Result<NoData> as FromResponse>::Response>()
                     .await?;
                 match result.into_result() {
-                    Ok(_) => Ok(IsFollowingResponse {
+                    Ok(_) => Ok(non_exhaustive::non_exhaustive!(IsFollowingResponse {
                         is_following: false,
-                    }),
+                    })),
                     Err(err) => Err(Error::Api(err)),
                 }
             }

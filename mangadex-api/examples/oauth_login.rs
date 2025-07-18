@@ -6,10 +6,10 @@ use mangadex_api_types::{Password, Username};
 async fn main() -> anyhow::Result<()> {
     let client = MangaDexClient::default();
     client
-        .set_client_info(&ClientInfo {
+        .set_client_info(&non_exhaustive::non_exhaustive!(ClientInfo {
             client_id: String::from("<SET YOUR CLIENT ID HERE>"),
             client_secret: String::from("<SET YOUR CLIENT INFO HERE>"),
-        })
+        }))
         .await?;
     let response = client
         .oauth()

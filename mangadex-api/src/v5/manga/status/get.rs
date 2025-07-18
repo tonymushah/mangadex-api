@@ -49,6 +49,7 @@ use mangadex_api_types::ReadingStatus;
         note = "After the introduction of the Subscription system, this endpoint will be removed in 3.0.0"
     )
 )]
+#[non_exhaustive]
 pub struct MangaReadingStatuses {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

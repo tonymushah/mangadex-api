@@ -58,6 +58,7 @@ use mangadex_api_types::{Password, Username};
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
+#[non_exhaustive]
 pub struct RetriveTokens {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

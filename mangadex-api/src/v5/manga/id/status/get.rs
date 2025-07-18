@@ -50,6 +50,7 @@ use mangadex_api_schema::v5::MangaReadingStatus as StatusResponseData;
         note = "After the introduction of the Subscription system, this endpoint will be removed in a major version."
     )
 )]
+#[non_exhaustive]
 pub struct MangaReadingStatus {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

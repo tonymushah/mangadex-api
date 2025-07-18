@@ -63,6 +63,7 @@ use mangadex_api_types::ReportCategory;
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
+#[non_exhaustive]
 pub struct CreateReport {
     #[doc(hidden)]
     #[serde(skip)]
