@@ -141,7 +141,7 @@ impl TryFrom<Relationship> for ApiObjectNoRelationships<CoverAttributes> {
         if let Some(RelatedAttributes::CoverArt(attributes)) = value.attributes {
             Ok(Self {
                 id: value.id,
-                type_: RelationshipType::CustomList,
+                type_: RelationshipType::CoverArt,
                 attributes,
             })
         } else {
@@ -275,9 +275,10 @@ impl TryFrom<Relationship> for ApiObjectNoRelationships<CustomListAttributes> {
     }
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct Relationship {
     pub id: Uuid,
     #[serde(rename = "type")]
@@ -301,6 +302,7 @@ pub struct Relationship {
 #[derive(Debug, Deserialize, Clone)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct Results<T> {
     #[serde(default)]
     pub result: ResultType,
@@ -309,6 +311,19 @@ pub struct Results<T> {
     pub limit: u32,
     pub offset: u32,
     pub total: u32,
+}
+
+impl<T> Default for Results<T> {
+    fn default() -> Self {
+        Self {
+            result: ResultType::Ok,
+            response: ResponseType::Collection,
+            data: Vec::default(),
+            limit: 0,
+            offset: 0,
+            total: 0,
+        }
+    }
 }
 
 pub type LocalizedString = HashMap<Language, String>;

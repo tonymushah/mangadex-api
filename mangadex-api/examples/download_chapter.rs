@@ -79,7 +79,7 @@ async fn main() {
 
     if let Err(e) = run(args).await {
         use std::process;
-        eprintln!("Application error: {}", e);
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
 }
@@ -131,11 +131,11 @@ async fn run(args: Args) -> anyhow::Result<()> {
     };
 
     let volume_number = match chapter.data.attributes.volume {
-        Some(v) => format!("Vol.{} ", v),
+        Some(v) => format!("Vol.{v} "),
         None => "".to_string(),
     };
     let chapter_number = match chapter.data.attributes.chapter {
-        Some(c) => format!("Ch.{} ", c),
+        Some(c) => format!("Ch.{c} "),
         None => "".to_string(),
     };
     let title_separator = if (volume_number.is_empty() && chapter_number.is_empty())
@@ -239,7 +239,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
                 .await?
                 .bytes()
                 .await?;
-            println!("{:?} - {:#?}", filename, page_res);
+            println!("{filename:?} - {page_res:#?}");
         }
     }
 

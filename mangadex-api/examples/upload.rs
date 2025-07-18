@@ -67,7 +67,7 @@ impl TryFrom<PreUserInfos> for UserInfos {
 }
 
 fn get_client_info_from_var() -> VarResult<ClientInfo> {
-    Ok(ClientInfo {
+    Ok(non_exhaustive::non_exhaustive!(ClientInfo {
         client_id: var(CLIENT_ID).map_err(|e| match e {
             VarError::NotPresent => std::io::Error::new(std::io::ErrorKind::NotFound, CLIENT_ID),
             VarError::NotUnicode(e) => std::io::Error::new(
@@ -84,7 +84,7 @@ fn get_client_info_from_var() -> VarResult<ClientInfo> {
                 e.to_str().unwrap_or_default().to_string(),
             ),
         })?,
-    })
+    }))
 }
 
 fn get_refresh_token_from_var() -> VarResult<String> {
@@ -127,10 +127,10 @@ async fn login(client: &MangaDexClient) -> anyhow::Result<()> {
 async fn refresh_token(client: &mut MangaDexClient, refresh_token: String) -> anyhow::Result<()> {
     println!("Fetching your access token");
     client
-        .set_auth_tokens(&AuthTokens {
+        .set_auth_tokens(&non_exhaustive::non_exhaustive!(AuthTokens {
             session: Default::default(),
             refresh: refresh_token,
-        })
+        }))
         .await?;
     let oauth_res = client.oauth().refresh().send().await?;
     println!(
@@ -159,7 +159,7 @@ async fn init() -> anyhow::Result<MangaDexClient> {
     if let Ok(refresh) = get_refresh_token_from_var() {
         refresh_token(&mut client, refresh).await?;
     } else {
-        println!("{} Not found", REFRESH_TOKEN);
+        println!("{REFRESH_TOKEN} Not found");
         println!("using login");
         login(&client).await?;
     }
@@ -266,7 +266,7 @@ async fn main() -> anyhow::Result<()> {
         .collect();
 
         println!("Uploaded!");
-        println!("files_id: {:?}", files_id);
+        println!("files_id: {files_id:?}");
         println!("Commiting...");
         let files_ids = files_id.values().map(Clone::clone).collect::<Vec<Uuid>>();
 

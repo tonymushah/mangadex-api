@@ -7,6 +7,7 @@ use url::Url;
 ///
 /// More details at : https://api.mangadex.org/docs/retrieving-chapter/#the-mangadexhome-report-endpoint
 #[derive(Serialize, Clone)]
+#[non_exhaustive]
 pub struct AtHomeReport {
     pub url: Url,
     pub success: bool,

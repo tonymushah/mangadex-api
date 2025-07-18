@@ -14,6 +14,7 @@ use uuid::Uuid;
 use super::DownloadElement;
 
 #[derive(Clone, Copy)]
+#[non_exhaustive]
 pub enum CoverQuality {
     Default = 0,
     /// For 512 cover fetching

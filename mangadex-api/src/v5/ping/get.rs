@@ -41,6 +41,7 @@ use crate::{error::Error, Result};
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
+#[non_exhaustive]
 pub struct Ping {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]

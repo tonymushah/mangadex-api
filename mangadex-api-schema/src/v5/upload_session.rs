@@ -1,9 +1,11 @@
 //! Upload session information from a response body.
 
-use mangadex_api_types::MangaDexDateTime;
+use mangadex_api_types::{MangaDexDateTime, RelationshipType};
 use serde::Deserialize;
 
-#[derive(Clone, Debug, Deserialize, Copy)]
+use crate::TypedAttributes;
+
+#[derive(Clone, Debug, Deserialize, Copy, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -27,4 +29,8 @@ pub struct UploadSessionAttributes {
         serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
     )]
     pub updated_at: MangaDexDateTime,
+}
+
+impl TypedAttributes for UploadSessionAttributes {
+    const TYPE_: mangadex_api_types::RelationshipType = RelationshipType::UploadSession;
 }

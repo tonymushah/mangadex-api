@@ -15,7 +15,7 @@ async fn main() -> anyhow::Result<()> {
         .send()
         .await?;
 
-    println!("manga results = {:?}", manga_results);
+    println!("manga results = {manga_results:?}");
 
     let authors = manga_results.data.iter().filter_map(|manga| {
         manga

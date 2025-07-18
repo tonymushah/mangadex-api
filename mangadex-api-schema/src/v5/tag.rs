@@ -4,11 +4,11 @@ use mangadex_api_types::{Language, RelationshipType, Tag, TagGroup};
 use serde::Deserialize;
 
 use crate::{
-    v5::{localizedstring_array_or_map, LocalizedString},
-    ApiObjectNoRelationships,
+    ApiObjectNoRelationships, TypedAttributes,
+    v5::{LocalizedString, localizedstring_array_or_map},
 };
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
@@ -19,6 +19,10 @@ pub struct TagAttributes {
     pub description: LocalizedString,
     pub group: TagGroup,
     pub version: u32,
+}
+
+impl TypedAttributes for TagAttributes {
+    const TYPE_: RelationshipType = RelationshipType::Tag;
 }
 
 impl From<Tag> for ApiObjectNoRelationships<TagAttributes> {

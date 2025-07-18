@@ -44,6 +44,7 @@ use mangadex_api_types::ReportCategory;
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
+#[non_exhaustive]
 pub struct ListReasons {
     #[doc(hidden)]
     #[serde(skip)]
@@ -131,7 +132,7 @@ mod tests {
             &"Troll entry".to_string()
         );
         assert!(!reason.attributes.details_required);
-        assert_eq!(reason.attributes.category, ReportCategory::Manga);
+        assert_eq!(reason.attributes.category, Some(ReportCategory::Manga));
 
         Ok(())
     }

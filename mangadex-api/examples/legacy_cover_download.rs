@@ -49,6 +49,6 @@ async fn main() -> anyhow::Result<()> {
     // This is where you would download the file but for this example, we're just printing the raw data.
     // let mut file = File::create(&filename)?;
     // let _ = file.write_all(&bytes);
-    println!("Chunk: {:?}", bytes);
+    println!("Chunk: {bytes:?}");
     Ok(())
 }

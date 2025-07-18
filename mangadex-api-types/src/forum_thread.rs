@@ -14,6 +14,7 @@ pub enum ForumThreadType {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum ForumThreadTypeParseError {
     #[error("the input {0} is invalid")]
     InvalidInput(String),
@@ -26,7 +27,7 @@ impl TryFrom<RelationshipType> for ForumThreadType {
             RelationshipType::Manga => Ok(Self::Manga),
             RelationshipType::Chapter => Ok(Self::Chapter),
             RelationshipType::ScanlationGroup => Ok(Self::Group),
-            i => Err(ForumThreadTypeParseError::InvalidInput(format!("{:?}", i))),
+            i => Err(ForumThreadTypeParseError::InvalidInput(format!("{i:?}"))),
         }
     }
 }
@@ -38,7 +39,7 @@ impl TryFrom<ReferenceExpansionResource> for ForumThreadType {
             ReferenceExpansionResource::Manga => Ok(Self::Manga),
             ReferenceExpansionResource::Chapter => Ok(Self::Chapter),
             ReferenceExpansionResource::ScanlationGroup => Ok(Self::Group),
-            i => Err(ForumThreadTypeParseError::InvalidInput(format!("{:?}", i))),
+            i => Err(ForumThreadTypeParseError::InvalidInput(format!("{i:?}"))),
         }
     }
 }

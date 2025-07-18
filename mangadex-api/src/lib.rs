@@ -1,6 +1,8 @@
 #![doc = include_str!("../README.md")]
 #![forbid(unsafe_code)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![deny(clippy::exhaustive_enums)]
+#![deny(clippy::exhaustive_structs)]
 
 #[macro_use]
 pub(crate) mod macros;

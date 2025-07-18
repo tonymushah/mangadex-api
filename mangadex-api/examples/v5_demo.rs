@@ -56,7 +56,7 @@ async fn main() {
 
     if let Err(e) = run(args).await {
         use std::process;
-        eprintln!("Application error: {}", e);
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
 }
@@ -74,7 +74,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         let manga_list_builder = manga_list_builder.build()?;
         let manga_results = manga_list_builder.send().await?;
 
-        println!("Manga results: {:#?}", manga_results);
+        println!("Manga results: {manga_results:#?}");
 
         return Ok(());
     }
@@ -82,7 +82,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if let Some(manga_id) = args.manga_view {
         let manga_view = client.manga().id(manga_id).get().build()?.send().await?;
 
-        println!("Manga view: {:#?}", manga_view);
+        println!("Manga view: {manga_view:#?}");
 
         return Ok(());
     }
@@ -97,7 +97,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .send()
             .await?;
 
-        println!("Manga feed: {:#?}", manga_feed);
+        println!("Manga feed: {manga_feed:#?}");
 
         return Ok(());
     }
@@ -105,7 +105,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
     if args.manga_random {
         let manga = client.manga().random().get().build()?.send().await?;
 
-        println!("Manga: {:#?}", manga);
+        println!("Manga: {manga:#?}");
 
         return Ok(());
     }
@@ -120,7 +120,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .send()
             .await?;
 
-        println!("MD@Home node URL: {:#?}", node_url);
+        println!("MD@Home node URL: {node_url:#?}");
 
         return Ok(());
     }
@@ -134,7 +134,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         }
         let author_results = author_list_builder.build()?.send().await?;
 
-        println!("Author results: {:#?}", author_results);
+        println!("Author results: {author_results:#?}");
 
         return Ok(());
     }
@@ -148,7 +148,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .send()
             .await?;
 
-        println!("Chapter results: {:#?}", chapter_results);
+        println!("Chapter results: {chapter_results:#?}");
 
         return Ok(());
     }
@@ -162,7 +162,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .send()
             .await?;
 
-        println!("Chapter view: {:#?}", chapter_view);
+        println!("Chapter view: {chapter_view:#?}");
 
         return Ok(());
     }
@@ -176,7 +176,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .send()
             .await?;
 
-        println!("Cover results: {:#?}", cover_results);
+        println!("Cover results: {cover_results:#?}");
 
         return Ok(());
     }
@@ -190,7 +190,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .send()
             .await?;
 
-        println!("Cover view: {:#?}", cover_view);
+        println!("Cover view: {cover_view:#?}");
 
         return Ok(());
     }
@@ -205,7 +205,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .send()
             .await?;
 
-        println!("Manga aggregate: {:#?}", manga_aggregate);
+        println!("Manga aggregate: {manga_aggregate:#?}");
 
         return Ok(());
     }
@@ -219,7 +219,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
         }
         let scanlation_group_results = scanlation_group_list_builder.build()?.send().await?;
 
-        println!("Scanlation group results: {:#?}", scanlation_group_results);
+        println!("Scanlation group results: {scanlation_group_results:#?}");
 
         return Ok(());
     }
@@ -233,7 +233,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             .send()
             .await?;
 
-        println!("Scanlation group view: {:#?}", scanlation_group_view);
+        println!("Scanlation group view: {scanlation_group_view:#?}");
 
         return Ok(());
     }

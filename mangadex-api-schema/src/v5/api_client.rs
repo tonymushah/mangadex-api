@@ -1,8 +1,10 @@
 use mangadex_api_types::{ApiClientProfile, ApiClientState, MangaDexDateTime, ResultType};
 use serde::Deserialize;
 
+use crate::TypedAttributes;
+
 /// General Api Client information.
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -27,8 +29,13 @@ pub struct ApiClientAttributes {
     pub version: u32,
 }
 
+impl TypedAttributes for ApiClientAttributes {
+    const TYPE_: mangadex_api_types::RelationshipType =
+        mangadex_api_types::RelationshipType::ApiClient;
+}
+
 /// General Api Client information.
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]

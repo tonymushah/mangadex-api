@@ -35,9 +35,6 @@ impl DeleteImageParam {
             .http_client(client.get_http_client().clone())
             .send()
             .await?;
-        Ok(Limited {
-            rate_limit: data.rate_limit,
-            body: (),
-        })
+        Ok(data.drop_body())
     }
 }

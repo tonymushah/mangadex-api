@@ -5,10 +5,11 @@ use serde::Deserialize;
 use uuid::Uuid;
 
 /// Reading statuses for followed manga.
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct MangaReadingStatuses {
     #[serde(default)]
     pub result: ResultType,

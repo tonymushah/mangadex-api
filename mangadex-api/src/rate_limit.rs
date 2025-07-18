@@ -34,7 +34,7 @@ pub const RETRY_AFTER: &str = "x-ratelimit-retry-after";
 ///     }
 /// ```
 ///
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone, Default)]
 #[non_exhaustive]
 pub struct RateLimit {
     /// value from `x-ratelimit-limit` header
@@ -48,6 +48,7 @@ pub struct RateLimit {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum RateLimitParseError {
     #[error("this header {0} is not found")]
     HeaderNotFound(String),
@@ -127,10 +128,20 @@ mod tests {
 /// This struct is used for rate limited endpoint
 /// `rate_limit` is for the rate limit metadata
 /// `body` is the response data
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, Default)]
+#[non_exhaustive]
 pub struct Limited<T> {
     pub rate_limit: RateLimit,
     pub body: T,
+}
+
+impl<T> Limited<T> {
+    pub fn drop_body(self) -> Limited<()> {
+        Limited {
+            rate_limit: self.rate_limit,
+            body: (),
+        }
+    }
 }
 
 impl<T> Deref for Limited<T> {

@@ -1,11 +1,11 @@
-use mangadex_api_types::{Language, MangaDexDateTime, MangaDexDuration};
+use mangadex_api_types::{Language, MangaDexDateTime, MangaDexDuration, RelationshipType};
 use serde::Deserialize;
 use url::Url;
 
-use crate::v5::LocalizedString;
+use crate::{TypedAttributes, v5::LocalizedString};
 
 /// General scanlation group information.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
@@ -61,4 +61,8 @@ pub struct ScanlationGroupAttributes {
         serde(serialize_with = "crate::v5::mangadex_datetime_serialize")
     )]
     pub updated_at: MangaDexDateTime,
+}
+
+impl TypedAttributes for ScanlationGroupAttributes {
+    const TYPE_: mangadex_api_types::RelationshipType = RelationshipType::ScanlationGroup;
 }

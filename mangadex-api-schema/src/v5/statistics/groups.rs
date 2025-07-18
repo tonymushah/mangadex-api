@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 use super::Comments;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
@@ -18,9 +18,10 @@ pub struct GroupStatisticsObject {
     pub statistics: HashMap<Uuid, GroupStatistics>,
 }
 
-#[derive(Clone, Debug, Deserialize, Copy)]
+#[derive(Clone, Debug, Deserialize, Copy, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub struct GroupStatistics {
     pub comments: Option<Comments>,
 }

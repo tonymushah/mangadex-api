@@ -6,7 +6,7 @@ async fn main() -> anyhow::Result<()> {
 
     let random_manga = client.manga().random().get().send().await?;
 
-    println!("{:?}", random_manga);
+    println!("{random_manga:?}");
 
     Ok(())
 }

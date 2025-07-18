@@ -63,6 +63,7 @@ use crate::HttpClientRef;
     setter(into, strip_option),
     build_fn(error = "crate::error::BuilderError")
 )]
+#[non_exhaustive]
 pub struct CheckApprovalRequired {
     /// This should never be set manually as this is only for internal use.
     #[doc(hidden)]
@@ -109,10 +110,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
-            .auth_tokens(AuthTokens {
+            .auth_tokens(non_exhaustive::non_exhaustive!(AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "refreshtoken".to_string(),
-            })
+            }))
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 
@@ -161,10 +162,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
-            .auth_tokens(AuthTokens {
+            .auth_tokens(non_exhaustive::non_exhaustive!(AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "refreshtoken".to_string(),
-            })
+            }))
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
 

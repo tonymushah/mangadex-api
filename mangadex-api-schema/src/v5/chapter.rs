@@ -2,12 +2,12 @@ use serde::Deserialize;
 use url::Url;
 use uuid::Uuid;
 
-use crate::deserialize_null_default;
-use mangadex_api_types::{Language, MangaDexDateTime};
+use crate::{TypedAttributes, deserialize_null_default};
+use mangadex_api_types::{Language, MangaDexDateTime, RelationshipType};
 
 /// General chapter information.
 /// More details at <https://api.mangadex.org/docs/swagger.html#model-ChapterAttributes>
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -57,4 +57,8 @@ pub struct ChapterAttributes {
     pub readable_at: Option<MangaDexDateTime>,
     #[serde(default)]
     pub is_unavailable: bool,
+}
+
+impl TypedAttributes for ChapterAttributes {
+    const TYPE_: mangadex_api_types::RelationshipType = RelationshipType::Chapter;
 }

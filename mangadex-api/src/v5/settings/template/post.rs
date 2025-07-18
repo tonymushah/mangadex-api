@@ -119,10 +119,10 @@ mod tests {
         let mock_server = MockServer::start().await;
         let http_client: HttpClient = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
-            .auth_tokens(AuthTokens {
+            .auth_tokens(non_exhaustive::non_exhaustive!(AuthTokens {
                 session: "sessiontoken".to_string(),
                 refresh: "refreshtoken".to_string(),
-            })
+            }))
             .build()?;
         let mangadex_client = MangaDexClient::new_with_http_client(http_client);
         let resp = TestTemplate {
@@ -192,7 +192,7 @@ mod tests {
         match res {
             Error::MissingTokens => {}
             Error::Api(e) => assert_eq!(e.errors[0].status, 403),
-            _ => panic!("unexpected error: {:#?}", res),
+            _ => panic!("unexpected error: {res:#?}"),
         }
 
         Ok(())

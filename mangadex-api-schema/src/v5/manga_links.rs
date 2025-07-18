@@ -177,6 +177,7 @@ impl MangaLinks {
 /// Example: "`series/91701`".
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[allow(clippy::exhaustive_structs)]
 pub struct BookWalker(pub String);
 
 impl std::fmt::Display for BookWalker {
@@ -190,6 +191,7 @@ impl std::fmt::Display for BookWalker {
 /// Example: "`132515`".
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[allow(clippy::exhaustive_structs)]
 pub struct MangaUpdates(pub String);
 
 impl std::fmt::Display for MangaUpdates {
@@ -206,6 +208,7 @@ impl std::fmt::Display for MangaUpdates {
 /// Example: "`98436`".
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[allow(clippy::exhaustive_structs)]
 pub struct MyAnimeList(pub String);
 
 impl std::fmt::Display for MyAnimeList {
@@ -219,6 +222,7 @@ impl std::fmt::Display for MyAnimeList {
 /// Example: "`novel-updates`".
 #[derive(Clone, Debug, Deserialize, Hash, PartialEq, Serialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[allow(clippy::exhaustive_structs)]
 pub struct NovelUpdates(pub String);
 
 impl std::fmt::Display for NovelUpdates {

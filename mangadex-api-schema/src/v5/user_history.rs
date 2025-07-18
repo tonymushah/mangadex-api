@@ -2,7 +2,7 @@ use mangadex_api_types::{MangaDexDateTime, ResultType};
 use serde::Deserialize;
 use uuid::Uuid;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[non_exhaustive]
@@ -16,7 +16,7 @@ pub struct UserHistoryEntry {
     pub read_date: MangaDexDateTime,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[non_exhaustive]

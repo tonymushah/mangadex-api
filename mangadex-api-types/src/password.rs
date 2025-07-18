@@ -21,8 +21,7 @@ impl Password {
 
         if is_too_short || is_too_long {
             Err(Error::PasswordError(format!(
-                "The password must be between {} and {} characters",
-                MIN_LEN, MAX_LEN
+                "The password must be between {MIN_LEN} and {MAX_LEN} characters"
             )))
         } else {
             Ok(Self(password))

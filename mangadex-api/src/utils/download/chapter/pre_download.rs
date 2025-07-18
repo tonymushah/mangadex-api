@@ -16,6 +16,7 @@ use super::DownloadMode;
 use super::DownloadElement;
 
 #[derive(Clone)]
+#[non_exhaustive]
 pub struct AtHomePreDownloadImageData {
     pub http_client: Client,
     pub filename: String,

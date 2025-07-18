@@ -70,6 +70,9 @@ workspace = true
 [dev-dependencies.serde_urlencoded]
 workspace = true
 
+[dependencies.non-exhaustive]
+workspace = true
+
 [dev-dependencies.clap]
 workspace = true
 features = ["derive"]
@@ -107,7 +110,7 @@ optional = true
 workspace = true
 
 [features]
-default = ["oauth"]
+default = ["oauth", "custom_list_v2", "utils"]
 utils = ["dep:bytes", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 deserializable-endpoint = ["dep:getset"]
 oauth = []

@@ -20,7 +20,7 @@ async fn main() {
     #[cfg(feature = "oauth")]
     if let Err(e) = run().await {
         use std::process;
-        eprintln!("Application error: {}", e);
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
     #[cfg(not(feature = "oauth"))]
@@ -35,10 +35,10 @@ async fn run() -> anyhow::Result<()> {
     let client = MangaDexClient::api_dev_client();
 
     client
-        .set_client_info(&ClientInfo {
+        .set_client_info(&non_exhaustive::non_exhaustive!(ClientInfo {
             client_secret: "YOUR CLIENT SECRET HERE".into(),
             client_id: "YOUR CLIENT ID HERE".into(),
-        })
+        }))
         .await?;
 
     let _login_res = client
@@ -53,7 +53,7 @@ async fn run() -> anyhow::Result<()> {
         .send()
         .await?;
 
-    println!("{:#?}", _login_res);
+    println!("{_login_res:#?}");
 
     // We just clear the client info and the auth token and we're good to go.
     client.clear_client_info().await?;

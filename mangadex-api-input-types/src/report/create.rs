@@ -49,9 +49,11 @@ impl CreateReportParam {
             .http_client(client.get_http_client().clone())
             .send()
             .await?;
-        Ok(mangadex_api::rate_limit::Limited {
-            rate_limit: res.rate_limit,
-            body: (),
-        })
+        Ok(non_exhaustive::non_exhaustive!(
+            mangadex_api::rate_limit::Limited<()> {
+                rate_limit: res.rate_limit,
+                body: (),
+            }
+        ))
     }
 }

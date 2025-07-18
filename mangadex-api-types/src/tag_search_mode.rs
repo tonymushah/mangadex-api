@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "UPPERCASE")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
+#[non_exhaustive]
 pub enum TagSearchMode {
     And,
     Or,

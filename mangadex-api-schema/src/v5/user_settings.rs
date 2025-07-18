@@ -3,7 +3,7 @@ use serde::Deserialize;
 use uuid::Uuid;
 
 /// User Settings response.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Default)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[serde(rename_all = "camelCase")]
 #[non_exhaustive]

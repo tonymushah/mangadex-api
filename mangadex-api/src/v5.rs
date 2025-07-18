@@ -63,6 +63,7 @@ use crate::HttpClientRef;
 
 /// API client to make requests to the MangaDex v5 API.
 #[derive(Clone, Debug)]
+#[non_exhaustive]
 pub struct MangaDexClient {
     pub http_client: HttpClientRef,
 }
