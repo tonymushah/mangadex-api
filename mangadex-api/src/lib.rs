@@ -31,9 +31,10 @@ pub type Result<T, E = error::Error> = std::result::Result<T, E>;
 
 pub(crate) fn get_default_client_api() -> Client {
     let mut headers = HeaderMap::new();
+    let version = env!("CARGO_PKG_VERSION");
     headers.append(
         USER_AGENT,
-        HeaderValue::from_static("mangadex-api-rs 4.0.0"),
+        HeaderValue::from_str(&format!("mangadex-api-rs {version}")).unwrap(),
     );
     Client::builder().default_headers(headers).build().unwrap()
 }
