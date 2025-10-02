@@ -415,13 +415,13 @@ macro_rules! endpoint {
 
     { @path ($path:expr, $($arg:ident),+) } => {
         /// Get the path of the request.
-        fn path(&self) -> std::borrow::Cow<str> {
+        fn path(&'_ self) -> std::borrow::Cow<'_, str> {
             std::borrow::Cow::Owned(format!($path, $(self.$arg),+))
         }
     };
     { @path $path:expr } => {
         /// Get the path of the request.
-        fn path(&self) -> std::borrow::Cow<str> {
+        fn path(&'_ self) -> std::borrow::Cow<'_, str> {
             std::borrow::Cow::Borrowed($path)
         }
     };

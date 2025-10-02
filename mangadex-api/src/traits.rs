@@ -32,7 +32,7 @@ pub trait Endpoint {
         reqwest::Method::GET
     }
 
-    fn path(&self) -> Cow<str>;
+    fn path(&'_ self) -> Cow<'_, str>;
 
     fn require_auth(&self) -> bool {
         false
