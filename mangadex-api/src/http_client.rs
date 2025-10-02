@@ -3,7 +3,7 @@ use std::sync::Arc;
 use derive_builder::Builder;
 use mangadex_api_schema::v5::oauth::ClientInfo;
 use mangadex_api_schema::ApiResult;
-use reqwest::{Client, Response};
+use reqwest::{Client, Response, StatusCode};
 use serde::de::DeserializeOwned;
 use tokio::sync::RwLock;
 use url::Url;
@@ -148,7 +148,9 @@ impl HttpClient {
         if status_code.as_u16() == 429 {
             return Err(Error::RateLimitExcedeed);
         }
-
+        if status_code == StatusCode::SERVICE_UNAVAILABLE {
+            return Err(Error::ServiceUnavailable(res.text().await.ok()));
+        }
         if status_code.is_server_error() {
             return Err(Error::ServerError(status_code.as_u16(), res.text().await?));
         }

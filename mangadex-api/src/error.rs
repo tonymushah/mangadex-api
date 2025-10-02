@@ -70,6 +70,17 @@ pub enum Error {
     #[error("This file {0} was skipped")]
     SkippedDownload(String),
 
+    #[error("The API is temporarily anavailable. Reason: {}", if let Some (reason) = .0 {
+        &reason
+    } else {
+        "Unknown"
+    })]
+    ServiceUnavailable(Option<String>),
+
+    #[cfg(feature = "oauth")]
+    #[error("Got Oauth Error response (status: {}, reason: {})", .code, reason.as_ref().map_or("...", |v| v))]
+    OauthError { code: u16, reason: Option<String> },
+
     #[error("{0}")]
     UnknowSource(String),
 }

@@ -106,6 +106,9 @@ impl IsFollowingManga {
                     Err(err) => Err(Error::Api(err)),
                 }
             }
+            reqwest::StatusCode::SERVICE_UNAVAILABLE => {
+                Err(Error::ServiceUnavailable(res.text().await.ok()))
+            }
             other_status => Err(Error::ServerError(other_status.as_u16(), res.text().await?)),
         }
     }
@@ -187,7 +190,7 @@ mod tests {
 
         let manga_id = Uuid::new_v4();
         let response_body = json!({
-            "result": "ok"
+            "result": "ko"
         });
 
         Mock::given(method("GET"))
