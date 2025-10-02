@@ -19,7 +19,9 @@ use crate::v5::Relationship;
 #[serde(tag = "result", remote = "std::result::Result")]
 #[non_exhaustive]
 enum ApiResultDef<T, E> {
-    #[serde(rename = "ok")]
+    // this migth change in a near future
+    /// The server might often use `ko` in some 404 responses.
+    #[serde(rename = "ok", alias = "ko")]
     Ok(T),
     #[serde(rename = "error")]
     Err(E),
