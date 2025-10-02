@@ -237,3 +237,140 @@ where
     let opt = Option::deserialize(deserializer)?;
     Ok(opt.unwrap_or_default())
 }
+
+/// There might be some edge cases where some endpoints returns that returns [`ApiObject::id`] that is not an [`Uuid`].
+///
+/// Currently, only the `GET /manga/{id}/recommendation` have that one.
+///
+#[derive(Debug, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
+pub struct ApiObjectStringId<A> {
+    pub id: String,
+    pub type_: RelationshipType,
+    pub attributes: A,
+    pub relationships: Vec<Relationship>,
+}
+
+impl Default for ApiObjectStringId<()> {
+    fn default() -> Self {
+        Self {
+            id: Default::default(),
+            type_: RelationshipType::Unknown,
+            attributes: (),
+            relationships: Vec::new(),
+        }
+    }
+}
+
+impl<A> Default for ApiObjectStringId<A>
+where
+    A: TypedAttributes + Default,
+{
+    fn default() -> Self {
+        Self {
+            id: Default::default(),
+            type_: A::TYPE_,
+            attributes: A::default(),
+            relationships: Vec::new(),
+        }
+    }
+}
+
+impl<A> ApiObjectStringId<A> {
+    pub fn new(id: String, type_: RelationshipType, attr: A) -> Self {
+        Self {
+            id,
+            type_,
+            attributes: attr,
+            relationships: Default::default(),
+        }
+    }
+    pub fn find_relationships(&self, type_: RelationshipType) -> Vec<&Relationship> {
+        self.relationships
+            .iter()
+            .filter(|rel| rel.type_ == type_)
+            .collect()
+    }
+    pub fn find_first_relationships(&self, type_: RelationshipType) -> Option<&Relationship> {
+        self.relationships.iter().find(|rel| rel.type_ == type_)
+    }
+}
+
+impl<T> TryFrom<ApiObjectStringId<T>> for ApiObject<T> {
+    type Error = uuid::Error;
+    fn try_from(value: ApiObjectStringId<T>) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id.parse()?,
+            type_: value.type_,
+            attributes: value.attributes,
+            relationships: value.relationships,
+        })
+    }
+}
+
+impl<T> From<ApiObject<T>> for ApiObjectStringId<T> {
+    fn from(value: ApiObject<T>) -> Self {
+        Self {
+            id: value.id.to_string(),
+            type_: value.type_,
+            attributes: value.attributes,
+            relationships: value.relationships,
+        }
+    }
+}
+
+/// An utility trait for finding relationships quickly from an object by their [RelationshipType].
+pub trait RelationedObject {
+    fn find_relationships(&self, type_: RelationshipType) -> Vec<&Relationship>;
+    fn find_first_relationships(&self, _type_: RelationshipType) -> Option<&Relationship> {
+        None
+    }
+}
+
+impl<T> RelationedObject for Vec<T>
+where
+    T: RelationedObject,
+{
+    fn find_first_relationships(&self, type_: RelationshipType) -> Option<&Relationship> {
+        self.iter().find_map(|d| d.find_first_relationships(type_))
+    }
+    fn find_relationships(&self, type_: RelationshipType) -> Vec<&Relationship> {
+        self.iter()
+            .flat_map(|d| d.find_relationships(type_))
+            .collect()
+    }
+}
+
+impl<T> RelationedObject for v5::Results<T>
+where
+    T: RelationedObject,
+{
+    fn find_relationships(&self, type_: RelationshipType) -> Vec<&Relationship> {
+        self.data.find_relationships(type_)
+    }
+    fn find_first_relationships(&self, type_: RelationshipType) -> Option<&Relationship> {
+        self.data.find_first_relationships(type_)
+    }
+}
+
+macro_rules! impl_api_obj {
+    ($type:ty) => {
+        impl<T> RelationedObject for $type {
+            fn find_relationships(&self, type_: RelationshipType) -> Vec<&Relationship> {
+                self.relationships
+                    .iter()
+                    .filter(|rel| rel.type_ == type_)
+                    .collect()
+            }
+            fn find_first_relationships(&self, type_: RelationshipType) -> Option<&Relationship> {
+                self.relationships.iter().find(|rel| rel.type_ == type_)
+            }
+        }
+    };
+}
+
+impl_api_obj!(ApiObject<T>);
+impl_api_obj!(ApiObjectStringId<T>);
