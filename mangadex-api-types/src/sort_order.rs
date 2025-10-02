@@ -72,6 +72,7 @@ sort_order! {
         Title,
         UpdatedAt,
         Year,
+        Rating,
     }
 }
 
