@@ -128,6 +128,9 @@ impl RefreshTokens {
                 .form(&params)
                 .send()
                 .await?;
+            if res.status().is_client_error() || res.status().is_server_error() {
+                return Err(super::OAuthError::handle_resp(res).await);
+            }
             res.json::<OAuthTokenResponse>().await?
         };
         {
