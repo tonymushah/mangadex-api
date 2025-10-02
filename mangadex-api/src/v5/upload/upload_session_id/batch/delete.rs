@@ -84,7 +84,7 @@ impl Endpoint for DeleteImages {
     type Body = Vec<Uuid>;
     type Response = NoData;
 
-    fn path(&self) -> Cow<str> {
+    fn path(&'_ self) -> Cow<'_, str> {
         Cow::Owned(format!("/upload/{}/batch", self.session_id))
     }
 
