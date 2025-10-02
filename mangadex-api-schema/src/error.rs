@@ -24,10 +24,20 @@ pub enum RelationshipConversionError {
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[non_exhaustive]
 pub struct MangaDexErrorResponse_ {
+    /// Defaults to [`ResultType::Error`]
     #[serde(default = "ResultType::error")]
     pub result: ResultType,
     #[serde(default)]
     pub errors: Vec<MangaDexError>,
+}
+
+impl Default for MangaDexErrorResponse_ {
+    fn default() -> Self {
+        Self {
+            result: ResultType::Error,
+            errors: Vec::default(),
+        }
+    }
 }
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq, Deserialize, Clone, Serialize, Default)]
