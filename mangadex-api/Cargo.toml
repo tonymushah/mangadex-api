@@ -109,6 +109,10 @@ optional = true
 [dev-dependencies.wiremock]
 workspace = true
 
+[dev-dependencies.uuid]
+workspace = true
+features = ["v4"]
+
 [features]
 default = ["oauth"]
 utils = ["dep:bytes", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
