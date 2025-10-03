@@ -144,7 +144,7 @@ impl Endpoint for UploadImages {
     type Body = ();
     type Response = UploadSessionFileDataObject;
 
-    fn path(&self) -> Cow<str> {
+    fn path(&'_ self) -> Cow<'_, str> {
         Cow::Owned(format!("/upload/{}", self.session_id))
     }
 

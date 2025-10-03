@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 // Relationship types for response objects.
 ///
-/// <https://api.mangadex.org/docs/static-data/#relationship-types>
+/// <https://api.mangadex.org/docs/3-enumerations/#relationship-types>
 ///
 /// This should only be used with the `type` response field.
 /// For use with the `includes[]` query parameter, refer to the [`ReferenceExpansionResource` enum](crate::ReferenceExpansionResource).
@@ -53,6 +53,7 @@ pub enum RelationshipType {
     Thread,
     ApiClient,
     SettingsTemplate,
+    MangaRecommendation,
     /// Unsupported resource.
     ///
     /// This is not used by MangaDex, but this library, in case new types appear before the library

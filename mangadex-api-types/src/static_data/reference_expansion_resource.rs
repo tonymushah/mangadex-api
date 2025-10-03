@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 /// Relationship types for reference expansion.
 ///
-/// <https://api.mangadex.org/docs/static-data/#relationship-types>
+/// <https://api.mangadex.org/docs/3-enumerations/#relationship-types>
 ///
 /// This should only be used with the `includes[]` query parameter.
 /// For response types, refer to the [`RelationshipType` enum](crate::RelationshipType).

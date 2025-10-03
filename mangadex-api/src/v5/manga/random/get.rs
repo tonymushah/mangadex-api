@@ -330,7 +330,7 @@ mod tests {
             .await;
 
         match mangadex_client.manga().random().get().send().await {
-            Err(Error::ServerError(..)) => {}
+            Err(Error::ServiceUnavailable(_)) => {}
             _ => panic!("expected server error"),
         }
 

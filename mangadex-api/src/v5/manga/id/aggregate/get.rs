@@ -32,7 +32,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::HttpClientRef;
-use mangadex_api_types::Language;
+use mangadex_api_types::{IncludeUnvailable, Language};
 
 #[cfg_attr(
     feature = "deserializable-endpoint",
@@ -60,6 +60,9 @@ pub struct GetMangaAggregate {
     pub translated_language: Vec<Language>,
     #[builder(setter(each = "add_group"), default)]
     pub groups: Vec<Uuid>,
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub include_unavailable: Option<IncludeUnvailable>,
 }
 
 endpoint! {
@@ -100,7 +103,8 @@ mod tests {
                             "chapter": "26",
                             "id": chapter_id,
                             "others": [],
-                            "count": 2
+                            "count": 2,
+                            "isUnavailable": false
                         }
                     }
                 }
@@ -133,6 +137,7 @@ mod tests {
         assert_eq!(chapter.chapter, "26");
         assert_eq!(chapter.id, chapter_id);
         assert_eq!(chapter.count, 2);
+        assert!(!chapter.is_unavailable);
 
         Ok(())
     }

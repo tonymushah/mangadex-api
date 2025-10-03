@@ -118,6 +118,9 @@ impl RetriveTokens {
                 .form(&params)
                 .send()
                 .await?;
+            if res.status().is_client_error() || res.status().is_server_error() {
+                return Err(super::OAuthError::handle_resp(res).await);
+            }
             res.json::<OAuthTokenResponse>().await?
         };
         {
@@ -213,6 +216,61 @@ mod tests {
             mangadex_client.http_client.read().await.get_tokens(),
             Some(&auth_tokens)
         );
+
+        Ok(())
+    }
+    #[tokio::test]
+    async fn login_fires_error_a_request_to_base_url() -> anyhow::Result<()> {
+        let mock_server = MockServer::start().await;
+        let http_client: HttpClient = HttpClient::builder()
+            .base_url(Url::parse(&mock_server.uri())?)
+            .build()?;
+        let mangadex_client = MangaDexClient::new_with_http_client(http_client);
+
+        let client_info: ClientInfo = non_exhaustive::non_exhaustive!(ClientInfo {
+            client_id: "someClientId".to_string(),
+            client_secret: "someClientSecret".to_string(),
+        });
+
+        mangadex_client.set_client_info(&client_info).await?;
+
+        let username = Username::parse("myusername")?;
+
+        let password = Password::parse("mypassword")?;
+
+        let response_body = json!({
+            "error": "No such user"
+        });
+        let expected_body: String = to_string(RetriveTokenBody {
+            grant_type: GrantTypeSupported::Password,
+            username: username.clone(),
+            password: password.clone(),
+            client_id: client_info.client_id.clone(),
+            client_secret: client_info.client_secret.clone(),
+        })?;
+
+        Mock::given(method("POST"))
+            .and(path(r"/realms/mangadex/protocol/openid-connect/token"))
+            .and(header("Content-Type", "application/x-www-form-urlencoded"))
+            .and(body_string(expected_body))
+            .respond_with(ResponseTemplate::new(404).set_body_json(response_body))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let crate::error::Error::OauthError { code: _, reason } = mangadex_client
+            .oauth()
+            .login()
+            .username(username.clone())
+            .password(password.clone())
+            .send()
+            .await
+            .expect_err("Got Ok instead")
+        else {
+            unreachable!()
+        };
+
+        assert_eq!(reason, Some("No such user".into()));
 
         Ok(())
     }

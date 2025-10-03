@@ -76,6 +76,7 @@ pub struct CommitUploadSession {
     ///
     /// Any uploaded files that are not included in this list will be deleted.
     pub page_order: Vec<Uuid>,
+    pub terms_accepted: bool,
 }
 
 #[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize))]
@@ -123,6 +124,7 @@ pub struct CommitUploadSessionBuilder {
     /// Nullable
     pub external_url: Option<Url>,
     pub publish_at: Option<MangaDexDateTime>,
+    pub terms_accepted: bool,
 }
 
 impl CommitUploadSessionBuilder {
@@ -204,6 +206,11 @@ impl CommitUploadSessionBuilder {
         self
     }
 
+    pub fn terms_accepted(mut self, accepted: bool) -> Self {
+        self.terms_accepted = accepted;
+        self
+    }
+
     /// Validate the field values. Use this before building.
     fn validate(&self) -> std::result::Result<(), String> {
         if self.session_id.is_none() {
@@ -218,6 +225,7 @@ impl CommitUploadSessionBuilder {
     }
 
     /// Finalize the changes to the request struct and return the new struct.
+    // TODO support limit size
     pub fn build(&self) -> Result<CommitUploadSession> {
         if let Err(error) = self.validate() {
             return Err(Error::RequestBuilderError(error));
@@ -234,6 +242,14 @@ impl CommitUploadSessionBuilder {
                     "translated_language must be provided",
                 )))?;
 
+        let chapter_draft = ChapterDraft {
+            volume: self.volume.to_owned(),
+            chapter: self.chapter.to_owned(),
+            title: self.title.to_owned(),
+            translated_language,
+            external_url: self.external_url.to_owned(),
+            publish_at: self.publish_at,
+        };
         Ok(CommitUploadSession {
             http_client: self
                 .http_client
@@ -243,15 +259,9 @@ impl CommitUploadSessionBuilder {
                 )))?,
 
             session_id,
-            chapter_draft: ChapterDraft {
-                volume: self.volume.to_owned(),
-                chapter: self.chapter.to_owned(),
-                title: self.title.to_owned(),
-                translated_language,
-                external_url: self.external_url.to_owned(),
-                publish_at: self.publish_at,
-            },
+            chapter_draft,
             page_order: self.page_order.to_owned(),
+            terms_accepted: self.terms_accepted,
         })
     }
 }
@@ -289,6 +299,7 @@ mod tests {
         ///
         /// Any uploaded files that are not included in this list will be deleted.
         page_order: Vec<Uuid>,
+        terms_accepted: bool,
     }
 
     #[tokio::test]
@@ -321,6 +332,7 @@ mod tests {
                 publish_at: None,
             },
             page_order: vec![session_file_id],
+            terms_accepted: true,
         };
 
         let response_body = json!({
@@ -372,6 +384,7 @@ mod tests {
             .title(Some(chapter_title.clone()))
             .translated_language(Language::English)
             .page_order(vec![session_file_id])
+            .terms_accepted(true)
             .send()
             .await?;
 

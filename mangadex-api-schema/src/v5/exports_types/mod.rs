@@ -17,6 +17,7 @@ pub use super::manga_links::MangaLinks;
 pub use super::manga_read_markers::{MangaReadMarkers, UngroupedMangaReadMarkers};
 pub use super::manga_reading_status::MangaReadingStatus;
 pub use super::manga_reading_statuses::MangaReadingStatuses;
+pub use super::manga_recommendation::MangaRecommendationAttributes;
 pub use super::manga_relation::MangaRelationAttributes;
 pub use super::ratings::RatingsList;
 pub use super::refresh_token_response::RefreshTokenResponse;
@@ -29,7 +30,7 @@ pub use super::user::UserAttributes;
 pub use super::user_report::UserReportAttributes;
 pub use super::user_settings::UserSettingsAttributes;
 pub use crate::error::MangaDexErrorResponse_ as MangaDexErrorResponse;
-use crate::{ApiData, ApiObject, ApiObjectNoRelationships};
+use crate::{ApiData, ApiObject, ApiObjectNoRelationships, ApiObjectStringId};
 
 use crate::v5::Results;
 
@@ -77,3 +78,6 @@ pub use api_client::*;
 
 mod settings_template;
 pub use settings_template::*;
+
+mod manga_recommendation;
+pub use manga_recommendation::*;

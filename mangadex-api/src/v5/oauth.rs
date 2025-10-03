@@ -25,3 +25,17 @@ impl OAuthBuiderMethods for OAuthBuider {
         RefreshTokensBuilder::default().http_client(<&Self as Into<HttpClientRef>>::into(self))
     }
 }
+
+#[derive(Debug, serde::Deserialize)]
+struct OAuthError {
+    error: String,
+}
+
+impl OAuthError {
+    async fn handle_resp(res: reqwest::Response) -> crate::error::Error {
+        crate::error::Error::OauthError {
+            code: res.status().as_u16(),
+            reason: res.json::<Self>().await.ok().map(|b| b.error),
+        }
+    }
+}
