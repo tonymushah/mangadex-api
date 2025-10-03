@@ -77,7 +77,7 @@ Please note that as MangaDex is still in beta, this SDK will be subject to sudde
 
 [Back to top][readme-section-toc]
 
-- [Rust 1.60+][rust-homepage]
+- [Rust 1.85+][rust-homepage]
 
 ## How to install
 
@@ -89,9 +89,9 @@ Add `mangadex-api` to your dependencies:
 [dependencies]
 # ...
 # Types and schemas are always required
-mangadex-api-types-rust = "0.10"
-mangadex-api-schema-rust = "0.10"
-mangadex-api = "3.4"
+mangadex-api-types-rust = "1"
+mangadex-api-schema-rust = "1"
+mangadex-api = "4"
 ```
 
 If you are using [`cargo-edit`](https://github.com/killercup/cargo-edit), run
@@ -110,14 +110,13 @@ cargo add mangadex-api
 | [`clap`][dependency-clap-docs]                     | Examples demonstrating the library's capabilities                                                                                        | dev builds |
 | [`derive_builder`][dependency-derive_builder-docs] | Conveniently generating setters for the API endpoint builders.                                                                           | always     |
 | [`fake`][dependency-fake-docs]                     | Generating random data for unit tests.                                                                                                   | dev builds |
-| [`futures`][dependency-futures-docs]               | Async request processing.                                                                                                                | always     |
 | [`reqwest`][dependency-reqwest-docs]               | Making HTTP requests to the [MangaDex API][mangadex-api-url].                                                                            | always     |
 | [`serde`][dependency-serde-docs]                   | Se/dese/rializing HTTP response bodies into structs.                                                                                     | always     |
 | [`serde_json`][dependency-serde_json-docs]         | Creating JSON objects for unit tests.                                                                                                    | dev builds |
 | [`serde_qs`][dependency-serde_qs-docs]             | Query string serialization for HTTP requests.                                                                                            | always     |
 | [`thiserror`][dependency-thiserror-docs]           | Customized error handling.                                                                                                               | always     |
 | [`time`][dependency-time-docs]                     | Convenience types for handing time fields.                                                                                               | always     |
-| [`tokio`][dependency-tokio-docs]                   | Async runtime to handle futures in __(only)__ examples and `utils` feature in chapter reporting, `tokio-mutli-thread`, and `rw-mutli-thread`                                                                      | dev builds + `utils` features |
+| [`tokio`][dependency-tokio-docs]                   | Async [`RwLock`](https://docs.rs/tokio/latest/tokio/sync/struct.RwLock.html) support                                                                      | `sync` feature only |
 | [`url`][dependency-url-docs]                       | Convenient `Url` type for validating and containing URLs.                                                                                | always     |
 | [`uuid`][dependency-uuid-docs]                     | Convenient `Uuid` type for validating and containing UUIDs for requests and responses. Also used to randomly generate UUIDs for testing. | always     |
 | [`wiremock`][dependency-wiremock-docs]             | HTTP mocking to test the [MangaDex API][mangadex-api-url].                                                                               | dev builds |
@@ -128,44 +127,23 @@ cargo add mangadex-api
 
 All features are not included by default. To enable them, add any of the following to your project's `Cargo.toml` file.
 
-- `multi-thread`
-
-  Enable the `MangaDexClient` to be thread-safe, at the cost of operations being slightly more expensive.
-
-- `legacy-auth` *Deprecated*
-
-  Enable the usage of the `< 5.9.0` login system in the SDK. Please visit the [Mangadex Discord](https://discord.com/invite/mangadex)  for more details
-
 - `utils`
 
   Enable the usage of the `MangaDexClient::download()`. Allows you to download chapters or covers image without tears and long code.
-
-- `tokio-multi-thread`
-
-  Enable the usage of [`tokio::sync::Mutex`](https://docs.rs/tokio/latest/tokio/sync/struct.Mutex.html), instead of [`futures::lock::Mutex`](https://docs.rs/futures/0.3.29/futures/lock/struct.Mutex.html)
-
-- `rw-mutli-thread`
-  
-  Enable the usage of [`tokio::sync::RwLock`](https://docs.rs/tokio/latest/tokio/sync/struct.RwLock.html), instead of [`futures::lock::Mutex`](https://docs.rs/futures/0.3.29/futures/lock/struct.Mutex.html) in the client.
-  It can be useful if you want a flexible concurent mutli-thread.
-
-- `legacy-user-delete` *Deprecated*
-
-  Enable the usage of the user delete endpoints.
 
 - `oauth` (Enabled by default)
   
   Enable the use of the *brand* new OAuth 2.0 login introduced in MangaDex API 5.9.0.
   
   __Quick Note:__ This `oauth` feature use the [personal-client] approach which means that you need to register a personal client and wait that it'll be validated.
-  More details here [here](#authentification-via-the-oauth-feature)
+  More details [here](#authentification-via-the-oauth-feature)
 
 - `custom_list_v2` : Enable the usage of the upcoming custom list system. Please note that these endpoints are deployed yet on `api.mangadex.org` but you can use them on `api.mangadex.dev` (their live dev API). For more information, please refer to [`Follows/CustomList API Changelog - BREAKING CHANGES`][custom-list-v2] on the MangaDex Forums
 
-For example, to enable the `multi-thread` feature, add the following to your `Cargo.toml` file:
+For example, to enable the `utils` feature, add the following to your `Cargo.toml` file:
 
 ```toml
-mangadex-api = { version = "3.2.0", features = ["multi-thread"] }
+mangadex-api = { version = "4", features = ["utils"] }
 ```
 
 ## HTTP Client
@@ -819,7 +797,7 @@ async fn main() -> Result<()> {
 
 Before ~~paste copying~~ *uhm*,... touching the example code below, I recommend that you read the [Mangadex Authentification Section](https://api.mangadex.org/docs/02-authentication/)
 
-First, register a personal client at [Mangadex Profile Settings][mangadex-settings], and wait until it's approved by staff. It can take 2 or 3 three days for now so just wait :>
+First, register a personal client at [Mangadex Profile Settings][mangadex-settings], ~~and wait until it's approved by staff. It can take 2 or 3 three days for now so just wait :>~~ (it should normally be auto-approved).
 
 After a long time, you can now `login` via the `oauth` feature.
 
@@ -953,7 +931,6 @@ We welcome contributions from everyone. There are many ways to contribute and th
 [dependency-clap-docs]: https://docs.rs/clap
 [dependency-fake-docs]: https://docs.rs/fake
 [dependency-derive_builder-docs]: https://docs.rs/derive_builder
-[dependency-futures-docs]: https://docs.rs/futures
 [dependency-reqwest-docs]: https://docs.rs/reqwest
 [dependency-serde-docs]: https://docs.rs/serde
 [dependency-serde_json-docs]: https://docs.rs/serde_json
