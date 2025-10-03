@@ -1,0 +1,15 @@
+[package]
+name = "mangadex-api-wasm-test"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen.workspace = true
+mangadex-api.workspace = true
+console_log = "1"
+wasm-bindgen-futures = "0.4"
+anyhow.workspace = true
+log.workspace = true

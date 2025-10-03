@@ -1,11 +1,11 @@
 [package]
-edition = "2021"
+edition.workspace = true
 name = "mangadex-api-types-rust"
 version = "1.0.0"
 authors = ["tonymushah <tonymushahdev06@yahoo.com>"]
 description = "Types for mangadex-api"
 license = "MIT OR Apache-2.0"
-resolver = "2"
+rust-version.workspace = true
 repository = "https://github.com/tonymushah/mangadex-api"
 keywords = ["mangadex", "types-bindings"]
 

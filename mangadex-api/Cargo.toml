@@ -1,5 +1,5 @@
 [package]
-edition = "2021"
+edition.workspace = true
 name = "mangadex-api"
 version = "4.0.0"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
@@ -11,10 +11,10 @@ keywords = [
     "mangadex",
     "sdk",
 ]
+rust-version.workspace = true
 categories = ["api-bindings"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/tonymushah/mangadex-api"
-resolver = "2"
 
 [package.metadata.docs.rs]
 rustdoc-args = ["--document-private-items"]
@@ -25,10 +25,6 @@ path = "src/lib.rs"
 
 [dependencies.derive_builder]
 workspace = true
-
-[dependencies.futures]
-workspace = true
-optional = true
 
 [dependencies.reqwest]
 workspace = true
@@ -108,6 +104,10 @@ optional = true
 
 [dev-dependencies.wiremock]
 workspace = true
+
+[dev-dependencies.uuid]
+workspace = true
+features = ["v4"]
 
 [features]
 default = ["oauth"]

@@ -3,8 +3,8 @@ name = "mangadex-api-input-types"
 version = "1.0.0"
 authors = [ "tonymushah" ]
 description = "A collection input types for mangadex-api"
-edition = "2021"
-rust-version = "1.60"
+edition.workspace = true
+rust-version.workspace = true
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/tonymushah/mangadex-api"
 
