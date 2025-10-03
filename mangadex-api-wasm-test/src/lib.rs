@@ -4,6 +4,16 @@ async fn run() -> anyhow::Result<()> {
     let client = mangadex_api::MangaDexClient::default();
     let res = client.manga().get().send().await?;
     log::info!("{:#?}", res);
+    {
+        let res = client
+            .manga()
+            .id(client.manga().random().get().send().await?.data.id)
+            .recommendation()
+            .get()
+            .send()
+            .await?;
+        log::info!("{:#?}", res);
+    }
     Ok(())
 }
 
