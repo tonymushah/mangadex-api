@@ -6,9 +6,10 @@ pub mod get;
 pub mod list;
 pub mod put;
 pub mod read;
+pub mod recommendation;
 pub mod status;
 
-use crate::HttpClientRef;
+use crate::{v5::manga::id::recommendation::MangaRecommendationEndpoint, HttpClientRef};
 
 use uuid::Uuid;
 
@@ -65,5 +66,8 @@ impl IdEndpoint {
     }
     pub fn status(&self) -> StatusEndpoint {
         StatusEndpoint::new(self.http_client.clone(), self.id)
+    }
+    pub fn recommendation(&self) -> MangaRecommendationEndpoint {
+        MangaRecommendationEndpoint::new(self.http_client.clone(), self.id)
     }
 }
