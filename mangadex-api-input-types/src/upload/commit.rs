@@ -42,6 +42,8 @@ pub struct CommitUploadSessionParam {
     #[serde(default)]
     #[cfg_attr(feature = "async-graphql", graphql(default))]
     pub publish_at: Option<MangaDexDateTime>,
+    /// [`true`] if not set
+    pub term_accepted: Option<bool>,
 }
 
 #[cfg(feature = "mangadex-api-resolver")]
@@ -53,7 +55,8 @@ impl From<CommitUploadSessionParam> for CommitUploadSessionBuilder {
             .chapter(value.chapter)
             .title(value.title)
             .translated_language(value.translated_language)
-            .external_url(value.external_url);
+            .external_url(value.external_url)
+            .terms_accepted(value.term_accepted.unwrap_or(true));
         if let Some(publish_at) = value.publish_at {
             builder = builder.publish_at(publish_at);
         }
