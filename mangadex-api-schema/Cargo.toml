@@ -1,5 +1,5 @@
 [package]
-edition = "2024"
+edition.workspace = true
 name = "mangadex-api-schema-rust"
 version = "1.0.0"
 authors = ["tonymushah <tonymushahdev06@yahoo.com>"]

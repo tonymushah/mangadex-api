@@ -1,5 +1,5 @@
 [workspace]
-resolver = "2"
+resolver = "3"
 members = [
     "mangadex-api-types",
     "mangadex-api-schema",
@@ -69,3 +69,7 @@ default-features = false
 [workspace.dependencies.mangadex-api]
 path = "./mangadex-api"
 version = "4"
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.85"

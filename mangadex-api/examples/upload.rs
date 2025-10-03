@@ -1,11 +1,11 @@
-use mangadex_api::{v5::upload::upload_session_id::post::UploadImage, MangaDexClient};
+use mangadex_api::{MangaDexClient, v5::upload::upload_session_id::post::UploadImage};
 use mangadex_api_schema::v5::oauth::ClientInfo;
 use mangadex_api_types::{Password, Username};
 use uuid::Uuid;
 
 use std::{
     collections::HashMap,
-    env::{set_var, var, VarError},
+    env::{VarError, set_var, var},
     path::{Path, PathBuf},
 };
 
@@ -119,7 +119,9 @@ async fn login(client: &MangaDexClient) -> anyhow::Result<()> {
         (oauth_res.expires_in / 60)
     );
     println!("{}", oauth_res.refresh_token);
-    set_var(REFRESH_TOKEN, oauth_res.refresh_token);
+    unsafe {
+        set_var(REFRESH_TOKEN, oauth_res.refresh_token);
+    }
     println!("Your refresh token is now settled to the environment variable");
     Ok(())
 }
@@ -137,7 +139,9 @@ async fn refresh_token(client: &mut MangaDexClient, refresh_token: String) -> an
         "Your token will expire in {} minutes",
         (oauth_res.expires_in / 60)
     );
-    set_var(REFRESH_TOKEN, oauth_res.refresh_token);
+    unsafe {
+        set_var(REFRESH_TOKEN, oauth_res.refresh_token);
+    }
     println!("Your refresh token is now settled to the environment variable");
     Ok(())
 }

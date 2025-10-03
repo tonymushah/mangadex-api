@@ -1265,7 +1265,6 @@ dependencies = [
  "clap",
  "derive_builder",
  "fake",
- "futures",
  "getset",
  "mangadex-api-schema-rust",
  "mangadex-api-types-rust",
