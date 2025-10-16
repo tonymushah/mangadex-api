@@ -187,7 +187,7 @@ mod tests {
 
         let list_id = Uuid::new_v4();
         let response_body = json!({
-            "result": "ok"
+            "result": "ko"
         });
 
         Mock::given(method("GET"))
