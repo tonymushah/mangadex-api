@@ -65,7 +65,7 @@ pub trait Endpoint {
 #[derive(Deserialize)]
 #[serde(tag = "result", remote = "std::result::Result")]
 enum ApiResultDef<T, E> {
-    #[serde(rename = "ok")]
+    #[serde(rename = "ok", alias = "ko")]
     Ok(T),
     #[serde(rename = "error")]
     Err(E),
