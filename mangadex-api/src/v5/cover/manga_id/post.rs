@@ -98,7 +98,7 @@ impl Endpoint for UploadCover {
     type Body = ();
     type Response = CoverData;
 
-    fn path(&self) -> Cow<str> {
+    fn path(&self) -> Cow<'_, str> {
         Cow::Owned(format!("/cover/{}", self.manga_id))
     }
 
