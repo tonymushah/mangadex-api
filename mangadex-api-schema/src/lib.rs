@@ -43,7 +43,7 @@ pub trait Endpoint {
         reqwest::Method::GET
     }
 
-    fn path(&self) -> Cow<str>;
+    fn path(&'_ self) -> Cow<'_, str>;
 
     fn require_auth(&self) -> bool {
         false
@@ -255,7 +255,6 @@ where
 /// This struct is used for rate limited endpoint
 /// `rate_limit` is for the rate limit metadata
 /// `body` is the response data
-
 #[cfg(feature = "serialize")]
 #[derive(Debug, Serialize, Clone)]
 pub struct Limited<T>
