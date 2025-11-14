@@ -75,6 +75,7 @@ pub struct CommitUploadSession {
     ///
     /// Any uploaded files that are not included in this list will be deleted.
     pub page_order: Vec<Uuid>,
+    pub terms_accepted: bool,
 }
 
 #[cfg_attr(feature = "deserializable-endpoint", derive(serde::Deserialize))]
@@ -124,6 +125,7 @@ pub struct CommitUploadSessionBuilder {
     /// Nullable
     pub external_url: Option<Url>,
     pub publish_at: Option<MangaDexDateTime>,
+    pub terms_accepted: Option<bool>,
 }
 
 impl CommitUploadSessionBuilder {
@@ -137,6 +139,11 @@ impl CommitUploadSessionBuilder {
     #[doc(hidden)]
     pub fn http_client(mut self, http_client: HttpClientRef) -> Self {
         self.http_client = Some(http_client);
+        self
+    }
+
+    pub fn terms_accepted(mut self, terms_accepted: bool) -> Self {
+        self.terms_accepted = Some(terms_accepted);
         self
     }
 
@@ -254,6 +261,7 @@ impl CommitUploadSessionBuilder {
                 publish_at: self.publish_at,
             },
             page_order: self.page_order.to_owned(),
+            terms_accepted: self.terms_accepted.unwrap_or_default(),
         })
     }
 }
@@ -291,6 +299,7 @@ mod tests {
         ///
         /// Any uploaded files that are not included in this list will be deleted.
         page_order: Vec<Uuid>,
+        terms_accepted: bool,
     }
 
     #[tokio::test]
@@ -322,6 +331,7 @@ mod tests {
                 external_url: None,
                 publish_at: None,
             },
+            terms_accepted: true,
             page_order: vec![session_file_id],
         };
 
@@ -374,6 +384,7 @@ mod tests {
             .title(Some(chapter_title.clone()))
             .translated_language(Language::English)
             .page_order(vec![session_file_id])
+            .terms_accepted(true)
             .send()
             .await?;
 
