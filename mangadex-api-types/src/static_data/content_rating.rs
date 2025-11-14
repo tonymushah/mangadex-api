@@ -1,20 +1,15 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize, Eq)]
+#[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize, Eq, Default)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(feature = "async-graphql", derive(async_graphql::Enum))]
 pub enum ContentRating {
     Erotica,
     Pornographic,
+    #[default]
     Safe,
     Suggestive,
-}
-
-impl Default for ContentRating {
-    fn default() -> Self {
-        Self::Safe
-    }
 }
 
 impl From<String> for ContentRating {
