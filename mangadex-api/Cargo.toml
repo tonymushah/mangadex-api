@@ -1,7 +1,7 @@
 [package]
 edition.workspace = true
 name = "mangadex-api"
-version = "4.0.0"
+version = "4.1.0"
 authors = ["gondolyr <gondolyr@tutanota.com>", "tonymushah tonymushahdev06@yahoo.com"]
 description = "SDK for the MangaDex API"
 readme = "../README.md"
@@ -110,7 +110,7 @@ workspace = true
 features = ["v4"]
 
 [features]
-default = ["oauth"]
+default = ["oauth", "reqwest/rustls"]
 utils = ["dep:bytes", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 deserializable-endpoint = ["dep:getset"]
 oauth = []
