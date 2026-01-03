@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// This should only be used with the `type` response field.
 /// For use with the `includes[]` query parameter, refer to the [`ReferenceExpansionResource` enum](crate::ReferenceExpansionResource).
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Hash, PartialEq, Eq, Default)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
@@ -59,13 +59,8 @@ pub enum RelationshipType {
     /// This is not used by MangaDex, but this library, in case new types appear before the library
     /// is updated.
     #[serde(other)]
+    #[default]
     Unknown,
-}
-
-impl Default for RelationshipType {
-    fn default() -> Self {
-        Self::Unknown
-    }
 }
 
 impl Display for RelationshipType {
