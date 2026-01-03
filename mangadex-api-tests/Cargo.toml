@@ -11,5 +11,5 @@ mangadex-api-types-rust = { path = "../mangadex-api-types" }
 mangadex-api-schema-rust = { path = "../mangadex-api-schema" }
 tokio = { version = "1.44", features = ["full"] }
 anyhow = { version = "1.0.82" }
-reqwest = "0.12"
+reqwest = "0.13"
 uuid = "1"

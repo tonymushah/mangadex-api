@@ -110,10 +110,10 @@ workspace = true
 features = ["v4"]
 
 [features]
-default = ["oauth"]
+default = ["oauth", "reqwest/rustls"]
 utils = ["dep:bytes", "dep:async-stream", "dep:tokio-stream", "reqwest/stream"]
 deserializable-endpoint = ["dep:getset"]
-oauth = []
+oauth = ["reqwest/form"]
 custom_list_v2 = []
 
 [[example]]
