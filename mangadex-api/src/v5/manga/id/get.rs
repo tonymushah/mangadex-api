@@ -55,6 +55,7 @@ pub struct GetManga {
     #[serde(skip_serializing)]
     pub manga_id: Uuid,
 
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
 }
@@ -246,8 +247,8 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn get_manga_handles_null_available_translated_languages_element_value(
-    ) -> anyhow::Result<()> {
+    async fn get_manga_handles_null_available_translated_languages_element_value()
+    -> anyhow::Result<()> {
         let mock_server = MockServer::start().await;
         let http_client = HttpClient::builder()
             .base_url(Url::parse(&mock_server.uri())?)
