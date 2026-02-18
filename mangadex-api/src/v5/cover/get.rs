@@ -68,6 +68,7 @@ pub struct ListCover {
     #[builder(setter(each = "locale"))]
     pub locales: Vec<Language>,
     pub order: Option<CoverSortOrder>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "include"))]
     pub includes: Vec<ReferenceExpansionResource>,
 }
@@ -81,8 +82,8 @@ endpoint! {
 
 #[cfg(test)]
 mod tests {
-    use fake::faker::lorem::en::Sentence;
     use fake::Fake;
+    use fake::faker::lorem::en::Sentence;
     use serde_json::json;
     use time::OffsetDateTime;
     use url::Url;
