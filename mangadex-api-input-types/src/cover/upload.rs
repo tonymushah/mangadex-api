@@ -1,7 +1,7 @@
 #[cfg(feature = "mangadex-api-resolver")]
 use std::{
     fs::File,
-    io::{BufReader, Read},
+    io::BufReader,
 };
 
 #[cfg(feature = "mangadex-api-resolver")]
@@ -43,12 +43,12 @@ impl TryFrom<CoverUploadParam> for UploadCoverBuilder {
     fn try_from(value: CoverUploadParam) -> Result<Self, Self::Error> {
         let file = File::open(value.file)?;
         let mut buffread = BufReader::new(file);
-        let mut file_content: Vec<u8> = vec![1, 0];
-        buffread.read_exact(&mut file_content)?;
+        let mut file_content = std::io::Cursor::new(Vec::<u8>::new());
+        std::io::copy(&mut buffread, &mut file_content)?;
 
         let mut builder = Self::default();
         builder.manga_id(value.manga_id);
-        builder.file(file_content);
+        builder.file(file_content.into_inner());
         if let Some(volume) = value.volume {
             builder.volume(volume);
         }
