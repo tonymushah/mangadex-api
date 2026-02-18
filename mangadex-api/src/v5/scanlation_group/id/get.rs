@@ -56,6 +56,7 @@ pub struct GetGroup {
     #[serde(skip_serializing)]
     pub group_id: Uuid,
 
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
 }
