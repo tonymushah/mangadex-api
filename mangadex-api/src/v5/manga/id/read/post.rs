@@ -76,8 +76,10 @@ pub struct MarkChapterBatch {
 
     #[serde(skip_serializing)]
     pub manga_id: Uuid,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "mark_chapter_read"), default)]
     pub chapter_ids_read: Vec<Uuid>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "mark_chapter_unread"), default)]
     pub chapter_ids_unread: Vec<Uuid>,
     #[serde(skip_serializing)]
