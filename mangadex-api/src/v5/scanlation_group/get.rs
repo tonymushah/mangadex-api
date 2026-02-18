@@ -50,17 +50,24 @@ pub struct ListGroup {
     #[cfg_attr(feature = "deserializable-endpoint", getset(set = "pub", get = "pub"))]
     pub http_client: HttpClientRef,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<u32>,
     #[builder(setter(each = "add_group_id"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[serde(rename = "ids")]
     pub group_ids: Vec<Uuid>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Language the scanlation primarily translates or uploads works into.
     // The corresponding response body field returns an array so this seems likely to change to accept an array of languages.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub focused_language: Option<Language>,
     #[builder(setter(each = "include"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub includes: Vec<ReferenceExpansionResource>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<GroupSortOrder>,
 }
 
@@ -77,7 +84,7 @@ mod tests {
     use time::OffsetDateTime;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{method, path};
+    use wiremock::matchers::{method, path, query_param, query_param_is_missing};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::error::Error;
@@ -137,6 +144,8 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path("/group"))
+            .and(query_param("limit", "1"))
+            .and(query_param_is_missing("offset"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
