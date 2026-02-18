@@ -57,6 +57,7 @@ pub struct FindGroupStatistics {
     pub http_client: HttpClientRef,
 
     #[builder(setter(each = "group_id"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub group: Vec<Uuid>,
 }
 
