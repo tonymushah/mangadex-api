@@ -74,6 +74,7 @@ pub struct GetMangaDraft {
     #[serde(skip_serializing)]
     pub manga_id: Uuid,
 
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
 }

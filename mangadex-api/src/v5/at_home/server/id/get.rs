@@ -78,12 +78,12 @@ endpoint! {
 #[cfg(test)]
 mod tests {
     use crate::error::Error;
-    use fake::faker::internet::en::Password;
     use fake::Fake;
+    use fake::faker::internet::en::Password;
     use serde_json::json;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{method, path_regex};
+    use wiremock::matchers::{method, path_regex, query_param};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::{HttpClient, MangaDexClient};
@@ -115,6 +115,7 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path_regex(r"/at-home/server/[0-9a-fA-F-]+"))
+            .and(query_param("forcePort443", "true"))
             .respond_with(
                 ResponseTemplate::new(200)
                     .insert_header("x-ratelimit-retry-after", "1698723860")

@@ -55,6 +55,7 @@ pub struct GetAuthor {
     #[serde(skip_serializing)]
     pub author_id: Uuid,
 
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
 }
@@ -68,9 +69,9 @@ endpoint! {
 
 #[cfg(test)]
 mod tests {
+    use fake::Fake;
     use fake::faker::lorem::en::Sentence;
     use fake::faker::name::en::Name;
-    use fake::Fake;
     use serde_json::json;
     use time::OffsetDateTime;
     use url::Url;

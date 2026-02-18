@@ -57,6 +57,7 @@ pub struct FindMangaStatistics {
     pub http_client: HttpClientRef,
 
     #[builder(setter(each = "manga_id"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub manga: Vec<Uuid>,
 }
 

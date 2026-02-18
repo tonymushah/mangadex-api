@@ -56,9 +56,11 @@ pub struct GetMangaAggregate {
     #[serde(skip_serializing)]
     pub manga_id: Uuid,
 
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "add_language"), default)]
     pub translated_language: Vec<Language>,
     #[builder(setter(each = "add_group"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub groups: Vec<Uuid>,
     #[builder(default)]
     #[serde(skip_serializing_if = "Option::is_none")]

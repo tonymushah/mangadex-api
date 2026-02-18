@@ -59,6 +59,7 @@ pub struct GetCustomList {
     #[builder(default)]
     pub with_auth: bool,
 
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
 }
@@ -72,8 +73,8 @@ endpoint! {
 
 #[cfg(test)]
 mod tests {
-    use fake::faker::name::en::Name;
     use fake::Fake;
+    use fake::faker::name::en::Name;
     use mangadex_api_schema::v5::AuthTokens;
     use serde_json::json;
     use url::Url;

@@ -73,6 +73,7 @@ pub struct ListUser {
     pub offset: Option<u32>,
     #[builder(setter(each = "add_user_id"))]
     #[serde(rename = "ids")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub user_ids: Vec<Uuid>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,

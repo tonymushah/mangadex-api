@@ -67,18 +67,24 @@ pub struct GetMangaFeed {
     #[builder(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<u32>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "add_translated_language"), default)]
     pub translated_language: Vec<Language>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "add_original_language"), default)]
     pub original_language: Vec<Language>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "exclude_original_language"), default)]
     pub excluded_original_language: Vec<Language>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "add_content_rating"), default)]
     pub content_rating: Vec<ContentRating>,
     /// Groups to exclude from the results.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "excluded_group"), default)]
     pub excluded_groups: Vec<Uuid>,
     /// Uploaders to exclude from the results.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "excluded_uploader"), default)]
     pub excluded_uploaders: Vec<Uuid>,
     /// Flag to include future chapter updates in the results.
