@@ -57,6 +57,7 @@ pub struct GetCover {
     pub cover_id: Uuid,
 
     #[builder(setter(each = "include"), default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub includes: Vec<ReferenceExpansionResource>,
 }
 
@@ -69,8 +70,8 @@ endpoint! {
 
 #[cfg(test)]
 mod tests {
-    use fake::faker::lorem::en::Sentence;
     use fake::Fake;
+    use fake::faker::lorem::en::Sentence;
     use serde_json::json;
     use time::OffsetDateTime;
     use url::Url;
