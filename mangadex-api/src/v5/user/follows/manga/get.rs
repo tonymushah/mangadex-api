@@ -78,7 +78,7 @@ pub struct FollowedManga {
     pub limit: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<u32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     #[builder(setter(each = "include"), default)]
     pub includes: Vec<ReferenceExpansionResource>,
 }
