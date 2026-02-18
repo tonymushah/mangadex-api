@@ -57,6 +57,7 @@ pub struct FindChapterStatistics {
     pub http_client: HttpClientRef,
 
     #[builder(setter(each = "chapter_id"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub chapter: Vec<Uuid>,
 }
 
