@@ -1477,8 +1477,9 @@ dependencies = [
 
 [[package]]
 name = "mangadex-api-schema-rust"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
+ "anyhow",
  "color-print",
  "jsonxf",
  "mangadex-api-types-rust",
