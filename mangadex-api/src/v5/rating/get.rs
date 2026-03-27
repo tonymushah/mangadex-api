@@ -123,9 +123,54 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let res = mangadex_client.rating().get().send().await?;
+        let res = mangadex_client
+            .rating()
+            .get()
+            .manga_id(manga_id)
+            .send()
+            .await?;
 
         assert_eq!(res.ratings.get(&manga_id).unwrap().rating, 7);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn your_manga_ratings_fires_a_request_to_base_url_with_empty_response()
+    -> anyhow::Result<()> {
+        let mock_server = MockServer::start().await;
+        let http_client = HttpClient::builder()
+            .base_url(Url::parse(&mock_server.uri())?)
+            .auth_tokens(non_exhaustive::non_exhaustive!(AuthTokens {
+                session: "sessiontoken".to_string(),
+                refresh: "refreshtoken".to_string(),
+            }))
+            .build()?;
+        let mangadex_client = MangaDexClient::new_with_http_client(http_client);
+
+        let manga_id = Uuid::new_v4();
+        // I know this sounds illogical but trust me...
+        // this is what the api feeds you when you get an empty rating result.
+        let response_body = json!({
+            "result": "ok",
+            "ratings": []
+        });
+
+        Mock::given(method("GET"))
+            .and(path("/rating"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
+            .expect(1)
+            .mount(&mock_server)
+            .await;
+
+        let res = mangadex_client
+            .rating()
+            .get()
+            .manga_id(manga_id)
+            .send()
+            .await?;
+
+        assert!(res.ratings.is_empty());
 
         Ok(())
     }
