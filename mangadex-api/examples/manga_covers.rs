@@ -27,7 +27,7 @@
 //! manga_covers --download ./ f9c33607-9180-4ba6-b85c-e4b5faee7192
 //! ```
 
-use std::fs::{create_dir, File};
+use std::fs::{File, create_dir};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
@@ -36,7 +36,7 @@ use reqwest::Url;
 use uuid::Uuid;
 
 use mangadex_api::v5::MangaDexClient;
-use mangadex_api::{HttpClientRef, CDN_URL};
+use mangadex_api::{CDN_URL, HttpClientRef};
 use mangadex_api_types::{Language, RelationshipType};
 
 #[derive(Parser)]
@@ -67,8 +67,8 @@ async fn main() {
 async fn run(args: Args) -> anyhow::Result<()> {
     let client = MangaDexClient::default();
 
-    if args.output.is_some() && !args.output.as_ref().unwrap().is_dir() {
-        let _ = create_dir(args.output.as_ref().unwrap());
+    if let Some(output) = args.output.as_ref().filter(|output| !output.is_dir()) {
+        let _ = create_dir(output);
     }
 
     let manga_covers = client
@@ -104,11 +104,9 @@ async fn run(args: Args) -> anyhow::Result<()> {
 
         let file_name = cover_data.attributes.file_name;
 
-        let cover_url = Url::parse(&format!(
-            "{CDN_URL}/covers/{manga_id}/{file_name}"
-        ))?;
+        let cover_url = Url::parse(&format!("{CDN_URL}/covers/{manga_id}/{file_name}"))?;
 
-        if args.output.is_some() {
+        if let Some(output) = args.output.as_ref() {
             println!(
                 "Downloading cover for manga {:?}, cover file name {:?}",
                 manga_title, &file_name
@@ -117,7 +115,7 @@ async fn run(args: Args) -> anyhow::Result<()> {
             download_file(
                 client.get_http_client().clone(),
                 cover_url,
-                args.output.as_ref().unwrap(),
+                output,
                 &file_name,
             )
             .await?;
