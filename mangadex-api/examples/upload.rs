@@ -184,11 +184,12 @@ async fn check_session(client: &MangaDexClient) -> Result<(), CheckSessionError>
     match client.upload().get().send().await {
         Ok(i) => Err(CheckSessionError::AlreadyExists(i.body.data.id)),
         Err(e) => {
-            if let mangadex_api::error::Error::Api(error) = &e {
-                if error.errors.iter().any(|er| er.status == 404) {
-                    return Ok(());
-                }
+            if let mangadex_api::error::Error::Api(error) = &e
+                && error.errors.iter().any(|er| er.status == 404)
+            {
+                return Ok(());
             }
+
             Err(CheckSessionError::MangadexApiError(e))
         }
     }
