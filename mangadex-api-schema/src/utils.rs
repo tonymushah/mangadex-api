@@ -12,9 +12,11 @@ where
     Map(HashMap<K, V>),
 }
 
-// There is [PHP Bug](https://discord.com/channels/403905762268545024/841005104362160168/1131502086425673778) that transforms empty maps into array.
-//
-// This is here to fix that when deserializing things.
+/// Added in v1.1
+///
+/// There is [PHP Bug](https://discord.com/channels/403905762268545024/841005104362160168/1131502086425673778) that transforms empty maps into array.
+///
+/// This is here to fix that when deserializing things those things.
 pub fn deserialize_map_because_of_md_bug<'de, D, K, V>(
     deserializer: D,
 ) -> Result<HashMap<K, V>, D::Error>
