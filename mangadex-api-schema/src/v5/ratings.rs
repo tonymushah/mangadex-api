@@ -14,6 +14,7 @@ use uuid::Uuid;
 pub struct RatingsList {
     #[serde(default)]
     pub result: ResultType,
+    #[serde(deserialize_with = "crate::utils::deserialize_map_because_of_md_bug")]
     pub ratings: HashMap<Uuid, Rating>,
 }
 
