@@ -5,6 +5,7 @@
 
 mod bind;
 pub mod error;
+pub mod utils;
 pub mod v5;
 
 use error::MangaDexErrorResponse_ as MangaDexErrorResponse;
