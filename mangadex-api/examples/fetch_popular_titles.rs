@@ -84,10 +84,12 @@ async fn main() -> anyhow::Result<()> {
             println!("\tArtist: {artist}");
         }
 
-        if let Some(stat) = stats.statistics.get(&manga.id) {
-            if let Some(average) = stat.rating.average {
-                println!("\tAverage: {average}");
-            }
+        if let Some(average) = stats
+            .statistics
+            .get(&manga.id)
+            .and_then(|stat| stat.rating.average)
+        {
+            println!("\tAverage: {average}");
         }
 
         // We generate the link that goes to the Mangadex page
