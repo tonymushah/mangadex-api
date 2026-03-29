@@ -145,7 +145,7 @@ mod tests {
     use time::OffsetDateTime;
     use url::Url;
     use uuid::Uuid;
-    use wiremock::matchers::{method, path};
+    use wiremock::matchers::{method, path, query_param, query_param_is_missing};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::error::Error;
@@ -208,6 +208,8 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path("/manga"))
+            .and(query_param("limit", "1"))
+            .and(query_param_is_missing("includes"))
             .respond_with(ResponseTemplate::new(200).set_body_json(response_body))
             .expect(1)
             .mount(&mock_server)
