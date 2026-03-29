@@ -115,6 +115,7 @@ pub struct ListManga {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order: Option<MangaSortOrder>,
     #[builder(setter(each = "include"))]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub includes: Vec<ReferenceExpansionResource>,
     #[serde(
         skip_serializing_if = "Option::is_none",
